@@ -5,26 +5,13 @@ using UnityEngine;
 
 public class Team : MonoBehaviour
 {
-
-    private Character _currentCharacter;
-    public Character CurrentCharacter
-    {
-        get
-        {
-            return _currentCharacter;
-        }
-        private set
-        {
-            _currentCharacter = value;
-            CharacterChanged?.Invoke(value);
-        }
-
-    }
-    public event Action<Character> CharacterChanged;
-
     [HideInInspector] public bool IsTeamAlive => _characters.Any(c => c.IsAlive);
     [SerializeField] private List<Character> _characters;
+    public Character CurrentCharacter => _currentCharacter;
+    private Character _currentCharacter;
     private int _characterIndex;
+
+    public event Action TurnFinished;
 
     private void Awake()
     {
@@ -32,33 +19,32 @@ public class Team : MonoBehaviour
         {
             Debug.LogWarning($"There are no characters set for player: {gameObject.name}.");
         }
-    }
-
-    private void Start()
-    {
-        CurrentCharacter = _characters[_characterIndex];
-    }
-
-    public void OnImpulseReleased(Vector2 impulse)
-    {
-        CurrentCharacter?.Jump(impulse);
-    }
-
-    private void StartTurn()
-    {
-        if(IsTeamAlive)
+        foreach( var character in _characters )
         {
-            do
-            {
-                _characterIndex++;
-            }
-            while (!_characters[_characterIndex].IsAlive);
-            CurrentCharacter = _characters[_characterIndex];
+            character.TurnFinished += OnTurnFinished;
         }
     }
 
-    private void EndTurn()
+    public void StartTurn()
     {
+        Debug.Log($"{gameObject.name}'s turn!");
+        SelectNextCharacter();
+    }
+
+    private void OnTurnFinished()
+    {
+        _characterIndex = (_characterIndex+1) % _characters.Count;
+        TurnFinished?.Invoke();
+    }
+
+    private void SelectNextCharacter()
+    {
+        while (!_characters[_characterIndex].IsAlive)
+        {
+            _characterIndex++;
+        }
+        _currentCharacter = _characters[_characterIndex];
+        _currentCharacter.Select();
     }
 
 }
