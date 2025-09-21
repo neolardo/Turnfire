@@ -4,5 +4,7 @@ using UnityEngine;
 public class ProjectileData : ScriptableObject
 {
     public int Damage;
-    public float ImpulseStrength;
+    public float FireStrength;
+    public float ExplosionStrength;
+    public float ExplosionRadius;
 }

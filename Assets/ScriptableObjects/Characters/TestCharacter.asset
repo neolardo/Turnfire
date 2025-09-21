@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 308a46ad920ebe441a64373ee5c8a04f, type: 3}
   m_Name: TestCharacter
   m_EditorClassIdentifier: 
-  MaxHealth: 100
+  MaxHealth: 10
   JumpStrength: 8
   ShootStrenth: 10

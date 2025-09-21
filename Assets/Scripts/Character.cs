@@ -5,52 +5,75 @@ using UnityEngine;
 public class Character : MonoBehaviour
 {
     [HideInInspector] public bool IsAlive => _health > 0;
+    [HideInInspector] public bool IsMoving => _rb.linearVelocity.magnitude > Mathf.Epsilon;
+    [HideInInspector] public bool IsFiring => _weapon.IsFiring;
+    [HideInInspector] public float FireStrength => _weapon.Projectile.ProjectileData.FireStrength; //TODO
     [SerializeField] private Weapon _weapon;
+    [SerializeField] private Healthbar _healthbar; //TODO
     public CharacterData CharacterData;
     private Rigidbody2D _rb;
-    private TrajectoryRenderer _trajectoryRenderer;
     private int _health;
-    private TurnState _turnState;
+    public int Health
+    {
+        get 
+        {
+            return _health; 
+        }
+        private set 
+        {
+            if (_health != value)
+            {
+                _health = value;
+                HealthChanged?.Invoke(_health);
+            }
+        }
+    }
 
-    public event Action TurnFinished;
+    public event Action<int> HealthChanged;
 
     private void Awake()
     {
-        _health = CharacterData.MaxHealth;
+        Health = CharacterData.MaxHealth;
         _rb = GetComponent<Rigidbody2D>();
-        _trajectoryRenderer = FindFirstObjectByType<TrajectoryRenderer>();
+        _healthbar.Follow(transform);
+        _healthbar.SetMaxHealth(Health);
+        HealthChanged += _healthbar.SetCurrentHeath; //TODO
     }
 
-    public void OnImpulseReleased(Vector2 aimDirection)
+    public void Damage(int value)
     {
-        if(_turnState == TurnState.Move)
+        Health = Mathf.Max(0, Health - value);
+        Debug.Log($"Health reduced to {value}");
+        if(!IsAlive)
         {
-            Jump(aimDirection);
-            _turnState = TurnState.Fire;
-            _trajectoryRenderer.SetTrajectoryMultipler(_weapon.Projectile.ProjectileData.ImpulseStrength);
-        }
-        else if (_turnState == TurnState.Fire)
-        {
-            Fire(aimDirection);
-            _turnState = TurnState.Finished;
-            TurnFinished?.Invoke();
+            Die();
         }
     }
 
-    public void Select()
+    public void Kill()
     {
-        _turnState = TurnState.Move;
-        _trajectoryRenderer.SetStartTransform(transform); //TODO: decouple
-        _trajectoryRenderer.SetTrajectoryMultipler(CharacterData.JumpStrength);
+        Damage(Health);
     }
 
+    private void Die()
+    {
+        //TODO
+        var spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+        spriteRenderer.color = Color.grey;
+        Debug.Log(gameObject.name + " died." );
+    }
 
-    private void Jump(Vector2 aimDirection)
+    public void Push(Vector2 impulse)
+    {
+        _rb.AddForce(impulse, ForceMode2D.Impulse);
+    }
+
+    public void Jump(Vector2 aimDirection)
     {
         _rb.AddForce(aimDirection * CharacterData.JumpStrength, ForceMode2D.Impulse);
     }
 
-    private void Fire(Vector2 aimDirection)
+    public void Fire(Vector2 aimDirection)
     {
         _weapon.Fire(aimDirection);
     }

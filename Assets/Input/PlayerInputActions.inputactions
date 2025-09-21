@@ -16,7 +16,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Jump",
+                    "name": "ReleaseImpulse",
                     "type": "Button",
                     "id": "2b890bc3-5f2d-4543-ae10-20874f112fcc",
                     "expectedControlType": "",
@@ -25,9 +25,18 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Shoot",
+                    "name": "OpenItemMenu",
                     "type": "Button",
                     "id": "653ee58f-0793-410e-9329-da06b17d3315",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Cancel",
+                    "type": "Button",
+                    "id": "77b311dd-9d39-42c3-b17a-ee134e55ac6f",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -64,7 +73,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Jump",
+                    "action": "ReleaseImpulse",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -75,18 +84,51 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Jump",
+                    "action": "ReleaseImpulse",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
                     "id": "8e2d3b11-912c-4c1d-9c42-1a374de9ebdd",
-                    "path": "",
+                    "path": "<Gamepad>/buttonWest",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Shoot",
+                    "action": "OpenItemMenu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "694ad023-20a8-451c-a805-2263b1898160",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenItemMenu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9d68aa26-b4a9-4385-afa4-ff1709c46a03",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Cancel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e05d8542-dd02-417a-b9d8-dcf73bc5df8a",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Cancel",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

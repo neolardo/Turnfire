@@ -1,0 +1,27 @@
+using UnityEngine;
+
+public class Weapon : MonoBehaviour
+{
+    public Projectile Projectile;
+    public int NumProjectiles;
+
+    public bool IsFiring => _isFiring;
+    private bool _isFiring;
+
+    private void Awake()
+    {
+        Projectile.Exploded += OnExploded;
+    }
+
+    public void Fire(Vector2 aimDirection)
+    {
+        _isFiring = true;
+        Projectile.gameObject.transform.position = (Vector2)transform.position + aimDirection.normalized * Constants.ProjectileOffset;
+        Projectile.Fire(aimDirection);
+    }
+
+    private void OnExploded()
+    {
+        _isFiring = false;
+    }
+}

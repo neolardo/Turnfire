@@ -13,4 +13,6 @@ MonoBehaviour:
   m_Name: Bullet
   m_EditorClassIdentifier: 
   Damage: 5
-  ImpulseStrength: 10
+  FireStrength: 10
+  ExplosionStrength: 5
+  ExplosionRadius: 2

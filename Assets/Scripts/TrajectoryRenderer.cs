@@ -16,15 +16,28 @@ public class TrajectoryRenderer : MonoBehaviour
     void Awake()
     {
         _lineRenderer = GetComponent<LineRenderer>();
+        _gravity = Physics2D.gravity.y;
     }
 
     private void Start()
     {
-        _gravity = Physics2D.gravity.y;
         var inputManager = FindFirstObjectByType<InputManager>();
         inputManager.AimStarted += ShowTrajectory;
         inputManager.AimChanged += DrawTrajectory;
-        inputManager.ImpulseReleased += (_) => HideTrajectory();
+        inputManager.AimCancelled += HideTrajectory;
+        inputManager.ImpulseReleased += OnImpulseReleased;
+    }
+
+    private void OnDestroy()
+    {
+        var inputManager = FindFirstObjectByType<InputManager>();
+        if (inputManager != null)
+        {
+            inputManager.AimStarted -= ShowTrajectory;
+            inputManager.AimChanged -= DrawTrajectory;
+            inputManager.AimCancelled -= HideTrajectory;
+            inputManager.ImpulseReleased -= OnImpulseReleased;
+        }
     }
 
     public void SetTrajectoryMultipler(float multiplier)
@@ -44,7 +57,7 @@ public class TrajectoryRenderer : MonoBehaviour
 
         if (initialPosition.x < 0 && initialPosition.y < 0)
         {
-            _circleCenter = new Vector2(Screen.width/2 + Constants.AimCircleOffsetPercentX * Screen.width, Screen.height/2 + Constants.AimCircleOffsetPercentY * Screen.height);
+            _circleCenter = new Vector2(Constants.AimCircleOffsetPercentX * Screen.width, Constants.AimCircleOffsetPercentY * Screen.height);
         }
         else
         {
@@ -63,7 +76,7 @@ public class TrajectoryRenderer : MonoBehaviour
         ClearTrajectory();
     }
 
-    public void DrawTrajectory(Vector2 aimVector)
+    private void DrawTrajectory(Vector2 aimVector)
     {
         _lineRenderer.positionCount = _resolution;
         _innerCircle.position = _circleCenter - aimVector * (_outerCircle.sizeDelta.x/2 - _innerCircle.sizeDelta.x/2);
@@ -78,8 +91,13 @@ public class TrajectoryRenderer : MonoBehaviour
         }
     }
 
-    public void ClearTrajectory()
+    private void ClearTrajectory()
     {
         _lineRenderer.positionCount = 0;
+    }
+
+    private void OnImpulseReleased(Vector2 aimDirection)
+    {
+        HideTrajectory();
     }
 }
