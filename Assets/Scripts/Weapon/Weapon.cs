@@ -5,7 +5,7 @@ using UnityEngine;
 public class Weapon : MonoBehaviour
 {
     public Projectile Projectile;
-    public int NumProjectiles;
+    public WeaponData WeaponData;
 
     public bool IsFiring => _isFiring;
     private bool _isFiring;
@@ -19,7 +19,7 @@ public class Weapon : MonoBehaviour
     {
         _isFiring = true;
         Projectile.gameObject.transform.position = (Vector2)transform.position + aimDirection.normalized * Constants.ProjectileOffset;
-        Projectile.Fire(aimDirection);
+        Projectile.Fire(aimDirection * WeaponData.FireStrength);
     }
 
     private void OnExploded()

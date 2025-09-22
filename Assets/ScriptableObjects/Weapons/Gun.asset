@@ -9,10 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 49eb7137ab377354dbe37b459a8178d8, type: 3}
-  m_Name: Bullet
+  m_Script: {fileID: 11500000, guid: a108a0a0a6487fa41bf347169d0fa29d, type: 3}
+  m_Name: Gun
   m_EditorClassIdentifier: 
-  Damage: 5
   FireStrength: 10
-  ExplosionStrength: 5
-  ExplosionRadius: 2
+  NumProjectiles: 1

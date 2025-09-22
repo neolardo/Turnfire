@@ -7,7 +7,7 @@ public class Character : MonoBehaviour
     [HideInInspector] public bool IsAlive => _health > 0;
     [HideInInspector] public bool IsMoving => _rb.linearVelocity.magnitude > Mathf.Epsilon;
     [HideInInspector] public bool IsFiring => _weapon.IsFiring;
-    [HideInInspector] public float FireStrength => _weapon.Projectile.ProjectileData.FireStrength; //TODO
+    [HideInInspector] public float FireStrength => _weapon.WeaponData.FireStrength;
     [SerializeField] private Weapon _weapon;
     [SerializeField] private Healthbar _healthbar; //TODO
     public CharacterData CharacterData;

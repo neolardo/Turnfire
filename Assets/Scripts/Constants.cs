@@ -17,6 +17,7 @@ public static class Constants
 
     //layers
     public const int CharacterLayer = 3;
+    public const int GroundLayer = 8;
 
     //tags 
     public const string CharacterTag = "Character";
