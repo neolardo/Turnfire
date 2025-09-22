@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 public class Weapon : MonoBehaviour
@@ -22,6 +24,15 @@ public class Weapon : MonoBehaviour
 
     private void OnExploded()
     {
+        StartCoroutine(WaitUntilFiringFinished());
+    }
+
+    private IEnumerator WaitUntilFiringFinished()
+    {
+        while (Projectile.ExplodedCharacters.Any(c => c.IsAlive && c.IsMoving))
+        {
+            yield return null;
+        }
         _isFiring = false;
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -9,9 +10,12 @@ public class Projectile : MonoBehaviour
 
     public event Action Exploded;
 
+    public List<Character> ExplodedCharacters;
+
     private void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
+        ExplodedCharacters = new List<Character>();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -50,6 +54,7 @@ public class Projectile : MonoBehaviour
 
     private void Explode()
     {
+        ExplodedCharacters.Clear();
         var mask = (LayerMask) (1 << Constants.CharacterLayer);
         Collider2D[] hits = Physics2D.OverlapCircleAll((Vector2)transform.position, ProjectileData.ExplosionRadius, mask);
         DrawDebugCircle(transform.position, ProjectileData.ExplosionRadius, 12, Color.green);
@@ -57,14 +62,16 @@ public class Projectile : MonoBehaviour
         {
             if (hit.TryGetComponent(out Character character))
             {
-                Debug.Log("Character hit!");
                 var pushVector = (character.transform.position - transform.position) / ProjectileData.ExplosionRadius;
                 character.Damage(ProjectileData.Damage);
                 character.Push(pushVector * ProjectileData.ExplosionStrength);
+                ExplodedCharacters.Add(character);
             }
         }
         gameObject.SetActive(false);
-        Debug.Log("Exploded!");
         Exploded?.Invoke();
     }
+
+
+
 }

@@ -9,6 +9,7 @@ public class GameRoundManager : MonoBehaviour
     [HideInInspector] public TurnState CurrentTurnState => _turnStates[_turnStateIndex];
     [SerializeField] private List<Team> _teams;
     private List<TurnState> _turnStates;
+    private CameraController _cameraController;
     private int _teamIndex;
     private int _turnStateIndex;
 
@@ -28,6 +29,7 @@ public class GameRoundManager : MonoBehaviour
     {
         var inputManager = FindFirstObjectByType<InputManager>();
         var trajectoryRenderer = FindFirstObjectByType<TrajectoryRenderer>();
+        _cameraController = FindFirstObjectByType<CameraController>();
         _turnStates = new List<TurnState>
         {
             new ReadyToMoveTurnState(trajectoryRenderer, inputManager, this),
@@ -44,6 +46,7 @@ public class GameRoundManager : MonoBehaviour
 
     private void Start()
     {
+        _cameraController.SetCharacterTarget(CurrentTeam.CurrentCharacter);
         StartTurnState();
     }
 
@@ -79,6 +82,8 @@ public class GameRoundManager : MonoBehaviour
     {
         ChangeCurrentTeam();
         CurrentTeam.SelectNextCharacter();
+        //TODO
+        _cameraController.SetCharacterTarget(CurrentTeam.CurrentCharacter);
     }
 
     private void ChangeCurrentTeam()

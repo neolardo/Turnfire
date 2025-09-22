@@ -1,14 +1,19 @@
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    [SerializeField] Transform _cameraZone;
-    Transform _cameraTransform;
-    Transform _targetObject;
+    [SerializeField] private CinemachineCamera _characterCam;
+    [SerializeField] private CinemachineCamera _projectileCam;
 
-    void Start()
+    public void SetProjectileTarget(Projectile p)
     {
-        _cameraTransform = GetComponent<Camera>().transform;
+
+    }
+
+    public void SetCharacterTarget(Character c)
+    {
+        _characterCam.Follow = c.transform;
     }
 
 }

@@ -36,8 +36,6 @@ public class Healthbar : MonoBehaviour
     public void SetCurrentHeath(int currentHealth)
     {
         _currentHealth = currentHealth;
-        Debug.Log("Current health: "+ _currentHealth);
-        Debug.Log("Max health: "+ _maxHealth);
         _rect.sizeDelta = new Vector2(_initialSize * currentHealth / (float)_maxHealth, _rect.sizeDelta.y);
     }    
 

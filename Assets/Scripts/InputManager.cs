@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using static UnityEditor.PlayerSettings;
 
 public class InputManager : MonoBehaviour
 {

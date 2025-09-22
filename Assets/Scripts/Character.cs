@@ -43,7 +43,6 @@ public class Character : MonoBehaviour
     public void Damage(int value)
     {
         Health = Mathf.Max(0, Health - value);
-        Debug.Log($"Health reduced to {value}");
         if(!IsAlive)
         {
             Die();

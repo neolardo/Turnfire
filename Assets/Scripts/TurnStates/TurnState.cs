@@ -23,6 +23,7 @@ public abstract class TurnState
 
     public virtual void StartState(Character currentCharacter)
     {
+        Debug.Log(State.ToString() + " started");
         IsActive = true;
         SubscribeToEvents();
         _currentCharacter = currentCharacter;
