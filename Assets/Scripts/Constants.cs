@@ -25,4 +25,9 @@ public static class Constants
     public const string ItemTag = "Item";
     public const string GroundTag = "Ground";
     public const string DeadZoneTag = "DeadZone";
+
+    //input action maps
+    public const string GameplayActionMap = "Gameplay";
+    public const string InventoryActionMap = "Inventory";
+
 }

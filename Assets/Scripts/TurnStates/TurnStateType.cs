@@ -4,5 +4,6 @@ public enum TurnStateType
     Moving = 1,
     ReadyToFire = 2,
     Firing = 3,
-    Finished = 4,
+    Drop = 4,
+    Finished = 5,
 }

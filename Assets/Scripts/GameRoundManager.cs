@@ -9,6 +9,7 @@ public class GameRoundManager : MonoBehaviour
     [HideInInspector] public TurnState CurrentTurnState => _turnStates[_turnStateIndex];
     [SerializeField] private List<Team> _teams;
     private List<TurnState> _turnStates;
+    private TurnState _dropTurnState;
     private CameraController _cameraController;
     private int _teamIndex;
     private int _turnStateIndex;
@@ -29,6 +30,7 @@ public class GameRoundManager : MonoBehaviour
     {
         var inputManager = FindFirstObjectByType<InputManager>();
         var trajectoryRenderer = FindFirstObjectByType<TrajectoryRenderer>();
+        var dropZone = FindFirstObjectByType<DropZone>();
         _cameraController = FindFirstObjectByType<CameraController>();
         _turnStates = new List<TurnState>
         {
@@ -38,10 +40,14 @@ public class GameRoundManager : MonoBehaviour
             new FiringTurnState(this),
             new FinishedTurnState(this)
         };
+        _dropTurnState = new DropTurnState(this, dropZone); //TODO: refactor
+        _dropTurnState.TurnStateEnded += OnTurnStateEnded;
+
         foreach (var turnState in _turnStates)
         {
             turnState.TurnStateEnded += OnTurnStateEnded;
         }
+        GameEnded+= (_) => inputManager.OnGameEnded();
     }
 
     private void Start()
@@ -68,12 +74,27 @@ public class GameRoundManager : MonoBehaviour
         }
         else
         {
+            var previousTeamIndex = _teamIndex;
             if (CurrentTurnState.State == TurnStateType.Finished)
             {
-                OnTurnEnded();
+                OnTurnEnded();//TODO
+                bool oneRoundElapsed = previousTeamIndex > _teamIndex;
+                if (oneRoundElapsed)
+                {
+                    _dropTurnState.StartState(CurrentTeam.CurrentCharacter);
+                }
+                else
+                {
+                    ChangeTurnState();
+                    StartTurnState();
+                }
             }
-            ChangeTurnState();
-            StartTurnState();
+            else
+            {
+                ChangeTurnState();
+                StartTurnState();
+            }
+              
         } 
         
     }
@@ -93,6 +114,7 @@ public class GameRoundManager : MonoBehaviour
             _teamIndex = (_teamIndex + 1) % _teams.Count;
         } while (!_teams[_teamIndex].IsTeamAlive);
     }
+    
 
 
     private void EndGame()

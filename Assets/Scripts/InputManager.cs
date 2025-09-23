@@ -18,28 +18,36 @@ public class InputManager : MonoBehaviour
     private bool _initialAimPositionSet;
     private PlayerInputActions _inputActions;
 
+    private InputActionMapType _currentActionMap;
+
     public bool IsAimingEnabled { get; set; }
+    public bool IsOpeningInventoryEnabled { get; set; }
 
     public event Action<Vector2> AimStarted;
     public event Action<Vector2> AimChanged;
     public event Action<Vector2> ImpulseReleased;
     public event Action AimCancelled;
+    public event Action ToggleInventoryPerformed;
+    public event Action ToggleInventoryCreateDestroyPerformed;
 
     private void Awake()
     {
         _inputActions = new PlayerInputActions();
+        IsOpeningInventoryEnabled = true;
+        SwitchToInputActionMap(InputActionMapType.Gameplay);
         SubscribeToInputEvents();
     }
 
     private void SubscribeToInputEvents()
     {
-        _inputActions.Player.Aim.performed += OnAimPerformed;
-        _inputActions.Player.Aim.canceled += OnAimCancelled;
-        _inputActions.Player.ReleaseImpulse.started += OnImpulseReleaseStarted;
-        _inputActions.Player.ReleaseImpulse.canceled += OnImpulseReleaseEnded;
-        _inputActions.Player.Cancel.started += OnCancelPerformed;
-        //_inputActions.Player.Shoot.started += OnJumpStarted; //TODO
-        //_inputActions.Player.Shoot.canceled += OnJumpStarted;
+        _inputActions.Gameplay.Aim.performed += OnAimPerformed;
+        _inputActions.Gameplay.Aim.canceled += OnAimCancelled;
+        _inputActions.Gameplay.ReleaseImpulse.started += OnImpulseReleaseStarted;
+        _inputActions.Gameplay.ReleaseImpulse.canceled += OnImpulseReleaseEnded;
+        _inputActions.Gameplay.Cancel.started += OnCancelPerformed;
+        _inputActions.Gameplay.ToggleInventory.started += OnToggleInventory;
+        _inputActions.Inventory.ToggleInventory.started += OnToggleInventory;
+        _inputActions.Inventory.ToggleCreateDestroy.started += OnToggleCreateDestroy;
     }
 
     private void OnAimPerformed(InputAction.CallbackContext ctx)
@@ -154,6 +162,55 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    private void OnEnable() => _inputActions.Player.Enable();
-    private void OnDisable() => _inputActions.Player.Disable();
+    private void OnToggleInventory(InputAction.CallbackContext ctx)
+    {
+        var targetActionMapType = _currentActionMap == InputActionMapType.Gameplay ? InputActionMapType.Inventory : InputActionMapType.Gameplay;
+        if (!IsOpeningInventoryEnabled && targetActionMapType == InputActionMapType.Inventory)
+        {
+            return;
+        }
+        SwitchToInputActionMap(targetActionMapType);
+        ToggleInventoryPerformed?.Invoke();
+    }
+
+    private void OnToggleCreateDestroy(InputAction.CallbackContext ctx)
+    {
+        ToggleInventoryCreateDestroyPerformed?.Invoke();
+    }
+     //TODO: refactor
+    public void OnGameEnded()
+    {
+        IsOpeningInventoryEnabled = false;
+    }
+
+
+    #region Input Action Map
+
+    private void SwitchToInputActionMap(InputActionMapType type)
+    {
+        _inputActions.Gameplay.Disable();
+        _inputActions.Inventory.Disable();
+        _inputActions.Menu.Disable();
+
+        ActionMapTypeToActionMap(type).Enable();
+        _currentActionMap = type;
+    }
+
+    private InputActionMap ActionMapTypeToActionMap(InputActionMapType type)
+    {
+        switch (type)
+        {
+            case InputActionMapType.Gameplay:
+                return _inputActions.Gameplay;
+            case InputActionMapType.Inventory:
+                return _inputActions.Inventory;
+            case InputActionMapType.Menu:
+                return _inputActions.Menu;
+            default:
+                throw new Exception("Invalid input action type: " + type);
+        }
+    } 
+
+    #endregion
+
 }

@@ -2,7 +2,7 @@
 
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(PolygonCollider2D))]
-public class DestructableTerrain: MonoBehaviour
+public class DestructibleTerrain: MonoBehaviour
 {
     private Texture2D _texture;
     private SpriteRenderer _renderer;

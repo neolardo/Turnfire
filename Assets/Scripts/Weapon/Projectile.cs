@@ -66,7 +66,7 @@ public class Projectile : MonoBehaviour
                 character.Push(pushVector * ExplosionData.ExplosionStrength);
                 ExplodedCharacters.Add(character);
             }
-            else if (hit.TryGetComponent(out DestructableTerrain destTerrain))
+            else if (hit.TryGetComponent(out DestructibleTerrain destTerrain))
             {
                 destTerrain.ApplyExplosion(transform.position, ExplosionData.ExplosionRadius);
             }
