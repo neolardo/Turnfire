@@ -13,15 +13,16 @@ public class InputManager : MonoBehaviour
 
     private float _mouseAimRadius;
     private Vector2 _aimVector;
-    private Vector2 _initialAimPosition;
+    private Vector2 _initialMouseAimPosition;
     private bool _isAiming;
-    private bool _initialAimPositionSet;
+    private bool _isInitialMouseAimPositionSet;
     private PlayerInputActions _inputActions;
 
     private InputActionMapType _currentActionMap;
 
     public bool IsAimingEnabled { get; set; }
     public bool IsOpeningInventoryEnabled { get; set; }
+    public bool IsPausingGameplayEnabled { get; set; }
 
     public event Action<Vector2> AimStarted;
     public event Action<Vector2> AimChanged;
@@ -29,11 +30,13 @@ public class InputManager : MonoBehaviour
     public event Action AimCancelled;
     public event Action ToggleInventoryPerformed;
     public event Action ToggleInventoryCreateDestroyPerformed;
+    public event Action TogglePauseGameplayPerformed;
 
     private void Awake()
     {
         _inputActions = new PlayerInputActions();
         IsOpeningInventoryEnabled = true;
+        IsPausingGameplayEnabled = true;
         SwitchToInputActionMap(InputActionMapType.Gameplay);
         SubscribeToInputEvents();
     }
@@ -46,6 +49,8 @@ public class InputManager : MonoBehaviour
         _inputActions.Gameplay.ReleaseImpulse.canceled += OnImpulseReleaseEnded;
         _inputActions.Gameplay.Cancel.started += OnCancelPerformed;
         _inputActions.Gameplay.ToggleInventory.started += OnToggleInventory;
+        _inputActions.Gameplay.PauseGameplay.started += OnTogglePauseGameplay;
+        _inputActions.PausedGamplay.ResumeGameplay.started += OnTogglePauseGameplay;
         _inputActions.Inventory.ToggleInventory.started += OnToggleInventory;
         _inputActions.Inventory.ToggleCreateDestroy.started += OnToggleCreateDestroy;
     }
@@ -73,28 +78,38 @@ public class InputManager : MonoBehaviour
             AimStarted?.Invoke(new Vector2(-1, -1)); //TODO: no magic
         }
         _isAiming = true;
+        SanitizeAimVector();
         AimChanged?.Invoke(_aimVector);
     }
-
 
     private void HandleMouseAiming(InputAction.CallbackContext ctx)
     {
         if (_isAiming)
         {
             var pos = ctx.ReadValue<Vector2>();
-            if (!_initialAimPositionSet)
+            if (!_isInitialMouseAimPositionSet)
             {
-                _initialAimPositionSet = true;
-                _initialAimPosition = pos;
+                _isInitialMouseAimPositionSet = true;
+                _initialMouseAimPosition = pos;
             }
-            _aimVector = _initialAimPosition - pos;
+            _aimVector = _initialMouseAimPosition - pos;
             if (_aimVector.magnitude > _mouseAimRadius)
             {
                 _aimVector = _aimVector.normalized * _mouseAimRadius;
-                Mouse.current.WarpCursorPosition(_initialAimPosition - _aimVector);
+                Mouse.current.WarpCursorPosition(_initialMouseAimPosition - _aimVector);
             }
             _aimVector = _aimVector / _mouseAimRadius;
+            SanitizeAimVector();
             AimChanged?.Invoke(_aimVector);
+        }
+    }
+
+    private void SanitizeAimVector()
+    {
+        if (float.IsNaN(_aimVector.x) || float.IsNaN(_aimVector.y))
+        {
+            Debug.Log("Aim vector was NaN.");
+            _aimVector = new Vector2(0, 0);
         }
     }
 
@@ -104,14 +119,11 @@ public class InputManager : MonoBehaviour
         if (!IsAimingEnabled)
             return;
 
-        if (ctx.control.device is Mouse)
+        _aimVector = Vector2.zero;
+        if (_isAiming)
         {
-            _aimVector = Vector2.zero;
-            if (_isAiming)
-            {
-                AimChanged?.Invoke(_aimVector);
-                _initialAimPositionSet = false;
-            }
+            AimChanged?.Invoke(_aimVector);
+            _isInitialMouseAimPositionSet = false;
         }
     }
 
@@ -121,7 +133,7 @@ public class InputManager : MonoBehaviour
             return;
 
         _isAiming = true;
-        _initialAimPositionSet = false;
+        _isInitialMouseAimPositionSet = false;
         var initialPos = new Vector2(-1, -1);
         if (ctx.control.device is Mouse)
         {
@@ -180,9 +192,26 @@ public class InputManager : MonoBehaviour
      //TODO: refactor
     public void OnGameEnded()
     {
+        IsAimingEnabled = false;
+        IsPausingGameplayEnabled = false;
         IsOpeningInventoryEnabled = false;
+        SwitchToInputActionMap(InputActionMapType.GameOverScreen);
     }
 
+    private void OnTogglePauseGameplay(InputAction.CallbackContext ctx)
+    {
+        if (_currentActionMap != InputActionMapType.Gameplay && _currentActionMap != InputActionMapType.PausedGameplay)
+        {
+            return;
+        }
+        var targetActionMapType = _currentActionMap == InputActionMapType.Gameplay ? InputActionMapType.PausedGameplay : InputActionMapType.Gameplay;
+        if (!IsPausingGameplayEnabled && targetActionMapType == InputActionMapType.PausedGameplay)
+        {
+            return;
+        }
+        SwitchToInputActionMap(targetActionMapType);
+        TogglePauseGameplayPerformed?.Invoke();
+    }
 
     #region Input Action Map
 
@@ -190,6 +219,8 @@ public class InputManager : MonoBehaviour
     {
         _inputActions.Gameplay.Disable();
         _inputActions.Inventory.Disable();
+        _inputActions.PausedGamplay.Disable();
+        _inputActions.GameOverScreen.Disable();
         _inputActions.Menu.Disable();
 
         ActionMapTypeToActionMap(type).Enable();
@@ -204,6 +235,10 @@ public class InputManager : MonoBehaviour
                 return _inputActions.Gameplay;
             case InputActionMapType.Inventory:
                 return _inputActions.Inventory;
+            case InputActionMapType.PausedGameplay:
+                return _inputActions.PausedGamplay;
+            case InputActionMapType.GameOverScreen:
+                return _inputActions.GameOverScreen;
             case InputActionMapType.Menu:
                 return _inputActions.Menu;
             default:

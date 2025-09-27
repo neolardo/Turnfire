@@ -1,9 +1,8 @@
-public enum TurnStateType
+public enum CharacterActionStateType
 {
     ReadyToMove = 0,
     Moving = 1,
     ReadyToFire = 2,
     Firing = 3,
-    Drop = 4,
-    Finished = 5,
+    Finished = 4,
 }

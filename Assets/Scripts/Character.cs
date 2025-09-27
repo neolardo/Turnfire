@@ -30,6 +30,7 @@ public class Character : MonoBehaviour
     }
 
     public event Action<int> HealthChanged;
+    public event Action Died;
 
     private void Awake()
     {
@@ -60,6 +61,7 @@ public class Character : MonoBehaviour
         var spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
         spriteRenderer.color = Color.grey;
         Debug.Log(gameObject.name + " died." );
+        Died?.Invoke();
     }
 
     public void Push(Vector2 impulse)

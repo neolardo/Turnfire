@@ -127,6 +127,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""PauseGameplay"",
+                    ""type"": ""Button"",
+                    ""id"": ""e6f1428b-4dae-4749-bed0-f1546fbb5183"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -217,6 +226,78 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""ToggleInventory"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""447c798c-d119-4817-81a1-bd60da1d5f19"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PauseGameplay"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7532e8c8-f418-4692-8a06-27734169186f"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PauseGameplay"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""PausedGamplay"",
+            ""id"": ""3b7ef6ce-0a87-41f9-8abb-37119eeaf0f5"",
+            ""actions"": [
+                {
+                    ""name"": ""ResumeGameplay"",
+                    ""type"": ""Button"",
+                    ""id"": ""720a28a9-887a-44ba-ac9b-e3686bf7d8b8"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""bb8daa3c-69d0-4d8a-b2c0-bfd5330f3886"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ResumeGameplay"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3dbf4431-557e-45f2-9968-fa0a43971879"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ResumeGameplay"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5b53f911-5da7-424e-817a-00f4dd4d2c58"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ResumeGameplay"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -298,36 +379,31 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""ToggleInventory"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                }
-            ]
-        },
-        {
-            ""name"": ""Menu"",
-            ""id"": ""3a8d766d-1570-4b75-9512-672670087616"",
-            ""actions"": [
-                {
-                    ""name"": ""New action"",
-                    ""type"": ""Button"",
-                    ""id"": ""83ff8881-37d0-4a02-9c91-196da6a46387"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                }
-            ],
-            ""bindings"": [
+                },
                 {
                     ""name"": """",
-                    ""id"": ""560492fe-f006-47b1-a7ef-5ff1637183ae"",
-                    ""path"": """",
+                    ""id"": ""acdead56-e449-49ed-83be-78848a90d827"",
+                    ""path"": ""<Keyboard>/escape"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""New action"",
+                    ""action"": ""ToggleInventory"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""GameOverScreen"",
+            ""id"": ""e615cdc2-29ea-41e8-9a31-235ffc4b8de3"",
+            ""actions"": [],
+            ""bindings"": []
+        },
+        {
+            ""name"": ""Menu"",
+            ""id"": ""3a8d766d-1570-4b75-9512-672670087616"",
+            ""actions"": [],
+            ""bindings"": []
         }
     ],
     ""controlSchemes"": [
@@ -399,19 +475,26 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Gameplay_ReleaseImpulse = m_Gameplay.FindAction("ReleaseImpulse", throwIfNotFound: true);
         m_Gameplay_Cancel = m_Gameplay.FindAction("Cancel", throwIfNotFound: true);
         m_Gameplay_ToggleInventory = m_Gameplay.FindAction("ToggleInventory", throwIfNotFound: true);
+        m_Gameplay_PauseGameplay = m_Gameplay.FindAction("PauseGameplay", throwIfNotFound: true);
+        // PausedGamplay
+        m_PausedGamplay = asset.FindActionMap("PausedGamplay", throwIfNotFound: true);
+        m_PausedGamplay_ResumeGameplay = m_PausedGamplay.FindAction("ResumeGameplay", throwIfNotFound: true);
         // Inventory
         m_Inventory = asset.FindActionMap("Inventory", throwIfNotFound: true);
         m_Inventory_ToggleCreateDestroy = m_Inventory.FindAction("ToggleCreateDestroy", throwIfNotFound: true);
         m_Inventory_ToggleInventory = m_Inventory.FindAction("ToggleInventory", throwIfNotFound: true);
+        // GameOverScreen
+        m_GameOverScreen = asset.FindActionMap("GameOverScreen", throwIfNotFound: true);
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
-        m_Menu_Newaction = m_Menu.FindAction("New action", throwIfNotFound: true);
     }
 
     ~@PlayerInputActions()
     {
         UnityEngine.Debug.Assert(!m_Gameplay.enabled, "This will cause a leak and performance issues, PlayerInputActions.Gameplay.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_PausedGamplay.enabled, "This will cause a leak and performance issues, PlayerInputActions.PausedGamplay.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_Inventory.enabled, "This will cause a leak and performance issues, PlayerInputActions.Inventory.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_GameOverScreen.enabled, "This will cause a leak and performance issues, PlayerInputActions.GameOverScreen.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_Menu.enabled, "This will cause a leak and performance issues, PlayerInputActions.Menu.Disable() has not been called.");
     }
 
@@ -492,6 +575,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_ReleaseImpulse;
     private readonly InputAction m_Gameplay_Cancel;
     private readonly InputAction m_Gameplay_ToggleInventory;
+    private readonly InputAction m_Gameplay_PauseGameplay;
     /// <summary>
     /// Provides access to input actions defined in input action map "Gameplay".
     /// </summary>
@@ -519,6 +603,10 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Gameplay/ToggleInventory".
         /// </summary>
         public InputAction @ToggleInventory => m_Wrapper.m_Gameplay_ToggleInventory;
+        /// <summary>
+        /// Provides access to the underlying input action "Gameplay/PauseGameplay".
+        /// </summary>
+        public InputAction @PauseGameplay => m_Wrapper.m_Gameplay_PauseGameplay;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -557,6 +645,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @ToggleInventory.started += instance.OnToggleInventory;
             @ToggleInventory.performed += instance.OnToggleInventory;
             @ToggleInventory.canceled += instance.OnToggleInventory;
+            @PauseGameplay.started += instance.OnPauseGameplay;
+            @PauseGameplay.performed += instance.OnPauseGameplay;
+            @PauseGameplay.canceled += instance.OnPauseGameplay;
         }
 
         /// <summary>
@@ -580,6 +671,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @ToggleInventory.started -= instance.OnToggleInventory;
             @ToggleInventory.performed -= instance.OnToggleInventory;
             @ToggleInventory.canceled -= instance.OnToggleInventory;
+            @PauseGameplay.started -= instance.OnPauseGameplay;
+            @PauseGameplay.performed -= instance.OnPauseGameplay;
+            @PauseGameplay.canceled -= instance.OnPauseGameplay;
         }
 
         /// <summary>
@@ -613,6 +707,102 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     /// Provides a new <see cref="GameplayActions" /> instance referencing this action map.
     /// </summary>
     public GameplayActions @Gameplay => new GameplayActions(this);
+
+    // PausedGamplay
+    private readonly InputActionMap m_PausedGamplay;
+    private List<IPausedGamplayActions> m_PausedGamplayActionsCallbackInterfaces = new List<IPausedGamplayActions>();
+    private readonly InputAction m_PausedGamplay_ResumeGameplay;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "PausedGamplay".
+    /// </summary>
+    public struct PausedGamplayActions
+    {
+        private @PlayerInputActions m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public PausedGamplayActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "PausedGamplay/ResumeGameplay".
+        /// </summary>
+        public InputAction @ResumeGameplay => m_Wrapper.m_PausedGamplay_ResumeGameplay;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_PausedGamplay; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="PausedGamplayActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(PausedGamplayActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="PausedGamplayActions" />
+        public void AddCallbacks(IPausedGamplayActions instance)
+        {
+            if (instance == null || m_Wrapper.m_PausedGamplayActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_PausedGamplayActionsCallbackInterfaces.Add(instance);
+            @ResumeGameplay.started += instance.OnResumeGameplay;
+            @ResumeGameplay.performed += instance.OnResumeGameplay;
+            @ResumeGameplay.canceled += instance.OnResumeGameplay;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="PausedGamplayActions" />
+        private void UnregisterCallbacks(IPausedGamplayActions instance)
+        {
+            @ResumeGameplay.started -= instance.OnResumeGameplay;
+            @ResumeGameplay.performed -= instance.OnResumeGameplay;
+            @ResumeGameplay.canceled -= instance.OnResumeGameplay;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="PausedGamplayActions.UnregisterCallbacks(IPausedGamplayActions)" />.
+        /// </summary>
+        /// <seealso cref="PausedGamplayActions.UnregisterCallbacks(IPausedGamplayActions)" />
+        public void RemoveCallbacks(IPausedGamplayActions instance)
+        {
+            if (m_Wrapper.m_PausedGamplayActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="PausedGamplayActions.AddCallbacks(IPausedGamplayActions)" />
+        /// <seealso cref="PausedGamplayActions.RemoveCallbacks(IPausedGamplayActions)" />
+        /// <seealso cref="PausedGamplayActions.UnregisterCallbacks(IPausedGamplayActions)" />
+        public void SetCallbacks(IPausedGamplayActions instance)
+        {
+            foreach (var item in m_Wrapper.m_PausedGamplayActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_PausedGamplayActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="PausedGamplayActions" /> instance referencing this action map.
+    /// </summary>
+    public PausedGamplayActions @PausedGamplay => new PausedGamplayActions(this);
 
     // Inventory
     private readonly InputActionMap m_Inventory;
@@ -721,10 +911,94 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     /// </summary>
     public InventoryActions @Inventory => new InventoryActions(this);
 
+    // GameOverScreen
+    private readonly InputActionMap m_GameOverScreen;
+    private List<IGameOverScreenActions> m_GameOverScreenActionsCallbackInterfaces = new List<IGameOverScreenActions>();
+    /// <summary>
+    /// Provides access to input actions defined in input action map "GameOverScreen".
+    /// </summary>
+    public struct GameOverScreenActions
+    {
+        private @PlayerInputActions m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public GameOverScreenActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_GameOverScreen; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="GameOverScreenActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(GameOverScreenActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="GameOverScreenActions" />
+        public void AddCallbacks(IGameOverScreenActions instance)
+        {
+            if (instance == null || m_Wrapper.m_GameOverScreenActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_GameOverScreenActionsCallbackInterfaces.Add(instance);
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="GameOverScreenActions" />
+        private void UnregisterCallbacks(IGameOverScreenActions instance)
+        {
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="GameOverScreenActions.UnregisterCallbacks(IGameOverScreenActions)" />.
+        /// </summary>
+        /// <seealso cref="GameOverScreenActions.UnregisterCallbacks(IGameOverScreenActions)" />
+        public void RemoveCallbacks(IGameOverScreenActions instance)
+        {
+            if (m_Wrapper.m_GameOverScreenActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="GameOverScreenActions.AddCallbacks(IGameOverScreenActions)" />
+        /// <seealso cref="GameOverScreenActions.RemoveCallbacks(IGameOverScreenActions)" />
+        /// <seealso cref="GameOverScreenActions.UnregisterCallbacks(IGameOverScreenActions)" />
+        public void SetCallbacks(IGameOverScreenActions instance)
+        {
+            foreach (var item in m_Wrapper.m_GameOverScreenActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_GameOverScreenActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="GameOverScreenActions" /> instance referencing this action map.
+    /// </summary>
+    public GameOverScreenActions @GameOverScreen => new GameOverScreenActions(this);
+
     // Menu
     private readonly InputActionMap m_Menu;
     private List<IMenuActions> m_MenuActionsCallbackInterfaces = new List<IMenuActions>();
-    private readonly InputAction m_Menu_Newaction;
     /// <summary>
     /// Provides access to input actions defined in input action map "Menu".
     /// </summary>
@@ -736,10 +1010,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// Construct a new instance of the input action map wrapper class.
         /// </summary>
         public MenuActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
-        /// <summary>
-        /// Provides access to the underlying input action "Menu/Newaction".
-        /// </summary>
-        public InputAction @Newaction => m_Wrapper.m_Menu_Newaction;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -766,9 +1036,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_MenuActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_MenuActionsCallbackInterfaces.Add(instance);
-            @Newaction.started += instance.OnNewaction;
-            @Newaction.performed += instance.OnNewaction;
-            @Newaction.canceled += instance.OnNewaction;
         }
 
         /// <summary>
@@ -780,9 +1047,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="MenuActions" />
         private void UnregisterCallbacks(IMenuActions instance)
         {
-            @Newaction.started -= instance.OnNewaction;
-            @Newaction.performed -= instance.OnNewaction;
-            @Newaction.canceled -= instance.OnNewaction;
         }
 
         /// <summary>
@@ -916,6 +1180,28 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnToggleInventory(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "PauseGameplay" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnPauseGameplay(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "PausedGamplay" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="PausedGamplayActions.AddCallbacks(IPausedGamplayActions)" />
+    /// <seealso cref="PausedGamplayActions.RemoveCallbacks(IPausedGamplayActions)" />
+    public interface IPausedGamplayActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "ResumeGameplay" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnResumeGameplay(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Inventory" which allows adding and removing callbacks.
@@ -940,18 +1226,19 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnToggleInventory(InputAction.CallbackContext context);
     }
     /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "GameOverScreen" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="GameOverScreenActions.AddCallbacks(IGameOverScreenActions)" />
+    /// <seealso cref="GameOverScreenActions.RemoveCallbacks(IGameOverScreenActions)" />
+    public interface IGameOverScreenActions
+    {
+    }
+    /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Menu" which allows adding and removing callbacks.
     /// </summary>
     /// <seealso cref="MenuActions.AddCallbacks(IMenuActions)" />
     /// <seealso cref="MenuActions.RemoveCallbacks(IMenuActions)" />
     public interface IMenuActions
     {
-        /// <summary>
-        /// Method invoked when associated input action "New action" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnNewaction(InputAction.CallbackContext context);
     }
 }

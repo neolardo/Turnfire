@@ -1,13 +1,13 @@
 using System.Collections;
 using UnityEngine;
 
-public class FiringTurnState : TurnState
+public class FiringCharacterActionState : CharacterActionState
 {
-    public FiringTurnState(MonoBehaviour manager) : base(manager)
+    public FiringCharacterActionState(MonoBehaviour manager) : base(manager)
     {
     }
 
-    public override TurnStateType State => TurnStateType.Firing;
+    public override CharacterActionStateType State => CharacterActionStateType.Firing;
 
     public override void StartState(Character currentCharacter)
     {

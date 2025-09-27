@@ -1,12 +1,12 @@
 using UnityEngine;
 
-public class ReadyToMoveTurnState : TurnState
+public class ReadyToMoveCharacterActionState : CharacterActionState
 {
-    public override TurnStateType State => TurnStateType.ReadyToMove;
+    public override CharacterActionStateType State => CharacterActionStateType.ReadyToMove;
     private TrajectoryRenderer _trajectoryRenderer;
     private InputManager _inputManager;
 
-    public ReadyToMoveTurnState(TrajectoryRenderer trajectoryRenderer, InputManager inputManager, MonoBehaviour manager) : base(manager)
+    public ReadyToMoveCharacterActionState(TrajectoryRenderer trajectoryRenderer, InputManager inputManager, MonoBehaviour manager) : base(manager)
     {
         _trajectoryRenderer = trajectoryRenderer;
         _inputManager = inputManager;

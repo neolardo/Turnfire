@@ -5,14 +5,17 @@ public class UIManager : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _gameOverText;
     [SerializeField] private GameObject _gameOverScreen;
+    [SerializeField] private GameObject _gameplayPausedScreen;
     [SerializeField] private GameObject _inventoryPanel;
 
     private void Awake()
     {
-        var gameRoundManager = FindFirstObjectByType<GameRoundManager>();
-        gameRoundManager.GameEnded += OnGameOver;
+        var turnManager = FindFirstObjectByType<TurnManager>();
+        turnManager.GameEnded += OnGameOver;
+        var gameStateManager = FindFirstObjectByType<GameStateManager>();
+        gameStateManager.StateChanged += OnGameStateChanged;
         var inputManager = FindFirstObjectByType<InputManager>();
-        inputManager.ToggleInventoryPerformed += ToggleInventory;
+        inputManager.ToggleInventoryPerformed += ToggleInventory;//TODO: refactor?
     }
 
     private void ToggleInventory()
@@ -20,6 +23,15 @@ public class UIManager : MonoBehaviour
         _inventoryPanel.SetActive(!_inventoryPanel.activeSelf);
     }
 
+    private void OnGameStateChanged(GameStateType gameState)
+    {
+        ShowHidePauseGameplayScreen(gameState == GameStateType.Paused);
+    }
+
+    private void ShowHidePauseGameplayScreen(bool show)
+    {
+        _gameplayPausedScreen.SetActive(show);
+    }
 
     public void OnGameOver(Team winnerTeam)
     {

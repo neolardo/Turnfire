@@ -8,9 +8,10 @@ public class FinishedTurnState : TurnState
 
     public override TurnStateType State => TurnStateType.Finished;
 
-    public override void StartState(Character currentCharacter)
+    public override void StartState()
     {
-        base.StartState(currentCharacter);
+        base.StartState();
         EndState();
     }
+
 }

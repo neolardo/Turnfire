@@ -48,14 +48,15 @@ public class DropZone : MonoBehaviour
 
     private IEnumerator WaitUntilAllDropsLanded()
     {
-        while(_currentDrops.Any(d => d.isActiveAndEnabled && d.IsMoving))
+        yield return new WaitForFixedUpdate();
+        yield return new WaitForFixedUpdate(); //waiting for gravity to be applied
+
+        while (_currentDrops.Any(d => d.isActiveAndEnabled && d.IsMoving))
         {
             yield return null;
         }
         AllDropsLanded?.Invoke();
     }
-
-
     private Vector2 GetRandomPointInZone()
     {
         Vector2 center = (Vector2)transform.position + _zone.offset;
