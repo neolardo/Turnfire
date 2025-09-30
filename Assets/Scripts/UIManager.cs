@@ -7,6 +7,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject _gameOverScreen;
     [SerializeField] private GameObject _gameplayPausedScreen;
     [SerializeField] private GameObject _inventoryPanel;
+    [SerializeField] private InventoryUI _inventoryUI;
 
     private void Awake()
     {
@@ -32,6 +33,12 @@ public class UIManager : MonoBehaviour
     {
         _gameplayPausedScreen.SetActive(show);
     }
+
+    public void LoadCharacterData(Character character)
+    {
+        _inventoryUI.LoadCharacterData(character);
+    }
+
 
     public void OnGameOver(Team winnerTeam)
     {

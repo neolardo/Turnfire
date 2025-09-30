@@ -35,7 +35,6 @@ public class InputManager : MonoBehaviour
     private void Awake()
     {
         _inputActions = new PlayerInputActions();
-        IsOpeningInventoryEnabled = true;
         IsPausingGameplayEnabled = true;
         SwitchToInputActionMap(InputActionMapType.Gameplay);
         SubscribeToInputEvents();
@@ -166,6 +165,11 @@ public class InputManager : MonoBehaviour
 
     private void OnCancelPerformed(InputAction.CallbackContext ctx)
     {
+        CancelAiming();
+    }
+
+    private void CancelAiming()
+    {
         if (_isAiming)
         {
             _isAiming = false;
@@ -181,8 +185,17 @@ public class InputManager : MonoBehaviour
         {
             return;
         }
+        CancelAiming();
         SwitchToInputActionMap(targetActionMapType);
         ToggleInventoryPerformed?.Invoke();
+    }
+
+    private void ForceCloseInventory()
+    {
+        if (_currentActionMap == InputActionMapType.Inventory)
+        {
+            ToggleInventoryPerformed?.Invoke();
+        }
     }
 
     private void OnToggleCreateDestroy(InputAction.CallbackContext ctx)
@@ -195,6 +208,7 @@ public class InputManager : MonoBehaviour
         IsAimingEnabled = false;
         IsPausingGameplayEnabled = false;
         IsOpeningInventoryEnabled = false;
+        ForceCloseInventory();
         SwitchToInputActionMap(InputActionMapType.GameOverScreen);
     }
 

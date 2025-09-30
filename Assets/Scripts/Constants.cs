@@ -22,7 +22,7 @@ public static class Constants
     //tags 
     public const string CharacterTag = "Character";
     public const string ProjectileTag = "Projectile";
-    public const string ItemTag = "Item";
+    public const string PackageTag = "Package";
     public const string GroundTag = "Ground";
     public const string DeadZoneTag = "DeadZone";
 

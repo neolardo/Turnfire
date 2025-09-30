@@ -12,5 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a108a0a0a6487fa41bf347169d0fa29d, type: 3}
   m_Name: Gun
   m_EditorClassIdentifier: 
-  FireStrength: 10
+  Sprite: {fileID: 0}
+  Name: Gun
+  Description: Fires a projectile
+  FireStrength:
+    _min: 6
+    _max: 8
   NumProjectiles: 1

@@ -8,13 +8,15 @@ public class CharacterActionManager
     private int _characterActionIndex;
     private Character _character;
     private CameraController _cameraController;
+    private UIManager _uiManager;
     private CharacterActionState CurrentCharacterActionState => _characterActionStates[_characterActionIndex];
 
     public event Action CharacterActionsFinished;
 
-    public CharacterActionManager(MonoBehaviour coroutineManager, TrajectoryRenderer trajectoryRenderer, InputManager inputManager, CameraController cameraController)
+    public CharacterActionManager(MonoBehaviour coroutineManager, TrajectoryRenderer trajectoryRenderer, InputManager inputManager, CameraController cameraController, UIManager uiManager)
     {
         _cameraController = cameraController;
+        _uiManager = uiManager;
         _characterActionStates = new List<CharacterActionState>
         {
             new ReadyToMoveCharacterActionState(trajectoryRenderer, inputManager, coroutineManager),
@@ -34,6 +36,7 @@ public class CharacterActionManager
     {
         _character = character;
         _cameraController.SetCharacterTarget(_character); //TODO?
+        _uiManager.LoadCharacterData(_character); //TODO?
         _characterActionIndex = 0;
         StartCurrentCharacterActionState();
     }

@@ -13,19 +13,19 @@ public class DropItemsAndEffectsTurnState : TurnState
     protected override void SubscribeToEvents()
     {
         base.SubscribeToEvents();
-        _dropZone.AllDropsLanded += EndState;
+        _dropZone.AllPackagesLanded += EndState;
     }
 
     protected override void UnsubscribeFromEvents()
     {
         base.UnsubscribeFromEvents();
-        _dropZone.AllDropsLanded -= EndState;
+        _dropZone.AllPackagesLanded -= EndState;
     }
 
     public override void StartState()
     {
         base.StartState();
-        _dropZone.SpawnDrops();
+        _dropZone.SpawnPackages();
     }
 
 }

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Linq;
 using UnityEngine;
 
-public class Weapon : MonoBehaviour
+public class Weapon : Item
 {
     public Projectile Projectile;
     public WeaponData WeaponData;
@@ -19,7 +19,7 @@ public class Weapon : MonoBehaviour
     {
         _isFiring = true;
         Projectile.gameObject.transform.position = (Vector2)transform.position + aimDirection.normalized * Constants.ProjectileOffset;
-        Projectile.Fire(aimDirection * WeaponData.FireStrength);
+        Projectile.Fire(aimDirection * WeaponData.FireStrength.RandomValue);
     }
 
     private void OnExploded()

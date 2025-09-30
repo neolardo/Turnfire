@@ -55,20 +55,23 @@ public class Projectile : MonoBehaviour
     {
         ExplodedCharacters.Clear();
         var mask = (LayerMask) (1 << Constants.CharacterLayer) | (1 << Constants.GroundLayer);
-        Collider2D[] hits = Physics2D.OverlapCircleAll((Vector2)transform.position, ExplosionData.ExplosionRadius, mask);
-        DrawDebugCircle(transform.position, ExplosionData.ExplosionRadius, 12, Color.green);
+        var explosionRadius = ExplosionData.ExplosionRadius.RandomValue;
+        var explosionStrength = ExplosionData.ExplosionStrength.RandomValue;
+        var explosionDamage = ExplosionData.Damage.RandomValue;
+        Collider2D[] hits = Physics2D.OverlapCircleAll((Vector2)transform.position, explosionRadius, mask);
+        DrawDebugCircle(transform.position, explosionRadius, 12, Color.green);
         foreach (var hit in hits)
         {
             if (hit.TryGetComponent(out Character character))
             {
-                var pushVector = (character.transform.position - transform.position) / ExplosionData.ExplosionRadius;
-                character.Damage(ExplosionData.Damage);
-                character.Push(pushVector * ExplosionData.ExplosionStrength);
+                var pushVector = (character.transform.position - transform.position) / explosionRadius;
+                character.Damage(explosionDamage);
+                character.Push(pushVector * explosionStrength);
                 ExplodedCharacters.Add(character);
             }
             else if (hit.TryGetComponent(out DestructibleTerrain destTerrain))
             {
-                destTerrain.ApplyExplosion(transform.position, ExplosionData.ExplosionRadius);
+                destTerrain.ApplyExplosion(transform.position, explosionRadius);
             }
         }
         gameObject.SetActive(false);

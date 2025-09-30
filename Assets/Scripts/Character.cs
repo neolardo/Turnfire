@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -7,7 +9,7 @@ public class Character : MonoBehaviour
     [HideInInspector] public bool IsAlive => _health > 0;
     [HideInInspector] public bool IsMoving => _rb.linearVelocity.magnitude > Mathf.Epsilon;
     [HideInInspector] public bool IsFiring => _weapon.IsFiring;
-    [HideInInspector] public float FireStrength => _weapon.WeaponData.FireStrength;
+    [HideInInspector] public float FireStrength => _weapon.WeaponData.FireStrength.RandomValue;
     [SerializeField] private Weapon _weapon;
     [SerializeField] private Healthbar _healthbar; //TODO
     public CharacterData CharacterData;
@@ -29,22 +31,27 @@ public class Character : MonoBehaviour
         }
     }
 
+     private List<Item> _items; //TODO?
+
     public event Action<int> HealthChanged;
     public event Action Died;
 
     private void Awake()
     {
         Health = CharacterData.MaxHealth;
+        _items = new List<Item>();
         _rb = GetComponent<Rigidbody2D>();
         _healthbar.Follow(transform);
         _healthbar.SetMaxHealth(Health);
         HealthChanged += _healthbar.SetCurrentHeath; //TODO
     }
 
+    #region Health
+
     public void Damage(int value)
     {
         Health = Mathf.Max(0, Health - value);
-        if(!IsAlive)
+        if (!IsAlive)
         {
             Die();
         }
@@ -60,9 +67,14 @@ public class Character : MonoBehaviour
         //TODO
         var spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
         spriteRenderer.color = Color.grey;
-        Debug.Log(gameObject.name + " died." );
+        Debug.Log(gameObject.name + " died.");
         Died?.Invoke();
     }
+
+
+    #endregion
+
+    #region Movement
 
     public void Push(Vector2 impulse)
     {
@@ -78,4 +90,29 @@ public class Character : MonoBehaviour
     {
         _weapon.Fire(aimDirection);
     }
+
+    #endregion
+
+    #region Items
+
+    public bool TryAddItem(Item item)
+    {
+        if (_items.Any(i => i.IsSameType(item)))
+        {
+            return false;
+        }
+        else
+        {
+            _items.Add(item);
+            return true;
+        }
+    }
+
+    public IEnumerable<Item> GetAllItems()
+    {
+        return _items;
+    } 
+
+    #endregion
+
 }

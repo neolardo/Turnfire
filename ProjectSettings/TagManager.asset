@@ -6,9 +6,10 @@ TagManager:
   tags:
   - Character
   - Projectile
-  - Item
   - Ground
   - DeadZone
+  - Package
+  - Trigger
   layers:
   - Default
   - TransparentFX
@@ -17,10 +18,10 @@ TagManager:
   - Water
   - UI
   - Projectile
-  - Item
+  - Package
   - Ground
   - DeadZone
-  - 
+  - Trigger
   - 
   - 
   - 

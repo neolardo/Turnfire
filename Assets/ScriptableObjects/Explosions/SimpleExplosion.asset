@@ -12,6 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 986608c344235ee4aaee5b43192002d9, type: 3}
   m_Name: SimpleExplosion
   m_EditorClassIdentifier: 
-  Damage: 4
-  ExplosionStrength: 5
-  ExplosionRadius: 2
+  Damage:
+    _min: 3
+    _max: 5
+  ExplosionStrength:
+    _min: 1
+    _max: 2
+  ExplosionRadius:
+    _min: 1
+    _max: 1

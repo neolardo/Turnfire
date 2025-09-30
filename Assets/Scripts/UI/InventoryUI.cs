@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,7 +18,11 @@ public class InventoryUI : MonoBehaviour
     [SerializeField] private SliderWithTextUI _slider2;
     [SerializeField] private SliderWithTextUI _slider3;
 
+    [Header("Item Slots")]
+    [SerializeField] private List<InventoryItemSlotUI> itemSlots;
+
     private bool _isDestroyItemTypeToggleActive;
+    private Character _currentCharacter;
 
     private void Awake()
     {
@@ -25,20 +31,59 @@ public class InventoryUI : MonoBehaviour
         _isDestroyItemTypeToggleActive = true;
         _createToggle.isOn = !_isDestroyItemTypeToggleActive;
         _destroyToggle.isOn = _isDestroyItemTypeToggleActive;
+
+        foreach (var slot in itemSlots)
+        {
+            slot.Selected += OnItemSelected;
+        }
     }
 
-    public void ShowItemInfo(string title, string description, float damage, float distance, float explosion)
+    public void LoadItemInfo(ItemData itemData)
     {
-        _titleText.text = title;
-        _descriptionText.text = description;
+        _titleText.text = itemData.Name;
+        _descriptionText.text = itemData.Description;
 
-        _slider1.SetSliderValue(damage); //TODO
-        _slider1.SetText("Damage");
-        _slider1.SetSliderValue(distance);
-        _slider1.SetText("Distance");
-        _slider1.SetSliderValue(explosion);
-        _slider1.SetText("Explosion");
+        if (itemData is WeaponData weaponData)
+        {
+            _slider1.SetSliderValue(weaponData.FireStrength.Avarage); //TODO
+            _slider1.SetText("Fire Strength");
+            //TODO
+        }
+        else if (itemData is ModifierData modifierData)
+        {
+            //TODO
+        }
     }
+
+    public void OnItemSelected(ItemData itemData)
+    {
+        LoadItemInfo(itemData);
+    }
+
+    public void LoadCharacterData(Character c)
+    {
+        _currentCharacter = c;
+    }
+
+    private void OnEnable()
+    {
+        RefreshInventory();
+    }
+
+    private void RefreshInventory()
+    {
+        //TODO
+        foreach (var itemSlot in itemSlots)
+        {
+            itemSlot.UnloadItemData();
+        }
+        var items = _currentCharacter.GetAllItems().ToList();
+        for (int i = 0; i < items.Count; i++)
+        {
+            itemSlots[i].LoadItemData(items[i].ItemData); //TODO
+        }
+    }
+
 
     public void ToggleItemType()
     {

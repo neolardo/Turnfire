@@ -1,62 +1,70 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider2D))]
 public class DropZone : MonoBehaviour
 {
     [Header("Drop Settings")]
-    [SerializeField] private List<Droppable> _possibleDrops;
+    [SerializeField] private List<Collectible> _possibleCollectibles;
+    [SerializeField] private Package _packagePrefab;
     [SerializeField] private int _minDrops = 1;
     [SerializeField] private int _maxDrops = 3;
 
     private BoxCollider2D _zone;
+    private List<Package> _currentPackages;
+    private CameraController _cameraController;
 
-    public event Action AllDropsLanded;
-    private List<Droppable> _currentDrops;
+    public event Action AllPackagesLanded;
 
     private void Awake()
     {
-        _currentDrops = new List<Droppable>();
+        _currentPackages = new List<Package>();
         _zone = GetComponent<BoxCollider2D>();
-        if (_possibleDrops == null || _possibleDrops.Count == 0)
+        _cameraController = FindFirstObjectByType<CameraController>();
+        if (_possibleCollectibles == null || _possibleCollectibles.Count == 0)
         {
-            Debug.LogWarning("No drops are possible.");
+            Debug.LogWarning("No packages available to drop.");
         }
     }
 
-    public void SpawnDrops()
+    public void SpawnPackages()
     {
-        if (_possibleDrops == null || _possibleDrops.Count == 0)
+        if (_possibleCollectibles == null || _possibleCollectibles.Count == 0)
             return;
 
-        int count = UnityEngine.Random.Range(_minDrops, _maxDrops + 1);
+        StartCoroutine(SpawnPackagesOneByOneAndWaitForAllOfThemToLand());
+   }
 
-        for (int i = 0; i < count; i++)
+    private IEnumerator SpawnPackagesOneByOneAndWaitForAllOfThemToLand()
+    {
+        int numDrops = UnityEngine.Random.Range(_minDrops, _maxDrops + 1);
+        for (int i = 0; i < numDrops; i++)
         {
             Vector2 spawnPos = GetRandomPointInZone();
-            var prefab = _possibleDrops[UnityEngine.Random.Range(0, _possibleDrops.Count)];
-            var drop = Instantiate(prefab, spawnPos, Quaternion.identity);
-            drop.gameObject.SetActive(true);
-            _currentDrops.Add(drop);
+            var collectible = _possibleCollectibles[UnityEngine.Random.Range(0, _possibleCollectibles.Count)];
+            var package = Instantiate(_packagePrefab, spawnPos, Quaternion.identity);
+            package.SetCollectible(collectible);
+            package.gameObject.SetActive(true);
+            _currentPackages.Add(package);
+            yield return WaitForPackageToLand(package);
         }
 
-        StartCoroutine(WaitUntilAllDropsLanded());
+        AllPackagesLanded?.Invoke();
     }
 
-    private IEnumerator WaitUntilAllDropsLanded()
+    private IEnumerator WaitForPackageToLand(Package package)
     {
+        _cameraController.SetPackageTarget(package);
         yield return new WaitForFixedUpdate();
-        yield return new WaitForFixedUpdate(); //waiting for gravity to be applied
-
-        while (_currentDrops.Any(d => d.isActiveAndEnabled && d.IsMoving))
+        yield return new WaitForFixedUpdate(); // wait for gravity to be applied
+        while (package != null && package.gameObject.activeInHierarchy && package.IsMoving)
         {
             yield return null;
         }
-        AllDropsLanded?.Invoke();
     }
+
     private Vector2 GetRandomPointInZone()
     {
         Vector2 center = (Vector2)transform.position + _zone.offset;

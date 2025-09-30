@@ -25,6 +25,7 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
     {
         base.StartState(currentCharacter);
         _inputManager.IsAimingEnabled = true;
+        _inputManager.IsOpeningInventoryEnabled = true;
         _trajectoryRenderer.SetStartTransform(currentCharacter.transform);
         _trajectoryRenderer.SetTrajectoryMultipler(currentCharacter.CharacterData.JumpStrength);
     }
@@ -42,5 +43,6 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
     {
         base.EndState();
         _inputManager.IsAimingEnabled = false;
+        _inputManager.IsOpeningInventoryEnabled = false;
     }
 }

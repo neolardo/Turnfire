@@ -24,6 +24,7 @@ public class ReadyToFireCharacterActionState : CharacterActionState
     {
         base.StartState(currentCharacter);
         _inputManager.IsAimingEnabled = true;
+        _inputManager.IsOpeningInventoryEnabled = true;
         _trajectoryRenderer.SetTrajectoryMultipler(currentCharacter.FireStrength);
     }
 
@@ -31,6 +32,7 @@ public class ReadyToFireCharacterActionState : CharacterActionState
     {
         base.EndState();
         _inputManager.IsAimingEnabled = false;
+        _inputManager.IsOpeningInventoryEnabled = false;
     }
 
     private void OnImpulseReleased(Vector2 aimDirection)
