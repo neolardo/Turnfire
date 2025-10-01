@@ -322,6 +322,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SelectInventorySlot"",
+                    ""type"": ""Button"",
+                    ""id"": ""4f4bd84e-d48f-4261-99eb-4747fc915aa4"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -388,6 +397,28 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""ToggleInventory"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""89d5eba9-2cb8-4cf9-aa44-e26cb391ba6f"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectInventorySlot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""63dd6f2c-2c6a-4c6b-996e-f26cf5dfd70e"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectInventorySlot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -483,6 +514,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Inventory = asset.FindActionMap("Inventory", throwIfNotFound: true);
         m_Inventory_ToggleCreateDestroy = m_Inventory.FindAction("ToggleCreateDestroy", throwIfNotFound: true);
         m_Inventory_ToggleInventory = m_Inventory.FindAction("ToggleInventory", throwIfNotFound: true);
+        m_Inventory_SelectInventorySlot = m_Inventory.FindAction("SelectInventorySlot", throwIfNotFound: true);
         // GameOverScreen
         m_GameOverScreen = asset.FindActionMap("GameOverScreen", throwIfNotFound: true);
         // Menu
@@ -809,6 +841,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private List<IInventoryActions> m_InventoryActionsCallbackInterfaces = new List<IInventoryActions>();
     private readonly InputAction m_Inventory_ToggleCreateDestroy;
     private readonly InputAction m_Inventory_ToggleInventory;
+    private readonly InputAction m_Inventory_SelectInventorySlot;
     /// <summary>
     /// Provides access to input actions defined in input action map "Inventory".
     /// </summary>
@@ -828,6 +861,10 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Inventory/ToggleInventory".
         /// </summary>
         public InputAction @ToggleInventory => m_Wrapper.m_Inventory_ToggleInventory;
+        /// <summary>
+        /// Provides access to the underlying input action "Inventory/SelectInventorySlot".
+        /// </summary>
+        public InputAction @SelectInventorySlot => m_Wrapper.m_Inventory_SelectInventorySlot;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -860,6 +897,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @ToggleInventory.started += instance.OnToggleInventory;
             @ToggleInventory.performed += instance.OnToggleInventory;
             @ToggleInventory.canceled += instance.OnToggleInventory;
+            @SelectInventorySlot.started += instance.OnSelectInventorySlot;
+            @SelectInventorySlot.performed += instance.OnSelectInventorySlot;
+            @SelectInventorySlot.canceled += instance.OnSelectInventorySlot;
         }
 
         /// <summary>
@@ -877,6 +917,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @ToggleInventory.started -= instance.OnToggleInventory;
             @ToggleInventory.performed -= instance.OnToggleInventory;
             @ToggleInventory.canceled -= instance.OnToggleInventory;
+            @SelectInventorySlot.started -= instance.OnSelectInventorySlot;
+            @SelectInventorySlot.performed -= instance.OnSelectInventorySlot;
+            @SelectInventorySlot.canceled -= instance.OnSelectInventorySlot;
         }
 
         /// <summary>
@@ -1224,6 +1267,13 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnToggleInventory(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SelectInventorySlot" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSelectInventorySlot(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "GameOverScreen" which allows adding and removing callbacks.

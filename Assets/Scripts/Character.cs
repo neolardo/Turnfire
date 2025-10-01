@@ -31,7 +31,8 @@ public class Character : MonoBehaviour
         }
     }
 
-     private List<Item> _items; //TODO?
+    private List<Item> _items; //TODO?
+    private Item _selectedItem;
 
     public event Action<int> HealthChanged;
     public event Action Died;
@@ -111,7 +112,17 @@ public class Character : MonoBehaviour
     public IEnumerable<Item> GetAllItems()
     {
         return _items;
-    } 
+    }
+
+    public void SelectItem(Item item)
+    {
+        _selectedItem = item;
+    }
+
+    public Item GetSelectedItem()
+    {
+        return _selectedItem;
+    }    
 
     #endregion
 

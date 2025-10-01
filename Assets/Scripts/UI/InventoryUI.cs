@@ -1,3 +1,4 @@
+using NUnit.Framework.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -19,24 +20,32 @@ public class InventoryUI : MonoBehaviour
     [SerializeField] private SliderWithTextUI _slider3;
 
     [Header("Item Slots")]
-    [SerializeField] private List<InventoryItemSlotUI> itemSlots;
+    [SerializeField] private List<InventoryItemSlotUI> _itemSlots;
+    [SerializeField] private RectTransform _selectionFrame;
+    [SerializeField] private RectTransform _previewFrame;
 
     private bool _isDestroyItemTypeToggleActive;
     private Character _currentCharacter;
+    private InventoryItemSlotUI _previewedSlot;
+    private InventoryItemSlotUI _selectedSlot;
 
     private void Awake()
     {
         var inputManager = FindFirstObjectByType<InputManager>();
         inputManager.ToggleInventoryCreateDestroyPerformed += ToggleItemType;
+        inputManager.SelectInventorySlotPerformed += SelectPreviewedItem;
         _isDestroyItemTypeToggleActive = true;
         _createToggle.isOn = !_isDestroyItemTypeToggleActive;
         _destroyToggle.isOn = _isDestroyItemTypeToggleActive;
 
-        foreach (var slot in itemSlots)
+        foreach (var slot in _itemSlots)
         {
-            slot.Selected += OnItemSelected;
+            slot.Hovered += PreviewSlot;
+            slot.UnHovered += UnPreviewSlot;
         }
     }
+
+    #region Select and Preview
 
     public void LoadItemInfo(ItemData itemData)
     {
@@ -55,11 +64,66 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
-    public void OnItemSelected(ItemData itemData)
+    public void SelectPreviewedItem()
     {
-        LoadItemInfo(itemData);
+        if (_previewedSlot != null && _previewedSlot.Item != null)
+        {
+            MoveSelectedFrame(_previewedSlot.RectTransform);
+            _selectedSlot = _previewedSlot;
+            _currentCharacter.SelectItem(_selectedSlot.Item);
+        }
     }
 
+    public void PreviewSlot(InventoryItemSlotUI slot)
+    {
+        if (_previewedSlot != null)
+        {
+            UnPreviewSlot(_previewedSlot);
+        }
+
+        _previewedSlot = slot;
+        MovePreviewFrame(slot.RectTransform);
+        if (slot.Item != null)
+        {
+            LoadItemInfo(slot.Item.ItemData);
+        }
+    }
+
+    public void UnPreviewSlot(InventoryItemSlotUI slot)
+    {
+        if (_previewedSlot == slot)
+        {
+            _previewFrame.gameObject.SetActive(false);
+            _previewedSlot = null;
+            if (_selectedSlot != null)
+            {
+                LoadItemInfo(_selectedSlot.Item.ItemData);
+            }
+        }
+    }
+
+    private void MoveSelectedFrame(RectTransform slotTarget)
+    {
+        _selectionFrame.SetParent(slotTarget);
+        _selectionFrame.anchorMin = Vector2.zero;
+        _selectionFrame.anchorMax = Vector2.one;
+        _selectionFrame.offsetMin = Vector2.zero;
+        _selectionFrame.offsetMax = Vector2.zero;
+        _selectionFrame.gameObject.SetActive(true);
+    }
+
+    private void MovePreviewFrame(RectTransform slotTarget)
+    {
+        _previewFrame.SetParent(slotTarget);
+        _previewFrame.anchorMin = Vector2.zero;
+        _previewFrame.anchorMax = Vector2.one;
+        _previewFrame.offsetMin = Vector2.zero;
+        _previewFrame.offsetMax = Vector2.zero;
+        _previewFrame.gameObject.SetActive(true);
+    }
+
+
+    #endregion
     public void LoadCharacterData(Character c)
     {
         _currentCharacter = c;
@@ -72,18 +136,22 @@ public class InventoryUI : MonoBehaviour
 
     private void RefreshInventory()
     {
-        //TODO
-        foreach (var itemSlot in itemSlots)
+        foreach (var itemSlot in _itemSlots)
         {
-            itemSlot.UnloadItemData();
+            itemSlot.UnloadItem();
         }
         var items = _currentCharacter.GetAllItems().ToList();
+        var selectedItem = _currentCharacter.GetSelectedItem();
         for (int i = 0; i < items.Count; i++)
         {
-            itemSlots[i].LoadItemData(items[i].ItemData); //TODO
+            _itemSlots[i].LoadItem(items[i]); //TODO
+            if(selectedItem != null && selectedItem == items[i])
+            {
+                _selectedSlot = _itemSlots[i];
+                LoadItemInfo(selectedItem.ItemData);
+            }
         }
     }
-
 
     public void ToggleItemType()
     {

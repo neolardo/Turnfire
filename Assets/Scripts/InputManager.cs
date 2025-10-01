@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Utilities;
 
 public class InputManager : MonoBehaviour
 {
@@ -20,6 +21,9 @@ public class InputManager : MonoBehaviour
 
     private InputActionMapType _currentActionMap;
 
+    public InputDevice CurrentInputDevice => _currentInputDevice;
+    private InputDevice _currentInputDevice;
+
     public bool IsAimingEnabled { get; set; }
     public bool IsOpeningInventoryEnabled { get; set; }
     public bool IsPausingGameplayEnabled { get; set; }
@@ -31,6 +35,7 @@ public class InputManager : MonoBehaviour
     public event Action ToggleInventoryPerformed;
     public event Action ToggleInventoryCreateDestroyPerformed;
     public event Action TogglePauseGameplayPerformed;
+    public event Action SelectInventorySlotPerformed;
 
     private void Awake()
     {
@@ -52,6 +57,9 @@ public class InputManager : MonoBehaviour
         _inputActions.PausedGamplay.ResumeGameplay.started += OnTogglePauseGameplay;
         _inputActions.Inventory.ToggleInventory.started += OnToggleInventory;
         _inputActions.Inventory.ToggleCreateDestroy.started += OnToggleCreateDestroy;
+        _inputActions.Inventory.SelectInventorySlot.started += OnSelectInventorySlot;
+        InputSystem.onDeviceChange += OnDeviceChange;
+        InputSystem.onAnyButtonPress.CallOnce(control => OnDeviceChange(control.device, InputDeviceChange.Reconnected));
     }
 
     private void OnAimPerformed(InputAction.CallbackContext ctx)
@@ -178,6 +186,11 @@ public class InputManager : MonoBehaviour
         }
     }
 
+    private void OnSelectInventorySlot(InputAction.CallbackContext ctx)
+    {
+        SelectInventorySlotPerformed?.Invoke();
+    }
+
     private void OnToggleInventory(InputAction.CallbackContext ctx)
     {
         var targetActionMapType = _currentActionMap == InputActionMapType.Gameplay ? InputActionMapType.Inventory : InputActionMapType.Gameplay;
@@ -225,6 +238,14 @@ public class InputManager : MonoBehaviour
         }
         SwitchToInputActionMap(targetActionMapType);
         TogglePauseGameplayPerformed?.Invoke();
+    }
+
+    private void OnDeviceChange(InputDevice device, InputDeviceChange change)
+    {
+        if (change == InputDeviceChange.Added || change == InputDeviceChange.Reconnected)
+        {
+            _currentInputDevice = device;
+        }
     }
 
     #region Input Action Map
