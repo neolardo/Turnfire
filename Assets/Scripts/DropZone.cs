@@ -7,11 +7,11 @@ using UnityEngine;
 public class DropZone : MonoBehaviour
 {
     [Header("Drop Settings")]
-    [SerializeField] private List<Collectible> _possibleCollectibles;
     [SerializeField] private Package _packagePrefab;
     [SerializeField] private int _minDrops = 1;
     [SerializeField] private int _maxDrops = 3;
 
+    [SerializeField] private List<CollectibleDefinition> _possibleCollectibles;
     private BoxCollider2D _zone;
     private List<Package> _currentPackages;
     private CameraController _cameraController;
@@ -43,9 +43,9 @@ public class DropZone : MonoBehaviour
         for (int i = 0; i < numDrops; i++)
         {
             Vector2 spawnPos = GetRandomPointInZone();
-            var collectible = _possibleCollectibles[UnityEngine.Random.Range(0, _possibleCollectibles.Count)];
+            var definition = _possibleCollectibles[UnityEngine.Random.Range(0, _possibleCollectibles.Count)];
             var package = Instantiate(_packagePrefab, spawnPos, Quaternion.identity);
-            package.SetCollectible(collectible);
+            package.SetCollectible(CollectibleFactory.CreateCollectible(definition)); 
             package.gameObject.SetActive(true);
             _currentPackages.Add(package);
             yield return WaitForPackageToLand(package);
@@ -54,6 +54,7 @@ public class DropZone : MonoBehaviour
         AllPackagesLanded?.Invoke();
     }
 
+  
     private IEnumerator WaitForPackageToLand(Package package)
     {
         _cameraController.SetPackageTarget(package);

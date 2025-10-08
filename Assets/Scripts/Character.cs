@@ -8,11 +8,14 @@ public class Character : MonoBehaviour
 {
     [HideInInspector] public bool IsAlive => _health > 0;
     [HideInInspector] public bool IsMoving => _rb.linearVelocity.magnitude > Mathf.Epsilon;
-    [HideInInspector] public bool IsFiring => _weapon.IsFiring;
-    [HideInInspector] public float FireStrength => _weapon.WeaponData.FireStrength.RandomValue;
-    [SerializeField] private Weapon _weapon;
-    [SerializeField] private Healthbar _healthbar; //TODO
-    public CharacterData CharacterData;
+    [HideInInspector] public bool IsUsingSelectedItem => _selectedItem.Behavior.IsInUse;
+
+    [SerializeField] private HealthbarUI _healthbar; //TODO
+
+    [SerializeField] CharacterItemRenderer _itemRenderer;
+
+    public CharacterDefinition CharacterDefinition;
+
     private Rigidbody2D _rb;
     private int _health;
     public int Health
@@ -31,7 +34,7 @@ public class Character : MonoBehaviour
         }
     }
 
-    private List<Item> _items; //TODO?
+    private List<Item> _items;
     private Item _selectedItem;
 
     public event Action<int> HealthChanged;
@@ -39,8 +42,17 @@ public class Character : MonoBehaviour
 
     private void Awake()
     {
-        Health = CharacterData.MaxHealth;
+        Health = CharacterDefinition.MaxHealth;
         _items = new List<Item>();
+        foreach(var itemDefinition in CharacterDefinition.InitialItems)
+        {
+            _items.Add(CollectibleFactory.CreateCollectible(itemDefinition));
+        }
+        if(_items.Count == 0)
+        {
+            Debug.LogWarning($"{gameObject.name} has no initial items.");
+        }
+        _selectedItem = _items.FirstOrDefault();
         _rb = GetComponent<Rigidbody2D>();
         _healthbar.Follow(transform);
         _healthbar.SetMaxHealth(Health);
@@ -84,17 +96,23 @@ public class Character : MonoBehaviour
 
     public void Jump(Vector2 aimDirection)
     {
-        _rb.AddForce(aimDirection * CharacterData.JumpStrength, ForceMode2D.Impulse);
+        _rb.AddForce(aimDirection * CharacterDefinition.JumpStrength, ForceMode2D.Impulse);
     }
 
-    public void Fire(Vector2 aimDirection)
+    public void InitializeMovementPreview(TrajectoryRenderer trajectoryRenderer)
     {
-        _weapon.Fire(aimDirection);
+        trajectoryRenderer.SetStartTransform(transform);
+        trajectoryRenderer.SetTrajectoryMultipler(CharacterDefinition.JumpStrength);
     }
 
     #endregion
 
     #region Items
+
+    public void UseSelectedItem(ItemUsageContext context)
+    {
+        _selectedItem.Behavior.Use(context);
+    }
 
     public bool TryAddItem(Item item)
     {
@@ -116,7 +134,10 @@ public class Character : MonoBehaviour
 
     public void SelectItem(Item item)
     {
-        _selectedItem = item;
+        if (_items.Contains(item))
+        {
+            _selectedItem = item;
+        }
     }
 
     public Item GetSelectedItem()

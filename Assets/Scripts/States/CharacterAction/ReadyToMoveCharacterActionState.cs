@@ -26,8 +26,7 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
         base.StartState(currentCharacter);
         _inputManager.IsAimingEnabled = true;
         _inputManager.IsOpeningInventoryEnabled = true;
-        _trajectoryRenderer.SetStartTransform(currentCharacter.transform);
-        _trajectoryRenderer.SetTrajectoryMultipler(currentCharacter.CharacterData.JumpStrength);
+        currentCharacter.InitializeMovementPreview(_trajectoryRenderer);
     }
 
     private void OnImpulseReleased(Vector2 aimDirection)

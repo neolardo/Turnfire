@@ -5,7 +5,7 @@ public class Package : MonoBehaviour
 {
     public bool IsMoving => _rb.linearVelocity.magnitude > 0;
     private Rigidbody2D _rb;
-    private Collectible _collectible;
+    private ICollectible _collectible;
 
     private void Awake()
     {
@@ -29,7 +29,7 @@ public class Package : MonoBehaviour
         }
     }
 
-    public void SetCollectible(Collectible collectible)
+    public void SetCollectible(ICollectible collectible)
     {
         _collectible = collectible;
     }

@@ -9,15 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 986608c344235ee4aaee5b43192002d9, type: 3}
+  m_Script: {fileID: 11500000, guid: e39c365b6ec13d1489aee73b03277779, type: 3}
   m_Name: SimpleExplosion
   m_EditorClassIdentifier: 
   Damage:
+    _min: 2
+    _max: 3
+  ExplosionForce:
     _min: 3
-    _max: 5
-  ExplosionStrength:
-    _min: 1
-    _max: 2
+    _max: 3
   ExplosionRadius:
-    _min: 1
-    _max: 1
+    _min: 2
+    _max: 2

@@ -1,14 +1,21 @@
-public class Item : Collectible
+public class Item : ICollectible
 {
-    public ItemData ItemData;
+    public ItemDefinition Definition { get; private set; }
+    public IItemBehavior Behavior { get; private set;}
 
-    public override bool TryCollect(Character c)
+    public Item(ItemDefinition definition)
+    {
+        Definition = definition;
+        Behavior = definition.CreateItemBehavior(); //TODO: refactor?
+    }
+
+    public bool TryCollect(Character c)
     {
         return c.TryAddItem(this);
     }
 
     public bool IsSameType(Item item)
     {
-        return item.ItemData.Name == this.ItemData.Name;
+        return item.Definition.Name == this.Definition.Name;
     }
 }

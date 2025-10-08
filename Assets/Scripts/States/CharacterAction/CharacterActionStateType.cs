@@ -2,7 +2,7 @@ public enum CharacterActionStateType
 {
     ReadyToMove = 0,
     Moving = 1,
-    ReadyToFire = 2,
-    Firing = 3,
+    ReadyToUseItem = 2,
+    UsingItem = 3,
     Finished = 4,
 }

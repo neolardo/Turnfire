@@ -1,4 +1,3 @@
-using NUnit.Framework.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -47,21 +46,12 @@ public class InventoryUI : MonoBehaviour
 
     #region Select and Preview
 
-    public void LoadItemInfo(ItemData itemData)
+    public void LoadItemInfo(ItemDefinition itemData)
     {
         _titleText.text = itemData.Name;
         _descriptionText.text = itemData.Description;
 
-        if (itemData is WeaponData weaponData)
-        {
-            _slider1.SetSliderValue(weaponData.FireStrength.Avarage); //TODO
-            _slider1.SetText("Fire Strength");
-            //TODO
-        }
-        else if (itemData is ModifierData modifierData)
-        {
-            //TODO
-        }
+        //TODO
     }
 
     public void SelectPreviewedItem()
@@ -85,7 +75,7 @@ public class InventoryUI : MonoBehaviour
         MovePreviewFrame(slot.RectTransform);
         if (slot.Item != null)
         {
-            LoadItemInfo(slot.Item.ItemData);
+            LoadItemInfo(slot.Item.Definition);
         }
     }
 
@@ -97,7 +87,7 @@ public class InventoryUI : MonoBehaviour
             _previewedSlot = null;
             if (_selectedSlot != null)
             {
-                LoadItemInfo(_selectedSlot.Item.ItemData);
+                LoadItemInfo(_selectedSlot.Item.Definition);
             }
         }
     }
@@ -148,7 +138,7 @@ public class InventoryUI : MonoBehaviour
             if(selectedItem != null && selectedItem == items[i])
             {
                 _selectedSlot = _itemSlots[i];
-                LoadItemInfo(selectedItem.ItemData);
+                LoadItemInfo(selectedItem.Definition);
             }
         }
     }

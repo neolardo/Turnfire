@@ -26,10 +26,12 @@ public class TurnManager : MonoBehaviour
     {
         var inputManager = FindFirstObjectByType<InputManager>();
         var trajectoryRenderer = FindFirstObjectByType<TrajectoryRenderer>();
+        var itemPreviewRendererManager = FindFirstObjectByType<ItemPreviewRendererManager>();
         var dropZone = FindFirstObjectByType<DropZone>();
         var cameraController = FindFirstObjectByType<CameraController>();
         var uiManager = FindFirstObjectByType<UIManager>();
-        var characterActionManager = new CharacterActionManager(this, trajectoryRenderer, inputManager, cameraController, uiManager);
+        var projectileManager = FindFirstObjectByType<ProjectileManager>();
+        var characterActionManager = new CharacterActionManager(this, trajectoryRenderer, itemPreviewRendererManager, inputManager, cameraController, uiManager, projectileManager);
         _turnStates = new List<TurnState>
         {
             new DoOneCharacterActionPerTeamTurnState(this, characterActionManager, _teams),

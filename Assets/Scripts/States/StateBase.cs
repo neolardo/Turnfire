@@ -1,27 +1,19 @@
 using System;
-using System.Collections;
 using UnityEngine;
 
-public class StateBase
+public class StateBase : UnityDriven
 {
     public bool IsActive { get; protected set; }
-    protected MonoBehaviour _coroutineManager;
 
     public event Action StateEnded;
 
-    protected StateBase(MonoBehaviour coroutineManager)
+    protected StateBase(MonoBehaviour coroutineManager) : base (coroutineManager)
     {
-        _coroutineManager = coroutineManager;
     }
 
     protected void InvokeStateEndedEvent()
     {
         StateEnded?.Invoke();
-    }
-
-    protected Coroutine StartCoroutine(IEnumerator routine)
-    {
-        return _coroutineManager.StartCoroutine(routine);
     }
 
     protected virtual void SubscribeToEvents()
