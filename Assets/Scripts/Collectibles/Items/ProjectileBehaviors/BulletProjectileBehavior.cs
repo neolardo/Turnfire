@@ -26,9 +26,9 @@ public class BulletProjectileBehavior : UnityDriven, IProjectileBehavior
     {
         _explodedCharacters.Clear();
         var mask = LayerMaskHelper.GetCombinedLayerMask(Constants.GroundLayer, Constants.CharacterLayer);
-        var explosionRadius = _definition.ExplosionDefinition.ExplosionRadius.RandomValue;
-        var explosionStrength = _definition.ExplosionDefinition.ExplosionForce.RandomValue;
-        var explosionDamage = _definition.ExplosionDefinition.Damage.RandomValue;
+        var explosionRadius = _definition.ExplosionDefinition.ExplosionRadius.CalculateValue();
+        var explosionStrength = _definition.ExplosionDefinition.ExplosionForce.CalculateValue();
+        var explosionDamage = _definition.ExplosionDefinition.Damage.CalculateValue();
         Collider2D[] hits = Physics2D.OverlapCircleAll(context.ContactPoint, explosionRadius, mask);
         DrawDebugCircle(context.ContactPoint, explosionRadius, 12, Color.green);
         foreach (var hit in hits)

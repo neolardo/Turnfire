@@ -12,8 +12,6 @@ public class InventoryItemSlotUI : MonoBehaviour, IPointerEnterHandler, IPointer
     private InputManager _inputManager;
     public Item Item => _item;
     private Item _item;
-    public RectTransform RectTransform => _rectTransform;
-    private RectTransform _rectTransform;
 
     public event Action<InventoryItemSlotUI> Hovered;
     public event Action<InventoryItemSlotUI> UnHovered;
@@ -21,7 +19,6 @@ public class InventoryItemSlotUI : MonoBehaviour, IPointerEnterHandler, IPointer
     private void Awake()
     {
         _inputManager = FindFirstObjectByType<InputManager>();
-        _rectTransform = GetComponent<RectTransform>();
     }
 
     #region Item

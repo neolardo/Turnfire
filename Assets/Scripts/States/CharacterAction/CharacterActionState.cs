@@ -13,8 +13,8 @@ public abstract class CharacterActionState : StateBase
     {
         Debug.Log(State.ToString() + " started");
         IsActive = true;
-        SubscribeToEvents();
         _currentCharacter = currentCharacter;
+        SubscribeToEvents();
     }
 
     protected virtual void EndState()

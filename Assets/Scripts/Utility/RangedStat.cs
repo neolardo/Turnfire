@@ -2,37 +2,65 @@ using System;
 using UnityEngine;
 
 [Serializable]
-public abstract class RangedStat<T> where T: struct
+public abstract class RangedStat
 {
-    [SerializeField] [Tooltip("Inclusive minimum value.")] private T _min;
-    [SerializeField] [Tooltip("Inclusive maximum value.")]  private T _max;
-    public T Min => _min;
-    public T Max => _max;
+    [SerializeField][Range(0f, 1f)][Tooltip("Normalized value")] protected float _normalizedValue;
+    [SerializeField] protected bool _isRandomized;
+    [SerializeField][Range(0f, 1f)] protected float _randomness;
+    public float NormalizedValue => _normalizedValue;
+    public abstract RangedStatGroupDefinition Group { get; }
+}
 
-    public RangedStat(T min, T max)
-    {
-        _min = min;
-        _max = max;
-    }
+[Serializable]
+public abstract class RangedStat<T> : RangedStat where T: struct
+{
+    public abstract T CalculateValue(); 
 }
 
 [Serializable]
 public class RangedStatInt : RangedStat<int>
 {
-    public RangedStatInt(int min, int max) : base(min, max) { }
+    [SerializeField] private RangedStatIntGroupDefinition _group;
 
-    public int Avarage => (Min + Max) / 2;
+    public override RangedStatGroupDefinition Group => _group;
 
-    public int RandomValue => UnityEngine.Random.Range(Min, Max+1);
+    public override int CalculateValue()
+    {
+        if(_isRandomized)
+        {
+            float deltaMax = NormalizedValue > 0.5f ? NormalizedValue : 1f - NormalizedValue;
+            float normalizedMin = Mathf.Max(NormalizedValue - deltaMax * _randomness, 0f);
+            float normalizedMax = Mathf.Min(NormalizedValue + deltaMax * _randomness, 1f);
+            float normalizedRandom = UnityEngine.Random.Range(normalizedMin, normalizedMax);
+            return Mathf.RoundToInt(Mathf.Lerp(_group.Minimum, _group.Maximum, normalizedRandom));
+        }
+        else
+        {
+            return Mathf.RoundToInt(Mathf.Lerp(_group.Minimum, _group.Maximum, NormalizedValue));  
+        }
+    }
 }
 
 [Serializable]
 public class RangedStatFloat : RangedStat<float>
 {
-    public RangedStatFloat(float min, float max) : base(min, max) { }
+    [SerializeField] private RangedStatFloatGroupDefinition _group;
+    public override RangedStatGroupDefinition Group => _group;
 
-    public float Avarage => (Min + Max) / 2f;
-
-    public float RandomValue => UnityEngine.Random.Range(Min, Max);
+    public override float CalculateValue()
+    {
+        if (_isRandomized)
+        {
+            float deltaMax = NormalizedValue > 0.5f ? NormalizedValue : 1f - NormalizedValue;
+            float normalizedMin = Mathf.Max(NormalizedValue - deltaMax * _randomness, 0f);
+            float normalizedMax = Mathf.Min(NormalizedValue + deltaMax * _randomness, 1f);
+            float normalizedRandom = UnityEngine.Random.Range(normalizedMin, normalizedMax);
+            return Mathf.Lerp(_group.Minimum, _group.Maximum, normalizedRandom);
+        }
+        else
+        {
+            return Mathf.Lerp(_group.Minimum, _group.Maximum, NormalizedValue);
+        }
+    }
 }
 

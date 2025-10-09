@@ -39,6 +39,7 @@ public class Character : MonoBehaviour
 
     public event Action<int> HealthChanged;
     public event Action Died;
+    public event Action<Item> SelectedItemChanged;
 
     private void Awake()
     {
@@ -134,9 +135,10 @@ public class Character : MonoBehaviour
 
     public void SelectItem(Item item)
     {
-        if (_items.Contains(item))
+        if (_items.Contains(item) && item != _selectedItem)
         {
             _selectedItem = item;
+            SelectedItemChanged?.Invoke(item);
         }
     }
 

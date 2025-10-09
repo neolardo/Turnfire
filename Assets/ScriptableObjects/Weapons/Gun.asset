@@ -15,5 +15,9 @@ MonoBehaviour:
   Sprite: {fileID: 0}
   Name: Gun
   Description: Fires a projectile that explodes on the first contact.
-  FireStrength: 6
+  FireStrength:
+    _normalizedValue: 0.409
+    _isRandomized: 0
+    _randomness: 0
+    _group: {fileID: 11400000, guid: 22026dfb48c6fa8489243cadbd99e5af, type: 2}
   ProjectileDefinition: {fileID: 11400000, guid: 1e720a5127690b743bc13ec1f4c71a3f, type: 2}

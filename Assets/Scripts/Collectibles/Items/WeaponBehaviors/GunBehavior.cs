@@ -21,7 +21,7 @@ public class GunBehavior : UnityDriven, IItemBehavior
         _isFiring = true;
         var p = context.ProjectileManager.GetProjectile();
         p.Initialize(_definition.ProjectileDefinition, _projectileBehavior);
-        p.Launch(context, _definition.FireStrength);
+        p.Launch(context, _definition.FireStrength.CalculateValue());
     }
 
     private void OnProjectileExploded(ExplosionInfo ei)
@@ -42,7 +42,7 @@ public class GunBehavior : UnityDriven, IItemBehavior
     {
         rendererManager.SelectRenderer(ItemPreviewRendererType.Trajectory);
         rendererManager.TrajectoryRenderer.SetStartTransform(context.Owner.transform);
-        rendererManager.TrajectoryRenderer.SetTrajectoryMultipler(_definition.FireStrength);
+        rendererManager.TrajectoryRenderer.SetTrajectoryMultipler(_definition.FireStrength.CalculateValue());
     }
 
 }

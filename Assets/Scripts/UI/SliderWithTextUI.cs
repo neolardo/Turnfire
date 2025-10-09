@@ -12,9 +12,9 @@ public class SliderWithTextUI : MonoBehaviour
         _text.text = text;
     }
 
-    public void SetSliderValue(float value)
+    public void SetSliderValue(float normalizedValue)
     {
-        _slider.value = value;
+        _slider.value = normalizedValue;
     }
 
 }

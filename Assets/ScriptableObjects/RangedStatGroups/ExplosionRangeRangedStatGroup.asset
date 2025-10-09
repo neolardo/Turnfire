@@ -9,11 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ee4184e8bcd897b41b5ab4806a11bafe, type: 3}
-  m_Name: TestCharacter
+  m_Script: {fileID: 11500000, guid: a53b3b46539369147aa13b9d2147f1b5, type: 3}
+  m_Name: ExplosionRangeRangedStatGroup
   m_EditorClassIdentifier: 
-  MaxHealth: 10
-  JumpStrength: 7
-  InitialItems:
-  - {fileID: 11400000, guid: 3adb2e281e926714ca60f3a253fa55dc, type: 2}
-  - {fileID: 11400000, guid: 0fb704133c20970438248e9a565039cb, type: 2}
+  Name: Explosion Range
+  Minimum: 1
+  Maximum: 5

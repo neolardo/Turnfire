@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Bullet
   m_EditorClassIdentifier: 
   Sprite: {fileID: 0}
-  ExplosionDefinition: {fileID: 11400000, guid: 4f0ae93af37cc3e4b96d676b764b0be3, type: 2}
+  ExplosionDefinition: {fileID: 11400000, guid: 6063733459c50e1439b0420ee61bf614, type: 2}

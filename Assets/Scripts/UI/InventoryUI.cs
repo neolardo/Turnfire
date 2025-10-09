@@ -14,9 +14,7 @@ public class InventoryUI : MonoBehaviour
     [Header("Item Info")]
     [SerializeField] private TextMeshProUGUI _titleText;
     [SerializeField] private TextMeshProUGUI _descriptionText;
-    [SerializeField] private SliderWithTextUI _slider1; //TODO
-    [SerializeField] private SliderWithTextUI _slider2;
-    [SerializeField] private SliderWithTextUI _slider3;
+    [SerializeField] private List<SliderWithTextUI> _sliders;
 
     [Header("Item Slots")]
     [SerializeField] private List<InventoryItemSlotUI> _itemSlots;
@@ -28,11 +26,12 @@ public class InventoryUI : MonoBehaviour
     private InventoryItemSlotUI _previewedSlot;
     private InventoryItemSlotUI _selectedSlot;
 
+
     private void Awake()
     {
         var inputManager = FindFirstObjectByType<InputManager>();
         inputManager.ToggleInventoryCreateDestroyPerformed += ToggleItemType;
-        inputManager.SelectInventorySlotPerformed += SelectPreviewedItem;
+        inputManager.SelectInventorySlotPerformed += SelectPreviewedSlot;
         _isDestroyItemTypeToggleActive = true;
         _createToggle.isOn = !_isDestroyItemTypeToggleActive;
         _destroyToggle.isOn = _isDestroyItemTypeToggleActive;
@@ -44,76 +43,6 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
-    #region Select and Preview
-
-    public void LoadItemInfo(ItemDefinition itemData)
-    {
-        _titleText.text = itemData.Name;
-        _descriptionText.text = itemData.Description;
-
-        //TODO
-    }
-
-    public void SelectPreviewedItem()
-    {
-        if (_previewedSlot != null && _previewedSlot.Item != null)
-        {
-            MoveSelectedFrame(_previewedSlot.RectTransform);
-            _selectedSlot = _previewedSlot;
-            _currentCharacter.SelectItem(_selectedSlot.Item);
-        }
-    }
-
-    public void PreviewSlot(InventoryItemSlotUI slot)
-    {
-        if (_previewedSlot != null)
-        {
-            UnPreviewSlot(_previewedSlot);
-        }
-
-        _previewedSlot = slot;
-        MovePreviewFrame(slot.RectTransform);
-        if (slot.Item != null)
-        {
-            LoadItemInfo(slot.Item.Definition);
-        }
-    }
-
-    public void UnPreviewSlot(InventoryItemSlotUI slot)
-    {
-        if (_previewedSlot == slot)
-        {
-            _previewFrame.gameObject.SetActive(false);
-            _previewedSlot = null;
-            if (_selectedSlot != null)
-            {
-                LoadItemInfo(_selectedSlot.Item.Definition);
-            }
-        }
-    }
-
-    private void MoveSelectedFrame(RectTransform slotTarget)
-    {
-        _selectionFrame.SetParent(slotTarget);
-        _selectionFrame.anchorMin = Vector2.zero;
-        _selectionFrame.anchorMax = Vector2.one;
-        _selectionFrame.offsetMin = Vector2.zero;
-        _selectionFrame.offsetMax = Vector2.zero;
-        _selectionFrame.gameObject.SetActive(true);
-    }
-
-    private void MovePreviewFrame(RectTransform slotTarget)
-    {
-        _previewFrame.SetParent(slotTarget);
-        _previewFrame.anchorMin = Vector2.zero;
-        _previewFrame.anchorMax = Vector2.one;
-        _previewFrame.offsetMin = Vector2.zero;
-        _previewFrame.offsetMax = Vector2.zero;
-        _previewFrame.gameObject.SetActive(true);
-    }
-
-
-    #endregion
     public void LoadCharacterData(Character c)
     {
         _currentCharacter = c;
@@ -134,11 +63,10 @@ public class InventoryUI : MonoBehaviour
         var selectedItem = _currentCharacter.GetSelectedItem();
         for (int i = 0; i < items.Count; i++)
         {
-            _itemSlots[i].LoadItem(items[i]); //TODO
-            if(selectedItem != null && selectedItem == items[i])
+            _itemSlots[i].LoadItem(items[i]);
+            if (selectedItem != null && selectedItem == items[i])
             {
-                _selectedSlot = _itemSlots[i];
-                LoadItemInfo(selectedItem.Definition);
+                SelectSlot(_itemSlots[i]);
             }
         }
     }
@@ -149,4 +77,103 @@ public class InventoryUI : MonoBehaviour
         _createToggle.isOn = !_isDestroyItemTypeToggleActive;
         _destroyToggle.isOn = _isDestroyItemTypeToggleActive;
     }
+
+    #region Select and Preview
+
+    public void LoadItemInfo(ItemDefinition itemDefinition)
+    {
+        if(itemDefinition == null)
+        {
+            _titleText.text = "Empty";
+            _descriptionText.text = "This slot is empty.";
+
+            foreach (var s in _sliders)
+            {
+                s.gameObject.SetActive(false);
+            }
+        }
+        else
+        {
+            _titleText.text = itemDefinition.Name;
+            _descriptionText.text = itemDefinition.Description;
+
+            foreach (var s in _sliders)
+            {
+                s.gameObject.SetActive(false);
+            }
+
+            var rangedStats = itemDefinition.GetRangedStats().ToList();
+            for (int i = 0; i < _sliders.Count && i < rangedStats.Count; i++)
+            {
+                _sliders[i].SetText(rangedStats[i].Group.Name);
+                _sliders[i].SetSliderValue(rangedStats[i].NormalizedValue);
+                _sliders[i].gameObject.SetActive(true);
+            }
+        }
+    }
+
+    private void SelectPreviewedSlot()
+    {
+        SelectSlot(_previewedSlot);
+    }
+
+    private void SelectSlot(InventoryItemSlotUI slot)
+    {
+        if (slot != null && slot.Item != null)
+        {
+            MoveSelectedFrame(slot.transform);
+            _selectedSlot = slot;
+            _currentCharacter.SelectItem(slot.Item);
+            LoadItemInfo(slot.Item.Definition);
+        }
+    }
+
+    private void PreviewSlot(InventoryItemSlotUI slot)
+    {
+        if (_previewedSlot != null)
+        {
+            UnPreviewSlot(_previewedSlot);
+        }
+
+        _previewedSlot = slot;
+        MovePreviewFrame(slot.transform);
+        LoadItemInfo(slot.Item == null ? null : slot.Item.Definition);
+    }
+
+    private void UnPreviewSlot(InventoryItemSlotUI slot)
+    {
+        if (_previewedSlot == slot)
+        {
+            _previewFrame.gameObject.SetActive(false);
+            _previewedSlot = null;
+            if (_selectedSlot != null)
+            {
+                LoadItemInfo(_selectedSlot.Item.Definition);
+            }
+        }
+    }
+
+    private void MoveSelectedFrame(Transform slotTarget)
+    {
+        _selectionFrame.SetParent(slotTarget);
+        _selectionFrame.anchorMin = Vector2.zero;
+        _selectionFrame.anchorMax = Vector2.one;
+        _selectionFrame.offsetMin = Vector2.zero;
+        _selectionFrame.offsetMax = Vector2.zero;
+        _selectionFrame.gameObject.SetActive(true);
+    }
+
+    private void MovePreviewFrame(Transform slotTarget)
+    {
+        _previewFrame.SetParent(slotTarget);
+        _previewFrame.anchorMin = Vector2.zero;
+        _previewFrame.anchorMax = Vector2.one;
+        _previewFrame.offsetMin = Vector2.zero;
+        _previewFrame.offsetMax = Vector2.zero;
+        _previewFrame.gameObject.SetActive(true);
+    }
+
+
+    #endregion
+
 }
