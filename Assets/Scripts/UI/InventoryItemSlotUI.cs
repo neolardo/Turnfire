@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class InventoryItemSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
 {
     [SerializeField] private RawImage _slotRawImage;
-    [SerializeField] private RawImage _itemRawImage;
+    [SerializeField] private Image _itemImage;
     private InputManager _inputManager;
     public Item Item => _item;
     private Item _item;
@@ -26,13 +26,15 @@ public class InventoryItemSlotUI : MonoBehaviour, IPointerEnterHandler, IPointer
     public void LoadItem(Item item)
     {
         _item = item;
-        _itemRawImage.gameObject.SetActive(true); //TODO: sprite
+        _itemImage.sprite = item.Definition.Sprite;
+        _itemImage.gameObject.SetActive(true); //TODO: sprite
     }
 
     public void UnloadItem()
     {
         _item = null;
-        _itemRawImage.gameObject.SetActive(false);
+        _itemImage.sprite = null;
+        _itemImage.gameObject.SetActive(false);
     } 
 
     #endregion

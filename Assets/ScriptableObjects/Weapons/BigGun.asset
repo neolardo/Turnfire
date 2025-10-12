@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a108a0a0a6487fa41bf347169d0fa29d, type: 3}
   m_Name: BigGun
   m_EditorClassIdentifier: 
-  Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  Sprite: {fileID: 21300000, guid: a1022adb2e09b794f870a08399ac9643, type: 3}
   Name: Big Gun
   Description: Very big gun.
   FireStrength:

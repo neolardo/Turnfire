@@ -21,17 +21,16 @@ public class CharacterActionManager
         {
             new ReadyToMoveCharacterActionState(trajectoryRenderer, inputManager, coroutineManager),
             new MovingCharacterActionState(coroutineManager),
-            new ReadyToUseItemCharacterActionState(itemPreviewRendererManager, inputManager, projectileManager, coroutineManager),
+            new ReadyToUseItemCharacterActionState(itemPreviewRendererManager, inputManager, projectileManager, trajectoryRenderer, coroutineManager),
             new UsingItemCharacterActionState(coroutineManager),
             new FinishedCharacterActionState(coroutineManager),
         };
-         
+
         foreach (var state in _characterActionStates)
         {
             state.StateEnded += OnCharacterActionStateEnded;
         }
     }
-
     public void StartActionsWithCharacter(Character character)
     {
         _character = character;

@@ -1,17 +1,23 @@
 using System;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(SpriteRenderer))]
 public class Projectile : MonoBehaviour
 {
     private Rigidbody2D _rb;
+    private SpriteRenderer _spriteRenderer;
     private IProjectileBehavior _behavior;
     private ProjectileDefinition _definition;
+    private ExplosionManager _explosionManager; //TODO
 
     public event Action<ExplosionInfo> Exploded;
 
     private void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+        _explosionManager = FindAnyObjectByType<ExplosionManager>();
     }
 
     public void Initialize(ProjectileDefinition definition, IProjectileBehavior behavior)
@@ -30,13 +36,14 @@ public class Projectile : MonoBehaviour
     {
         if (collision.CompareTag(Constants.GroundTag) || collision.CompareTag(Constants.CharacterTag) || collision.CompareTag(Constants.DeadZoneTag))
         {
-            _behavior.OnContact(new ProjectileContactContext(this, _rb.position));
+            _behavior.OnContact(new ProjectileContactContext(this, _rb.position, _explosionManager));
         }
     }
 
     public void Launch(ItemUsageContext itemContext, float fireStrength)
     {
         gameObject.SetActive(true);
+        _spriteRenderer.sprite = _definition.Sprite;
         _behavior.Launch(new ProjectileLaunchContext(itemContext, fireStrength, _rb));
     }
 

@@ -6,23 +6,51 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
     private ItemPreviewRendererManager _rendererManager;
     private InputManager _inputManager;
     private ProjectileManager _projectileManager;
+    private TrajectoryRenderer _trajectoryRenderer;
 
-    public ReadyToUseItemCharacterActionState(ItemPreviewRendererManager rendererManager, InputManager inputManager, ProjectileManager projectileManager, MonoBehaviour coroutineManager) : base(coroutineManager)
+    public ReadyToUseItemCharacterActionState(ItemPreviewRendererManager rendererManager, InputManager inputManager, ProjectileManager projectileManager, TrajectoryRenderer trajectoryRenderer, MonoBehaviour coroutineManager) : base(coroutineManager)
     {
         _rendererManager = rendererManager;
         _projectileManager = projectileManager;
         _inputManager = inputManager;
+        _trajectoryRenderer = trajectoryRenderer;
     }
     protected override void SubscribeToEvents()
     {
         _currentCharacter.SelectedItemChanged += OnSelectedItemChanged;
         _inputManager.ImpulseReleased += OnImpulseReleased;
+        _inputManager.AimStarted += OnAimStarted;
+        _inputManager.AimChanged += OnAimChanged;
+        _inputManager.AimCancelled += OnAimCancelled;
     }
     protected override void UnsubscribeFromEvents()
     {
         _currentCharacter.SelectedItemChanged -= OnSelectedItemChanged;
         _inputManager.ImpulseReleased -= OnImpulseReleased;
+        _inputManager.AimStarted -= OnAimStarted;
+        _inputManager.AimChanged -= OnAimChanged;
+        _inputManager.AimCancelled -= OnAimCancelled;
     }
+
+
+    private void OnAimStarted(Vector2 aimVector)
+    {
+        _trajectoryRenderer.ShowTrajectory(aimVector);
+        _currentCharacter.StartAiming(aimVector);
+    }
+
+    private void OnAimChanged(Vector2 aimVector)
+    {
+        _trajectoryRenderer.DrawTrajectory(aimVector);
+        _currentCharacter.ChangeAim(aimVector);
+    }
+
+    private void OnAimCancelled()
+    {
+        _trajectoryRenderer.HideTrajectory();
+        _currentCharacter.CancelAiming();
+    }
+
 
     public override void StartState(Character currentCharacter)
     {
@@ -48,6 +76,7 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
 
     private void OnImpulseReleased(Vector2 aimVector)
     {
+        _trajectoryRenderer.HideTrajectory();
         _currentCharacter.UseSelectedItem(new ItemUsageContext(_currentCharacter.transform.position, aimVector, _currentCharacter.transform, _projectileManager));
         EndState();
     }

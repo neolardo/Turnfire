@@ -45,6 +45,8 @@ public class BulletProjectileBehavior : UnityDriven, IProjectileBehavior
                 destTerrain.ApplyExplosion(context.ContactPoint, explosionRadius);
             }
         }
+        var exp = context.ExplosionManager.GetExplosion();
+        exp.Explode(context.ContactPoint);
         Exploded?.Invoke(new ExplosionInfo(_explodedCharacters, context.Projectile));
     }
 

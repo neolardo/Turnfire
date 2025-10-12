@@ -15,10 +15,16 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
     protected override void SubscribeToEvents()
     {
         _inputManager.ImpulseReleased += OnImpulseReleased;
+        _inputManager.AimStarted += OnAimStarted;
+        _inputManager.AimChanged += OnAimChanged;
+        _inputManager.AimCancelled += OnAimCancelled;
     }
     protected override void UnsubscribeFromEvents()
     {
         _inputManager.ImpulseReleased -= OnImpulseReleased;
+        _inputManager.AimStarted -= OnAimStarted;
+        _inputManager.AimChanged -= OnAimChanged;
+        _inputManager.AimCancelled -= OnAimCancelled;
     }
 
     public override void StartState(Character currentCharacter)
@@ -29,13 +35,26 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
         currentCharacter.InitializeMovementPreview(_trajectoryRenderer);
     }
 
+    private void OnAimStarted(Vector2 aimVector)
+    {
+        _trajectoryRenderer.ShowTrajectory(aimVector);
+    }
+
+    private void OnAimChanged(Vector2 aimVector)
+    {
+        _trajectoryRenderer.DrawTrajectory(aimVector);
+    }
+
+    private void OnAimCancelled()
+    {
+        _trajectoryRenderer.HideTrajectory();
+    }
+
     private void OnImpulseReleased(Vector2 aimDirection)
     {
-        if (IsActive)
-        {
-            _currentCharacter.Jump(aimDirection);
-            EndState();
-        }
+        _trajectoryRenderer.HideTrajectory();
+        _currentCharacter.Jump(aimDirection);
+        EndState();
     }
 
     protected override void EndState()

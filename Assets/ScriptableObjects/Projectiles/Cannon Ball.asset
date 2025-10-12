@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 988e3edfe6949b74197a2326e5fc8826, type: 3}
+  m_Name: Cannon Ball
+  m_EditorClassIdentifier: 
+  Sprite: {fileID: 21300000, guid: f3fc0b49b1f3cab42a93be092eb0efe6, type: 3}
+  ExplosionDefinition: {fileID: 11400000, guid: 6063733459c50e1439b0420ee61bf614, type: 2}

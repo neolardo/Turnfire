@@ -11,33 +11,14 @@ public class TrajectoryRenderer : MonoBehaviour
     private Transform _startTransform;
     private Vector2 _circleCenter;
     private float _trajectoryMultiplier, _gravity;
+    private RectTransform _rootCanvasRect;
 
 
     void Awake()
     {
         _lineRenderer = GetComponent<LineRenderer>();
+        _rootCanvasRect = GetComponentInParent<Canvas>().rootCanvas.GetComponent<RectTransform>();
         _gravity = Physics2D.gravity.y;
-    }
-
-    private void Start()
-    {
-        var inputManager = FindFirstObjectByType<InputManager>();
-        inputManager.AimStarted += ShowTrajectory;
-        inputManager.AimChanged += DrawTrajectory;
-        inputManager.AimCancelled += HideTrajectory;
-        inputManager.ImpulseReleased += OnImpulseReleased;
-    }
-
-    private void OnDestroy()
-    {
-        var inputManager = FindFirstObjectByType<InputManager>();
-        if (inputManager != null)
-        {
-            inputManager.AimStarted -= ShowTrajectory;
-            inputManager.AimChanged -= DrawTrajectory;
-            inputManager.AimCancelled -= HideTrajectory;
-            inputManager.ImpulseReleased -= OnImpulseReleased;
-        }
     }
 
     public void SetTrajectoryMultipler(float multiplier)
@@ -50,14 +31,15 @@ public class TrajectoryRenderer : MonoBehaviour
         _startTransform = startTransform;
     }
 
-    private void ShowTrajectory(Vector2 initialPosition)
+    public void ShowTrajectory(Vector2 initialPosition)
     {
-        _outerCircle.sizeDelta = new Vector2(Screen.width * Constants.AimCircleOuterRadiusPercent*2, Screen.width * Constants.AimCircleOuterRadiusPercent*2);
-        _innerCircle.sizeDelta = new Vector2(Screen.width * Constants.AimCircleInnerRadiusPercent*2, Screen.width * Constants.AimCircleInnerRadiusPercent*2);
+        Vector2 canvasSize = _rootCanvasRect.rect.size;
+        _outerCircle.sizeDelta = new Vector2(canvasSize.x * Constants.AimCircleOuterRadiusPercent*2, canvasSize.x * Constants.AimCircleOuterRadiusPercent*2);
+        _innerCircle.sizeDelta = new Vector2(canvasSize.x * Constants.AimCircleInnerRadiusPercent*2, canvasSize.x * Constants.AimCircleInnerRadiusPercent*2);
 
         if (initialPosition.x < 0 && initialPosition.y < 0)
         {
-            _circleCenter = new Vector2(Constants.AimCircleOffsetPercentX * Screen.width, Constants.AimCircleOffsetPercentY * Screen.height);
+            _circleCenter = new Vector2(Constants.AimCircleOffsetPercentX * canvasSize.x, Constants.AimCircleOffsetPercentY * canvasSize.x);
         }
         else
         {
@@ -69,14 +51,14 @@ public class TrajectoryRenderer : MonoBehaviour
         _outerCircle.gameObject.SetActive(true);
     }
 
-    private void HideTrajectory()
+    public void HideTrajectory()
     {
         _innerCircle.gameObject.SetActive(false);
         _outerCircle.gameObject.SetActive(false);
         ClearTrajectory();
     }
 
-    private void DrawTrajectory(Vector2 aimVector)
+    public void DrawTrajectory(Vector2 aimVector)
     {
         _lineRenderer.positionCount = _resolution;
         _innerCircle.position = _circleCenter - aimVector * (_outerCircle.sizeDelta.x/2 - _innerCircle.sizeDelta.x/2);
@@ -94,10 +76,5 @@ public class TrajectoryRenderer : MonoBehaviour
     private void ClearTrajectory()
     {
         _lineRenderer.positionCount = 0;
-    }
-
-    private void OnImpulseReleased(Vector2 aimDirection)
-    {
-        HideTrajectory();
     }
 }

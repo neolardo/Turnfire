@@ -18,7 +18,7 @@ MonoBehaviour:
     _randomness: 0
     _group: {fileID: 11400000, guid: 0371d52dab082c1409e9eaf7579b9bee, type: 2}
   ExplosionForce:
-    _normalizedValue: 0.702
+    _normalizedValue: 0.354
     _isRandomized: 1
     _randomness: 0.11
     _group: {fileID: 11400000, guid: 94d2c71f550b1f64f8c1bcf3cdeaaf3b, type: 2}

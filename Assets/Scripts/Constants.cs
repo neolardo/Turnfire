@@ -8,7 +8,8 @@ public static class Constants
     public const float AimCircleInnerRadiusPercent = 0.018f;
     public const float AimCircleOffsetPercentX = 0.10f;
     public const float AimCircleOffsetPercentY = 0.85f;
-
+    public const float UpwardAimThresholdY = 0.4f;
+    public const float DownwardAimThresholdY = -0.4f;
     //projectile
     public const float ProjectileOffset = 1f;
 
