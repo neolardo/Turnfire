@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -8,6 +10,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject _gameplayPausedScreen;
     [SerializeField] private GameObject _inventoryPanel;
     [SerializeField] private InventoryUI _inventoryUI;
+    [SerializeField] private TeamHealthbarUIManager _teamHealthbarUIManager;
 
     private void Awake()
     {
@@ -17,6 +20,11 @@ public class UIManager : MonoBehaviour
         gameStateManager.StateChanged += OnGameStateChanged;
         var inputManager = FindFirstObjectByType<InputManager>();
         inputManager.ToggleInventoryPerformed += ToggleInventory;//TODO: refactor?
+    }
+
+    public void CreateTeamHealthbars(IEnumerable<Team> teams)
+    {
+        _teamHealthbarUIManager.CreateHealthBars(teams);
     }
 
     private void ToggleInventory()

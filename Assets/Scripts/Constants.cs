@@ -14,7 +14,8 @@ public static class Constants
     public const float ProjectileOffset = 1f;
 
     //healthbar
-    public const int VerticalHealthbarOffset = 100;
+    public const int TeamHealthbarOffsetPixelsX = 20;
+    public const int TeamHealthbarOffsetPixelsY = 10;
 
     //layers
     public const int CharacterLayer = 3;

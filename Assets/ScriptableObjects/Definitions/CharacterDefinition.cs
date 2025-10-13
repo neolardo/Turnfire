@@ -13,6 +13,7 @@ public class CharacterDefinition : ScriptableObject
     public CharacterFrame AimMiddleFrame;
     public CharacterFrame AimLowFrame;
     public CharacterFrame AimHighFrame;
+    public CharacterFrame[] BackFromLandFrames;
 
     [Header("Stats")]
     public int MaxHealth;

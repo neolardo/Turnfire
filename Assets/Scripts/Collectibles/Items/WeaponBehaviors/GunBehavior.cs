@@ -41,7 +41,7 @@ public class GunBehavior : UnityDriven, IItemBehavior
     public void InitializePreview(ItemUsageContext context, ItemPreviewRendererManager rendererManager)
     {
         rendererManager.SelectRenderer(ItemPreviewRendererType.Trajectory);
-        rendererManager.TrajectoryRenderer.SetStartTransform(context.Owner.transform);
+        rendererManager.TrajectoryRenderer.SetOrigin(context.Owner.transform);
         rendererManager.TrajectoryRenderer.SetTrajectoryMultipler(_definition.FireStrength.CalculateValue());
     }
 

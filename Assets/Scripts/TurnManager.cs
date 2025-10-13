@@ -48,6 +48,7 @@ public class TurnManager : MonoBehaviour
         {
             team.TeamLost += OnAnyTeamLost;
         }
+        uiManager.CreateTeamHealthbars(_teams);
         GameEnded+= (_) => inputManager.OnGameEnded(); //TODO?
     }
 

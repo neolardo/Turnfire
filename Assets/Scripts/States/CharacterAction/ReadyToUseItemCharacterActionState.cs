@@ -57,13 +57,13 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
         base.StartState(currentCharacter);
         _inputManager.IsAimingEnabled = true;
         _inputManager.IsOpeningInventoryEnabled = true;
-        var context = new ItemUsageContext(currentCharacter.transform.position, Vector2.zero, currentCharacter.transform, _projectileManager);
-        currentCharacter.GetSelectedItem().Behavior.InitializePreview(context, _rendererManager); //TODO: on selected item changed!
+        var context = new ItemUsageContext(_currentCharacter.transform.position, Vector2.zero, _currentCharacter.ItemTransform, _projectileManager);
+        currentCharacter.GetSelectedItem().Behavior.InitializePreview(context, _rendererManager);
     }
 
     public void OnSelectedItemChanged(Item selectedItem)
     {
-        var context = new ItemUsageContext(_currentCharacter.transform.position, Vector2.zero, _currentCharacter.transform, _projectileManager);
+        var context = new ItemUsageContext(_currentCharacter.transform.position, Vector2.zero, _currentCharacter.ItemTransform, _projectileManager);
         selectedItem.Behavior.InitializePreview(context, _rendererManager);
     }
 
@@ -77,7 +77,7 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
     private void OnImpulseReleased(Vector2 aimVector)
     {
         _trajectoryRenderer.HideTrajectory();
-        _currentCharacter.UseSelectedItem(new ItemUsageContext(_currentCharacter.transform.position, aimVector, _currentCharacter.transform, _projectileManager));
+        _currentCharacter.UseSelectedItem(new ItemUsageContext(_currentCharacter.transform.position, aimVector, _currentCharacter.ItemTransform, _projectileManager));
         EndState();
     }
 }

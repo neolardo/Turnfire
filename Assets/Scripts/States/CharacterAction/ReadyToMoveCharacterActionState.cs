@@ -1,3 +1,4 @@
+using UnityEditor.AnimatedValues;
 using UnityEngine;
 
 public class ReadyToMoveCharacterActionState : CharacterActionState
@@ -38,16 +39,19 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
     private void OnAimStarted(Vector2 aimVector)
     {
         _trajectoryRenderer.ShowTrajectory(aimVector);
+        _currentCharacter.PrepareToJump();
     }
 
     private void OnAimChanged(Vector2 aimVector)
     {
         _trajectoryRenderer.DrawTrajectory(aimVector);
+        _currentCharacter.ChangeJumpAim(aimVector);
     }
 
     private void OnAimCancelled()
     {
         _trajectoryRenderer.HideTrajectory();
+        _currentCharacter.CancelJump();
     }
 
     private void OnImpulseReleased(Vector2 aimDirection)

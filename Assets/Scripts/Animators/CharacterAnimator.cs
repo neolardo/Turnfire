@@ -31,7 +31,7 @@ public class CharacterAnimator : MonoBehaviour
 
     private void OnCharacterIsGroundedChanged(bool isGrounded)
     {
-        if(isGrounded)
+        if (isGrounded)
         {
             PlayLandAnimation();
         }
@@ -41,7 +41,7 @@ public class CharacterAnimator : MonoBehaviour
         }
     }
 
-    public void ChangeAimFrame(Vector2 aimDirection) //TODO
+    public void ChangeAimFrame(Vector2 aimDirection)
     {
         StopAnimation();
         _currentAnimationState = CharacterAnimationState.Aim;
@@ -79,13 +79,29 @@ public class CharacterAnimator : MonoBehaviour
     {
         PlayAnimation(CharacterAnimationState.Hurt);
     }
+
+    public void PlayPrepareToJumpAnimation()
+    {
+        PlayAnimation(CharacterAnimationState.Land, CharacterAnimationState.None);
+    }
+
+    public void PlayCancelJumpAnimation()
+    {
+        PlayAnimation(CharacterAnimationState.BackFromLand, CharacterAnimationState.Idle);
+    }
+
     private void PlayJumpAnimation()
     {
         PlayAnimation(CharacterAnimationState.Jump, CharacterAnimationState.None);
     }
     private void PlayLandAnimation()
     {
-        PlayAnimation(CharacterAnimationState.Land);
+        PlayAnimation(CharacterAnimationState.Land, CharacterAnimationState.BackFromLand);
+    }
+
+    public void ChangeJumpAim(Vector2 aimDirection)
+    {
+        ChangeOrientation(aimDirection.x < 0);
     }
 
     private void ChangeOrientation(bool turnToLeft)
@@ -138,6 +154,8 @@ public class CharacterAnimator : MonoBehaviour
                 return _characterDefinition.JumpFrames;
             case CharacterAnimationState.Land:
                 return _characterDefinition.LandFrames;
+            case CharacterAnimationState.BackFromLand:
+                return _characterDefinition.BackFromLandFrames;
             case CharacterAnimationState.Hurt:
                 return _characterDefinition.HurtFrames;
             case CharacterAnimationState.Death:
@@ -157,6 +175,8 @@ public class CharacterAnimator : MonoBehaviour
             case CharacterAnimationState.Jump:
                 return _animatorDefinition.FlyAnimationDurationPerFrame;
             case CharacterAnimationState.Land:
+                return _animatorDefinition.FlyAnimationDurationPerFrame;
+            case CharacterAnimationState.BackFromLand:
                 return _animatorDefinition.FlyAnimationDurationPerFrame;
             case CharacterAnimationState.Hurt:
                 return _animatorDefinition.HurtAnimationDurationPerFrame;

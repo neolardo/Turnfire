@@ -9,8 +9,9 @@ public class Character : MonoBehaviour
     [HideInInspector] public bool IsAlive => _health > 0;
     [HideInInspector] public bool IsMoving => _rb.linearVelocity.magnitude > Mathf.Epsilon;
     [HideInInspector] public bool IsUsingSelectedItem => _selectedItem.Behavior.IsInUse;
+    public Transform ItemTransform => _itemRenderer.transform;
 
-    [SerializeField] private HealthbarUI _healthbar; //TODO
+    [SerializeField] private CharacterHealthbarRenderer _healthbarRenderer;
     [SerializeField] private CharacterItemRenderer _itemRenderer;
     [SerializeField] private CharacterAnimator _animator;
 
@@ -29,15 +30,20 @@ public class Character : MonoBehaviour
             if (_health != value)
             {
                 _health = value;
-                HealthChanged?.Invoke(_health);
+                HealthChanged?.Invoke(NormalizedHealth);
             }
         }
     }
 
+    public float NormalizedHealth => _health / CharacterDefinition.MaxHealth;
+
     private List<Item> _items;
     private Item _selectedItem;
 
-    public event Action<int> HealthChanged;
+    /// <summary>
+    /// Fires an event on every health change containing the normalized health ratio of this character.
+    /// </summary>
+    public event Action<float> HealthChanged;
     public event Action Died;
     public event Action<Item> SelectedItemChanged;
 
@@ -56,14 +62,13 @@ public class Character : MonoBehaviour
         _selectedItem = _items.FirstOrDefault();
         SelectedItemChanged += _itemRenderer.ChangeItem;
         _rb = GetComponent<Rigidbody2D>();
-        HealthChanged += _healthbar.SetCurrentHeath; //TODO
+        HealthChanged += _healthbarRenderer.SetCurrentHealth;
     }
 
     private void Start() // after child awake run
     {
         _itemRenderer.ChangeItem(_selectedItem);
-        _healthbar.Follow(transform);
-        _healthbar.SetMaxHealth(Health);
+        _healthbarRenderer.SetCurrentHealth(1);
     }
 
     #region Health
@@ -131,9 +136,24 @@ public class Character : MonoBehaviour
         _rb.AddForce(aimDirection * CharacterDefinition.JumpStrength, ForceMode2D.Impulse);
     }
 
+    public void PrepareToJump()
+    {
+        _animator.PlayPrepareToJumpAnimation();
+    }
+
+    public void ChangeJumpAim(Vector2 aimDirection)
+    {
+        _animator.ChangeJumpAim(aimDirection);
+    }
+
+    public void CancelJump()
+    {
+        _animator.PlayCancelJumpAnimation();
+    }
+
     public void InitializeMovementPreview(TrajectoryRenderer trajectoryRenderer)
     {
-        trajectoryRenderer.SetStartTransform(transform);
+        trajectoryRenderer.SetOrigin(transform);
         trajectoryRenderer.SetTrajectoryMultipler(CharacterDefinition.JumpStrength);
     }
 

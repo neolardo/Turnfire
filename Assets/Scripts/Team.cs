@@ -7,11 +7,18 @@ public class Team : MonoBehaviour
 {
     [HideInInspector] public bool IsTeamAlive => _characters.Any(c => c.IsAlive);
     [SerializeField] private List<Character> _characters;
+    [SerializeField] private Color _teamColor; //TODO
+
+    public Color TeamColor => _teamColor;
     public Character CurrentCharacter => _characters[_characterIndex];
     private int _characterIndex;
     public string TeamName => _teamName;
     private string _teamName;
 
+    /// <summary>
+    /// Fires an event containing the normalized team health.
+    /// </summary>
+    public event Action<float> TeamHealthChanged;
     public event Action TeamLost;
 
     private void Awake()
@@ -24,8 +31,14 @@ public class Team : MonoBehaviour
         foreach (Character character in _characters)
         {
             character.Died += OnAnyTeamCharacterDied;
+            character.HealthChanged += (_) => OnAnyTeamCharacterHealthChanged();
         }
         _characterIndex = 0;
+    }
+
+    private void OnAnyTeamCharacterHealthChanged()
+    {
+        TeamHealthChanged?.Invoke(_characters.Sum(c => c.NormalizedHealth) / _characters.Count);
     }
 
     public void SelectNextCharacter()

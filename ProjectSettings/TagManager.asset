@@ -50,6 +50,9 @@ TagManager:
   - name: Ground
     uniqueID: 1136168797
     locked: 0
+  - name: Trajectory
+    uniqueID: 3045965287
+    locked: 0
   - name: Character
     uniqueID: 1615287115
     locked: 0
