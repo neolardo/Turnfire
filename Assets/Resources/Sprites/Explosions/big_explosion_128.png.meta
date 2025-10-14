@@ -3,65 +3,65 @@ guid: f7912a5eda282524a927861b1e3d77b4
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -458852505741916735
-    second: simple_explosion_1_128_0
+      213: 4909832585997935722
+    second: big_explosion_128_0
   - first:
-      213: 6185354509711349816
-    second: simple_explosion_1_128_1
+      213: -3955402480578044274
+    second: big_explosion_128_1
   - first:
-      213: -4740975251572141479
-    second: simple_explosion_1_128_2
+      213: 1242567246317809406
+    second: big_explosion_128_2
   - first:
-      213: 3686396670210617593
-    second: simple_explosion_1_128_3
+      213: 2297872213678391372
+    second: big_explosion_128_3
   - first:
-      213: 5274278182109693976
-    second: simple_explosion_1_128_4
+      213: -4379257697724886999
+    second: big_explosion_128_4
   - first:
-      213: -2918376234819103980
-    second: simple_explosion_1_128_5
+      213: 761680885628561796
+    second: big_explosion_128_5
   - first:
-      213: 6814482878826552795
-    second: simple_explosion_1_128_6
+      213: -243116299778577130
+    second: big_explosion_128_6
   - first:
-      213: -5855807688439795724
-    second: simple_explosion_1_128_7
+      213: -7558446238233830328
+    second: big_explosion_128_7
   - first:
-      213: 3533131643482647734
-    second: simple_explosion_1_128_8
+      213: -1112637420300199306
+    second: big_explosion_128_8
   - first:
-      213: -4461619129966447165
-    second: simple_explosion_1_128_9
+      213: 2345979430383839867
+    second: big_explosion_128_9
   - first:
-      213: 4791604229761550968
-    second: simple_explosion_1_128_10
+      213: 3183458696880878023
+    second: big_explosion_128_10
   - first:
-      213: -7370874579697631982
-    second: simple_explosion_1_128_11
+      213: -4711443024492090000
+    second: big_explosion_128_11
   - first:
-      213: -6829230580742854451
-    second: simple_explosion_1_128_12
+      213: -6696928654230633763
+    second: big_explosion_128_12
   - first:
-      213: 6508136840395878508
-    second: simple_explosion_1_128_13
+      213: -9119039796229615974
+    second: big_explosion_128_13
   - first:
-      213: 1880488208404032454
-    second: simple_explosion_1_128_14
+      213: -8719091442399503947
+    second: big_explosion_128_14
   - first:
-      213: -3780299840598451331
-    second: simple_explosion_1_128_15
+      213: -3658314349604798971
+    second: big_explosion_128_15
   - first:
-      213: -3848369827225816631
-    second: simple_explosion_1_128_16
+      213: -1074109112422943997
+    second: big_explosion_128_16
   - first:
-      213: 3579147853253194107
-    second: simple_explosion_1_128_17
+      213: -8630404091666953201
+    second: big_explosion_128_17
   - first:
-      213: -4275638401542231624
-    second: simple_explosion_1_128_18
+      213: -7823640271166095251
+    second: big_explosion_128_18
   - first:
-      213: -5686004912496870875
-    second: simple_explosion_1_128_19
+      213: -36889646326981287
+    second: big_explosion_128_19
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -196,7 +196,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: simple_explosion_1_128_0
+      name: big_explosion_128_0
       rect:
         serializedVersion: 2
         x: 0
@@ -211,14 +211,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1c584feb314d1a9f0800000000000000
-      internalID: -458852505741916735
+      spriteID: a646b0b39ba332440800000000000000
+      internalID: 4909832585997935722
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: simple_explosion_1_128_1
+      name: big_explosion_128_1
       rect:
         serializedVersion: 2
         x: 128
@@ -233,14 +233,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 8389439b72bc6d550800000000000000
-      internalID: 6185354509711349816
+      spriteID: e8e527986669b19c0800000000000000
+      internalID: -3955402480578044274
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: simple_explosion_1_128_2
+      name: big_explosion_128_2
       rect:
         serializedVersion: 2
         x: 256
@@ -255,14 +255,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 952df11a02ca43eb0800000000000000
-      internalID: -4740975251572141479
+      spriteID: efeee4eb35c7e3110800000000000000
+      internalID: 1242567246317809406
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: simple_explosion_1_128_3
+      name: big_explosion_128_3
       rect:
         serializedVersion: 2
         x: 384
@@ -277,14 +277,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9f0361d7d36b82330800000000000000
-      internalID: 3686396670210617593
+      spriteID: c408a8b8a9ea3ef10800000000000000
+      internalID: 2297872213678391372
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: simple_explosion_1_128_4
+      name: big_explosion_128_4
       rect:
         serializedVersion: 2
         x: 512
@@ -299,14 +299,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 818cd33ff00023940800000000000000
-      internalID: 5274278182109693976
+      spriteID: 92096338350c933c0800000000000000
+      internalID: -4379257697724886999
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: simple_explosion_1_128_5
+      name: big_explosion_128_5
       rect:
         serializedVersion: 2
         x: 640
@@ -321,14 +321,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4135aa2d648df77d0800000000000000
-      internalID: -2918376234819103980
+      spriteID: 489681cdab8029a00800000000000000
+      internalID: 761680885628561796
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: simple_explosion_1_128_6
+      name: big_explosion_128_6
       rect:
         serializedVersion: 2
         x: 768
@@ -343,14 +343,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: bdd1078d218e19e50800000000000000
-      internalID: 6814482878826552795
+      spriteID: 61d2790730740acf0800000000000000
+      internalID: -243116299778577130
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: simple_explosion_1_128_7
+      name: big_explosion_128_7
       rect:
         serializedVersion: 2
         x: 896
@@ -365,8 +365,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4ff6b89ceedfbbea0800000000000000
-      internalID: -5855807688439795724
+      spriteID: 84c5f2451310b1790800000000000000
+      internalID: -7558446238233830328
       vertices: []
       indices: 
       edges: []
@@ -375,7 +375,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: edf5ab04d6f1db54394b532051c61377
+    spriteID: 3935620a63324ef4a97750e57a9a10d2
     internalID: 0
     vertices: []
     indices: 
@@ -385,14 +385,14 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      simple_explosion_1_128_0: -458852505741916735
-      simple_explosion_1_128_1: 6185354509711349816
-      simple_explosion_1_128_2: -4740975251572141479
-      simple_explosion_1_128_3: 3686396670210617593
-      simple_explosion_1_128_4: 5274278182109693976
-      simple_explosion_1_128_5: -2918376234819103980
-      simple_explosion_1_128_6: 6814482878826552795
-      simple_explosion_1_128_7: -5855807688439795724
+      big_explosion_128_0: 4909832585997935722
+      big_explosion_128_1: -3955402480578044274
+      big_explosion_128_2: 1242567246317809406
+      big_explosion_128_3: 2297872213678391372
+      big_explosion_128_4: -4379257697724886999
+      big_explosion_128_5: 761680885628561796
+      big_explosion_128_6: -243116299778577130
+      big_explosion_128_7: -7558446238233830328
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

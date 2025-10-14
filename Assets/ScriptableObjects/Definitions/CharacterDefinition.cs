@@ -4,16 +4,17 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "CharacterDefinition", menuName = "Scriptable Objects/CharacterDefinition")]
 public class CharacterDefinition : ScriptableObject
 {
-    [Header("Animator")]
-    public CharacterFrame[] IdleFrames;
-    public CharacterFrame[] JumpFrames;
-    public CharacterFrame[] LandFrames;
-    public CharacterFrame[] HurtFrames;
-    public CharacterFrame[] DeathFrames;
-    public CharacterFrame AimMiddleFrame;
-    public CharacterFrame AimLowFrame;
-    public CharacterFrame AimHighFrame;
-    public CharacterFrame[] BackFromLandFrames;
+    [Header("Animations")]
+    public CharacterAnimationDefinition IdleAnimationDefinition;
+    public CharacterAnimationDefinition JumpAnimationDefinition;
+    public CharacterAnimationDefinition LandAnimationDefinition;
+    public CharacterAnimationDefinition PrepareToJumpAnimationDefinition;
+    public CharacterAnimationDefinition HurtAnimationDefinition;
+    public CharacterAnimationDefinition DeathAnimationDefinition;
+    public CharacterAnimationDefinition AimLowAnimationDefinition;
+    public CharacterAnimationDefinition AimMiddleAnimationDefinition;
+    public CharacterAnimationDefinition AimHighAnimationDefinition;
+    public CharacterAnimationDefinition BackFromLandAnimationDefinition;
 
     [Header("Stats")]
     public int MaxHealth;

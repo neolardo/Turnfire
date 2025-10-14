@@ -31,7 +31,7 @@ public class GunBehavior : UnityDriven, IItemBehavior
 
     private IEnumerator WaitUntilFiringFinished(ExplosionInfo ei)
     {
-        while (ei.ExplodedCharacters.Any(c => c.IsAlive && c.IsMoving))
+        while (ei.ExplodedCharacters.Any(c => c.IsAlive && c.IsMoving) || ei.Explosion.IsAnimationPlaying)
         {
             yield return null;
         }

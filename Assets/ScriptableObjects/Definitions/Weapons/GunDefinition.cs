@@ -6,7 +6,6 @@ using UnityEngine;
 public class GunDefinition : ItemDefinition
 {
     public RangedStatFloat FireStrength;
-
     public ProjectileDefinition ProjectileDefinition;
     public override IItemBehavior CreateItemBehavior()
     {

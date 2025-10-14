@@ -9,10 +9,9 @@ public class Character : MonoBehaviour
     [HideInInspector] public bool IsAlive => _health > 0;
     [HideInInspector] public bool IsMoving => _rb.linearVelocity.magnitude > Mathf.Epsilon;
     [HideInInspector] public bool IsUsingSelectedItem => _selectedItem.Behavior.IsInUse;
-    public Transform ItemTransform => _itemRenderer.transform;
+    public Transform ItemTransform => _animator.ItemTransform;
 
     [SerializeField] private CharacterHealthbarRenderer _healthbarRenderer;
-    [SerializeField] private CharacterItemRenderer _itemRenderer;
     [SerializeField] private CharacterAnimator _animator;
 
     public CharacterDefinition CharacterDefinition;
@@ -60,14 +59,12 @@ public class Character : MonoBehaviour
             Debug.LogWarning($"{gameObject.name} has no initial items.");
         }
         _selectedItem = _items.FirstOrDefault();
-        SelectedItemChanged += _itemRenderer.ChangeItem;
         _rb = GetComponent<Rigidbody2D>();
         HealthChanged += _healthbarRenderer.SetCurrentHealth;
     }
 
     private void Start() // after child awake run
     {
-        _itemRenderer.ChangeItem(_selectedItem);
         _healthbarRenderer.SetCurrentHealth(1);
     }
 
@@ -105,21 +102,17 @@ public class Character : MonoBehaviour
 
     public void StartAiming(Vector2 aimVector)
     {
-        _itemRenderer.ShowItem();
-        _itemRenderer.ChangeAim(aimVector);
-        _animator.ChangeAimFrame(aimVector);
+        _animator.StartAiming(_selectedItem, aimVector);
     }
 
     public void ChangeAim(Vector2 aimVector)
     {
-        _itemRenderer.ChangeAim(aimVector);
-        _animator.ChangeAimFrame(aimVector);
+        _animator.ChangeAim(aimVector);
     }
 
     public void CancelAiming()
     {
-        _itemRenderer.HideItem();
-        _animator.PlayIdleAnimation();
+        _animator.CancelAiming();
     }
 
     #endregion
@@ -162,10 +155,10 @@ public class Character : MonoBehaviour
     #region Items
 
     public void UseSelectedItem(ItemUsageContext context)
-    {
-        _itemRenderer.UseItemThenHide();
+    { 
+        //TODO refactor
         _selectedItem.Behavior.Use(context);
-        _animator.PlayUseItemAnimation();
+        _animator.PlayItemActionAnimation(_selectedItem);
     }
 
     public bool TryAddItem(Item item)

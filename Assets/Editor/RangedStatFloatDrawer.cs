@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-[CustomPropertyDrawer(typeof(RangedStatFloat))]
+//[CustomPropertyDrawer(typeof(RangedStatFloat))]
 public class RangedStatFloatDrawer : PropertyDrawer
 {
     private static readonly float LineHeight = EditorGUIUtility.singleLineHeight;

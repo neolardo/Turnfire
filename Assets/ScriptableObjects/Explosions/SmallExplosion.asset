@@ -10,20 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e39c365b6ec13d1489aee73b03277779, type: 3}
-  m_Name: SimpleExplosion
+  m_Name: SmallExplosion
   m_EditorClassIdentifier: 
-  Damage:
-    _normalizedValue: 0.233
-    _isRandomized: 0
-    _randomness: 0
-    _group: {fileID: 11400000, guid: 0371d52dab082c1409e9eaf7579b9bee, type: 2}
-  ExplosionForce:
-    _normalizedValue: 0.354
+  Force:
+    _normalizedValue: 0.2
     _isRandomized: 1
-    _randomness: 0.11
+    _randomness: 0.05
     _group: {fileID: 11400000, guid: 94d2c71f550b1f64f8c1bcf3cdeaaf3b, type: 2}
-  ExplosionRadius:
-    _normalizedValue: 0.249
+  Radius:
+    _normalizedValue: 0.15
     _isRandomized: 1
-    _randomness: 0.095
+    _randomness: 0.05
     _group: {fileID: 11400000, guid: 31a5227b1c02f8f448e1094ce68575a4, type: 2}
+  AnimationDefinition: {fileID: 11400000, guid: 9ee8f5bc36a5bff4b9c462019612a98a, type: 2}

@@ -1,11 +1,12 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer))] 
-public class SimpleAnimator : MonoBehaviour
+public class OneShotAnimator : MonoBehaviour
 {
     private SpriteRenderer _spriteRenderer;
-    [SerializeField] private Sprite[] _frames;
+    private AnimationDefinition _animation;
 
     public bool IsPlaying => _isPlaying;
     private bool _isPlaying;
@@ -13,6 +14,11 @@ public class SimpleAnimator : MonoBehaviour
     private void Awake()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
+    }
+
+    public void SetAnimation(AnimationDefinition animation)
+    {
+        _animation = animation;
     }
 
     public void PlayAnimation(float frameDuration, bool hideAfter = true)
@@ -23,9 +29,10 @@ public class SimpleAnimator : MonoBehaviour
     private IEnumerator AnimateCoroutine(float frameDuration, bool hideAfter)
     {
         _isPlaying = true;
-        for (int i = 0; i < _frames.Length; i++)
+        var frames = _animation.Frames;
+        for (int i = 0; i < frames.Length; i++)
         {
-            _spriteRenderer.sprite = _frames[i];
+            _spriteRenderer.sprite = frames[i];
             yield return new WaitForSeconds(frameDuration);
         }
         if(hideAfter)

@@ -13,4 +13,9 @@ MonoBehaviour:
   m_Name: Cannon Ball
   m_EditorClassIdentifier: 
   Sprite: {fileID: 21300000, guid: f3fc0b49b1f3cab42a93be092eb0efe6, type: 3}
-  ExplosionDefinition: {fileID: 11400000, guid: 6063733459c50e1439b0420ee61bf614, type: 2}
+  Damage:
+    _normalizedValue: 0.2
+    _isRandomized: 0
+    _randomness: 0
+    _group: {fileID: 11400000, guid: 0371d52dab082c1409e9eaf7579b9bee, type: 2}
+  ExplosionDefinition: {fileID: 11400000, guid: 5788c650c2c9edc4390278b0809e001f, type: 2}

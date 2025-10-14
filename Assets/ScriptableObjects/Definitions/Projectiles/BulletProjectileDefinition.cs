@@ -11,6 +11,6 @@ public class BulletProjectileDefinition : ProjectileDefinition
 
     public override IEnumerable<RangedStat> GetRangedStats()
     {
-        return new [] { ExplosionDefinition.Damage};
+        return new [] { Damage};
     }
 }

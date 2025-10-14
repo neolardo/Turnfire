@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4096b721780c27748abcf89fc1f9eb4e, type: 3}
   m_Name: CharacterAnimator
   m_EditorClassIdentifier: 
-  IdleAnimationDurationPerFrame: 0.8
-  HurtAnimationDurationPerFrame: 0.5
-  DeathAnimationDurationPerFrame: 0.1
-  FlyAnimationDurationPerFrame: 0.1
+  IdleAnimationFrameDuration: 0.6
+  HurtAnimationFrameDuration: 0.6
+  DeathAnimationFrameDuration: 0.1
+  FlyAnimationFrameDuration: 0.1
+  ItemActionAnimationFrameDuration: 0.1
   ItemUsageDelay: 1

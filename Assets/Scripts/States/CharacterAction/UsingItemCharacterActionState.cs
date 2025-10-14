@@ -6,7 +6,6 @@ public class UsingItemCharacterActionState : CharacterActionState
     public UsingItemCharacterActionState(MonoBehaviour manager) : base(manager)
     {
     }
-
     public override CharacterActionStateType State => CharacterActionStateType.UsingItem;
 
     public override void StartState(Character currentCharacter)

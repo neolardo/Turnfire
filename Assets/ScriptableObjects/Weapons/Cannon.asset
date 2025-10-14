@@ -15,8 +15,9 @@ MonoBehaviour:
   Sprite: {fileID: 21300000, guid: cd81c70a9804b7b45b15f8bbd9ada99f, type: 3}
   Name: Cannon
   Description: Fires a ball that explodes on the first contact.
+  ItemActionAnimationDefinition: {fileID: 11400000, guid: 305e25740d6920247b3f78a7ff9ad03e, type: 2}
   FireStrength:
-    _normalizedValue: 0.286
+    _normalizedValue: 0.282
     _isRandomized: 0
     _randomness: 0
     _group: {fileID: 11400000, guid: 22026dfb48c6fa8489243cadbd99e5af, type: 2}
