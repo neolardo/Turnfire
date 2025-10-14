@@ -2,14 +2,11 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class InventoryUI : MonoBehaviour
 {
     [Header("Panels")]
-    [SerializeField] private Toggle _createToggle;
-    [SerializeField] private Toggle _destroyToggle;
-    [SerializeField] private GridLayoutGroup _itemGrid;
+    [SerializeField] private InventoryToggleUI _weaponModifierToggle;
 
     [Header("Item Info")]
     [SerializeField] private TextMeshProUGUI _titleText;
@@ -21,7 +18,6 @@ public class InventoryUI : MonoBehaviour
     [SerializeField] private RectTransform _selectionFrame;
     [SerializeField] private RectTransform _previewFrame;
 
-    private bool _isDestroyItemTypeToggleActive;
     private Character _currentCharacter;
     private InventoryItemSlotUI _previewedSlot;
     private InventoryItemSlotUI _selectedSlot;
@@ -32,9 +28,7 @@ public class InventoryUI : MonoBehaviour
         var inputManager = FindFirstObjectByType<InputManager>();
         inputManager.ToggleInventoryCreateDestroyPerformed += ToggleItemType;
         inputManager.SelectInventorySlotPerformed += SelectPreviewedSlot;
-        _isDestroyItemTypeToggleActive = true;
-        _createToggle.isOn = !_isDestroyItemTypeToggleActive;
-        _destroyToggle.isOn = _isDestroyItemTypeToggleActive;
+        _weaponModifierToggle.SetLeftToggleValue(true);
 
         foreach (var slot in _itemSlots)
         {
@@ -73,9 +67,7 @@ public class InventoryUI : MonoBehaviour
 
     public void ToggleItemType()
     {
-        _isDestroyItemTypeToggleActive = !_isDestroyItemTypeToggleActive;
-        _createToggle.isOn = !_isDestroyItemTypeToggleActive;
-        _destroyToggle.isOn = _isDestroyItemTypeToggleActive;
+        _weaponModifierToggle.Toggle();
     }
 
     #region Select and Preview

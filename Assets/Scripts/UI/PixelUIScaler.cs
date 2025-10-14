@@ -37,6 +37,11 @@ public class PixelUIScaler : MonoBehaviour
         }
     }
 
+    public void SetUIDefinition(PixelUIDefinition uiDefinition)
+    {
+        _uiDefinition = uiDefinition;
+    }
+
     public void SetPosition(Vector2 anchor, Vector2 pivot, Vector2 offset)
     {
         _anchor = anchor;
@@ -45,6 +50,15 @@ public class PixelUIScaler : MonoBehaviour
         ApplyScaling();
     }
 
+    public void SetPositionAndSize(Vector2 anchor, Vector2 pivot, Vector2 position, Vector2Int size)
+    {
+        _anchor = anchor;
+        _rectTransform.pivot = pivot;
+        _offsetPixels = position;
+        _widthInPixels = size.x;
+        _heightInPixels = size.y;
+        ApplyScaling();
+    }
 
     private bool ScreenSizeChanged()
     {
@@ -68,8 +82,6 @@ public class PixelUIScaler : MonoBehaviour
         float width = _widthInPixels * scale;
         float height = _heightInPixels* scale;
         Vector2 offset = _offsetPixels * scale;
-
-        Debug.Log("canvasHeight: " + scale);
 
         _rectTransform.anchorMin = _anchor;
         _rectTransform.anchorMax = _anchor;

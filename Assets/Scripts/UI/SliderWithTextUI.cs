@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class SliderWithTextUI : MonoBehaviour
 {
-    [SerializeField] private Slider _slider;
+    [SerializeField] private PixelSliderUI _slider;
     [SerializeField] private TextMeshProUGUI _text;
 
     public void SetText(string text)
@@ -14,7 +14,7 @@ public class SliderWithTextUI : MonoBehaviour
 
     public void SetSliderValue(float normalizedValue)
     {
-        _slider.value = normalizedValue;
+        _slider.SetSliderValue( normalizedValue);
     }
 
 }
