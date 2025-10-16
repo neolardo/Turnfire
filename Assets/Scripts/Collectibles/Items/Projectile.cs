@@ -49,8 +49,8 @@ public class Projectile : MonoBehaviour
 
     private void OnExploded(ExplosionInfo ei)
     {
-        gameObject.SetActive(false);
         Exploded?.Invoke(ei);
+        gameObject.SetActive(false);
     }
 
 

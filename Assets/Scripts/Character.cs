@@ -87,10 +87,7 @@ public class Character : MonoBehaviour
 
     private void Die()
     {
-        //TODO
         _animator.PlayDeathAnimation();
-        var spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
-        spriteRenderer.color = Color.grey;
         Debug.Log(gameObject.name + " died.");
         Died?.Invoke();
     }

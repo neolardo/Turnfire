@@ -1,34 +1,26 @@
 ﻿using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer))]
-[RequireComponent(typeof(PolygonCollider2D))]
+[RequireComponent(typeof(CompositeCollider2D))]
 public class DestructibleTerrain: MonoBehaviour
 {
     private Texture2D _texture;
     private SpriteRenderer _renderer;
-    private PolygonCollider2D _collider;
+    private PolygonCollider2D[] _polygonColliders;
+    private CompositeCollider2D _compositeCollider;
 
-    private void Awake()
+    public void Initialize(Sprite terrainSprite)
     {
         _renderer = GetComponent<SpriteRenderer>();
-        _collider = GetComponent<PolygonCollider2D>();
-        // Make the texture writable
+        _compositeCollider = GetComponent<CompositeCollider2D>();
+        _polygonColliders = new PolygonCollider2D[transform.childCount];
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            _polygonColliders[i] = transform.GetChild(i).GetComponent<PolygonCollider2D>();
+        }
 
-        // Clone the texture so we can modify it
-        Texture2D source = _renderer.sprite.texture;
-        _texture = new Texture2D(source.width, source.height, TextureFormat.RGBA32, false);
-        _texture.filterMode = source.filterMode;
-        _texture.wrapMode = source.wrapMode;
-        _texture.SetPixels(source.GetPixels());
-        _texture.Apply();
-
-        // Replace sprite with runtime sprite using our texture
-        _renderer.sprite = Sprite.Create(
-            _texture,
-            _renderer.sprite.rect,
-            new Vector2(0.5f, 0.5f),
-            _renderer.sprite.pixelsPerUnit
-        );
+        _renderer.sprite = terrainSprite;
+        _texture = terrainSprite.texture;
     }
 
     public void ApplyExplosion(Vector2 worldPos, float radius)
@@ -81,7 +73,13 @@ public class DestructibleTerrain: MonoBehaviour
 
     private void RebuildCollider()
     {
-        Destroy(_collider);
-        _collider = gameObject.AddComponent<PolygonCollider2D>();
+        //for (int i = 0; i < _polygonColliders.Length; i++)
+        //{
+        //    var col = _polygonColliders[i];
+        //    Destroy(col);
+        //    _polygonColliders[i].gameObject.AddComponent<PolygonCollider2D>(); 
+        //}
+        //TODO
+      
     }
 }
