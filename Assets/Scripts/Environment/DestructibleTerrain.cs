@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class DestructibleTerrainRenderer : MonoBehaviour
+public class DestructibleTerrain : MonoBehaviour
 {
     [SerializeField] private int _pixelsPerUnit = 64;
     [SerializeField] private int _pixelsPerTile = 32;
@@ -9,13 +9,13 @@ public class DestructibleTerrainRenderer : MonoBehaviour
     [SerializeField] private Transform _explosionHoleContainer;
     [SerializeField] private Vector2 _terrainOffset;
     [SerializeField] private SpriteRenderer _spriteRenderer;
-    [SerializeField] private Texture2D _sourceTexture; //TODO: remove serialization
+    private Texture2D _sourceTexture;
     private int _width, _height;
     private Vector2 _tilemapOffset;
 
     private void Start()
     {
-        ConvertTilemapToDestructibleTerrain();
+        BakeTilemapToTexture();
     }
 
     public void InitializeFromTexture(Texture2D texture)
@@ -29,7 +29,7 @@ public class DestructibleTerrainRenderer : MonoBehaviour
 
     #region Tilemap To Texture
 
-    private void ConvertTilemapToDestructibleTerrain()
+    private void BakeTilemapToTexture()
     {
         var tilemap = GetComponent<Tilemap>();
         var tilemapRenderer = GetComponent<TilemapRenderer>();

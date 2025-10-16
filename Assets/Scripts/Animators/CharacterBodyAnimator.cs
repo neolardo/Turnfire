@@ -24,7 +24,7 @@ public class CharacterBodyAnimator : MonoBehaviour
     }
 
 
-    public void SetTeamColor(Color color) //TODO
+    public void SetTeamColor(Color color)
     {
         _teamColor = color;
         _clothesSpriteRenderer.color = color;

@@ -32,6 +32,7 @@ public class Team : MonoBehaviour
         {
             character.Died += OnAnyTeamCharacterDied;
             character.HealthChanged += (_) => OnAnyTeamCharacterHealthChanged();
+            character.SetTeamColor(TeamColor);
         }
         _characterIndex = 0;
     }

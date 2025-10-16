@@ -34,7 +34,7 @@ public class Character : MonoBehaviour
         }
     }
 
-    public float NormalizedHealth => _health / CharacterDefinition.MaxHealth;
+    public float NormalizedHealth => _health / (float)CharacterDefinition.MaxHealth;
 
     private List<Item> _items;
     private Item _selectedItem;
@@ -90,6 +90,11 @@ public class Character : MonoBehaviour
         _animator.PlayDeathAnimation();
         Debug.Log(gameObject.name + " died.");
         Died?.Invoke();
+    }
+
+    public void SetTeamColor(Color color)
+    {
+        _animator.SetTeamColor(color);
     }
 
 
