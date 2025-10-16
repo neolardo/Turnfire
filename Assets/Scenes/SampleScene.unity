@@ -9576,8 +9576,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 795cd88e2e308e8468bdd7ab5cead368, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _textureOffset: {x: 1, y: 0.25}
+  _terrainOffset: {x: -8, y: -3.5}
   _destructibleTerrainPrefab: {fileID: 8532404136260023570, guid: 77e4699f33da2da4aaa392309e9f6652, type: 3}
+  _pixelsPerTile: 32
 --- !u!1 &1947031265
 GameObject:
   m_ObjectHideFlags: 0

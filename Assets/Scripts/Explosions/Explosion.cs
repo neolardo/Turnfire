@@ -46,6 +46,10 @@ public class Explosion : MonoBehaviour
                 character.Push(pushVector * explosionStrength);
                 _explodedCharacters.Add(character);
             }
+            else if (hit.TryGetComponent(out SimpleDestructibleTerrain simpleDest))
+            {
+                simpleDest.ApplyExplosion(contactPoint, explosionRadius);
+            }
             else if (hit.TryGetComponent(out DestructibleTerrain terrain))
             {
                 terrain.ApplyExplosion(contactPoint, explosionRadius);

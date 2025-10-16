@@ -32,4 +32,7 @@ public static class Constants
     public const string GameplayActionMap = "Gameplay";
     public const string InventoryActionMap = "Inventory";
 
+    // destructible terrain
+    public const float AlphaThreshold = 0.1f;
+
 }

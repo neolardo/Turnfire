@@ -13,14 +13,13 @@ MonoBehaviour:
   m_Name: BigExplosion
   m_EditorClassIdentifier: 
   Force:
-    _normalizedValue: 0.4
+    _normalizedValue: 0.098
     _isRandomized: 1
     _randomness: 0.1
     _group: {fileID: 11400000, guid: 94d2c71f550b1f64f8c1bcf3cdeaaf3b, type: 2}
   Radius:
-    _normalizedValue: 0.3
-    _isRandomized: 1
+    _normalizedValue: 0.044
+    _isRandomized: 0
     _randomness: 0.05
     _group: {fileID: 11400000, guid: 31a5227b1c02f8f448e1094ce68575a4, type: 2}
   AnimationDefinition: {fileID: 11400000, guid: 0ac20b2f0c75c9a4ea17eb6c7ad4d281, type: 2}
-  IsVisualOnly: 0
