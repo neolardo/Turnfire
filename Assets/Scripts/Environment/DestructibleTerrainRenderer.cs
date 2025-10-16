@@ -1,19 +1,33 @@
-﻿using TMPro;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Tilemaps;
 
-[RequireComponent(typeof(Tilemap))]
-[RequireComponent(typeof(TilemapRenderer))]
-public class TilemapToDestructibleTerrainConverter : MonoBehaviour
+public class DestructibleTerrainRenderer : MonoBehaviour
 {
-    [SerializeField] private DestructibleTerrainRenderer _terrainRenderer;
-    [SerializeField] private Vector2 _terrainOffset;
+    [SerializeField] private int _pixelsPerUnit = 64;
     [SerializeField] private int _pixelsPerTile = 32;
+    [SerializeField] private ExplosionHole _explosionHolePrefab;
+    [SerializeField] private Transform _explosionHoleContainer;
+    [SerializeField] private Vector2 _terrainOffset;
+    [SerializeField] private SpriteRenderer _spriteRenderer;
+    [SerializeField] private Texture2D _sourceTexture; //TODO: remove serialization
+    private int _width, _height;
+    private Vector2 _tilemapOffset;
 
     private void Start()
     {
         ConvertTilemapToDestructibleTerrain();
     }
+
+    public void InitializeFromTexture(Texture2D texture)
+    {        
+        _sourceTexture = texture;
+        _spriteRenderer.transform.position = _terrainOffset;
+        _spriteRenderer.sprite = Sprite.Create(_sourceTexture, new Rect(Vector2.zero, new Vector2(_sourceTexture.width, _sourceTexture.height)), Vector2.zero, _pixelsPerUnit, 0, SpriteMeshType.Tight);
+        _width = _sourceTexture.width;
+        _height = _sourceTexture.height;
+    }
+
+    #region Tilemap To Texture
 
     private void ConvertTilemapToDestructibleTerrain()
     {
@@ -24,13 +38,12 @@ public class TilemapToDestructibleTerrainConverter : MonoBehaviour
 
         var bounds = tilemap.cellBounds;
         Vector3Int centerCell = new Vector3Int((bounds.xMin + bounds.xMax) / 2, (bounds.yMin + bounds.yMax) / 2, 0);
-        Vector3 tilemapOffset = tilemap.CellToWorld(centerCell) +  Vector3.up * (tilemap.layoutGrid.cellSize.y / 2);
+        
+        _tilemapOffset = tilemap.CellToWorld(centerCell) + Vector3.up * (tilemap.layoutGrid.cellSize.y / 2);
 
-        _terrainRenderer.transform.position = _terrainOffset;
-        _terrainRenderer.InitializeFromTexture(texture);
-
-        // disable tilemap renderer
         tilemapRenderer.enabled = false;
+
+        InitializeFromTexture(texture);
     }
 
     private Texture2D GetReadableTexture(Sprite sprite)
@@ -88,4 +101,37 @@ public class TilemapToDestructibleTerrainConverter : MonoBehaviour
         texture.Apply();
         return texture;
     }
+
+    #endregion
+
+    public void ApplyExplosion(Vector2 worldPos, float radius)
+    {
+        Vector2 local = transform.InverseTransformPoint(worldPos);
+        local -= _tilemapOffset;
+        float ppu = _pixelsPerUnit;
+
+        int px = Mathf.RoundToInt(local.x * ppu + _width / 2f);
+        int py = Mathf.RoundToInt(local.y * ppu + _height / 2f);
+        int r = Mathf.RoundToInt(radius * ppu);
+
+        for (int y = -r; y <= r; y++)
+            for (int x = -r; x <= r; x++)
+            {
+                if (x * x + y * y > r * r) continue;
+
+                int tx = px + x;
+                int ty = py + y;
+                if (tx < 0 || ty < 0 || tx >= _width || ty >= _height) continue;
+
+                _sourceTexture.SetPixel(tx, ty, Color.clear);
+            }
+
+        _sourceTexture.Apply();
+
+        var hole = Instantiate(_explosionHolePrefab, _explosionHoleContainer);
+        hole.Initialize(worldPos, radius);
+
+    }
+
+
 }

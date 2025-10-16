@@ -5,13 +5,13 @@ using UnityEngine;
 [RequireComponent(typeof(PolygonCollider2D))]
 public class DestructibleIsland : MonoBehaviour
 {
-    private DestructibleTerrain _terrain;
+    private DestructibleTerrainRenderer _terrain;
     private Texture2D _texture;
     private SpriteRenderer _renderer;
     private PolygonCollider2D _collider;
     public RectInt Bounds { get; private set; }
 
-    public void Initialize(DestructibleTerrain terrain, Renderer sourceRenderer, Sprite sprite, RectInt bounds)
+    public void Initialize(DestructibleTerrainRenderer terrain, Renderer sourceRenderer, Sprite sprite, RectInt bounds)
     {
         _terrain = terrain;
         _texture = sprite.texture;
@@ -68,10 +68,10 @@ public class DestructibleIsland : MonoBehaviour
         UpdateSpriteFromPixels(first);
 
         // Create new ones for remaining fragments
-        for (int i = 1; i < newPixelIslands.Count; i++)
-        {
-            _terrain.CreateIslandFromPixels(newPixelIslands[i]);
-        }
+        //for (int i = 1; i < newPixelIslands.Count; i++)
+        //{
+        //    _terrain.CreateIslandFromPixels(newPixelIslands[i]);
+        //}
     }
 
 

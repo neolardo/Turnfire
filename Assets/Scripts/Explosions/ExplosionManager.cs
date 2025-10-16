@@ -51,8 +51,6 @@ public class ExplosionManager : MonoBehaviour //TODO: pool base class
         return e;
     }
 
-
-
     public IEnumerable<Explosion> GetExplosions(int numExplosions)
     {
         var explosions = new List<Explosion>();
@@ -62,4 +60,5 @@ public class ExplosionManager : MonoBehaviour //TODO: pool base class
         }
         return explosions;
     }
+
 }

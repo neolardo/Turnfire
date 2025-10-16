@@ -50,7 +50,7 @@ public class Explosion : MonoBehaviour
             {
                 simpleDest.ApplyExplosion(contactPoint, explosionRadius);
             }
-            else if (hit.TryGetComponent(out DestructibleTerrain terrain))
+            else if (hit.TryGetComponent(out DestructibleTerrainRenderer terrain))
             {
                 terrain.ApplyExplosion(contactPoint, explosionRadius);
             }
