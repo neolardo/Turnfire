@@ -22,7 +22,7 @@ public class BulletProjectileBehavior : UnityDriven, IProjectileBehavior
     public void OnContact(ProjectileContactContext context)
     {
         var damage = _definition.Damage.CalculateValue();
-        var exp = context.ExplosionManager.GetExplosion();
+        var exp = context.ExplosionPool.Get();
         exp.Initialize(_definition.ExplosionDefinition);
         var explodedCharacters = exp.Explode(context.ContactPoint, damage);
         Exploded?.Invoke(new ExplosionInfo(explodedCharacters, context.Projectile, exp)); //TODO: refactor

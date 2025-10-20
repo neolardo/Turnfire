@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer))] 
@@ -27,8 +26,12 @@ public class OneShotAnimator : MonoBehaviour
     }
 
     private IEnumerator AnimateCoroutine(float frameDuration, bool hideAfter)
-    {
+    { 
         _isPlaying = true;
+        if(_animation.SFX != null)
+        {
+            AudioManager.Instance.PlaySFXAt(_animation.SFX, transform.position);
+        }
         var frames = _animation.Frames;
         for (int i = 0; i < frames.Length; i++)
         {

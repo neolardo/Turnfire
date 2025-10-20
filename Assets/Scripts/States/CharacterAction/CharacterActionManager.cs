@@ -13,7 +13,7 @@ public class CharacterActionManager
 
     public event Action CharacterActionsFinished;
 
-    public CharacterActionManager(MonoBehaviour coroutineManager, TrajectoryRenderer trajectoryRenderer, ItemPreviewRendererManager itemPreviewRendererManager, InputManager inputManager, CameraController cameraController, UIManager uiManager, ProjectileManager projectileManager)
+    public CharacterActionManager(MonoBehaviour coroutineManager, TrajectoryRenderer trajectoryRenderer, ItemPreviewRendererManager itemPreviewRendererManager, InputManager inputManager, CameraController cameraController, UIManager uiManager, ProjectilePool projectileManager)
     {
         _cameraController = cameraController;
         _uiManager = uiManager;

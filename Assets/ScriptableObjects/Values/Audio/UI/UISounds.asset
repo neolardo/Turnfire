@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50332790ed7488c46b4c248c9ddc7952, type: 3}
+  m_Name: UISounds
+  m_EditorClassIdentifier: 
+  Hover: {fileID: 11400000, guid: 58ed270b41d280d419dc6498500b9613, type: 2}
+  Confirm: {fileID: 11400000, guid: 433bc65586f7b6a41a7036eb4eb18579, type: 2}
+  Back: {fileID: 11400000, guid: 446788274ad179a4a819f811c9c74c4c, type: 2}
+  Toggle: {fileID: 11400000, guid: 20b7718bb1e155a469411c935711006b, type: 2}
+  InventoryOn: {fileID: 11400000, guid: c0f01c689505b80489d3ba82f0c5ecd9, type: 2}
+  InventoryOff: {fileID: 11400000, guid: d453c6dc9f99f204e8a0706c53ca2445, type: 2}

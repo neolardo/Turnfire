@@ -15,8 +15,10 @@ public class InventoryUI : MonoBehaviour
 
     [Header("Item Slots")]
     [SerializeField] private List<InventoryItemSlotUI> _itemSlots;
-    [SerializeField] private RectTransform _selectionFrame;
     [SerializeField] private RectTransform _previewFrame;
+
+    [Header("Sounds")]
+    [SerializeField] private UISoundsDefinition _uiSounds;
 
     private Character _currentCharacter;
     private InventoryItemSlotUI _previewedSlot;
@@ -44,7 +46,13 @@ public class InventoryUI : MonoBehaviour
 
     private void OnEnable()
     {
+        AudioManager.Instance.PlayUISound(_uiSounds.InventoryOn);
         RefreshInventory();
+    }
+
+    private void OnDisable()
+    {
+        AudioManager.Instance.PlayUISound(_uiSounds.InventoryOff);
     }
 
     private void RefreshInventory()
@@ -68,6 +76,7 @@ public class InventoryUI : MonoBehaviour
     public void ToggleItemType()
     {
         _weaponModifierToggle.Toggle();
+        AudioManager.Instance.PlayUISound(_uiSounds.Toggle);
     }
 
     #region Select and Preview
@@ -113,8 +122,10 @@ public class InventoryUI : MonoBehaviour
     {
         if (slot != null && slot.Item != null)
         {
-            MoveSelectedFrame(slot.transform);
+            AudioManager.Instance.PlayUISound(_uiSounds.Confirm);
+            _selectedSlot?.DeselectSlot();
             _selectedSlot = slot;
+            _selectedSlot.SelectSlot();
             _currentCharacter.SelectItem(slot.Item);
             LoadItemInfo(slot.Item.Definition);
         }
@@ -127,6 +138,7 @@ public class InventoryUI : MonoBehaviour
             UnPreviewSlot(_previewedSlot);
         }
 
+        AudioManager.Instance.PlayUISound(_uiSounds.Hover);
         _previewedSlot = slot;
         MovePreviewFrame(slot.transform);
         LoadItemInfo(slot.Item == null ? null : slot.Item.Definition);
@@ -143,16 +155,6 @@ public class InventoryUI : MonoBehaviour
                 LoadItemInfo(_selectedSlot.Item.Definition);
             }
         }
-    }
-
-    private void MoveSelectedFrame(Transform slotTarget)
-    {
-        _selectionFrame.SetParent(slotTarget);
-        _selectionFrame.anchorMin = Vector2.zero;
-        _selectionFrame.anchorMax = Vector2.one;
-        _selectionFrame.offsetMin = Vector2.zero;
-        _selectionFrame.offsetMax = Vector2.zero;
-        _selectionFrame.gameObject.SetActive(true);
     }
 
     private void MovePreviewFrame(Transform slotTarget)

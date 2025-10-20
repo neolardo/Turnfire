@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f74139530ee693c4b9d5e326d92ede7b, type: 3}
+  m_Name: BigExplosionAnimation
+  m_EditorClassIdentifier: 
+  Frames:
+  - {fileID: 4909832585997935722, guid: f7912a5eda282524a927861b1e3d77b4, type: 3}
+  - {fileID: -3955402480578044274, guid: f7912a5eda282524a927861b1e3d77b4, type: 3}
+  - {fileID: 1242567246317809406, guid: f7912a5eda282524a927861b1e3d77b4, type: 3}
+  - {fileID: 2297872213678391372, guid: f7912a5eda282524a927861b1e3d77b4, type: 3}
+  - {fileID: -4379257697724886999, guid: f7912a5eda282524a927861b1e3d77b4, type: 3}
+  - {fileID: 761680885628561796, guid: f7912a5eda282524a927861b1e3d77b4, type: 3}
+  - {fileID: -243116299778577130, guid: f7912a5eda282524a927861b1e3d77b4, type: 3}
+  - {fileID: -7558446238233830328, guid: f7912a5eda282524a927861b1e3d77b4, type: 3}
+  SFX: {fileID: 11400000, guid: f6a3d88d0bd8f924c85aecb5bfe93d53, type: 2}

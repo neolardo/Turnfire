@@ -16,6 +16,10 @@ public class CharacterDefinition : ScriptableObject
     public CharacterAnimationDefinition AimHighAnimationDefinition;
     public CharacterAnimationDefinition BackFromLandAnimationDefinition;
 
+    [Header("Additional SFXs")]
+    public SFXDefiniton AimStartSFX;
+    public SFXDefiniton AimCancelSFX;
+
     [Header("Stats")]
     public int MaxHealth;
     public float JumpStrength;

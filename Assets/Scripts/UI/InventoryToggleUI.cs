@@ -19,7 +19,7 @@ public class InventoryToggleUI : MonoBehaviour
 
     private bool _isToggledLeft;
 
-    private void Awake()
+    private void Start()
     {
         _initialAnchorLeft = _leftImage.rectTransform.anchorMax;
         _initialAnchorRight = _rightImage.rectTransform.anchorMax;

@@ -44,6 +44,16 @@ public class CharacterBodyAnimator : MonoBehaviour
         }
     }
 
+    public void PlayItemAimStartSFX()
+    {
+        AudioManager.Instance.PlaySFXAt(_characterDefinition.AimStartSFX, transform.position);
+    }
+
+    public void PlayItemAimCancelSFX()
+    {
+        AudioManager.Instance.PlaySFXAt(_characterDefinition.AimCancelSFX, transform.position);
+    }
+
     public void ChangeAimFrame(Vector2 aimDirection)
     {
         StopAnimation();
@@ -200,6 +210,11 @@ public class CharacterBodyAnimator : MonoBehaviour
         if (delay > 0f)
         {
             yield return new WaitForSeconds(delay);
+        }
+
+        if(animationDefinition.SFX != null)
+        {
+            AudioManager.Instance.PlaySFXAt(animationDefinition.SFX, transform);
         }
 
         var frames = animationDefinition.Frames;

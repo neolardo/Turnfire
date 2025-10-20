@@ -9,7 +9,7 @@ public class Projectile : MonoBehaviour
     private SpriteRenderer _spriteRenderer;
     private IProjectileBehavior _behavior;
     private ProjectileDefinition _definition;
-    private ExplosionManager _explosionManager; //TODO
+    private ExplosionPool _explosionManager; //TODO
 
     public event Action<ExplosionInfo> Exploded;
 
@@ -17,7 +17,7 @@ public class Projectile : MonoBehaviour
     {
         _rb = GetComponent<Rigidbody2D>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
-        _explosionManager = FindAnyObjectByType<ExplosionManager>();
+        _explosionManager = FindAnyObjectByType<ExplosionPool>();
     }
 
     public void Initialize(ProjectileDefinition definition, IProjectileBehavior behavior)

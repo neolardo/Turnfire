@@ -30,7 +30,7 @@ public class TurnManager : MonoBehaviour
         var dropZone = FindFirstObjectByType<DropZone>();
         var cameraController = FindFirstObjectByType<CameraController>();
         var uiManager = FindFirstObjectByType<UIManager>();
-        var projectileManager = FindFirstObjectByType<ProjectileManager>();
+        var projectileManager = FindFirstObjectByType<ProjectilePool>();
         var characterActionManager = new CharacterActionManager(this, trajectoryRenderer, itemPreviewRendererManager, inputManager, cameraController, uiManager, projectileManager);
         _turnStates = new List<TurnState>
         {

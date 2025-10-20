@@ -5,10 +5,10 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
     public override CharacterActionStateType State => CharacterActionStateType.ReadyToUseItem;
     private ItemPreviewRendererManager _rendererManager;
     private InputManager _inputManager;
-    private ProjectileManager _projectileManager;
+    private ProjectilePool _projectileManager;
     private TrajectoryRenderer _trajectoryRenderer;
 
-    public ReadyToUseItemCharacterActionState(ItemPreviewRendererManager rendererManager, InputManager inputManager, ProjectileManager projectileManager, TrajectoryRenderer trajectoryRenderer, MonoBehaviour coroutineManager) : base(coroutineManager)
+    public ReadyToUseItemCharacterActionState(ItemPreviewRendererManager rendererManager, InputManager inputManager, ProjectilePool projectileManager, TrajectoryRenderer trajectoryRenderer, MonoBehaviour coroutineManager) : base(coroutineManager)
     {
         _rendererManager = rendererManager;
         _projectileManager = projectileManager;

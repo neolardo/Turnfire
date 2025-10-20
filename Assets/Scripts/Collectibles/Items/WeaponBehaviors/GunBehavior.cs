@@ -19,7 +19,7 @@ public class GunBehavior : UnityDriven, IItemBehavior
     public void Use(ItemUsageContext context)
     {
         _isFiring = true;
-        var p = context.ProjectileManager.GetProjectile();
+        var p = context.ProjectilePool.Get();
         p.Initialize(_definition.ProjectileDefinition, _projectileBehavior);
         p.Launch(context, _definition.FireStrength.CalculateValue());
     }

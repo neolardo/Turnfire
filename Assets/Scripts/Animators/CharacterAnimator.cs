@@ -6,6 +6,7 @@ public class CharacterAnimator : MonoBehaviour
     [SerializeField] private CharacterBodyAnimator _bodyAnimator;
     [SerializeField] private CharacterItemActionAnimator _itemActionAnimator;
     [SerializeField] private CharacterItemRenderer _itemRenderer;
+
     public Transform ItemTransform => _itemRenderer.transform;
 
     public void SetTeamColor(Color color)
@@ -18,11 +19,13 @@ public class CharacterAnimator : MonoBehaviour
         _itemRenderer.ChangeItem(selectedItem);
         _itemRenderer.ShowItem();
         _bodyAnimator.ChangeAimFrame(aimDirection);
+        _bodyAnimator.PlayItemAimStartSFX();
     }
 
     public void CancelAiming()
     {
         _itemRenderer.HideItem();
+        _bodyAnimator.PlayItemAimCancelSFX();
         PlayIdleAnimation();
     }
 
