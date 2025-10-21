@@ -4,7 +4,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class MenuButtonUI : ScreenSizeDependantUI, IPointerEnterHandler,
+public class MenuButtonUI : ScreenSizeDependantUI, 
+    IPointerEnterHandler,
     IPointerExitHandler,
     IPointerDownHandler,
     IPointerUpHandler,
@@ -45,8 +46,10 @@ public class MenuButtonUI : ScreenSizeDependantUI, IPointerEnterHandler,
         }
     }
 
-    private void OnEnable()
+    protected override void OnEnable()
     {
+        base.OnEnable();
+        UnHoverButton();
         _inputManager.MenuConfirmPerformed += OnMenuButtonConfirmPerformed;
     }
 

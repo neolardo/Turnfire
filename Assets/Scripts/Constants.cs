@@ -42,4 +42,8 @@ public static class Constants
     // destructible terrain
     public const float AlphaThreshold = 0.1f;
 
+    // multiplayer
+    public const int MultiplayerMinPlayers = 2;
+    public const int MultiplayerMaxPlayers = 4;
+
 }
