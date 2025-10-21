@@ -4,5 +4,4 @@ using UnityEngine;
 public class CharacterAnimationDefinition : ScriptableObject
 {
     public CharacterFrame[] Frames;
-    public SFXDefiniton SFX;
 }

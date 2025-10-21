@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 988e3edfe6949b74197a2326e5fc8826, type: 3}
+  m_Name: Bullet
+  m_EditorClassIdentifier: 
+  Sprite: {fileID: 21300000, guid: b147f3c55fa877f46bdacb04fefffade, type: 3}
+  Damage:
+    _normalizedValue: 0.2
+    _isRandomized: 0
+    _randomness: 0
+    _group: {fileID: 11400000, guid: 0371d52dab082c1409e9eaf7579b9bee, type: 2}
+  ExplosionDefinition: {fileID: 11400000, guid: 6f5432669382c714cb10b55b4158e56f, type: 2}

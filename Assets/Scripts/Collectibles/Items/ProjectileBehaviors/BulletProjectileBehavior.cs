@@ -1,32 +1,21 @@
-using System;
 using UnityEngine;
 
-public class BulletProjectileBehavior : UnityDriven, IProjectileBehavior
+public class BulletProjectileBehavior : SimpleProjectileBehavior
 {
+    private BulletProjectileDefinition _definition;
 
-    public event Action<ExplosionInfo> Exploded;
-
-    BulletProjectileDefinition _definition;
-    public BulletProjectileBehavior(BulletProjectileDefinition definition) : base(CoroutineRunner.Instance)
+    public BulletProjectileBehavior(BulletProjectileDefinition definition) : base(definition)
     {
         _definition = definition;
     }
 
-    public void Launch(ProjectileLaunchContext context) 
+    public override void Launch(ProjectileLaunchContext context)
     {
-        context.ProjectileRigidbody.linearVelocity = Vector2.zero;
-        context.ProjectileRigidbody.transform.position = context.AimOrigin + context.AimVector.normalized * Constants.ProjectileOffset;
-        context.ProjectileRigidbody.AddForce(context.AimVector, ForceMode2D.Impulse);
+        var rb = context.ProjectileRigidbody;
+        float angle = Mathf.Atan2(context.AimVector.y, context.AimVector.x) * Mathf.Rad2Deg;
+        rb.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        rb.transform.position = context.AimOrigin + context.AimVector.normalized * Constants.ProjectileOffset;
+        rb.gravityScale = 0;
+        rb.linearVelocity = context.AimVector / rb.mass;
     }
-
-    public void OnContact(ProjectileContactContext context)
-    {
-        var damage = _definition.Damage.CalculateValue();
-        var exp = context.ExplosionPool.Get();
-        exp.Initialize(_definition.ExplosionDefinition);
-        var explodedCharacters = exp.Explode(context.ContactPoint, damage);
-        Exploded?.Invoke(new ExplosionInfo(explodedCharacters, context.Projectile, exp)); //TODO: refactor
-    }
-
-
 }

@@ -6,6 +6,7 @@ public class OneShotAnimator : MonoBehaviour
 {
     private SpriteRenderer _spriteRenderer;
     private AnimationDefinition _animation;
+    private SFXDefiniton _sfx;
 
     public bool IsPlaying => _isPlaying;
     private bool _isPlaying;
@@ -20,6 +21,12 @@ public class OneShotAnimator : MonoBehaviour
         _animation = animation;
     }
 
+    public void SetSFX(SFXDefiniton sfx)
+    {
+        _sfx = sfx;
+    }
+
+
     public void PlayAnimation(float frameDuration, bool hideAfter = true)
     {
         StartCoroutine(AnimateCoroutine(frameDuration, hideAfter));
@@ -28,9 +35,9 @@ public class OneShotAnimator : MonoBehaviour
     private IEnumerator AnimateCoroutine(float frameDuration, bool hideAfter)
     { 
         _isPlaying = true;
-        if(_animation.SFX != null)
+        if(_sfx != null)
         {
-            AudioManager.Instance.PlaySFXAt(_animation.SFX, transform.position);
+            AudioManager.Instance.PlaySFXAt(_sfx, transform.position);
         }
         var frames = _animation.Frames;
         for (int i = 0; i < frames.Length; i++)

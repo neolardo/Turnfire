@@ -11,7 +11,7 @@ public class Pool<T> : MonoBehaviour where T : Component
     private List<T> _available;
     private List<T> _inUse;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         _available = new List<T>();
         _inUse = new List<T>();
@@ -40,7 +40,7 @@ public class Pool<T> : MonoBehaviour where T : Component
         return instance;
     }
 
-    public T Get()
+    public virtual T Get()
     {
         T item;
         if (_available.Count > 0)

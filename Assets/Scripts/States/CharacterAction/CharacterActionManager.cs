@@ -34,8 +34,8 @@ public class CharacterActionManager
     public void StartActionsWithCharacter(Character character)
     {
         _character = character;
-        _cameraController.SetCharacterTarget(_character); //TODO?
-        _uiManager.LoadCharacterData(_character); //TODO?
+        _cameraController.SetCharacterTarget(_character);
+        _uiManager.LoadCharacterData(_character);
         _characterActionIndex = 0;
         StartCurrentCharacterActionState();
     }

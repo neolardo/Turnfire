@@ -144,7 +144,7 @@ public class CharacterBodyAnimator : MonoBehaviour
 
         _currentAnimationState = state;
 
-        _currentAnimationRoutine = StartCoroutine(PlayAnimationCoroutine(GetAnimationDefintion(_currentAnimationState), GetFrameDuration(_currentAnimationState), nextState, delay));
+        _currentAnimationRoutine = StartCoroutine(PlayAnimationCoroutine(GetAnimationDefintion(_currentAnimationState), GetFrameDuration(_currentAnimationState), GetSFX(_currentAnimationState), nextState, delay));
     }
 
     private void StopAnimation()
@@ -205,16 +205,37 @@ public class CharacterBodyAnimator : MonoBehaviour
         }
     }
 
-    private IEnumerator PlayAnimationCoroutine(CharacterAnimationDefinition animationDefinition, float frameDuration, CharacterAnimationState nextState, float delay = 0f)
+    private SFXDefiniton GetSFX(CharacterAnimationState state)
+    {
+        switch (state)
+        {
+            case CharacterAnimationState.Jump:
+                return _characterDefinition.InAirSFX;
+            case CharacterAnimationState.Land:
+                return _characterDefinition.LandSFX;
+            case CharacterAnimationState.Hurt:
+                return _characterDefinition.HurtSFX;
+            case CharacterAnimationState.Death:
+                return _characterDefinition.DeathSFX;
+            case CharacterAnimationState.BackFromLand:
+                return _characterDefinition.CancelJumpSFX;
+            case CharacterAnimationState.PrepareToJump:
+                return _characterDefinition.PrepareToJumpSFX;
+            default:
+                return null;
+        }
+    }
+
+    private IEnumerator PlayAnimationCoroutine(CharacterAnimationDefinition animationDefinition, float frameDuration, SFXDefiniton sfx, CharacterAnimationState nextState, float delay = 0f)
     {
         if (delay > 0f)
         {
             yield return new WaitForSeconds(delay);
         }
 
-        if(animationDefinition.SFX != null)
+        if (sfx != null)
         {
-            AudioManager.Instance.PlaySFXAt(animationDefinition.SFX, transform);
+            AudioManager.Instance.PlaySFXAt(sfx, transform);
         }
 
         var frames = animationDefinition.Frames;

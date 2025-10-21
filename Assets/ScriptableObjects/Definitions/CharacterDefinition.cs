@@ -16,7 +16,14 @@ public class CharacterDefinition : ScriptableObject
     public CharacterAnimationDefinition AimHighAnimationDefinition;
     public CharacterAnimationDefinition BackFromLandAnimationDefinition;
 
-    [Header("Additional SFXs")]
+    [Header("SFXs")]
+
+    public SFXDefiniton InAirSFX;
+    public SFXDefiniton PrepareToJumpSFX;
+    public SFXDefiniton LandSFX;
+    public SFXDefiniton CancelJumpSFX;
+    public SFXDefiniton HurtSFX;
+    public SFXDefiniton DeathSFX;
     public SFXDefiniton AimStartSFX;
     public SFXDefiniton AimCancelSFX;
 

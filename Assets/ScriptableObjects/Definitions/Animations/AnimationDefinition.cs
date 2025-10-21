@@ -4,5 +4,4 @@ using UnityEngine;
 public class AnimationDefinition : ScriptableObject
 {
     public Sprite[] Frames;
-    public SFXDefiniton SFX;
 }

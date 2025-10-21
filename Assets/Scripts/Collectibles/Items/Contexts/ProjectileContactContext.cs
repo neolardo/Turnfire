@@ -2,14 +2,12 @@ using UnityEngine;
 
 public readonly struct ProjectileContactContext
 {
-    public readonly Projectile Projectile;
     public readonly Vector2 ContactPoint;
-    public readonly ExplosionPool ExplosionPool;
+    public readonly string ContactObjectTag;
 
-    public ProjectileContactContext(Projectile projectile, Vector2 contactPoint, ExplosionPool explosionPool)
+    public ProjectileContactContext(Vector2 contactPoint, string contactObjectTag)
     {
-        Projectile = projectile;
         ContactPoint = contactPoint;
-        ExplosionPool = explosionPool;
+        ContactObjectTag = contactObjectTag;
     }
 }

@@ -23,6 +23,7 @@ public class InventoryToggleUI : MonoBehaviour
     {
         _initialAnchorLeft = _leftImage.rectTransform.anchorMax;
         _initialAnchorRight = _rightImage.rectTransform.anchorMax;
+        UpdateLayout();
     }
 
     public void SetLeftToggleValue(bool isToggledLeft)

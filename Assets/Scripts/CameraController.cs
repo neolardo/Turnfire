@@ -7,10 +7,10 @@ public class CameraController : MonoBehaviour
     [SerializeField] private CinemachineCamera _projectileCam;
     [SerializeField] private CinemachineCamera _packageCam;
 
-    public void SetProjectileTarget(IProjectileBehavior p)
+    public void SetProjectileTarget(Projectile p)
     {
         _projectileCam.Prioritize();
-        //_projectileCam.Follow = p.transform; //TODO
+        _projectileCam.Follow = p.transform;
     }
 
     public void SetCharacterTarget(Character c)

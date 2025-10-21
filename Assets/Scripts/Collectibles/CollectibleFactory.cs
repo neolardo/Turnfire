@@ -4,17 +4,17 @@ public static class CollectibleFactory
 {
     public static ICollectible CreateCollectible(CollectibleDefinition definition)
     {
-        if (definition.Type == CollectibleType.Item)
+        if (definition.CollectibleType == CollectibleType.Item)
         {
             return CreateCollectible(definition as ItemDefinition);
         }
-        else if (definition.Type == CollectibleType.Effect)
+        else if (definition.CollectibleType == CollectibleType.Effect)
         {
             return CreateCollectible(definition as EffectDefinition);
         }
         else
         {
-            throw new Exception($"Invalid definition type when creating collectibles: {definition.Type}");
+            throw new Exception($"Invalid definition type when creating collectibles: {definition.CollectibleType}");
         }
     }
 

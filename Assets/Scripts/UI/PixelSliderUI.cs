@@ -5,12 +5,7 @@ public class PixelSliderUI : MonoBehaviour
 {
     [SerializeField] private Image _sliderValueImage;
 
-    private float _initialScale;
-
-    private void Awake()
-    {
-        _initialScale = _sliderValueImage.transform.localScale.x;
-    }
+    private const float _initialScale = 1;
 
     public void SetSliderValue(float normalizedValue)
     {

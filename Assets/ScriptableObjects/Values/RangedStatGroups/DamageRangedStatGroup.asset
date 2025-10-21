@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa009e25a2ac98d4da6b49d8784e5adf, type: 3}
   m_Name: DamageRangedStatGroup
   m_EditorClassIdentifier: 
-  Name: Damage
+  DisplayName: Damage
   Minimum: 0
   Maximum: 10

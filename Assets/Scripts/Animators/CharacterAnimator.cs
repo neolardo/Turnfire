@@ -1,3 +1,4 @@
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class CharacterAnimator : MonoBehaviour
@@ -42,11 +43,22 @@ public class CharacterAnimator : MonoBehaviour
 
     public void PlayItemActionAnimation(Item item)
     {
-        _itemRenderer.UseItemThenHide();
-        if(item.Definition.ItemActionAnimationDefinition != null)
+        if(item.Definition.HideItemDuringUsage)
         {
-            _itemActionAnimator.SetAnimation(item.Definition.ItemActionAnimationDefinition);
+            _itemRenderer.HideItem();
+        }
+        else
+        {
+            _itemRenderer.HideItemAfterDelay();
+        }
+        if (item.Definition.ItemActionAnimation != null)
+        {
+            _itemActionAnimator.SetAnimation(item.Definition.ItemActionAnimation);
             _itemActionAnimator.PlayItemActionAnimation(_animatorDefinition.ItemActionAnimationFrameDuration);
+        }
+        if (item.Definition.ItemActionSFX != null)
+        {
+            AudioManager.Instance.PlaySFXAt(item.Definition.ItemActionSFX, transform.position);
         }
         _bodyAnimator.PlayItemActionAnimation();
     }

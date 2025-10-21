@@ -2,7 +2,7 @@ using UnityEngine;
 
 public abstract class RangedStatGroupDefinition : ScriptableObject
 {
-    public string Name;
+    public string DisplayName;
 }
 
 public abstract class RangedStatGroupDefinition<T> : RangedStatGroupDefinition

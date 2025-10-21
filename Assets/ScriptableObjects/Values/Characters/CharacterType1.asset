@@ -22,9 +22,17 @@ MonoBehaviour:
   AimMiddleAnimationDefinition: {fileID: 11400000, guid: 093979bc22d9cf14a933ea7dac301f01, type: 2}
   AimHighAnimationDefinition: {fileID: 11400000, guid: 735f347f85af3364d97f1fd9f3cbe36f, type: 2}
   BackFromLandAnimationDefinition: {fileID: 11400000, guid: 8c2f7e9eebd83c74a8f9899aa5b87980, type: 2}
+  InAirSFX: {fileID: 11400000, guid: d230d235833e97b4ea72e3867bedc065, type: 2}
+  PrepareToJumpSFX: {fileID: 11400000, guid: c4faad8b134467a4eab7174020e523ec, type: 2}
+  LandSFX: {fileID: 11400000, guid: 2558f50bf2497904b95bc1fe45a1935f, type: 2}
+  CancelJumpSFX: {fileID: 11400000, guid: cae45a1a66a750d4ab174bfa12fbcca2, type: 2}
+  HurtSFX: {fileID: 11400000, guid: c94168634f5aa494bae4a5b25823294c, type: 2}
+  DeathSFX: {fileID: 11400000, guid: 11e71dc438cbd77479e5bd7b4272754a, type: 2}
   AimStartSFX: {fileID: 11400000, guid: a7bfba19c9cddd34e847d947523ef72a, type: 2}
   AimCancelSFX: {fileID: 11400000, guid: 54274b9904803fc4c8f9b3662815e897, type: 2}
   MaxHealth: 10
   JumpStrength: 6
   InitialItems:
+  - {fileID: 11400000, guid: 7aab2b42b18158f4fbba38adfb9eeffd, type: 2}
   - {fileID: 11400000, guid: 3adb2e281e926714ca60f3a253fa55dc, type: 2}
+  - {fileID: 11400000, guid: 0276c8487ff836a47a5b2849c6189187, type: 2}

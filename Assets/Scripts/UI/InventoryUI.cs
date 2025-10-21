@@ -6,7 +6,7 @@ using UnityEngine;
 public class InventoryUI : MonoBehaviour
 {
     [Header("Panels")]
-    [SerializeField] private InventoryToggleUI _weaponModifierToggle;
+    [SerializeField] private InventoryToggleUI _weaponConsumableToggle;
 
     [Header("Item Info")]
     [SerializeField] private TextMeshProUGUI _titleText;
@@ -30,7 +30,7 @@ public class InventoryUI : MonoBehaviour
         var inputManager = FindFirstObjectByType<InputManager>();
         inputManager.ToggleInventoryCreateDestroyPerformed += ToggleItemType;
         inputManager.SelectInventorySlotPerformed += SelectPreviewedSlot;
-        _weaponModifierToggle.SetLeftToggleValue(true);
+        _weaponConsumableToggle.SetLeftToggleValue(true);
 
         foreach (var slot in _itemSlots)
         {
@@ -57,26 +57,35 @@ public class InventoryUI : MonoBehaviour
 
     private void RefreshInventory()
     {
+        DeselectSlot();
         foreach (var itemSlot in _itemSlots)
         {
             itemSlot.UnloadItem();
         }
         var items = _currentCharacter.GetAllItems().ToList();
         var selectedItem = _currentCharacter.GetSelectedItem();
+
+        bool isToggledToWeapon = _weaponConsumableToggle.IsToggledLeft;
+        var visibleItemType = isToggledToWeapon ? ItemType.Weapon : ItemType.Consumable;
+
         for (int i = 0; i < items.Count; i++)
         {
-            _itemSlots[i].LoadItem(items[i]);
-            if (selectedItem != null && selectedItem == items[i])
+            if (items[i].Definition.ItemType == visibleItemType)
             {
-                SelectSlot(_itemSlots[i]);
+                _itemSlots[i].LoadItem(items[i]);
+                if (selectedItem != null && selectedItem == items[i])
+                {
+                    SelectSlot(_itemSlots[i], false);
+                }
             }
         }
     }
 
     public void ToggleItemType()
     {
-        _weaponModifierToggle.Toggle();
+        _weaponConsumableToggle.Toggle();
         AudioManager.Instance.PlayUISound(_uiSounds.Toggle);
+        RefreshInventory();
     }
 
     #region Select and Preview
@@ -106,7 +115,7 @@ public class InventoryUI : MonoBehaviour
             var rangedStats = itemDefinition.GetRangedStats().ToList();
             for (int i = 0; i < _sliders.Count && i < rangedStats.Count; i++)
             {
-                _sliders[i].SetText(rangedStats[i].Group.Name);
+                _sliders[i].SetText(rangedStats[i].Group.DisplayName);
                 _sliders[i].SetSliderValue(rangedStats[i].NormalizedValue);
                 _sliders[i].gameObject.SetActive(true);
             }
@@ -118,16 +127,29 @@ public class InventoryUI : MonoBehaviour
         SelectSlot(_previewedSlot);
     }
 
-    private void SelectSlot(InventoryItemSlotUI slot)
+    private void SelectSlot(InventoryItemSlotUI slot, bool playUISound = true)
     {
         if (slot != null && slot.Item != null)
         {
-            AudioManager.Instance.PlayUISound(_uiSounds.Confirm);
+            if (playUISound)
+            {
+                AudioManager.Instance.PlayUISound(_uiSounds.Confirm);
+            }
             _selectedSlot?.DeselectSlot();
             _selectedSlot = slot;
             _selectedSlot.SelectSlot();
             _currentCharacter.SelectItem(slot.Item);
             LoadItemInfo(slot.Item.Definition);
+        }
+    }
+
+    private void DeselectSlot()
+    {
+        if (_selectedSlot != null)
+        {
+            _selectedSlot?.DeselectSlot();
+            _selectedSlot = null;
+            LoadItemInfo(null);
         }
     }
 

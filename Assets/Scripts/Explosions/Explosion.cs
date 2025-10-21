@@ -23,7 +23,8 @@ public class Explosion : MonoBehaviour
 
     public void Initialize(ExplosionDefinition explosionDefinition)
     {
-        _animator.SetAnimation(explosionDefinition.AnimationDefinition);
+        _animator.SetAnimation(explosionDefinition.Animation);
+        _animator.SetSFX(explosionDefinition.SFX);
         _explosionDefinition = explosionDefinition;
     }
 

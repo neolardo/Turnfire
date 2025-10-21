@@ -31,7 +31,7 @@ public class CharacterItemRenderer : MonoBehaviour
         }
     }
 
-    public void UseItemThenHide()
+    public void HideItemAfterDelay()
     {
         StartCoroutine(WaitForItemUsageDelayThenHideCoroutine());
     }

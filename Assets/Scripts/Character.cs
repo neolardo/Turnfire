@@ -149,6 +149,7 @@ public class Character : MonoBehaviour
     public void InitializeMovementPreview(TrajectoryRenderer trajectoryRenderer)
     {
         trajectoryRenderer.SetOrigin(transform);
+        trajectoryRenderer.ToggleGravity(true);
         trajectoryRenderer.SetTrajectoryMultipler(CharacterDefinition.JumpStrength);
     }
 

@@ -20,18 +20,17 @@ public class Package : MonoBehaviour
         AudioManager.Instance.PlaySFXAt(spawnSFX, transform);
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D collider)
     {
-        if (collision.CompareTag(Constants.DeadZoneTag))
+        if (collider.CompareTag(Constants.DeadZoneTag))
         {
             gameObject.SetActive(false);
             Destroy(gameObject);
         }
-        else if (collision.CompareTag(Constants.CharacterTag))
+        else if (collider.CompareTag(Constants.CharacterTag))
         {
-            if(_collectible.TryCollect(collision.GetComponent<Character>()))
+            if(_collectible.TryCollect(collider.GetComponent<Character>()))
             {
-                Debug.Log($"Package '{gameObject.name}' picked up!");
                 AudioManager.Instance.PlaySFXAt(collectSFX, transform.position);
                 Destroy(gameObject);
             }
