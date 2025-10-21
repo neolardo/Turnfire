@@ -1,19 +1,25 @@
 using UnityEngine;
 
-public class PixelUIGrid : MonoBehaviour
+public class PixelUIGrid : ScreenSizeDependantUI
 {
     [SerializeField] private PixelUIDefinition _uiDefinition;
     [SerializeField] private int _columns = 3;
     [SerializeField] private Vector2Int _cellSizeInPixels = new Vector2Int(32, 32);
     [SerializeField] private Vector2Int _spacingInPixels = new Vector2Int(2, 2);
     [SerializeField] private Vector2Int _paddingInPixels = new Vector2Int(4, 4);
+    [SerializeField] private Vector2 _startAnchor = new Vector2(0,1);
+    [SerializeField] private Vector2 _pivot = new Vector2(0, 1);
 
     private PixelUIScaler[] children;
 
-
-    private void OnEnable()
+    protected override void OnEnable()
     {
+        base.OnEnable();
         CacheChildren();
+    }
+
+    protected override void OneFrameAfterOnEnable()
+    {
         UpdateLayout();
     }
 
@@ -37,6 +43,13 @@ public class PixelUIGrid : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if (ScreenSizeChanged())
+        {
+            UpdateLayout();
+        }
+    }
 
     private void OnRectTransformDimensionsChange()
     {
@@ -61,10 +74,7 @@ public class PixelUIGrid : MonoBehaviour
                -(_paddingInPixels.y + row * (_cellSizeInPixels.y + _spacingInPixels.y))
            );
 
-            var anchor = new Vector2(0, 1);
-            var pivot = new Vector2(0, 1);
-
-            children[i].SetPositionAndSize(anchor, pivot, position, _cellSizeInPixels);
+           children[i].SetPositionAndSize(_startAnchor, _pivot, position, _cellSizeInPixels);
         }
     }
 }

@@ -28,14 +28,20 @@ public class InputManager : MonoBehaviour
     public bool IsOpeningInventoryEnabled { get; set; }
     public bool IsPausingGameplayEnabled { get; set; }
 
+    //gameplay
     public event Action<Vector2> AimStarted;
     public event Action<Vector2> AimChanged;
     public event Action<Vector2> ImpulseReleased;
     public event Action AimCancelled;
+    //inventory
     public event Action ToggleInventoryPerformed;
     public event Action ToggleInventoryCreateDestroyPerformed;
     public event Action TogglePauseGameplayPerformed;
     public event Action SelectInventorySlotPerformed;
+    //menu
+    public event Action MenuConfirmPerformed;
+    public event Action MenuBackPerformed;
+
 
     private void Awake()
     {
@@ -57,10 +63,14 @@ public class InputManager : MonoBehaviour
         _inputActions.PausedGamplay.ResumeGameplay.started += OnTogglePauseGameplay;
         _inputActions.Inventory.ToggleInventory.started += OnToggleInventory;
         _inputActions.Inventory.ToggleCreateDestroy.started += OnToggleCreateDestroy;
-        _inputActions.Inventory.SelectInventorySlot.started += OnSelectInventorySlot;
+        _inputActions.Inventory.ToggleCreateDestroy.started += OnToggleCreateDestroy;
+        _inputActions.Menu.Back.performed += OnMenuBackPerformed;
+        _inputActions.Menu.Confirm.performed += OnMenuConfirmPerformed;
         InputSystem.onDeviceChange += OnDeviceChange;
         InputSystem.onAnyButtonPress.CallOnce(control => OnDeviceChange(control.device, InputDeviceChange.Reconnected));
     }
+
+    #region Gameplay
 
     private void OnAimPerformed(InputAction.CallbackContext ctx)
     {
@@ -186,6 +196,9 @@ public class InputManager : MonoBehaviour
         }
     }
 
+    #endregion
+
+    #region Inventory
     private void OnSelectInventorySlot(InputAction.CallbackContext ctx)
     {
         SelectInventorySlotPerformed?.Invoke();
@@ -215,38 +228,21 @@ public class InputManager : MonoBehaviour
     {
         ToggleInventoryCreateDestroyPerformed?.Invoke();
     }
-     //TODO: refactor
-    public void OnGameEnded()
+
+    #endregion
+
+    #region Menu
+
+    private void OnMenuBackPerformed(InputAction.CallbackContext ctx)
     {
-        IsAimingEnabled = false;
-        IsPausingGameplayEnabled = false;
-        IsOpeningInventoryEnabled = false;
-        ForceCloseInventory();
-        SwitchToInputActionMap(InputActionMapType.GameOverScreen);
+        MenuBackPerformed?.Invoke();
+    }
+    private void OnMenuConfirmPerformed(InputAction.CallbackContext ctx)
+    {
+        MenuConfirmPerformed?.Invoke();
     }
 
-    private void OnTogglePauseGameplay(InputAction.CallbackContext ctx)
-    {
-        if (_currentActionMap != InputActionMapType.Gameplay && _currentActionMap != InputActionMapType.PausedGameplay)
-        {
-            return;
-        }
-        var targetActionMapType = _currentActionMap == InputActionMapType.Gameplay ? InputActionMapType.PausedGameplay : InputActionMapType.Gameplay;
-        if (!IsPausingGameplayEnabled && targetActionMapType == InputActionMapType.PausedGameplay)
-        {
-            return;
-        }
-        SwitchToInputActionMap(targetActionMapType);
-        TogglePauseGameplayPerformed?.Invoke();
-    }
-
-    private void OnDeviceChange(InputDevice device, InputDeviceChange change)
-    {
-        if (change == InputDeviceChange.Added || change == InputDeviceChange.Reconnected)
-        {
-            _currentInputDevice = device;
-        }
-    }
+    #endregion
 
     #region Input Action Map
 
@@ -279,8 +275,40 @@ public class InputManager : MonoBehaviour
             default:
                 throw new Exception("Invalid input action type: " + type);
         }
-    } 
+    }
 
     #endregion
+    
+    public void OnGameEnded()
+    {
+        IsAimingEnabled = false;
+        IsPausingGameplayEnabled = false;
+        IsOpeningInventoryEnabled = false;
+        ForceCloseInventory();
+        SwitchToInputActionMap(InputActionMapType.GameOverScreen);
+    }
+
+    private void OnTogglePauseGameplay(InputAction.CallbackContext ctx)
+    {
+        if (_currentActionMap != InputActionMapType.Gameplay && _currentActionMap != InputActionMapType.PausedGameplay)
+        {
+            return;
+        }
+        var targetActionMapType = _currentActionMap == InputActionMapType.Gameplay ? InputActionMapType.PausedGameplay : InputActionMapType.Gameplay;
+        if (!IsPausingGameplayEnabled && targetActionMapType == InputActionMapType.PausedGameplay)
+        {
+            return;
+        }
+        SwitchToInputActionMap(targetActionMapType);
+        TogglePauseGameplayPerformed?.Invoke();
+    }
+
+    private void OnDeviceChange(InputDevice device, InputDeviceChange change)
+    {
+        if (change == InputDeviceChange.Added || change == InputDeviceChange.Reconnected)
+        {
+            _currentInputDevice = device;
+        }
+    }
 
 }

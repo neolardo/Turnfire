@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 [RequireComponent(typeof(RectTransform))]
-public class UIScaler : MonoBehaviour
+public class UIScaler : ScreenSizeDependantUI
 {
     [Header("Target aspect ratio (W:H)")]
     [SerializeField] private float targetAspect = 16f / 9f;
@@ -13,31 +13,26 @@ public class UIScaler : MonoBehaviour
     [SerializeField, Range(0.1f, 1f)] private float maxWidthRatio = 0.9f;
 
     private RectTransform _rect;
-    private int _lastScreenW, _lastScreenH;
-    private FullScreenMode _lastFullscreenMode;
+
 
     private void Awake()
     {
         _rect = GetComponent<RectTransform>();
-        _lastScreenW = Screen.width;
-        _lastScreenH = Screen.height;
-        _lastFullscreenMode = Screen.fullScreenMode;
+    }
+
+    protected override void OneFrameAfterOnEnable()
+    {
         ApplyScaling();
     }
 
     private void Update()
     {
-        // Detect resolution and fullscreen mode changes
-        if (Screen.width != _lastScreenW ||
-            Screen.height != _lastScreenH ||
-            Screen.fullScreenMode != _lastFullscreenMode)
-        {
-            _lastScreenW = Screen.width;
-            _lastScreenH = Screen.height;
-            _lastFullscreenMode = Screen.fullScreenMode;
+        if(ScreenSizeChanged())
+        { 
             ApplyScaling();
         }
     }
+
 
     private void ApplyScaling()
     {

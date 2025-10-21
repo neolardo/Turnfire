@@ -316,17 +316,6 @@
                 },
                 {
                     "name": "",
-                    "id": "89d5eba9-2cb8-4cf9-aa44-e26cb391ba6f",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "SelectInventorySlot",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "63dd6f2c-2c6a-4c6b-996e-f26cf5dfd70e",
                     "path": "<Gamepad>/buttonSouth",
                     "interactions": "",
@@ -347,8 +336,72 @@
         {
             "name": "Menu",
             "id": "3a8d766d-1570-4b75-9512-672670087616",
-            "actions": [],
-            "bindings": []
+            "actions": [
+                {
+                    "name": "Confirm",
+                    "type": "Button",
+                    "id": "b98c0758-29af-4503-9e15-00bd78597ebe",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Back",
+                    "type": "Button",
+                    "id": "7d8ffee5-5aa4-4cb7-b1ba-655f210aa5eb",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "43d276cb-625e-4b39-8965-5dc10da5351c",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Confirm",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "23d2115b-8191-41fd-8871-ea2bd6ef91ff",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Confirm",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ff8ac496-019e-4f1c-9fd6-f1ced797f260",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Back",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "eb71c77e-f16e-4e63-a5e2-21169f9f7dba",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Back",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [

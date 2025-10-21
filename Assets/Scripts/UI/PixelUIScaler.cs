@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PixelUIScaler : MonoBehaviour
+public class PixelUIScaler : ScreenSizeDependantUI
 {
     [SerializeField] private PixelUIDefinition _uiDefinition;
     [SerializeField] private int _widthInPixels = 64;
@@ -9,7 +9,6 @@ public class PixelUIScaler : MonoBehaviour
     [SerializeField] private Vector2 _offsetPixels = Vector2.zero;
 
     private RectTransform _rectTransform;
-    private Vector2Int _lastScreenSize;
     private RectTransform _parentCanvasRect;
 
 
@@ -18,14 +17,11 @@ public class PixelUIScaler : MonoBehaviour
         _rectTransform = GetComponent<RectTransform>();
         var canvas = GetComponentInParent<Canvas>();
         _parentCanvasRect = canvas.GetComponent<RectTransform>();
-        ApplyScaling();
-        CacheScreenSize();
     }
 
-    private void OnEnable()
+    protected override void OneFrameAfterOnEnable()
     {
         ApplyScaling();
-        CacheScreenSize();
     }
 
     private void Update()
@@ -33,7 +29,6 @@ public class PixelUIScaler : MonoBehaviour
        if (ScreenSizeChanged())
        {
             ApplyScaling();
-            CacheScreenSize();
         }
     }
 
@@ -58,16 +53,6 @@ public class PixelUIScaler : MonoBehaviour
         _widthInPixels = size.x;
         _heightInPixels = size.y;
         ApplyScaling();
-    }
-
-    private bool ScreenSizeChanged()
-    {
-        return Screen.width != _lastScreenSize.x || Screen.height != _lastScreenSize.y;
-    }
-
-    private void CacheScreenSize()
-    {
-        _lastScreenSize = new Vector2Int(Screen.width, Screen.height);
     }
 
     private void ApplyScaling()
