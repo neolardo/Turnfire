@@ -70,6 +70,7 @@ public class CharacterAnimator : MonoBehaviour
 
     public void PlayHurtAnimation()
     {
+        _itemRenderer.HideItem();
         _bodyAnimator.PlayHurtAnimation();
     }
 

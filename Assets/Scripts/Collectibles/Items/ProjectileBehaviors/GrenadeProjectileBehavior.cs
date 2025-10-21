@@ -23,6 +23,10 @@ public class GrenadeProjectileBehavior : SimpleProjectileBehavior
         rb.transform.position = context.AimOrigin + context.AimVector.normalized * Constants.ProjectileOffset;
         rb.AddForce(context.AimVector, ForceMode2D.Impulse);
         StartCoroutine(ExplodeAfterDelay(_definition.ExplosionDelaySeconds));
+        if(TryContactImmadiatelyOnLaunchIfNearAnyCollider(context))
+        {
+            rb.transform.position = context.AimOrigin - context.AimVector.normalized * Constants.ProjectileOffset / 4;
+        }
     }
 
     private IEnumerator ExplodeAfterDelay(float delay)
@@ -33,14 +37,11 @@ public class GrenadeProjectileBehavior : SimpleProjectileBehavior
 
     public override void OnContact(ProjectileContactContext context)
     {
+        _contactCount++;
+        AudioManager.Instance.PlaySFXAt(_definition.ContactSFX, context.ContactPoint);
         if (_contactCount >= _definition.ExplosionContactThreshold || context.ContactObjectTag == Constants.DeadZoneTag)
         {
             Explode(context);
-        }
-        else
-        {
-            AudioManager.Instance.PlaySFXAt(_definition.ContactSFX, context.ContactPoint);
-            _contactCount++;
         }
     }
 

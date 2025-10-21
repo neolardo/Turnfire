@@ -17,5 +17,9 @@ public class BulletProjectileBehavior : SimpleProjectileBehavior
         rb.transform.position = context.AimOrigin + context.AimVector.normalized * Constants.ProjectileOffset;
         rb.gravityScale = 0;
         rb.linearVelocity = context.AimVector / rb.mass;
+        TryContactImmadiatelyOnLaunchIfNearAnyCollider(context);
+
     }
+
+
 }

@@ -10,8 +10,12 @@ public static class Constants
     public const float AimCircleOffsetPercentY = 0.85f;
     public const float UpwardAimThresholdY = 0.4f;
     public const float DownwardAimThresholdY = -0.4f;
+
     //projectile
     public const float ProjectileOffset = 1f;
+
+    // raycast
+    public const int RaycastHitColliderNumMax = 5;
 
     //healthbar
     public const int TeamHealthbarOffsetPixelsX = 20;
@@ -20,6 +24,9 @@ public static class Constants
     //layers
     public const int CharacterLayer = 3;
     public const int GroundLayer = 8;
+    public const int DeadZoneLayer = 9;
+
+    public static readonly int[] ProjectileCollisionLayers = new int[]{ CharacterLayer, GroundLayer, DeadZoneLayer };
 
     //tags 
     public const string CharacterTag = "Character";

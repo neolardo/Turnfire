@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngineInternal;
 
 public class SimpleProjectileBehavior : UnityDriven, IProjectileBehavior
 {
@@ -7,11 +8,13 @@ public class SimpleProjectileBehavior : UnityDriven, IProjectileBehavior
 
     private ProjectileDefinition _definition;
     protected Projectile _projectile;
+    protected RaycastHit2D[] _raycastHits;
 
     public SimpleProjectileBehavior(ProjectileDefinition definition) : base(CoroutineRunner.Instance)
     {
         _definition = definition;
-    }
+        _raycastHits = new RaycastHit2D[Constants.RaycastHitColliderNumMax];
+}
     public void SetProjectile(Projectile projectile)
     {
         _projectile = projectile;
@@ -23,7 +26,23 @@ public class SimpleProjectileBehavior : UnityDriven, IProjectileBehavior
         rb.linearVelocity = Vector2.zero;
         rb.transform.position = context.AimOrigin + context.AimVector.normalized * Constants.ProjectileOffset;
         rb.AddForce(context.AimVector, ForceMode2D.Impulse);
+        TryContactImmadiatelyOnLaunchIfNearAnyCollider(context);
     }
+
+    protected bool TryContactImmadiatelyOnLaunchIfNearAnyCollider(ProjectileLaunchContext context)
+    {
+        Physics2D.RaycastNonAlloc(context.AimOrigin, context.AimVector.normalized, _raycastHits,Constants.ProjectileOffset, LayerMaskHelper.GetCombinedLayerMask(Constants.ProjectileCollisionLayers));
+        foreach(var hit in _raycastHits)
+        {
+            if (hit.collider != null && hit.collider != context.OwnerCollider)
+            {
+                OnContact(new ProjectileContactContext(context.ProjectileCollider.transform.position, hit.collider.tag));
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     public virtual void OnContact(ProjectileContactContext context)
     {

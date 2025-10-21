@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -16,7 +17,10 @@ public class Character : MonoBehaviour
 
     public CharacterDefinition CharacterDefinition;
 
+    public Collider2D Collider => _col;
+
     private Rigidbody2D _rb;
+    private Collider2D _col;
     private int _health;
     public int Health
     {
@@ -60,6 +64,7 @@ public class Character : MonoBehaviour
         }
         _selectedItem = _items.FirstOrDefault();
         _rb = GetComponent<Rigidbody2D>();
+        _col = GetComponent<Collider2D>();
         HealthChanged += _healthbarRenderer.SetCurrentHealth;
     }
 
