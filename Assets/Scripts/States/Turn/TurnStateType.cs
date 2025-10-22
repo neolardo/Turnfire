@@ -1,6 +1,6 @@
 public enum TurnStateType
 {
-    DoOneCharacterActionPerTeamTurnState = 0,
+    AlternativelyDoCharacterActionsForAllCharacters = 0,
     DropItemsAndEffects = 1,
     Finished = 2
 }

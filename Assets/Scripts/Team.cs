@@ -18,6 +18,8 @@ public class Team : MonoBehaviour
     public event Action<float> TeamHealthChanged;
     public event Action TeamLost;
 
+    public int NumAliveCharacters => _characters.Count(c => c.IsAlive);
+
     private void Awake()
     {
         _teamName = gameObject.name;

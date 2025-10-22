@@ -10,10 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9ecee4a0396e09b4c866e99a206da959, type: 3}
-  m_Name: GameplaySettings
+  m_Name: StandardGameplaySettings
   m_EditorClassIdentifier: 
   CountdownSecondsBeforeStart: 3
   DelaySecondsAfterCountdown: 1
   SecondsAvaiablePerPlayerTurn: 15
   GameplayTimerFirstThresholdSeconds: 8
   GameplayTimerSecondThresholdSeconds: 3
+  MinimumNumberOfDropsPerRound: 0
+  MaximumNumberOfDropsPerRound: 2
+  PossibleDrops:
+  - {fileID: 11400000, guid: 7aab2b42b18158f4fbba38adfb9eeffd, type: 2}
+  - {fileID: 11400000, guid: 3adb2e281e926714ca60f3a253fa55dc, type: 2}
+  - {fileID: 11400000, guid: 0276c8487ff836a47a5b2849c6189187, type: 2}

@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Collider2D))]
 public class GroundChecker : MonoBehaviour
 {
@@ -13,11 +14,17 @@ public class GroundChecker : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private bool drawDebugRays = true;
 
+    private Rigidbody2D _rb;
     private bool _isGrounded;
 
     public event Action<bool> IsGroundedChanged;
 
     public bool IsGrounded => _isGrounded;
+
+    private void Awake()
+    {
+        _rb = GetComponent<Rigidbody2D>();
+    }
 
     private void FixedUpdate()
     {
@@ -50,6 +57,6 @@ public class GroundChecker : MonoBehaviour
             Debug.DrawRay(rightOrigin, Vector2.down * rayLength, color);
         }
 
-        return centerHit || leftHit || rightHit;
+        return centerHit || leftHit || rightHit || _rb.linearVelocity.Approximately(Vector2.zero);
     }
 }

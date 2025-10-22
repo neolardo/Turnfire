@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class DropItemsAndEffectsTurnState : TurnState
 {
-    private DropZone _dropZone;
-    public DropItemsAndEffectsTurnState(MonoBehaviour manager, DropZone dropZone) : base(manager)
+    private DropManager _dropManager;
+    public DropItemsAndEffectsTurnState(MonoBehaviour manager, DropManager dropManager) : base(manager)
     {
-        _dropZone = dropZone;
+        _dropManager = dropManager;
     }
 
     public override TurnStateType State => TurnStateType.DropItemsAndEffects;
@@ -13,19 +13,19 @@ public class DropItemsAndEffectsTurnState : TurnState
     protected override void SubscribeToEvents()
     {
         base.SubscribeToEvents();
-        _dropZone.AllPackagesLanded += EndState;
+        _dropManager.AllPackagesLanded += EndState;
     }
 
     protected override void UnsubscribeFromEvents()
     {
         base.UnsubscribeFromEvents();
-        _dropZone.AllPackagesLanded -= EndState;
+        _dropManager.AllPackagesLanded -= EndState;
     }
 
     public override void StartState()
     {
         base.StartState();
-        _dropZone.SpawnPackages();
+        _dropManager.SpawnPackages();
     }
 
 }
