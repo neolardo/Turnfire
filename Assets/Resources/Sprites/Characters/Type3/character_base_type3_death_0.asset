@@ -6,7 +6,7 @@ Sprite:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: "character_base_type3_death_\xA7"
+  m_Name: character_base_type3_death_0
   m_Rect:
     serializedVersion: 2
     x: 384

@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 public class ReadyToUseItemCharacterActionState : CharacterActionState
@@ -55,6 +56,13 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
     public override void StartState(Character currentCharacter)
     {
         base.StartState(currentCharacter);
+
+        if (!_currentCharacter.GetAllItems().Any())
+        {
+            EndState();
+            return;
+        }
+
         _inputManager.IsAimingEnabled = true;
         _inputManager.IsOpeningInventoryEnabled = true;
         var context = new ItemUsageContext(_currentCharacter.transform.position, Vector2.zero, _currentCharacter.ItemTransform, _currentCharacter.Collider, _projectileManager);

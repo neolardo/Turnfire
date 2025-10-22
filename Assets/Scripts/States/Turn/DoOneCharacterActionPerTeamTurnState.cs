@@ -47,6 +47,7 @@ public class DoOneCharacterActionPerTeamTurnState : TurnState
 
     private void StartActionsWithCurrentTeam()
     {
+        CurrentTeam.SelectNextCharacter();
         _characterActionManager.StartActionsWithCharacter(CurrentTeam.CurrentCharacter);
     }
 

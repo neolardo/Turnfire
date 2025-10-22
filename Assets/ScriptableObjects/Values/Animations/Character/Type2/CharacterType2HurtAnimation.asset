@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a13c2c413f0c7845904d9b4233ec752, type: 3}
+  m_Name: CharacterType2HurtAnimation
+  m_EditorClassIdentifier: 
+  Frames:
+  - Base: {fileID: 21300000, guid: 0a3176bd53b16d341b641acc9c558e19, type: 2}
+    Clothes: {fileID: 21300000, guid: fb9d85630a39bb34e8b85d587c1bf45c, type: 2}
+    OverItemBase: {fileID: 0}
+    OverItemClothes: {fileID: 0}

@@ -1,4 +1,3 @@
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class CharacterAnimator : MonoBehaviour
@@ -9,6 +8,12 @@ public class CharacterAnimator : MonoBehaviour
     [SerializeField] private CharacterItemRenderer _itemRenderer;
 
     public Transform ItemTransform => _itemRenderer.transform;
+
+    private void Awake()
+    {
+        var character = transform.parent.GetComponent<Character>();
+        _bodyAnimator.SetCharacterDefinition(character.CharacterDefinition);
+    }
 
     public void SetTeamColor(Color color)
     {

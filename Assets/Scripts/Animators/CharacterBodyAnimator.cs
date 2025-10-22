@@ -5,7 +5,6 @@ using UnityEngine;
 public class CharacterBodyAnimator : MonoBehaviour
 {
     [SerializeField] private CharacterAnimatorDefinition _animatorDefinition;
-    [SerializeField] private CharacterDefinition _characterDefinition;
     [SerializeField] private GroundChecker _characterGroundChecker;
 
     [SerializeField] private SpriteRenderer _baseSpriteRenderer;
@@ -13,16 +12,26 @@ public class CharacterBodyAnimator : MonoBehaviour
     [SerializeField] private SpriteRenderer _overItemBaseSpriteRenderer;
     [SerializeField] private SpriteRenderer _overItemClothesSpriteRenderer;
 
+    private CharacterDefinition _characterDefinition;
+
     private Color _teamColor;
     private Coroutine _currentAnimationRoutine;
     private CharacterAnimationState _currentAnimationState;
 
     private void Start()
     {
+        if(_currentAnimationRoutine != null)
+        {
+            Debug.LogWarning($"{nameof(CharacterDefinition)} not set for {nameof(CharacterBodyAnimator)}.");
+        }
         _characterGroundChecker.IsGroundedChanged += OnCharacterIsGroundedChanged;
         PlayAnimation(CharacterAnimationState.Idle);
     }
 
+    public void SetCharacterDefinition(CharacterDefinition characterDefinition)
+    {
+        _characterDefinition = characterDefinition;
+    }
 
     public void SetTeamColor(Color color)
     {

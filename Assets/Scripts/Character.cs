@@ -9,7 +9,7 @@ public class Character : MonoBehaviour
 {
     [HideInInspector] public bool IsAlive => _health > 0;
     [HideInInspector] public bool IsMoving => _rb.linearVelocity.magnitude > Mathf.Epsilon;
-    [HideInInspector] public bool IsUsingSelectedItem => _selectedItem.Behavior.IsInUse;
+    [HideInInspector] public bool IsUsingSelectedItem => _selectedItem == null ? false : _selectedItem.Behavior.IsInUse;
     public Transform ItemTransform => _animator.ItemTransform;
 
     [SerializeField] private CharacterHealthbarRenderer _healthbarRenderer;
@@ -58,13 +58,9 @@ public class Character : MonoBehaviour
         {
             _items.Add(CollectibleFactory.CreateCollectible(itemDefinition));
         }
-        if(_items.Count == 0)
-        {
-            Debug.LogWarning($"{gameObject.name} has no initial items.");
-        }
-        _selectedItem = _items.FirstOrDefault();
         _rb = GetComponent<Rigidbody2D>();
         _col = GetComponent<Collider2D>();
+        _selectedItem = _items.FirstOrDefault();
         HealthChanged += _healthbarRenderer.SetCurrentHealth;
     }
 
@@ -164,7 +160,6 @@ public class Character : MonoBehaviour
 
     public void UseSelectedItem(ItemUsageContext context)
     { 
-        //TODO refactor
         _selectedItem.Behavior.Use(context);
         _animator.PlayItemActionAnimation(_selectedItem);
     }
@@ -178,6 +173,10 @@ public class Character : MonoBehaviour
         else
         {
             _items.Add(item);
+            if(_items.Count == 1)
+            {
+                SelectItem(item);
+            }
             return true;
         }
     }

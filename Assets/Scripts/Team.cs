@@ -6,28 +6,32 @@ using UnityEngine;
 public class Team : MonoBehaviour
 {
     [HideInInspector] public bool IsTeamAlive => _characters.Any(c => c.IsAlive);
-    [SerializeField] private List<Character> _characters;
-    [SerializeField] private Color _teamColor; //TODO
+    [SerializeField] private Color _teamColor;
 
+    private List<Character> _characters;
     public Color TeamColor => _teamColor;
     public Character CurrentCharacter => _characters[_characterIndex];
     private int _characterIndex;
     public string TeamName => _teamName;
     private string _teamName;
 
-    /// <summary>
-    /// Fires an event containing the normalized team health.
-    /// </summary>
     public event Action<float> TeamHealthChanged;
     public event Action TeamLost;
 
     private void Awake()
     {
-        if (_characters == null || _characters.Count == 0)
+        _teamName = gameObject.name;
+        _characters = new List<Character>();
+        for (int i=0; i< transform.childCount; i++)
         {
-            Debug.LogWarning($"There are no characters set for player: {gameObject.name}.");
+            var child = transform.GetChild(i);
+            _characters.Add(child.GetComponent<Character>());
         }
-        _teamName = gameObject.name; //TODO
+        if(_characters.Count == 0)
+        {
+            Debug.LogWarning($"{TeamName} has 0 characters.");
+        }
+
         foreach (Character character in _characters)
         {
             character.Died += OnAnyTeamCharacterDied;

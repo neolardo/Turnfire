@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee4184e8bcd897b41b5ab4806a11bafe, type: 3}
+  m_Name: TankCharacter
+  m_EditorClassIdentifier: 
+  IdleAnimationDefinition: {fileID: 11400000, guid: 60a73901ffa11f44b956693e0d4d0416, type: 2}
+  JumpAnimationDefinition: {fileID: 11400000, guid: 70d6baa285c77604d95e2d0a8f971f0c, type: 2}
+  LandAnimationDefinition: {fileID: 11400000, guid: 7126d9b301ce0174986bf4976e6698e0, type: 2}
+  PrepareToJumpAnimationDefinition: {fileID: 11400000, guid: 667d7da824718b3438c4f4db84eebc77, type: 2}
+  HurtAnimationDefinition: {fileID: 11400000, guid: c1f43038cf22eb74e963b12f64c8da7a, type: 2}
+  DeathAnimationDefinition: {fileID: 11400000, guid: d00288b635369bb42b68603f26ffe4a0, type: 2}
+  AimLowAnimationDefinition: {fileID: 11400000, guid: 3f37708d4fa47d0408f4b42bf8133cfc, type: 2}
+  AimMiddleAnimationDefinition: {fileID: 11400000, guid: 1b7e8d5f0bc02c34bb345fa58300c360, type: 2}
+  AimHighAnimationDefinition: {fileID: 11400000, guid: 3de12976a9def5d4497e03148f8aee5e, type: 2}
+  BackFromLandAnimationDefinition: {fileID: 11400000, guid: bc9dda5e25df9bc4a897c220973e19ec, type: 2}
+  InAirSFX: {fileID: 11400000, guid: d230d235833e97b4ea72e3867bedc065, type: 2}
+  PrepareToJumpSFX: {fileID: 11400000, guid: c4faad8b134467a4eab7174020e523ec, type: 2}
+  LandSFX: {fileID: 11400000, guid: 2558f50bf2497904b95bc1fe45a1935f, type: 2}
+  CancelJumpSFX: {fileID: 11400000, guid: cae45a1a66a750d4ab174bfa12fbcca2, type: 2}
+  HurtSFX: {fileID: 11400000, guid: c94168634f5aa494bae4a5b25823294c, type: 2}
+  DeathSFX: {fileID: 11400000, guid: 11e71dc438cbd77479e5bd7b4272754a, type: 2}
+  AimStartSFX: {fileID: 11400000, guid: a7bfba19c9cddd34e847d947523ef72a, type: 2}
+  AimCancelSFX: {fileID: 11400000, guid: 54274b9904803fc4c8f9b3662815e897, type: 2}
+  MaxHealth: 18
+  JumpStrength: 7
+  InitialItems: []
