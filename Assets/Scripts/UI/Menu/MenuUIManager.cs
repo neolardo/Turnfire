@@ -19,11 +19,10 @@ public class MenuUIManager : MonoBehaviour
     {
         if(_currentPanel != panel)
         {
-            _mainMenu.gameObject.SetActive(false);
-            _multiplayerMenu.gameObject.SetActive(false);
-
             _previousPanel = _currentPanel;
             _currentPanel = panel;
+
+            HideAllPanels();
 
             var go = GetPanelGOFromType(panel);
             go.SetActive(true);
@@ -33,6 +32,12 @@ public class MenuUIManager : MonoBehaviour
     public void SwitchToPreviousPanel()
     {
         SwitchPanel(_previousPanel);
+    }
+
+    public void HideAllPanels()
+    {
+        _mainMenu.gameObject.SetActive(false);
+        _multiplayerMenu.gameObject.SetActive(false);
     }
 
     private GameObject GetPanelGOFromType(MenuPanelType panel)

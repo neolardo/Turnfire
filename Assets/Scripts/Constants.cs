@@ -46,4 +46,7 @@ public static class Constants
     public const int MultiplayerMinPlayers = 2;
     public const int MultiplayerMaxPlayers = 4;
 
+    // map
+    public const string MapSceneNamePrefix = "Map";
+
 }

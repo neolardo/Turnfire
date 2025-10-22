@@ -24,7 +24,14 @@ public class MultiplayerMenuUI : MonoBehaviour
 
     public void OnCofirmPressed()
     {
-        //TODO: gather data and load scene
+        var settings = new SceneLoadSettings()
+        {
+            SceneName = Constants.MapSceneNamePrefix + _mapDisplay.MapIndex,
+            NumTeams = _numPlayersDisplay.Value,
+            UseTimer = _useTimerCheckbox.Value
+        };
+        _menuUIManager.HideAllPanels();
+        SceneLoader.Instance.LoadScene(settings);
     }
 
     public void OnCancelPressed()
