@@ -43,14 +43,6 @@ public class PixelUIGrid : ScreenSizeDependantUI
         }
     }
 
-    private void Update()
-    {
-        if (ScreenSizeChanged())
-        {
-            UpdateLayout();
-        }
-    }
-
     private void OnRectTransformDimensionsChange()
     {
         if (Application.isPlaying)
@@ -76,5 +68,10 @@ public class PixelUIGrid : ScreenSizeDependantUI
 
            children[i].SetPositionAndSize(_startAnchor, _pivot, position, _cellSizeInPixels);
         }
+    }
+
+    protected override void OneFrameAfterSizeChanged()
+    {
+        UpdateLayout();
     }
 }

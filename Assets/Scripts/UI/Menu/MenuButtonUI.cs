@@ -155,4 +155,11 @@ public class MenuButtonUI : ScreenSizeDependantUI,
     {
         _originalTextPosition = _text.rectTransform.anchoredPosition;
     }
+
+    protected override void OneFrameAfterSizeChanged()
+    {
+        float scale = _parentCanvasRect.sizeDelta.y / _uiDefinition.TargetScreenHeightInPixels;
+        var offset = TextHoverOffsetPixels * scale;
+        _text.rectTransform.anchoredPosition = _hovered? _originalTextPosition + offset : _originalTextPosition;
+    }
 }

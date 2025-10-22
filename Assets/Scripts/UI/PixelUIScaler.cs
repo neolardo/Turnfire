@@ -24,14 +24,6 @@ public class PixelUIScaler : ScreenSizeDependantUI
         ApplyScaling();
     }
 
-    private void Update()
-    {
-       if (ScreenSizeChanged())
-       {
-            ApplyScaling();
-        }
-    }
-
     public void SetUIDefinition(PixelUIDefinition uiDefinition)
     {
         _uiDefinition = uiDefinition;
@@ -72,5 +64,10 @@ public class PixelUIScaler : ScreenSizeDependantUI
         _rectTransform.anchorMax = _anchor;
         _rectTransform.sizeDelta = new Vector2(width, height);
         _rectTransform.anchoredPosition = offset;
+    }
+
+    protected override void OneFrameAfterSizeChanged()
+    {
+        ApplyScaling();
     }
 }

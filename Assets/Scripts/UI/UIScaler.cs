@@ -25,15 +25,6 @@ public class UIScaler : ScreenSizeDependantUI
         ApplyScaling();
     }
 
-    private void Update()
-    {
-        if(ScreenSizeChanged())
-        { 
-            ApplyScaling();
-        }
-    }
-
-
     private void ApplyScaling()
     {
         float screenW = Screen.width;
@@ -58,5 +49,10 @@ public class UIScaler : ScreenSizeDependantUI
         _rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
         _rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
         _rect.anchoredPosition = Vector2.zero;
+    }
+
+    protected override void OneFrameAfterSizeChanged()
+    {
+        ApplyScaling();
     }
 }
