@@ -24,4 +24,9 @@ public abstract class CharacterActionState : StateBase
         UnsubscribeFromEvents();
         InvokeStateEndedEvent();
     }
+
+    public void ForceEndState()
+    {
+        EndState();
+    }
 }

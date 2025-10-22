@@ -24,7 +24,7 @@ public class MultiplayerMenuUI : MonoBehaviour
 
     public void OnCofirmPressed()
     {
-        var settings = new SceneLoadSettings()
+        var settings = new GameplaySceneSettings()
         {
             SceneName = Constants.MapSceneNamePrefix + _mapDisplay.MapIndex,
             NumTeams = _numPlayersDisplay.Value,

@@ -1,7 +1,7 @@
 using System;
 
 [Serializable]
-public class SceneLoadSettings
+public class GameplaySceneSettings
 {
     public string SceneName;
     public int NumTeams;

@@ -1,6 +1,7 @@
 public enum GameStateType
 {
-    Playing = 0,
-    Paused = 1,
-    GameOver = 2 
+    Inital = 0,
+    Playing = 1,
+    Paused = 2,
+    GameOver = 3 
 }

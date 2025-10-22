@@ -5,12 +5,13 @@ using UnityEngine.SceneManagement;
 public class SceneLoader : MonoBehaviour
 {
     public static SceneLoader Instance { get; private set; }
-    public SceneLoadSettings SceneSettings { get; private set; }
+    public GameplaySceneSettings CurrentGameplaySceneSettings { get; private set; }
 
     private LoadingTextUI _loadingText;
 
     private void Awake()
     {
+        CurrentGameplaySceneSettings = new GameplaySceneSettings() { NumTeams = 2, SceneName = "Map0", UseTimer = true }; //TODO: delete
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -26,19 +27,19 @@ public class SceneLoader : MonoBehaviour
     }
 
 
-    private IEnumerator LoadSceneCoroutine(SceneLoadSettings settings)
+    private IEnumerator LoadSceneCoroutine(GameplaySceneSettings settings)
     {
-        SceneSettings = settings;
+        CurrentGameplaySceneSettings = settings;
         _loadingText.gameObject.SetActive(true);
         yield return null;
-        AsyncOperation op = SceneManager.LoadSceneAsync(SceneSettings.SceneName);
+        AsyncOperation op = SceneManager.LoadSceneAsync(CurrentGameplaySceneSettings.SceneName);
         while (!op.isDone)
         {
             yield return null;
         }
     }
 
-    public void LoadScene(SceneLoadSettings settings)
+    public void LoadScene(GameplaySceneSettings settings)
     {
         StartCoroutine(LoadSceneCoroutine(settings));
     }

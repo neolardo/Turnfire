@@ -46,9 +46,17 @@ public class InputManager : MonoBehaviour
     private void Awake()
     {
         _inputActions = new PlayerInputActions();
-        IsPausingGameplayEnabled = true;
         SwitchToInputActionMap(InputActionMapType.Gameplay);
         SubscribeToInputEvents();
+        DisableInputBeforeGameStart();
+    }
+
+
+    private void DisableInputBeforeGameStart()
+    {
+        IsAimingEnabled = false;
+        IsPausingGameplayEnabled = false;
+        IsOpeningInventoryEnabled = false;
     }
 
     private void SubscribeToInputEvents()
@@ -278,7 +286,13 @@ public class InputManager : MonoBehaviour
     }
 
     #endregion
-    
+
+    public void OnGameStarted()
+    {
+        IsPausingGameplayEnabled = true;
+        IsOpeningInventoryEnabled = true;
+    }
+
     public void OnGameEnded()
     {
         IsAimingEnabled = false;

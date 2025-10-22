@@ -11,6 +11,7 @@ public class TurnManager : MonoBehaviour
     private TurnState CurrentTurnState => _turnStates[_turnStateIndex];
     private bool IsGameOver => _teams.Count(t => t.IsTeamAlive) <= 1;
 
+    public event Action<GameplaySceneSettings> GameStarted;
     public event Action<Team> GameEnded;
 
     void Awake()
@@ -49,11 +50,13 @@ public class TurnManager : MonoBehaviour
             team.TeamLost += OnAnyTeamLost;
         }
         uiManager.CreateTeamHealthbars(_teams);
-        GameEnded+= (_) => inputManager.OnGameEnded(); //TODO?
+        GameStarted += (_) => inputManager.OnGameStarted();
+        GameEnded += (_) => inputManager.OnGameEnded(); //TODO?
     }
 
-    private void Start()
+    public void StartGame(GameplaySceneSettings gameplaySettings)
     {
+        GameStarted?.Invoke(gameplaySettings);
         StartTurnState();
     }
 
