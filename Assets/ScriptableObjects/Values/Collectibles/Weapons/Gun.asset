@@ -15,8 +15,16 @@ MonoBehaviour:
   Sprite: {fileID: 21300000, guid: 819d6f0b710d1e0468cb863aaa641494, type: 3}
   Name: Gun
   Description: Fires a bullet.
+  InitialAmmo: 4
+  MaximumAmmo: 16
+  DropAmmoRange:
+    _normalizedValue: 0.3
+    _isRandomized: 1
+    _randomness: 0.2
+    _group: {fileID: 11400000, guid: 5a5b56af88cd285408e8a8c33dfc5e52, type: 2}
   ItemActionAnimation: {fileID: 11400000, guid: 305e25740d6920247b3f78a7ff9ad03e, type: 2}
   ItemActionSFX: {fileID: 11400000, guid: fc1ce75043e549540ba172f23ddbb33f, type: 2}
+  HideItemDuringUsage: 0
   FireStrength:
     _normalizedValue: 0.8
     _isRandomized: 0

@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -11,6 +12,7 @@ public class InventoryItemSlotUI : MonoBehaviour, IPointerEnterHandler, IPointer
     [SerializeField] private Image _itemImage;
     [SerializeField] private Sprite _selectedSlotSprite;
     [SerializeField] private Sprite _deselectedSlotSprite;
+    [SerializeField] private TextMeshProUGUI _ammoText;
     private InputManager _inputManager;
     public Item Item => _item;
     private Item _item;
@@ -30,6 +32,7 @@ public class InventoryItemSlotUI : MonoBehaviour, IPointerEnterHandler, IPointer
         _item = item;
         _itemImage.sprite = item.Definition.Sprite;
         _itemImage.gameObject.SetActive(true);
+        _ammoText.text = item.Ammo.ToString();
     }
 
     public void UnloadItem()
@@ -37,6 +40,7 @@ public class InventoryItemSlotUI : MonoBehaviour, IPointerEnterHandler, IPointer
         _item = null;
         _itemImage.sprite = null;
         _itemImage.gameObject.SetActive(false);
+        _ammoText.text = string.Empty;
     }
 
     public void DeselectSlot()

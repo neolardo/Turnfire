@@ -29,6 +29,12 @@ public class PixelUIScaler : ScreenSizeDependantUI
         _uiDefinition = uiDefinition;
     }
 
+    public void SetPixelOffset(Vector2 offset)
+    {
+        _offsetPixels = offset;
+        ApplyScaling();
+    }
+
     public void SetPosition(Vector2 anchor, Vector2 pivot, Vector2 offset)
     {
         _anchor = anchor;

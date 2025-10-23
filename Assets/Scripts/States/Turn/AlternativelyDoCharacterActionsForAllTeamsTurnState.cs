@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class AlternativelyDoCharacterActionsForAllCharactersTurnState : TurnState
+public class AlternativelyDoCharacterActionsForAllTeamsTurnState : TurnState
 {
-    public override TurnStateType State => TurnStateType.AlternativelyDoCharacterActionsForAllCharacters;
+    public override TurnStateType State => TurnStateType.AlternativelyDoCharacterActionsForAllTeams;
 
     private CharacterActionManager _characterActionManager;
     private List<Team> _teams;
@@ -14,7 +14,7 @@ public class AlternativelyDoCharacterActionsForAllCharactersTurnState : TurnStat
     private Team CurrentTeam => _teams[_teamIndex];
 
 
-    public AlternativelyDoCharacterActionsForAllCharactersTurnState(MonoBehaviour manager, CharacterActionManager characterActionManager, List<Team> teams) : base(manager)
+    public AlternativelyDoCharacterActionsForAllTeamsTurnState(MonoBehaviour manager, CharacterActionManager characterActionManager, List<Team> teams) : base(manager)
     {
         _characterActionManager = characterActionManager;
         _characterActionManager.CharacterActionsFinished += OnCharacterActionsFinished;

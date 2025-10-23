@@ -14,8 +14,9 @@ public class InventoryUI : MonoBehaviour
     [SerializeField] private List<SliderWithTextUI> _sliders;
 
     [Header("Item Slots")]
-    [SerializeField] private List<InventoryItemSlotUI> _itemSlots;
+    [SerializeField] private Transform _slotContainer;
     [SerializeField] private RectTransform _previewFrame;
+    private List<InventoryItemSlotUI> _itemSlots;
 
     [Header("Sounds")]
     [SerializeField] private UISoundsDefinition _uiSounds;
@@ -30,13 +31,22 @@ public class InventoryUI : MonoBehaviour
         var inputManager = FindFirstObjectByType<InputManager>();
         inputManager.ToggleInventoryCreateDestroyPerformed += ToggleItemType;
         inputManager.SelectInventorySlotPerformed += SelectPreviewedSlot;
-        _weaponConsumableToggle.SetLeftToggleValue(true);
+        _weaponConsumableToggle.InitializeToggledLeftValue(true);
+
+        _itemSlots = new List<InventoryItemSlotUI>();
+        for (int i = 0; i < _slotContainer.childCount; i++)
+        {
+            var slot = _slotContainer.GetChild(i).GetComponent<InventoryItemSlotUI>();
+            _itemSlots.Add(slot);   
+        }
 
         foreach (var slot in _itemSlots)
         {
             slot.Hovered += PreviewSlot;
             slot.UnHovered += UnPreviewSlot;
         }
+        _previewFrame.gameObject.SetActive(false);
+        LoadItemInfo(null);
     }
 
     public void LoadCharacterData(Character c)

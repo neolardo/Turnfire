@@ -1,6 +1,6 @@
 public enum TurnStateType
 {
-    AlternativelyDoCharacterActionsForAllCharacters = 0,
+    AlternativelyDoCharacterActionsForAllTeams = 0,
     DropItemsAndEffects = 1,
     Finished = 2
 }

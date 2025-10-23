@@ -1,4 +1,7 @@
+using System;
+
 public interface ICollectible
 {
-    bool TryCollect(Character c);
+    public event Action<ICollectible> CollectibleDestroyed;
+    public bool TryCollect(Character c);
 }

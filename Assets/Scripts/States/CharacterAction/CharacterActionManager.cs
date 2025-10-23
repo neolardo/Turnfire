@@ -9,13 +9,13 @@ public class CharacterActionManager : UnityDriven
     private int _characterActionIndex;
     private Character _character;
     private CameraController _cameraController;
-    private UIManager _uiManager;
+    private GameplayUIManager _uiManager;
     private bool _forceEndActions;
     private CharacterActionState CurrentCharacterActionState => _characterActionStates[_characterActionIndex];
 
     public event Action CharacterActionsFinished;
 
-    public CharacterActionManager(MonoBehaviour coroutineManager, TrajectoryRenderer trajectoryRenderer, ItemPreviewRendererManager itemPreviewRendererManager, InputManager inputManager, CameraController cameraController, UIManager uiManager, ProjectilePool projectileManager) : base(coroutineManager)
+    public CharacterActionManager(MonoBehaviour coroutineManager, TrajectoryRenderer trajectoryRenderer, ItemPreviewRendererManager itemPreviewRendererManager, InputManager inputManager, CameraController cameraController, GameplayUIManager uiManager, ProjectilePool projectileManager) : base(coroutineManager)
     {
         _cameraController = cameraController;
         _uiManager = uiManager;

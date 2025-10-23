@@ -30,12 +30,12 @@ public class TurnManager : MonoBehaviour
         var itemPreviewRendererManager = FindFirstObjectByType<ItemPreviewRendererManager>();
         var dropManager = FindFirstObjectByType<DropManager>();
         var cameraController = FindFirstObjectByType<CameraController>();
-        var uiManager = FindFirstObjectByType<UIManager>();
+        var uiManager = FindFirstObjectByType<GameplayUIManager>();
         var projectileManager = FindFirstObjectByType<ProjectilePool>();
         var characterActionManager = new CharacterActionManager(this, trajectoryRenderer, itemPreviewRendererManager, inputManager, cameraController, uiManager, projectileManager);
         _turnStates = new List<TurnState>
         {
-            new AlternativelyDoCharacterActionsForAllCharactersTurnState(this, characterActionManager, _teams),
+            new AlternativelyDoCharacterActionsForAllTeamsTurnState(this, characterActionManager, _teams),
             new DropItemsAndEffectsTurnState(this, dropManager),
             new FinishedTurnState(this),
         };

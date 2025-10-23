@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UIManager : MonoBehaviour
+public class GameplayUIManager : MonoBehaviour
 {
     [SerializeField] private GameObject _gameplayPausedScreen;
     [SerializeField] private InventoryUI _inventoryUI;
@@ -25,6 +25,7 @@ public class UIManager : MonoBehaviour
         inputManager.ToggleInventoryPerformed += ToggleInventory;//TODO: refactor?
         _gameplayTimer.gameObject.SetActive(false);
         _gameplayTimer.TimerEnded += () => GameplayTimerEnded?.Invoke();
+        _countdownTimer.gameObject.SetActive(true);
     }
 
     public void CreateTeamHealthbars(IEnumerable<Team> teams)

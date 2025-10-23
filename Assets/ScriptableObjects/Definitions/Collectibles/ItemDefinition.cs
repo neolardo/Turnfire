@@ -9,6 +9,9 @@ public abstract class ItemDefinition : CollectibleDefinition
     public Sprite Sprite;
     public string Name;
     public string Description;
+    public int InitialAmmo;
+    public int MaximumAmmo;
+    public RangedStatInt DropAmmoRange;
     public AnimationDefinition ItemActionAnimation;
     public SFXDefiniton ItemActionSFX;
     public bool HideItemDuringUsage;

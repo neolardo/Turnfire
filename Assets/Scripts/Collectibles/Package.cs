@@ -29,7 +29,8 @@ public class Package : MonoBehaviour
         }
         else if (collider.CompareTag(Constants.CharacterTag))
         {
-            if(_collectible.TryCollect(collider.GetComponent<Character>()))
+            var character = collider.GetComponent<Character>();
+            if (_collectible.TryCollect(character))
             {
                 AudioManager.Instance.PlaySFXAt(collectSFX, transform.position);
                 Destroy(gameObject);

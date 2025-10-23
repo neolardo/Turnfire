@@ -166,18 +166,38 @@ public class Character : MonoBehaviour
 
     public bool TryAddItem(Item item)
     {
-        if (_items.Any(i => i.IsSameType(item)))
-        {
-            return false;
-        }
-        else
+        var existingItem = _items.FirstOrDefault(i => i.IsSameType(item));
+        if (existingItem == null)
         {
             _items.Add(item);
-            if(_items.Count == 1)
+            item.CollectibleDestroyed += OnCollectibleDestroyed;
+            if (_items.Count == 1)
             {
                 SelectItem(item);
             }
             return true;
+        }
+        else
+        {
+            return existingItem.TryMerge(item); 
+        }
+    }
+
+    private void OnCollectibleDestroyed(ICollectible collectible)
+    {
+        var item = _items.FirstOrDefault(i => i == collectible);
+        if(item != null)
+        {
+            RemoveItem(item);   
+        }
+    }
+
+    private void RemoveItem(Item item)
+    {
+        _items.Remove(item);
+        if(_selectedItem == item)
+        {
+            _selectedItem = _items.FirstOrDefault();
         }
     }
 
