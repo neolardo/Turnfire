@@ -37,7 +37,7 @@ public class Team : MonoBehaviour
         foreach (Character character in _characters)
         {
             character.Died += OnAnyTeamCharacterDied;
-            character.HealthChanged += (_) => OnAnyTeamCharacterHealthChanged();
+            character.HealthChanged += (_, _) => OnAnyTeamCharacterHealthChanged();
             character.SetTeamColor(TeamColor);
         }
         _characterIndex = 0;

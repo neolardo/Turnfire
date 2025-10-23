@@ -3,16 +3,16 @@ using UnityEngine;
 [RequireComponent(typeof(SpriteRenderer))]
 public class CharacterHealthbarRenderer : MonoBehaviour
 {
-    private float _initialScale;
+    private float _unitScale;
 
     private void Awake()
     {
-        _initialScale = transform.localScale.x;
+        _unitScale = transform.localScale.x;
     }
 
-    public void SetCurrentHealth(float healthRatio)
+    public void SetCurrentHealth(float normalizedHealth, int health)
     {
-        transform.localScale = new Vector3(_initialScale * healthRatio, transform.localScale.y, transform.localScale.z);
+        transform.localScale = new Vector3(_unitScale * health / (float)Constants.CharacterHealthbarValuePerUnit, transform.localScale.y, transform.localScale.z);
     }    
 
 }

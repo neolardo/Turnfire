@@ -20,6 +20,7 @@ public static class Constants
     //healthbar
     public const int TeamHealthbarOffsetPixelsX = 20;
     public const int TeamHealthbarOffsetPixelsY = 10;
+    public const int CharacterHealthbarValuePerUnit = 10;
 
     //layers
     public const int CharacterLayer = 3;

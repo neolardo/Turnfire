@@ -33,7 +33,7 @@ public class Character : MonoBehaviour
             if (_health != value)
             {
                 _health = value;
-                HealthChanged?.Invoke(NormalizedHealth);
+                HealthChanged?.Invoke(NormalizedHealth, Health);
             }
         }
     }
@@ -46,7 +46,7 @@ public class Character : MonoBehaviour
     /// <summary>
     /// Fires an event on every health change containing the normalized health ratio of this character.
     /// </summary>
-    public event Action<float> HealthChanged;
+    public event Action<float, int> HealthChanged;
     public event Action Died;
     public event Action<Item> SelectedItemChanged;
 
@@ -66,7 +66,7 @@ public class Character : MonoBehaviour
 
     private void Start() // after child awake run
     {
-        _healthbarRenderer.SetCurrentHealth(1);
+        _healthbarRenderer.SetCurrentHealth(NormalizedHealth, Health);
     }
 
     #region Health
