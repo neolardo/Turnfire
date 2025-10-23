@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7dfde59b4a656724db07f3b707c091d3, type: 3}
+  m_Name: WaterSplashSFX
+  m_EditorClassIdentifier: 
+  clips:
+  - {fileID: 8300000, guid: 843c0cb9a6eb15546a59db3b1b109f03, type: 3}
+  - {fileID: 8300000, guid: 23b8e8a4a82717449b15c49a8d40cafa, type: 3}

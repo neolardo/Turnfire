@@ -10,6 +10,7 @@ public class GameplayUIManager : MonoBehaviour
     [SerializeField] private TeamHealthbarUIManager _teamHealthbarUIManager;
     [SerializeField] private GameplayTimerUI _gameplayTimer;
     [SerializeField] private CountdownTimerUI _countdownTimer;
+    private GameStateManager _gameStateManager;
     private bool _useTimer;
 
     public event Action GameplayTimerEnded;
@@ -19,8 +20,8 @@ public class GameplayUIManager : MonoBehaviour
         var turnManager = FindFirstObjectByType<TurnManager>();
         turnManager.GameEnded += OnGameOver;
         turnManager.GameStarted += OnGameStarted;
-        var gameStateManager = FindFirstObjectByType<GameStateManager>();
-        gameStateManager.StateChanged += OnGameStateChanged;
+        _gameStateManager = FindFirstObjectByType<GameStateManager>();
+        _gameStateManager.StateChanged += OnGameStateChanged;
         var inputManager = FindFirstObjectByType<InputManager>();
         inputManager.ToggleInventoryPerformed += ToggleInventory;//TODO: refactor?
         _gameplayTimer.gameObject.SetActive(false);
@@ -72,7 +73,7 @@ public class GameplayUIManager : MonoBehaviour
 
     public void StartGameplayTimer()
     {
-        if(_useTimer)
+        if(_useTimer && _gameStateManager.CurrentState == GameStateType.Playing)
         {
             _gameplayTimer.StartTimer();
         }

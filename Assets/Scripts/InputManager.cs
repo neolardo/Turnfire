@@ -33,6 +33,7 @@ public class InputManager : MonoBehaviour
     public event Action<Vector2> AimChanged;
     public event Action<Vector2> ImpulseReleased;
     public event Action AimCancelled;
+    public event Action ActionSkipped;
     //inventory
     public event Action ToggleInventoryPerformed;
     public event Action ToggleInventoryCreateDestroyPerformed;
@@ -68,12 +69,13 @@ public class InputManager : MonoBehaviour
         _inputActions.Gameplay.ReleaseImpulse.started += OnImpulseReleaseStarted;
         _inputActions.Gameplay.ReleaseImpulse.canceled += OnImpulseReleaseEnded;
         _inputActions.Gameplay.Cancel.started += OnCancelPerformed;
+        _inputActions.Gameplay.SkipAction.started += OnSkipActionPerformed;
         _inputActions.Gameplay.ToggleInventory.started += OnToggleInventory;
         _inputActions.Gameplay.PauseGameplay.started += OnTogglePauseGameplay;
         _inputActions.PausedGamplay.ResumeGameplay.started += OnTogglePauseGameplay;
         _inputActions.Inventory.ToggleInventory.started += OnToggleInventory;
         _inputActions.Inventory.ToggleCreateDestroy.started += OnToggleCreateDestroy;
-        _inputActions.Inventory.ToggleCreateDestroy.started += OnToggleCreateDestroy;
+        _inputActions.Inventory.SelectInventorySlot.started += OnSelectInventorySlot;
         _inputActions.Menu.Back.performed += OnMenuBackPerformed;
         _inputActions.Menu.Confirm.performed += OnMenuConfirmPerformed;
         _inputActions.GameOverScreen.Confirm.performed += OnGameOverScreenConfirmPerformed;
@@ -141,7 +143,6 @@ public class InputManager : MonoBehaviour
         }
     }
 
-
     private void OnAimCancelled(InputAction.CallbackContext ctx)
     {
         if (!IsAimingEnabled)
@@ -196,7 +197,6 @@ public class InputManager : MonoBehaviour
     {
         CancelAiming();
     }
-
     private void CancelAiming()
     {
         if (_isAiming)
@@ -206,6 +206,12 @@ public class InputManager : MonoBehaviour
             AimCancelled?.Invoke();
         }
     }
+
+    private void OnSkipActionPerformed(InputAction.CallbackContext ctx)
+    {
+        ActionSkipped?.Invoke();
+    }
+
 
     #endregion
 
@@ -217,6 +223,11 @@ public class InputManager : MonoBehaviour
 
     private void OnToggleInventory(InputAction.CallbackContext ctx)
     {
+        ToggleInventoryAndGameplayActionMap();
+    }
+
+    private void ToggleInventoryAndGameplayActionMap()
+    {
         var targetActionMapType = _currentActionMap == InputActionMapType.Gameplay ? InputActionMapType.Inventory : InputActionMapType.Gameplay;
         if (!IsOpeningInventoryEnabled && targetActionMapType == InputActionMapType.Inventory)
         {
@@ -227,11 +238,11 @@ public class InputManager : MonoBehaviour
         ToggleInventoryPerformed?.Invoke();
     }
 
-    private void ForceCloseInventory()
+    public void ForceCloseInventory()
     {
         if (_currentActionMap == InputActionMapType.Inventory)
         {
-            ToggleInventoryPerformed?.Invoke();
+            ToggleInventoryAndGameplayActionMap();
         }
     }
 

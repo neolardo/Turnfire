@@ -9,4 +9,6 @@ public class UISoundsDefinition : ScriptableObject
     public SFXDefiniton Toggle;
     public SFXDefiniton InventoryOn;
     public SFXDefiniton InventoryOff;
+    public SFXDefiniton TimeIsUp;
+    public SFXDefiniton SkipAction;
 }

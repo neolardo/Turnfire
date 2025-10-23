@@ -9,7 +9,7 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
     private ProjectilePool _projectileManager;
     private TrajectoryRenderer _trajectoryRenderer;
 
-    public ReadyToUseItemCharacterActionState(ItemPreviewRendererManager rendererManager, InputManager inputManager, ProjectilePool projectileManager, TrajectoryRenderer trajectoryRenderer, MonoBehaviour coroutineManager) : base(coroutineManager)
+    public ReadyToUseItemCharacterActionState(ItemPreviewRendererManager rendererManager, InputManager inputManager, ProjectilePool projectileManager, TrajectoryRenderer trajectoryRenderer, MonoBehaviour coroutineManager, UISoundsDefinition uiSounds) : base(coroutineManager, uiSounds)
     {
         _rendererManager = rendererManager;
         _projectileManager = projectileManager;
@@ -23,6 +23,7 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
         _inputManager.AimStarted += OnAimStarted;
         _inputManager.AimChanged += OnAimChanged;
         _inputManager.AimCancelled += OnAimCancelled;
+        _inputManager.ActionSkipped += OnActionSkipped;
     }
     protected override void UnsubscribeFromEvents()
     {
@@ -31,6 +32,7 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
         _inputManager.AimStarted -= OnAimStarted;
         _inputManager.AimChanged -= OnAimChanged;
         _inputManager.AimCancelled -= OnAimCancelled;
+        _inputManager.ActionSkipped -= OnActionSkipped;
     }
 
 

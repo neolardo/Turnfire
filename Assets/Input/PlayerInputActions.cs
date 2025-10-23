@@ -136,6 +136,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SkipAction"",
+                    ""type"": ""Button"",
+                    ""id"": ""0f9d8fc4-a885-4054-8ff9-7900386b045f"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -246,6 +255,28 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""PauseGameplay"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""095e7a4f-3f31-454c-b653-a2ec791256a1"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SkipAction"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fb9048bc-7052-4120-ad8a-b5ecdcbbac41"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SkipAction"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -593,6 +624,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Gameplay_Cancel = m_Gameplay.FindAction("Cancel", throwIfNotFound: true);
         m_Gameplay_ToggleInventory = m_Gameplay.FindAction("ToggleInventory", throwIfNotFound: true);
         m_Gameplay_PauseGameplay = m_Gameplay.FindAction("PauseGameplay", throwIfNotFound: true);
+        m_Gameplay_SkipAction = m_Gameplay.FindAction("SkipAction", throwIfNotFound: true);
         // PausedGamplay
         m_PausedGamplay = asset.FindActionMap("PausedGamplay", throwIfNotFound: true);
         m_PausedGamplay_ResumeGameplay = m_PausedGamplay.FindAction("ResumeGameplay", throwIfNotFound: true);
@@ -697,6 +729,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_Cancel;
     private readonly InputAction m_Gameplay_ToggleInventory;
     private readonly InputAction m_Gameplay_PauseGameplay;
+    private readonly InputAction m_Gameplay_SkipAction;
     /// <summary>
     /// Provides access to input actions defined in input action map "Gameplay".
     /// </summary>
@@ -728,6 +761,10 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Gameplay/PauseGameplay".
         /// </summary>
         public InputAction @PauseGameplay => m_Wrapper.m_Gameplay_PauseGameplay;
+        /// <summary>
+        /// Provides access to the underlying input action "Gameplay/SkipAction".
+        /// </summary>
+        public InputAction @SkipAction => m_Wrapper.m_Gameplay_SkipAction;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -769,6 +806,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @PauseGameplay.started += instance.OnPauseGameplay;
             @PauseGameplay.performed += instance.OnPauseGameplay;
             @PauseGameplay.canceled += instance.OnPauseGameplay;
+            @SkipAction.started += instance.OnSkipAction;
+            @SkipAction.performed += instance.OnSkipAction;
+            @SkipAction.canceled += instance.OnSkipAction;
         }
 
         /// <summary>
@@ -795,6 +835,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @PauseGameplay.started -= instance.OnPauseGameplay;
             @PauseGameplay.performed -= instance.OnPauseGameplay;
             @PauseGameplay.canceled -= instance.OnPauseGameplay;
+            @SkipAction.started -= instance.OnSkipAction;
+            @SkipAction.performed -= instance.OnSkipAction;
+            @SkipAction.canceled -= instance.OnSkipAction;
         }
 
         /// <summary>
@@ -1352,6 +1395,13 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnPauseGameplay(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SkipAction" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSkipAction(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "PausedGamplay" which allows adding and removing callbacks.

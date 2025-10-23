@@ -44,6 +44,7 @@ public class InventoryUI : MonoBehaviour
         {
             slot.Hovered += PreviewSlot;
             slot.UnHovered += UnPreviewSlot;
+            slot.Selected += (s) => SelectSlot(s);
         }
         _previewFrame.gameObject.SetActive(false);
         LoadItemInfo(null);
@@ -68,6 +69,7 @@ public class InventoryUI : MonoBehaviour
     private void RefreshInventory()
     {
         DeselectSlot();
+        _previewFrame.gameObject.SetActive(false);
         foreach (var itemSlot in _itemSlots)
         {
             itemSlot.UnloadItem();
@@ -145,9 +147,9 @@ public class InventoryUI : MonoBehaviour
             {
                 AudioManager.Instance.PlayUISound(_uiSounds.Confirm);
             }
-            _selectedSlot?.DeselectSlot();
+            _selectedSlot?.OnSlotDeselected();
             _selectedSlot = slot;
-            _selectedSlot.SelectSlot();
+            _selectedSlot.OnSlotSelected();
             _currentCharacter.SelectItem(slot.Item);
             LoadItemInfo(slot.Item.Definition);
         }
@@ -157,7 +159,7 @@ public class InventoryUI : MonoBehaviour
     {
         if (_selectedSlot != null)
         {
-            _selectedSlot?.DeselectSlot();
+            _selectedSlot?.OnSlotDeselected();
             _selectedSlot = null;
             LoadItemInfo(null);
         }

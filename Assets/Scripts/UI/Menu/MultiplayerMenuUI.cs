@@ -26,7 +26,7 @@ public class MultiplayerMenuUI : MonoBehaviour
     {
         var settings = new GameplaySceneSettings()
         {
-            SceneName = Constants.MapSceneNamePrefix + _mapDisplay.MapIndex,
+            SceneName = Constants.GameplaySceneNamePrefix + _mapDisplay.MapIndex,
             NumTeams = _numPlayersDisplay.Value,
             UseTimer = _useTimerCheckbox.Value
         };

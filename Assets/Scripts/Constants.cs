@@ -47,10 +47,11 @@ public static class Constants
     public const int MultiplayerMinPlayers = 2;
     public const int MultiplayerMaxPlayers = 4;
 
-    // map
-    public const string MapSceneNamePrefix = "Map";
-
     //scenes
+    public const string GameplaySceneNamePrefix = "Map";
     public const string MenuSceneName = "MenuScene";
+
+    //minimap
+    public const string MinimapFolderPath = "Assets/Resources/Sprites/Minimap";
 
 }

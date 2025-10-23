@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class MovingCharacterActionState : CharacterActionState
 {
-    public MovingCharacterActionState(MonoBehaviour manager) : base(manager)
+    public MovingCharacterActionState(MonoBehaviour manager, UISoundsDefinition uiSounds) : base(manager, uiSounds)
     {
     }
 

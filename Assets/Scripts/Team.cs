@@ -12,8 +12,7 @@ public class Team : MonoBehaviour
     public Color TeamColor => _teamColor;
     public Character CurrentCharacter => _characters[_characterIndex];
     private int _characterIndex;
-    public string TeamName => _teamName;
-    private string _teamName;
+    public string TeamName { get; private set; }
 
     public event Action<float> TeamHealthChanged;
     public event Action TeamLost;
@@ -22,7 +21,7 @@ public class Team : MonoBehaviour
 
     private void Awake()
     {
-        _teamName = gameObject.name;
+        TeamName = gameObject.name;
         _characters = new List<Character>();
         for (int i=0; i< transform.childCount; i++)
         {
@@ -38,7 +37,7 @@ public class Team : MonoBehaviour
         {
             character.Died += OnAnyTeamCharacterDied;
             character.HealthChanged += (_, _) => OnAnyTeamCharacterHealthChanged();
-            character.SetTeamColor(TeamColor);
+            character.SetTeam(this);
         }
         _characterIndex = 0;
     }
@@ -63,5 +62,7 @@ public class Team : MonoBehaviour
             TeamLost?.Invoke();
         }
     }
+
+    public IEnumerable<Character> GetAllCharacters() => _characters;
 
 }

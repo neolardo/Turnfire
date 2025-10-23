@@ -7,18 +7,14 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class Character : MonoBehaviour
 {
-    [HideInInspector] public bool IsAlive => _health > 0;
-    [HideInInspector] public bool IsMoving => _rb.linearVelocity.magnitude > Mathf.Epsilon;
-    [HideInInspector] public bool IsUsingSelectedItem => _selectedItem == null ? false : _selectedItem.Behavior.IsInUse;
-    public Transform ItemTransform => _animator.ItemTransform;
 
     [SerializeField] private CharacterHealthbarRenderer _healthbarRenderer;
     [SerializeField] private CharacterAnimator _animator;
 
     public CharacterDefinition CharacterDefinition;
 
-    public Collider2D Collider => _col;
-
+    private List<Item> _items;
+    private Item _selectedItem;
     private Rigidbody2D _rb;
     private Collider2D _col;
     private int _health;
@@ -38,14 +34,15 @@ public class Character : MonoBehaviour
         }
     }
 
+    public Team Team { get; private set; }
+
+    public Transform ItemTransform => _animator.ItemTransform;
+    public Collider2D Collider => _col;
+    public bool IsAlive => _health > 0;
+    public bool IsMoving => _rb.linearVelocity.magnitude > Mathf.Epsilon;
+    public bool IsUsingSelectedItem => _selectedItem == null ? false : _selectedItem.Behavior.IsInUse;
     public float NormalizedHealth => _health / (float)CharacterDefinition.MaxHealth;
 
-    private List<Item> _items;
-    private Item _selectedItem;
-
-    /// <summary>
-    /// Fires an event on every health change containing the normalized health ratio of this character.
-    /// </summary>
     public event Action<float, int> HealthChanged;
     public event Action Died;
     public event Action<Item> SelectedItemChanged;
@@ -93,9 +90,10 @@ public class Character : MonoBehaviour
         Died?.Invoke();
     }
 
-    public void SetTeamColor(Color color)
+    public void SetTeam(Team team)
     {
-        _animator.SetTeamColor(color);
+        Team = team;
+        _animator.SetTeamColor(Team.TeamColor);
     }
 
 

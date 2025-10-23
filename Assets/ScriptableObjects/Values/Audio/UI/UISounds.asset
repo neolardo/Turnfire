@@ -18,3 +18,5 @@ MonoBehaviour:
   Toggle: {fileID: 11400000, guid: 20b7718bb1e155a469411c935711006b, type: 2}
   InventoryOn: {fileID: 11400000, guid: c0f01c689505b80489d3ba82f0c5ecd9, type: 2}
   InventoryOff: {fileID: 11400000, guid: d453c6dc9f99f204e8a0706c53ca2445, type: 2}
+  TimeIsUp: {fileID: 11400000, guid: 97d749e2af75c9946b8d6f76fd9fc0c5, type: 2}
+  SkipAction: {fileID: 11400000, guid: bf6178d8ca2db834ea661eb24ac4bae9, type: 2}

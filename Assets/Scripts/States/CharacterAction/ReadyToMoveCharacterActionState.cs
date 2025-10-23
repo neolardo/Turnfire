@@ -1,4 +1,3 @@
-using UnityEditor.AnimatedValues;
 using UnityEngine;
 
 public class ReadyToMoveCharacterActionState : CharacterActionState
@@ -7,7 +6,7 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
     private TrajectoryRenderer _trajectoryRenderer;
     private InputManager _inputManager;
 
-    public ReadyToMoveCharacterActionState(TrajectoryRenderer trajectoryRenderer, InputManager inputManager, MonoBehaviour manager) : base(manager)
+    public ReadyToMoveCharacterActionState(TrajectoryRenderer trajectoryRenderer, InputManager inputManager, MonoBehaviour manager, UISoundsDefinition uiSounds) : base(manager, uiSounds)
     {
         _trajectoryRenderer = trajectoryRenderer;
         _inputManager = inputManager;
@@ -19,6 +18,7 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
         _inputManager.AimStarted += OnAimStarted;
         _inputManager.AimChanged += OnAimChanged;
         _inputManager.AimCancelled += OnAimCancelled;
+        _inputManager.ActionSkipped += OnActionSkipped;
     }
     protected override void UnsubscribeFromEvents()
     {
@@ -26,6 +26,7 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
         _inputManager.AimStarted -= OnAimStarted;
         _inputManager.AimChanged -= OnAimChanged;
         _inputManager.AimCancelled -= OnAimCancelled;
+        _inputManager.ActionSkipped -= OnActionSkipped;
     }
 
     public override void StartState(Character currentCharacter)

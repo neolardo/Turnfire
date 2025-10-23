@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CountdownSecondsBeforeStart: 3
   DelaySecondsAfterCountdown: 1
-  SecondsAvaiablePerPlayerTurn: 15
+  SecondsAvaiablePerPlayerTurn: 20
   GameplayTimerFirstThresholdSeconds: 8
   GameplayTimerSecondThresholdSeconds: 3
   MinimumNumberOfDropsPerRound: 0

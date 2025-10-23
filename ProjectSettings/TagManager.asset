@@ -65,6 +65,9 @@ TagManager:
   - name: Package
     uniqueID: 2441191569
     locked: 0
+  - name: Overlay
+    uniqueID: 884567925
+    locked: 0
   - name: UI
     uniqueID: 1438206831
     locked: 0

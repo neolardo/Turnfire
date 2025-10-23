@@ -5,7 +5,9 @@ using UnityEngine;
 
 public class TurnManager : MonoBehaviour
 {
-    [SerializeField] private List<Team> _teams;
+    [SerializeField] private List<Team> _possibleTeams;
+    [SerializeField] private UISoundsDefinition _uiSounds;
+    private List<Team> _teams;
     private List<TurnState> _turnStates;
     private int _turnStateIndex;
     private TurnState CurrentTurnState => _turnStates[_turnStateIndex];
@@ -16,15 +18,16 @@ public class TurnManager : MonoBehaviour
 
     void Awake()
     {
-        if (_teams == null || _teams.Count == 0)
+        if (_possibleTeams == null || _possibleTeams.Count == 0)
         {
             Debug.LogWarning("There are no teams.");
         }
-        InitializeTurnStates();
-    }
+        _teams = new List<Team>(_possibleTeams.Take(SceneLoader.Instance.CurrentGameplaySceneSettings.NumTeams));
+        foreach (var team in _teams)
+        {
+            team.TeamLost += OnAnyTeamLost;
+        }
 
-    private void InitializeTurnStates()
-    {
         var inputManager = FindFirstObjectByType<InputManager>();
         var trajectoryRenderer = FindFirstObjectByType<TrajectoryRenderer>();
         var itemPreviewRendererManager = FindFirstObjectByType<ItemPreviewRendererManager>();
@@ -32,26 +35,20 @@ public class TurnManager : MonoBehaviour
         var cameraController = FindFirstObjectByType<CameraController>();
         var uiManager = FindFirstObjectByType<GameplayUIManager>();
         var projectileManager = FindFirstObjectByType<ProjectilePool>();
-        var characterActionManager = new CharacterActionManager(this, trajectoryRenderer, itemPreviewRendererManager, inputManager, cameraController, uiManager, projectileManager);
+        var characterActionManager = new CharacterActionManager(this, trajectoryRenderer, itemPreviewRendererManager, inputManager, cameraController, uiManager, projectileManager, _uiSounds);
         _turnStates = new List<TurnState>
         {
             new AlternativelyDoCharacterActionsForAllTeamsTurnState(this, characterActionManager, _teams),
             new DropItemsAndEffectsTurnState(this, dropManager),
             new FinishedTurnState(this),
         };
-
         foreach (var turnState in _turnStates)
         {
             turnState.StateEnded += OnTurnStateEnded;
         }
-
-        foreach(var team in _teams)
-        {
-            team.TeamLost += OnAnyTeamLost;
-        }
         uiManager.CreateTeamHealthbars(_teams);
         GameStarted += (_) => inputManager.OnGameStarted();
-        GameEnded += (_) => inputManager.OnGameEnded(); //TODO?
+        GameEnded += (_) => inputManager.OnGameEnded();
     }
 
     public void StartGame(GameplaySceneSettings gameplaySettings)

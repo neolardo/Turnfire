@@ -6,7 +6,12 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(RectTransform))]
-public class InventoryItemSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
+public class InventoryItemSlotUI : MonoBehaviour, 
+    IPointerEnterHandler,
+    IPointerExitHandler, 
+    IPointerDownHandler, 
+    ISelectHandler,
+    IDeselectHandler
 {
     [SerializeField] private Image _slotImage;
     [SerializeField] private Image _itemImage;
@@ -17,6 +22,7 @@ public class InventoryItemSlotUI : MonoBehaviour, IPointerEnterHandler, IPointer
     public Item Item => _item;
     private Item _item;
 
+    public event Action<InventoryItemSlotUI> Selected;
     public event Action<InventoryItemSlotUI> Hovered;
     public event Action<InventoryItemSlotUI> UnHovered;
 
@@ -43,14 +49,19 @@ public class InventoryItemSlotUI : MonoBehaviour, IPointerEnterHandler, IPointer
         _ammoText.text = string.Empty;
     }
 
-    public void DeselectSlot()
+    public void OnSlotDeselected()
     {
         _slotImage.sprite = _deselectedSlotSprite;
     }
 
-    public void SelectSlot()
+    public void OnSlotSelected()
     {
         _slotImage.sprite = _selectedSlotSprite;
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        Selected?.Invoke(this);
     }
 
     #endregion
@@ -88,6 +99,8 @@ public class InventoryItemSlotUI : MonoBehaviour, IPointerEnterHandler, IPointer
             UnHover();
         }
     }
+
+
     private void UnHover()
     {
         UnHovered?.Invoke(this);
@@ -97,6 +110,7 @@ public class InventoryItemSlotUI : MonoBehaviour, IPointerEnterHandler, IPointer
     {
         Hovered?.Invoke(this);
     }
+
 
     #endregion
 
