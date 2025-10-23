@@ -416,8 +416,41 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         {
             ""name"": ""GameOverScreen"",
             ""id"": ""e615cdc2-29ea-41e8-9a31-235ffc4b8de3"",
-            ""actions"": [],
-            ""bindings"": []
+            ""actions"": [
+                {
+                    ""name"": ""Confirm"",
+                    ""type"": ""Button"",
+                    ""id"": ""6390bfc2-c1e6-41ae-9db7-725d1177c28f"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""6fed38b5-81cb-4a63-bf57-aaf578cf2dff"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Confirm"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""29851d23-9a52-49f8-8a77-19810bf5f4fe"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Confirm"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         },
         {
             ""name"": ""Menu"",
@@ -570,6 +603,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Inventory_SelectInventorySlot = m_Inventory.FindAction("SelectInventorySlot", throwIfNotFound: true);
         // GameOverScreen
         m_GameOverScreen = asset.FindActionMap("GameOverScreen", throwIfNotFound: true);
+        m_GameOverScreen_Confirm = m_GameOverScreen.FindAction("Confirm", throwIfNotFound: true);
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         m_Menu_Confirm = m_Menu.FindAction("Confirm", throwIfNotFound: true);
@@ -1012,6 +1046,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     // GameOverScreen
     private readonly InputActionMap m_GameOverScreen;
     private List<IGameOverScreenActions> m_GameOverScreenActionsCallbackInterfaces = new List<IGameOverScreenActions>();
+    private readonly InputAction m_GameOverScreen_Confirm;
     /// <summary>
     /// Provides access to input actions defined in input action map "GameOverScreen".
     /// </summary>
@@ -1023,6 +1058,10 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// Construct a new instance of the input action map wrapper class.
         /// </summary>
         public GameOverScreenActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "GameOverScreen/Confirm".
+        /// </summary>
+        public InputAction @Confirm => m_Wrapper.m_GameOverScreen_Confirm;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1049,6 +1088,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_GameOverScreenActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_GameOverScreenActionsCallbackInterfaces.Add(instance);
+            @Confirm.started += instance.OnConfirm;
+            @Confirm.performed += instance.OnConfirm;
+            @Confirm.canceled += instance.OnConfirm;
         }
 
         /// <summary>
@@ -1060,6 +1102,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="GameOverScreenActions" />
         private void UnregisterCallbacks(IGameOverScreenActions instance)
         {
+            @Confirm.started -= instance.OnConfirm;
+            @Confirm.performed -= instance.OnConfirm;
+            @Confirm.canceled -= instance.OnConfirm;
         }
 
         /// <summary>
@@ -1359,6 +1404,13 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     /// <seealso cref="GameOverScreenActions.RemoveCallbacks(IGameOverScreenActions)" />
     public interface IGameOverScreenActions
     {
+        /// <summary>
+        /// Method invoked when associated input action "Confirm" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnConfirm(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Menu" which allows adding and removing callbacks.

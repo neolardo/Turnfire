@@ -49,4 +49,7 @@ public static class Constants
     // map
     public const string MapSceneNamePrefix = "Map";
 
+    //scenes
+    public const string MenuSceneName = "MenuScene";
+
 }

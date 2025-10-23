@@ -41,6 +41,8 @@ public class InputManager : MonoBehaviour
     //menu
     public event Action MenuConfirmPerformed;
     public event Action MenuBackPerformed;
+    //game over
+    public event Action GameOverScreenConfirmPerformed;
 
 
     private void Awake()
@@ -74,6 +76,7 @@ public class InputManager : MonoBehaviour
         _inputActions.Inventory.ToggleCreateDestroy.started += OnToggleCreateDestroy;
         _inputActions.Menu.Back.performed += OnMenuBackPerformed;
         _inputActions.Menu.Confirm.performed += OnMenuConfirmPerformed;
+        _inputActions.GameOverScreen.Confirm.performed += OnGameOverScreenConfirmPerformed;
         InputSystem.onDeviceChange += OnDeviceChange;
         InputSystem.onAnyButtonPress.CallOnce(control => OnDeviceChange(control.device, InputDeviceChange.Reconnected));
     }
@@ -248,6 +251,15 @@ public class InputManager : MonoBehaviour
     private void OnMenuConfirmPerformed(InputAction.CallbackContext ctx)
     {
         MenuConfirmPerformed?.Invoke();
+    }
+
+    #endregion
+
+    #region Game Over
+
+    private void OnGameOverScreenConfirmPerformed(InputAction.CallbackContext ctx)
+    {
+        GameOverScreenConfirmPerformed?.Invoke();
     }
 
     #endregion

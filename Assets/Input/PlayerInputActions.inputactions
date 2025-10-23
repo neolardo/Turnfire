@@ -330,8 +330,41 @@
         {
             "name": "GameOverScreen",
             "id": "e615cdc2-29ea-41e8-9a31-235ffc4b8de3",
-            "actions": [],
-            "bindings": []
+            "actions": [
+                {
+                    "name": "Confirm",
+                    "type": "Button",
+                    "id": "6390bfc2-c1e6-41ae-9db7-725d1177c28f",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "6fed38b5-81cb-4a63-bf57-aaf578cf2dff",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Confirm",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "29851d23-9a52-49f8-8a77-19810bf5f4fe",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Confirm",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         },
         {
             "name": "Menu",

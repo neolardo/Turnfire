@@ -19,28 +19,40 @@ public class SceneLoader : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+        _loadingText = FindFirstObjectByType<LoadingTextUI>(FindObjectsInactive.Include);
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    private void Start()
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         _loadingText = FindFirstObjectByType<LoadingTextUI>(FindObjectsInactive.Include);
     }
 
-
-    private IEnumerator LoadSceneCoroutine(GameplaySceneSettings settings)
+    private IEnumerator LoadSceneCoroutine(string sceneName)
     {
-        CurrentGameplaySceneSettings = settings;
         _loadingText.gameObject.SetActive(true);
         yield return null;
-        AsyncOperation op = SceneManager.LoadSceneAsync(CurrentGameplaySceneSettings.SceneName);
+        AsyncOperation op = SceneManager.LoadSceneAsync(sceneName);
         while (!op.isDone)
         {
             yield return null;
         }
     }
 
-    public void LoadScene(GameplaySceneSettings settings)
+    public void LoadMenuScene()
     {
-        StartCoroutine(LoadSceneCoroutine(settings));
+        StartCoroutine(LoadSceneCoroutine(Constants.MenuSceneName));
+    }
+
+    public void LoadGameplayScene(GameplaySceneSettings settings)
+    {
+        CurrentGameplaySceneSettings = settings;
+        StartCoroutine(LoadSceneCoroutine(CurrentGameplaySceneSettings.SceneName));
+    }
+
+    public void ReloadScene()
+    {
+        var scene = SceneManager.GetActiveScene();
+        StartCoroutine(LoadSceneCoroutine(scene.name));
     }
 }

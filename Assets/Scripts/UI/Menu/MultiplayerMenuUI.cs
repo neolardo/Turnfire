@@ -31,7 +31,7 @@ public class MultiplayerMenuUI : MonoBehaviour
             UseTimer = _useTimerCheckbox.Value
         };
         _menuUIManager.HideAllPanels();
-        SceneLoader.Instance.LoadScene(settings);
+        SceneLoader.Instance.LoadGameplayScene(settings);
     }
 
     public void OnCancelPressed()

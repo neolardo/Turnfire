@@ -1,15 +1,12 @@
 using System;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI _gameOverText;
-    [SerializeField] private GameObject _gameOverScreen;
     [SerializeField] private GameObject _gameplayPausedScreen;
-    [SerializeField] private GameObject _inventoryPanel;
     [SerializeField] private InventoryUI _inventoryUI;
+    [SerializeField] private GameOverScreenUI _gameOverScreenUI;
     [SerializeField] private TeamHealthbarUIManager _teamHealthbarUIManager;
     [SerializeField] private GameplayTimerUI _gameplayTimer;
     [SerializeField] private CountdownTimerUI _countdownTimer;
@@ -37,7 +34,7 @@ public class UIManager : MonoBehaviour
 
     private void ToggleInventory()
     {
-        _inventoryPanel.SetActive(!_inventoryPanel.activeSelf);
+        _inventoryUI.gameObject.SetActive(!_inventoryUI.gameObject.activeSelf);
     }
 
     private void OnGameStateChanged(GameStateType gameState)
@@ -99,15 +96,18 @@ public class UIManager : MonoBehaviour
 
     public void OnGameOver(Team winnerTeam)
     {
+        StopGameplayTimer();
+        string gameOverText = string.Empty; 
         if(winnerTeam == null)
         {
-            _gameOverText.text = "It's a tie!";
+            gameOverText = "It's a tie!";
         }
         else
         {
-            _gameOverText.text = $"{winnerTeam.TeamName} wins!";
+            gameOverText = $"{winnerTeam.TeamName} wins!";
         }
-        _gameOverScreen.SetActive(true);
+        _gameOverScreenUI.SetGameOverText(gameOverText);
+        _gameOverScreenUI.gameObject.SetActive(true);
     }
 
 }
