@@ -1,49 +1,37 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class DestructibleTerrain : MonoBehaviour
+[RequireComponent(typeof(SpriteRenderer))]
+public class DestructibleTerrainRenderer : MonoBehaviour
 {
-    [SerializeField] private int _pixelsPerUnit = 64;
     [SerializeField] private int _pixelsPerTile = 32;
-    [SerializeField] private ExplosionHole _explosionHolePrefab;
-    [SerializeField] private Transform _explosionHoleContainer;
-    [SerializeField] private Vector2 _terrainOffset;
-    [SerializeField] private SpriteRenderer _spriteRenderer;
-    private Texture2D _sourceTexture;
+    [SerializeField] private int _pixelsPerUnit = 64;
+
+    private SpriteRenderer _renderer;
     private int _width, _height;
-    private Vector2 _tilemapOffset;
+    public Texture2D Texture { get; private set; }
 
-    private void Start()
+    public Vector2 CenteredPivotOffset { get; private set; }
+
+    private Vector2 _textureOffset;
+
+    #region Initialize
+
+    private void Awake()
     {
-        BakeTilemapToTexture();
+        _renderer = GetComponent<SpriteRenderer>();
     }
 
-    public void InitializeFromTexture(Texture2D texture)
-    {        
-        _sourceTexture = texture;
-        _spriteRenderer.transform.position = _terrainOffset;
-        _spriteRenderer.sprite = Sprite.Create(_sourceTexture, new Rect(Vector2.zero, new Vector2(_sourceTexture.width, _sourceTexture.height)), Vector2.zero, _pixelsPerUnit, 0, SpriteMeshType.Tight);
-        _width = _sourceTexture.width;
-        _height = _sourceTexture.height;
-    }
-
-    #region Tilemap To Texture
-
-    private void BakeTilemapToTexture()
+    public void InitializeFromTilemap(Tilemap tilemap, TilemapRenderer tilemapRenderer)
     {
-        var tilemap = GetComponent<Tilemap>();
-        var tilemapRenderer = GetComponent<TilemapRenderer>();
-
-        Texture2D texture = BakeTilemapToTexture(tilemap);
-
-        var bounds = tilemap.cellBounds;
-        Vector3Int centerCell = new Vector3Int((bounds.xMin + bounds.xMax) / 2, (bounds.yMin + bounds.yMax) / 2, 0);
-        
-        _tilemapOffset = tilemap.CellToWorld(centerCell) + Vector3.up * (tilemap.layoutGrid.cellSize.y / 2);
-
+        Texture = BakeTilemapToTexture(tilemap);
+        _width = Texture.width;
+        _height = Texture.height;
+        CenteredPivotOffset = (tilemap.CellToWorld(tilemap.cellBounds.min) + tilemap.CellToWorld(tilemap.cellBounds.max)) / 2;
+        _textureOffset = tilemap.CellToWorld(tilemap.cellBounds.min);
+        _renderer.transform.position = _textureOffset;
+        _renderer.sprite = Sprite.Create(Texture, new Rect(Vector2.zero, new Vector2(Texture.width, Texture.height)), Vector2.zero, _pixelsPerUnit, 0, SpriteMeshType.Tight);
         tilemapRenderer.enabled = false;
-
-        InitializeFromTexture(texture);
     }
 
     private Texture2D GetReadableTexture(Sprite sprite)
@@ -104,15 +92,15 @@ public class DestructibleTerrain : MonoBehaviour
 
     #endregion
 
+    #region Explosion
+
     public void ApplyExplosion(Vector2 worldPos, float radius)
     {
-        Vector2 local = transform.InverseTransformPoint(worldPos);
-        local -= _tilemapOffset;
-        float ppu = _pixelsPerUnit;
+        Vector2 local = worldPos - CenteredPivotOffset;
 
-        int px = Mathf.RoundToInt(local.x * ppu + _width / 2f);
-        int py = Mathf.RoundToInt(local.y * ppu + _height / 2f);
-        int r = Mathf.RoundToInt(radius * ppu);
+        int px = Mathf.RoundToInt(local.x * _pixelsPerUnit + _width / 2f);
+        int py = Mathf.RoundToInt(local.y * _pixelsPerUnit + _height / 2f);
+        int r = Mathf.RoundToInt(radius * _pixelsPerUnit);
 
         for (int y = -r; y <= r; y++)
             for (int x = -r; x <= r; x++)
@@ -123,15 +111,11 @@ public class DestructibleTerrain : MonoBehaviour
                 int ty = py + y;
                 if (tx < 0 || ty < 0 || tx >= _width || ty >= _height) continue;
 
-                _sourceTexture.SetPixel(tx, ty, Color.clear);
+                Texture.SetPixel(tx, ty, Color.clear);
             }
 
-        _sourceTexture.Apply();
+        Texture.Apply();
+    } 
 
-        var hole = Instantiate(_explosionHolePrefab, _explosionHoleContainer);
-        hole.Initialize(worldPos, radius);
-
-    }
-
-
+    #endregion
 }
