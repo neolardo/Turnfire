@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,54 +7,58 @@ public class DestructibleIslandCollider : MonoBehaviour
 {
     private PolygonCollider2D _collider;
     private int _pixelsPerUnit;
+    private List<Vector2> _path;
+
+    private static readonly Vector2Int[] TraceDirections =  new Vector2Int[]
+    {
+        new Vector2Int(1, 0),   // Right
+        new Vector2Int(1, -1),  // Down-right
+        new Vector2Int(0, -1),  // Down
+        new Vector2Int(-1, -1), // Down-left
+        new Vector2Int(-1, 0),  // Left
+        new Vector2Int(-1, 1),  // Up-left
+        new Vector2Int(0, 1),   // Up
+        new Vector2Int(1, 1)    // Up-right
+    };
 
     private void Awake()
     {
         _collider = GetComponent<PolygonCollider2D>();
+        _path = new List<Vector2>();
     }
 
-    public void RebuildColliderFromPixelMask(PixelMask islandPixelMask, int pixelsPerUnit)
+    public IEnumerator RebuildColliderFromPixelMaskAsync(PixelMask islandPixelMask, int pixelsPerUnit)
     {
+        _collider.enabled = false;
+        _path.Clear();
         _pixelsPerUnit = pixelsPerUnit;
-        var path = Trace(islandPixelMask);
-        path = RemoveCollinearPoints(path);
+        yield return TraceAsync(islandPixelMask);
+        yield return RemoveCollinearPointsAsync();
         _collider.pathCount = 1;
-        _collider.SetPath(0, path);
+        _collider.SetPath(0, _path);
+        _collider.enabled = true;
     }
 
 
-    public List<Vector2> Trace(PixelMask mask)
+    public IEnumerator TraceAsync(PixelMask mask, int yieldInterval = 2000)
     {
         bool[,] grid = mask.Mask;
         int width = mask.Width;
         int height = mask.Height;
 
-        // Find the first boundary pixel
         Vector2Int start = FindStartPixel(grid, width, height);
         if (start.x == -1)
-            return new List<Vector2>();
+        {
+            yield break;
+        }
 
-        List<Vector2> contour = new List<Vector2>();
         Vector2Int current = start;
         int dir = 0; // direction index in clockwise order
 
-        // Directions (clockwise)
-        Vector2Int[] dirs = new Vector2Int[]
-        {
-            new Vector2Int(1, 0),   // Right
-            new Vector2Int(1, -1),  // Down-right
-            new Vector2Int(0, -1),  // Down
-            new Vector2Int(-1, -1), // Down-left
-            new Vector2Int(-1, 0),  // Left
-            new Vector2Int(-1, 1),  // Up-left
-            new Vector2Int(0, 1),   // Up
-            new Vector2Int(1, 1)    // Up-right
-        };
-
-        contour.Add(ToLocal(current, mask.Rect, _pixelsPerUnit));
+        _path.Add(ToLocal(current, mask.Rect, _pixelsPerUnit));
 
         bool finished = false;
-
+        int iteration = 0;
         do
         {
             int startDir = (dir + 6) % 8; // turn left relative to entry direction
@@ -61,13 +66,13 @@ public class DestructibleIslandCollider : MonoBehaviour
 
             for (int i = 0; i < 8; i++)
             {
-                int checkDir = (startDir + i) % 8;
-                Vector2Int next = current + dirs[checkDir];
+                int checkDir = (startDir + i) % TraceDirections.Length;
+                Vector2Int next = current + TraceDirections[checkDir];
                 if (Inside(next, width, height) && grid[next.x, next.y])
                 {
                     current = next;
                     dir = checkDir;
-                    contour.Add(ToLocal(current, mask.Rect, _pixelsPerUnit));
+                    _path.Add(ToLocal(current, mask.Rect, _pixelsPerUnit));
                     foundNext = true;
                     break;
                 }
@@ -76,13 +81,17 @@ public class DestructibleIslandCollider : MonoBehaviour
             if (!foundNext)
                 break;
 
-            if (current == start && contour.Count > 3)
+            if (current == start && _path.Count > 3)
                 finished = true;
 
+            iteration++;
+            if (iteration % yieldInterval == 0)
+            {
+                yield return null;
+            }
         }
         while (!finished);
 
-        return contour;
     }
 
     private static Vector2Int FindStartPixel(bool[,] grid, int width, int height)
@@ -93,7 +102,6 @@ public class DestructibleIslandCollider : MonoBehaviour
             {
                 if (grid[x, y])
                 {
-                    // make sure it's a boundary pixel
                     if (IsBoundary(grid, width, height, x, y))
                         return new Vector2Int(x, y);
                 }
@@ -133,21 +141,20 @@ public class DestructibleIslandCollider : MonoBehaviour
         );
     }
 
-    private List<Vector2> RemoveCollinearPoints(List<Vector2> points, float tolerance = 0.001f)
+    private IEnumerator RemoveCollinearPointsAsync(float tolerance = 0.001f, int yieldInterval = 2000)
     {
-        if (points == null || points.Count < 3)
-            return points;
+        if (_path == null || _path.Count < 3)
+            yield break;
 
-        List<Vector2> result = new List<Vector2>();
-        int n = points.Count;
+        var result = new List<Vector2>();
+        int n = _path.Count;
 
         for (int i = 0; i < n; i++)
         {
-            Vector2 prev = points[(i - 1 + n) % n];
-            Vector2 curr = points[i];
-            Vector2 next = points[(i + 1) % n];
+            Vector2 prev = _path[(i - 1 + n) % n];
+            Vector2 curr = _path[i];
+            Vector2 next = _path[(i + 1) % n];
 
-            // direction vectors
             Vector2 dir1 = (curr - prev).normalized;
             Vector2 dir2 = (next - curr).normalized;
 
@@ -160,9 +167,14 @@ public class DestructibleIslandCollider : MonoBehaviour
 
             // Otherwise, keep the point
             result.Add(curr);
+
+            if(n % yieldInterval == 0)
+            {
+                yield return null;
+            }
         }
 
-        return result;
+        _path = result;
     }
 
 }

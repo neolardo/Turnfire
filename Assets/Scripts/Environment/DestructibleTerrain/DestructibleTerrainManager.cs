@@ -73,14 +73,13 @@ public class DestructibleTerrainManager : MonoBehaviour
 
         if(!_firstRebuildDone)
         {
-            MoveNewHolesToDestructibleCollider();
-            _firstRebuildDone = true;
+            OnFirstRebuildDone();
         }
         
         Debug.Log($"{nameof(DestructibleTerrainCollider)} rebuild finished.");
     }
 
-    private void MoveNewHolesToDestructibleCollider()
+    private void OnFirstRebuildDone()
     {
         _explosionHoleContainer = _collider.transform;
         foreach (var hole in _newHoles)
@@ -88,6 +87,8 @@ public class DestructibleTerrainManager : MonoBehaviour
             hole.transform.SetParent(_explosionHoleContainer, true);
         }
         _tilemapCollider.enabled = false;
+        _tilemapCollider.gameObject.SetActive(false);
+        _firstRebuildDone = true;
     }
 
 

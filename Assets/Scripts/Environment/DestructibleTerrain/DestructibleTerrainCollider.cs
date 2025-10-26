@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
@@ -19,6 +20,8 @@ public class DestructibleTerrainCollider : MonoBehaviour
     public event Action RebuildFinished;
     public bool RebuildInProgress { get; private set; }
 
+    private static readonly Vector2Int[] FloodFillDirections = new Vector2Int[] { new (1, 0), new (-1, 0), new (0, 1), new (0, -1) };
+
     private void Awake()
     {
         _islandColliders = new List<DestructibleIslandCollider>();
@@ -26,41 +29,26 @@ public class DestructibleTerrainCollider : MonoBehaviour
 
     public void InitiateRebuild(Texture2D texture, Vector2 offset)
     {
-        RebuildFromTexture(texture, offset);
+        if (RebuildInProgress)
+        {
+            return;
+        }
+
+        StartCoroutine(RebuildFromTextureAsync(texture, offset));
     }
 
-    private void RebuildFromTexture(Texture2D texture, Vector2 offset)
+    private IEnumerator RebuildFromTextureAsync(Texture2D texture, Vector2 offset)
     {
         RebuildInProgress = true;
         transform.position = offset;
-        _terrainPixelMask = new PixelMask(texture.GetPixels(), texture.width, texture.height);  
-        BuildIslands();
+        yield return PixelMask.CreateAsync(texture.GetPixels(), texture.width, texture.height, pm => _terrainPixelMask = pm);  
+        yield return BuildIslandsAsync();
         RebuildInProgress = false;
         RebuildFinished?.Invoke();
     }
 
 
     #region Islands
-
-    private void BuildIslands()
-    {
-        ClearIslands();
-
-        bool[,] visited = new bool[Width, Height];
-        for (int y = 0; y < Height; y++)
-        {
-            for (int x = 0; x < Width; x++)
-            {
-                if (_terrainPixelMask[x, y] && !visited[x, y])
-                {
-                    var pixels = FloodFill(x, y, visited);
-                    var islandPixelMask = new PixelMask(pixels);
-                    var island = CreateIslandCollider(islandPixelMask);
-                    _islandColliders.Add(island);
-                }
-            }
-        }
-    }
 
     private void ClearIslands()
     {
@@ -74,7 +62,33 @@ public class DestructibleTerrainCollider : MonoBehaviour
         _islandColliders.Clear();
     }
 
-    private List<Vector2Int> FloodFill(int sx, int sy, bool[,] visited)
+    private IEnumerator BuildIslandsAsync()
+    {
+        var newIslands = new List<DestructibleIslandCollider>();
+
+        bool[,] visited = new bool[Width, Height];
+        for (int y = 0; y < Height; y++)
+        {
+            for (int x = 0; x < Width; x++)
+            {
+                if (_terrainPixelMask[x, y] && !visited[x, y])
+                {
+                    List<Vector2Int> pixels = null;
+                    yield return FloodFillAsync(x, y, visited, p => pixels = p );
+                    PixelMask islandPixelMask = null;
+                    yield return PixelMask.CreateAsync(pixels, pm => islandPixelMask = pm);
+                    DestructibleIslandCollider island = null;
+                    yield return CreateIslandColliderAsync(islandPixelMask, newIslands.Count, i=> island = i);
+                    newIslands.Add(island);
+                }
+            }
+        }
+        ClearIslands();
+        _islandColliders.AddRange(newIslands);
+    }
+
+
+    private IEnumerator FloodFillAsync(int sx, int sy, bool[,] visited, Action<List<Vector2Int>> onDone, int yieldInterval = 20000)
     {
         Queue<Vector2Int> queue = new();
         List<Vector2Int> pixels = new();
@@ -82,12 +96,13 @@ public class DestructibleTerrainCollider : MonoBehaviour
         queue.Enqueue(new Vector2Int(sx, sy));
         visited[sx, sy] = true;
 
+        int ind = 0;
         while (queue.Count > 0)
         {
             var p = queue.Dequeue();
             pixels.Add(p);
 
-            foreach (var d in new Vector2Int[] { new(1, 0), new(-1, 0), new(0, 1), new(0, -1) })
+            foreach (var d in FloodFillDirections)
             {
                 int nx = p.x + d.x, ny = p.y + d.y;
                 if (nx < 0 || ny < 0 || nx >= Width || ny >= Height) continue;
@@ -96,23 +111,27 @@ public class DestructibleTerrainCollider : MonoBehaviour
                 visited[nx, ny] = true;
                 queue.Enqueue(new Vector2Int(nx, ny));
             }
+            ind++;
+            if (ind % yieldInterval == 0)
+            {
+                yield return null;
+            }
         }
 
-        return pixels;
+        onDone?.Invoke(pixels);
     }
 
 
-    public DestructibleIslandCollider CreateIslandCollider(PixelMask islandPixelMask)
+    public IEnumerator CreateIslandColliderAsync(PixelMask islandPixelMask, int index, Action<DestructibleIslandCollider> onDone)
     {
         var islandCenter = islandPixelMask.Rect.center;
         var terrainCenter = _terrainPixelMask.Rect.center;
         var isl = Instantiate(_islandColliderPrefab);
-        isl.name = $"Island_{_islandColliders.Count}";
+        isl.name = "Island" + index;
         isl.transform.SetParent(transform, false);
         isl.transform.localPosition = (islandCenter - terrainCenter) / _pixelsPerUnit;
-        isl.RebuildColliderFromPixelMask(islandPixelMask, _pixelsPerUnit);
-        _islandColliders.Add(isl);
-        return isl;
+        yield return isl.RebuildColliderFromPixelMaskAsync(islandPixelMask, _pixelsPerUnit);
+        onDone?.Invoke(isl);
     }
 
     #endregion
