@@ -17,6 +17,7 @@ public class CharacterBodyAnimator : MonoBehaviour
     private Color _teamColor;
     private Coroutine _currentAnimationRoutine;
     private CharacterAnimationState _currentAnimationState;
+    public bool IsFacingLeft => _baseSpriteRenderer.flipX;
 
     private void Start()
     {

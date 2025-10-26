@@ -2,12 +2,12 @@ using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-[RequireComponent(typeof(Collider2D))]
+[RequireComponent(typeof(CircleCollider2D))]
 [RequireComponent(typeof(SpriteRenderer))]
 public class Projectile : MonoBehaviour
 {
     private Rigidbody2D _rb;
-    private Collider2D _col;
+    private CircleCollider2D _col;
     private SpriteRenderer _spriteRenderer;
     private IProjectileBehavior _behavior;
     private ProjectileDefinition _definition;
@@ -20,7 +20,7 @@ public class Projectile : MonoBehaviour
     private void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
-        _col = GetComponent<Collider2D>();
+        _col = GetComponent<CircleCollider2D>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _explosionPool = FindAnyObjectByType<ExplosionPool>();
     }

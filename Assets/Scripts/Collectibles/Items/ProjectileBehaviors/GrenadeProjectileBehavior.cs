@@ -5,7 +5,6 @@ public class GrenadeProjectileBehavior : SimpleProjectileBehavior
 {
     private GrenadeProjectileDefinition _definition;
     private int _contactCount;
-    private bool _exploded;
     public GrenadeProjectileBehavior(GrenadeProjectileDefinition definition) : base(definition)
     {
         _definition = definition;
@@ -20,12 +19,22 @@ public class GrenadeProjectileBehavior : SimpleProjectileBehavior
         col.isTrigger = false;
         col.sharedMaterial = _definition.GrenadePhysicsMaterial;
         rb.linearVelocity = Vector2.zero;
-        rb.transform.position = context.AimOrigin + context.AimVector.normalized * Constants.ProjectileOffset;
+        PlaceProjectile(context);
         rb.AddForce(context.AimVector, ForceMode2D.Impulse);
         StartCoroutine(ExplodeAfterDelay(_definition.ExplosionDelaySeconds));
-        if(TryContactImmadiatelyOnLaunchIfNearAnyCollider(context))
+    }
+
+    protected override void PlaceProjectile(ProjectileLaunchContext context)
+    {
+        var rb = context.ProjectileRigidbody;
+        var desiredPosition = context.AimOrigin + context.AimVector.normalized * Constants.ProjectileOffset;
+        if (SafeObjectPlacer.TryFindSafePosition(desiredPosition, context.AimVector.normalized, LayerMaskHelper.GetCombinedLayerMask(Constants.ProjectileCollisionLayers), context.ProjectileCollider.radius, out var safePosition))
         {
-            rb.transform.position = context.AimOrigin - context.AimVector.normalized * Constants.ProjectileOffset / 4;
+            rb.transform.position = safePosition;
+        }
+        else if(TryContactImmadiatelyOnLaunchIfNearAnyCollider(context))
+        {
+            rb.transform.position = context.AimOrigin - context.AimVector.normalized * Constants.ProjectileOffset / 2;
         }
     }
 

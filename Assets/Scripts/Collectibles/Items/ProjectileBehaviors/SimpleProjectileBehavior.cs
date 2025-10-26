@@ -9,6 +9,8 @@ public class SimpleProjectileBehavior : UnityDriven, IProjectileBehavior
     private ProjectileDefinition _definition;
     protected Projectile _projectile;
     protected RaycastHit2D[] _raycastHits;
+    protected bool _explodeOnce = true;
+    protected bool _exploded;
 
     public SimpleProjectileBehavior(ProjectileDefinition definition) : base(CoroutineRunner.Instance)
     {
@@ -22,11 +24,26 @@ public class SimpleProjectileBehavior : UnityDriven, IProjectileBehavior
 
     public virtual void Launch(ProjectileLaunchContext context)
     {
+        _exploded = false;
         var rb = context.ProjectileRigidbody;
         rb.linearVelocity = Vector2.zero;
-        rb.transform.position = context.AimOrigin + context.AimVector.normalized * Constants.ProjectileOffset;
+        PlaceProjectile(context);
         rb.AddForce(context.AimVector, ForceMode2D.Impulse);
         TryContactImmadiatelyOnLaunchIfNearAnyCollider(context);
+    }
+
+    protected virtual void PlaceProjectile(ProjectileLaunchContext context)
+    {
+        var rb = context.ProjectileRigidbody;
+        var desiredPosition = context.AimOrigin + context.AimVector.normalized * Constants.ProjectileOffset;
+        if (SafeObjectPlacer.TryFindSafePosition(desiredPosition, context.AimVector.normalized, LayerMaskHelper.GetCombinedLayerMask(Constants.ProjectileCollisionLayers), context.ProjectileCollider.radius, out var safePosition))
+        {
+            rb.transform.position = safePosition;
+        }
+        else
+        {
+            TryContactImmadiatelyOnLaunchIfNearAnyCollider(context);
+        }
     }
 
     protected bool TryContactImmadiatelyOnLaunchIfNearAnyCollider(ProjectileLaunchContext context)
@@ -56,10 +73,15 @@ public class SimpleProjectileBehavior : UnityDriven, IProjectileBehavior
 
     protected virtual void Explode(ProjectileContactContext context)
     {
+        if(_explodeOnce && _exploded)
+        {
+            return;
+        }
         var damage = _definition.Damage.CalculateValue();
         var exp = _projectile.ExplosionPool.Get();
         exp.Initialize(_definition.ExplosionDefinition);
         var explodedCharacters = exp.Explode(context.ContactPoint, damage);
+        _exploded = true;
         Exploded?.Invoke(new ExplosionInfo(explodedCharacters, _projectile, exp));
     }
 

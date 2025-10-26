@@ -32,6 +32,11 @@ public class DestructibleTerrainManager : MonoBehaviour
         _collider.RebuildFinished += OnColliderRebuildFinished;
     }
 
+    private void Start()
+    {
+        InitiateColliderRebuild();
+    }
+
     public void ApplyExplosion(Vector2 position, float radius)
     {
         _renderer.ApplyExplosion(position, radius);

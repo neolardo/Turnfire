@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class Character : MonoBehaviour
@@ -101,9 +102,9 @@ public class Character : MonoBehaviour
 
     #region Aim
 
-    public void StartAiming(Vector2 aimVector)
+    public void StartAiming()
     {
-        _animator.StartAiming(_selectedItem, aimVector);
+        _animator.StartAiming(_selectedItem);
     }
 
     public void ChangeAim(Vector2 aimVector)
@@ -126,8 +127,10 @@ public class Character : MonoBehaviour
     }
 
     public void Jump(Vector2 aimDirection)
-    {
-        _rb.AddForce(aimDirection * CharacterDefinition.JumpStrength, ForceMode2D.Impulse);
+    { 
+        var jumpForce = aimDirection * CharacterDefinition.JumpStrength;
+        _rb.AddForce(jumpForce, ForceMode2D.Impulse);
+        _animator.OnJumpStarted(jumpForce);
     }
 
     public void PrepareToJump()

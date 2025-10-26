@@ -90,6 +90,7 @@ public class TrajectoryRenderer : MonoBehaviour
     public void ShowTrajectory(Vector2 initialPosition)
     {
         ShowCircles(initialPosition);
+        DrawTrajectory(Vector2.zero);
         _line.enabled = true;
     }
 

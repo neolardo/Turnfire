@@ -11,14 +11,13 @@ public class BulletProjectileBehavior : SimpleProjectileBehavior
 
     public override void Launch(ProjectileLaunchContext context)
     {
+        _exploded = false;
         var rb = context.ProjectileRigidbody;
         float angle = Mathf.Atan2(context.AimVector.y, context.AimVector.x) * Mathf.Rad2Deg;
         rb.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-        rb.transform.position = context.AimOrigin + context.AimVector.normalized * Constants.ProjectileOffset;
+        PlaceProjectile(context);
         rb.gravityScale = 0;
         rb.linearVelocity = context.AimVector / rb.mass;
-        TryContactImmadiatelyOnLaunchIfNearAnyCollider(context);
-
     }
 
 

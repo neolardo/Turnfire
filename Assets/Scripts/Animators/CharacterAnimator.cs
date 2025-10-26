@@ -9,6 +9,8 @@ public class CharacterAnimator : MonoBehaviour
 
     public Transform ItemTransform => _itemRenderer.transform;
 
+    private const float JumpCancelThreshold = 0.8f;
+
     private void Awake()
     {
         var character = transform.parent.GetComponent<Character>();
@@ -20,11 +22,13 @@ public class CharacterAnimator : MonoBehaviour
         _bodyAnimator.SetTeamColor(color);
     }
 
-    public void StartAiming(Item selectedItem, Vector2 aimDirection)
+    public void StartAiming(Item selectedItem)
     {
         _itemRenderer.ChangeItem(selectedItem);
         _itemRenderer.ShowItem();
-        _bodyAnimator.ChangeAimFrame(aimDirection);
+        var dir = _bodyAnimator.IsFacingLeft ? Vector2.left : Vector2.right;
+        _itemRenderer.ChangeAim(dir);
+        _bodyAnimator.ChangeAimFrame(dir);
         _bodyAnimator.PlayItemAimStartSFX();
     }
 
@@ -77,6 +81,14 @@ public class CharacterAnimator : MonoBehaviour
     {
         _itemRenderer.HideItem();
         _bodyAnimator.PlayHurtAnimation();
+    }
+
+    public void OnJumpStarted(Vector2 jumpVector)
+    {
+        if (jumpVector.y <= JumpCancelThreshold)
+        {
+            _bodyAnimator.PlayCancelJumpAnimation();
+        }
     }
 
     public void PlayPrepareToJumpAnimation()

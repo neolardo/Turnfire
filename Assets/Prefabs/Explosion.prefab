@@ -57,7 +57,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -75,8 +75,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 344374287
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -101,15 +101,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b71f10ea2d12bea4cba0e69f33681814, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _frames:
-  - {fileID: -458852505741916735, guid: f7912a5eda282524a927861b1e3d77b4, type: 3}
-  - {fileID: 6185354509711349816, guid: f7912a5eda282524a927861b1e3d77b4, type: 3}
-  - {fileID: -4740975251572141479, guid: f7912a5eda282524a927861b1e3d77b4, type: 3}
-  - {fileID: 3686396670210617593, guid: f7912a5eda282524a927861b1e3d77b4, type: 3}
-  - {fileID: 5274278182109693976, guid: f7912a5eda282524a927861b1e3d77b4, type: 3}
-  - {fileID: -2918376234819103980, guid: f7912a5eda282524a927861b1e3d77b4, type: 3}
-  - {fileID: 6814482878826552795, guid: f7912a5eda282524a927861b1e3d77b4, type: 3}
-  - {fileID: -5855807688439795724, guid: f7912a5eda282524a927861b1e3d77b4, type: 3}
 --- !u!114 &4439255929235537379
 MonoBehaviour:
   m_ObjectHideFlags: 0

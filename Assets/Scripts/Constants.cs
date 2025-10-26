@@ -12,7 +12,7 @@ public static class Constants
     public const float DownwardAimThresholdY = -0.4f;
 
     //projectile
-    public const float ProjectileOffset = 1f;
+    public const float ProjectileOffset = .5f;
 
     // raycast
     public const int RaycastHitColliderNumMax = 5;

@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DisplayName: Range
   Minimum: 1
-  Maximum: 15
+  Maximum: 20

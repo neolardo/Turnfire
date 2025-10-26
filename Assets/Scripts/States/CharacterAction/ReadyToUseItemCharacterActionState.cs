@@ -36,10 +36,10 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
     }
 
 
-    private void OnAimStarted(Vector2 aimVector)
+    private void OnAimStarted(Vector2 initialPosition)
     {
-        _trajectoryRenderer.ShowTrajectory(aimVector);
-        _currentCharacter.StartAiming(aimVector);
+        _trajectoryRenderer.ShowTrajectory(initialPosition);
+        _currentCharacter.StartAiming();
     }
 
     private void OnAimChanged(Vector2 aimVector)

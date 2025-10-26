@@ -26,7 +26,7 @@ MonoBehaviour:
   ItemActionSFX: {fileID: 11400000, guid: fc1ce75043e549540ba172f23ddbb33f, type: 2}
   HideItemDuringUsage: 0
   FireStrength:
-    _normalizedValue: 0.8
+    _normalizedValue: 1
     _isRandomized: 0
     _randomness: 0
     _group: {fileID: 11400000, guid: 22026dfb48c6fa8489243cadbd99e5af, type: 2}

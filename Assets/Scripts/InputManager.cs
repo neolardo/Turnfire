@@ -65,7 +65,6 @@ public class InputManager : MonoBehaviour
     private void SubscribeToInputEvents()
     {
         _inputActions.Gameplay.Aim.performed += OnAimPerformed;
-        _inputActions.Gameplay.Aim.canceled += OnAimCancelled;
         _inputActions.Gameplay.ReleaseImpulse.started += OnImpulseReleaseStarted;
         _inputActions.Gameplay.ReleaseImpulse.canceled += OnImpulseReleaseEnded;
         _inputActions.Gameplay.Cancel.started += OnCancelPerformed;
@@ -143,18 +142,6 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    private void OnAimCancelled(InputAction.CallbackContext ctx)
-    {
-        if (!IsAimingEnabled)
-            return;
-
-        _aimVector = Vector2.zero;
-        if (_isAiming)
-        {
-            AimChanged?.Invoke(_aimVector);
-            _isInitialMouseAimPositionSet = false;
-        }
-    }
 
     private void OnImpulseReleaseStarted(InputAction.CallbackContext ctx)
     {
@@ -163,6 +150,7 @@ public class InputManager : MonoBehaviour
 
         _isAiming = true;
         _isInitialMouseAimPositionSet = false;
+        _aimVector = Vector2.zero;
         var initialPos = new Vector2(-1, -1);
         if (ctx.control.device is Mouse)
         {
@@ -178,6 +166,12 @@ public class InputManager : MonoBehaviour
     {
         if (!IsAimingEnabled || !_isAiming)
             return;
+
+        if(_aimVector.Approximately(Vector2.zero))
+        {
+            CancelAiming();
+            return;
+        }    
 
         _isAiming = false;
         ImpulseReleased?.Invoke(_aimVector);

@@ -62,6 +62,9 @@ TagManager:
   - name: Projectile
     uniqueID: 2379856903
     locked: 0
+  - name: Explosion
+    uniqueID: 344374287
+    locked: 0
   - name: Package
     uniqueID: 2441191569
     locked: 0
