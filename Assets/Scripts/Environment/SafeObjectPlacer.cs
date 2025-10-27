@@ -6,7 +6,16 @@ public static class SafeObjectPlacer
     private static float _searchRadius = 3;
     private static float _radiusStep = 0.2f;
     private static float _angleStep = 30f;
+
+    private const int OverlapColliderCountMax = 10;
+    private const float Epsilon = 0.01f;
+
+    private static readonly Collider2D[] _overlapColliders = new Collider2D[OverlapColliderCountMax];
+
     private static int MaxRings => Mathf.CeilToInt(_searchRadius / _radiusStep);
+
+    private static DestructibleTerrainManager _destructibleTerrain;
+
     public static void SetSettings(float searchRadius, float radiusStep, float angleStep)
     {
         _searchRadius = searchRadius;
@@ -14,22 +23,35 @@ public static class SafeObjectPlacer
         _angleStep = angleStep;
     }
 
-    public static bool TryFindSafePosition(Vector2 center, Vector2 direction, LayerMask collisionMask, float requiredRadius, out Vector2 safePosition)
+    public static void SetDestructibleTerrain(DestructibleTerrainManager destructibleTerrain)
     {
+        _destructibleTerrain = destructibleTerrain;
+    }
+
+    public static bool TryFindSafePosition(Vector2 center, Vector2 direction, LayerMask overlapMask, float requiredRadius, out Vector2 safePosition)
+    {
+        bool checkGround = overlapMask.HasLayer(Constants.GroundLayer);
+        if(checkGround)
+        {
+            overlapMask = overlapMask.RemoveLayer(Constants.GroundLayer);
+        }
+
+        var filter = new ContactFilter2D();
+        filter.SetLayerMask(overlapMask);
+        Physics2D.OverlapCircle(center, _searchRadius, filter, _overlapColliders);
+
         float baseAngle = Mathf.Atan2(direction.y, direction.x);
+        var candidateAngles = GenerateAlternatingAngles(baseAngle, _angleStep, 180f / _angleStep);
 
         for (int ring = 0; ring < MaxRings; ring++)
         {
             float ringRadius = _radiusStep * (ring + 1);
 
-            // Generate alternating angles around base direction
-            List<float> candidateAngles = GenerateAlternatingAngles(baseAngle, _angleStep, 180f / _angleStep);
-
             foreach (float angle in candidateAngles)
             {
                 Vector2 candidate = center + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * ringRadius;
                
-                if (IsPositionSafe(candidate, requiredRadius, collisionMask))
+                if (IsPositionSafe(candidate, requiredRadius, checkGround))
                 {
                     safePosition = candidate;
                     return true;
@@ -40,14 +62,33 @@ public static class SafeObjectPlacer
         return false;
     }
 
-    //TODO: optimize
-    private static bool IsPositionSafe(Vector2 pos, float radius, LayerMask mask)
+    private static bool IsPositionSafe(Vector2 pos, float radius, bool checkGround)
     {
-        if (Physics2D.OverlapPointAll(pos, LayerMaskHelper.GetLayerMask(Constants.GroundLayer)).Length > 0)
-            return false;
+        foreach (var col in _overlapColliders)
+        {
+            if (!col) continue;
 
-        if (Physics2D.OverlapCircleAll(pos, radius, LayerMaskHelper.GetLayerMask(Constants.GroundLayer)).Length > 0)
-            return false;
+            Vector2 closest = col.bounds.ClosestPoint(pos);
+            float distSqr = (pos - closest).sqrMagnitude;
+            float required = radius + Epsilon;
+
+            if (distSqr < required * required)
+            {
+                return false;
+            }
+        }
+
+        if (checkGround)
+        {
+            if(_destructibleTerrain.OverlapPoint(pos))
+            {
+                return false;
+            }
+            if (_destructibleTerrain.OverlapCircle(pos, radius))
+            {
+                return false;
+            }
+        }
 
         return true;
     }

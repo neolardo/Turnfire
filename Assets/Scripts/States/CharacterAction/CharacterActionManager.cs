@@ -23,9 +23,9 @@ public class CharacterActionManager : UnityDriven
         _inputManager = inputManager;
         _characterActionStates = new List<CharacterActionState>
         {
-            new ReadyToMoveCharacterActionState(trajectoryRenderer, inputManager, coroutineManager, uiSounds),
+            new ReadyToMoveCharacterActionState(trajectoryRenderer, inputManager, uiManager, coroutineManager, uiSounds),
             new MovingCharacterActionState(coroutineManager, uiSounds),
-            new ReadyToUseItemCharacterActionState(itemPreviewRendererManager, inputManager, projectileManager, trajectoryRenderer, coroutineManager, uiSounds),
+            new ReadyToUseItemCharacterActionState(itemPreviewRendererManager, inputManager, projectileManager, trajectoryRenderer, uiManager, coroutineManager, uiSounds),
             new UsingItemCharacterActionState(coroutineManager, uiSounds),
             new FinishedCharacterActionState(coroutineManager, uiSounds),
         };

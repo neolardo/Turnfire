@@ -5,11 +5,13 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
     public override CharacterActionStateType State => CharacterActionStateType.ReadyToMove;
     private TrajectoryRenderer _trajectoryRenderer;
     private InputManager _inputManager;
+    private GameplayUIManager _uiManager;
 
-    public ReadyToMoveCharacterActionState(TrajectoryRenderer trajectoryRenderer, InputManager inputManager, MonoBehaviour manager, UISoundsDefinition uiSounds) : base(manager, uiSounds)
+    public ReadyToMoveCharacterActionState(TrajectoryRenderer trajectoryRenderer, InputManager inputManager, GameplayUIManager uiManager, MonoBehaviour manager, UISoundsDefinition uiSounds) : base(manager, uiSounds)
     {
         _trajectoryRenderer = trajectoryRenderer;
         _inputManager = inputManager;
+        _uiManager = uiManager;
     }
 
     protected override void SubscribeToEvents()
@@ -32,14 +34,15 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
     public override void StartState(Character currentCharacter)
     {
         base.StartState(currentCharacter);
+        _uiManager.ResumeGameplayTimer();
         _inputManager.IsAimingEnabled = true;
         _inputManager.IsOpeningInventoryEnabled = true;
         currentCharacter.InitializeMovementPreview(_trajectoryRenderer);
     }
 
-    private void OnAimStarted(Vector2 aimVector)
+    private void OnAimStarted(Vector2 initialPosition)
     {
-        _trajectoryRenderer.ShowTrajectory(aimVector);
+        _trajectoryRenderer.ShowTrajectory(initialPosition);
         _currentCharacter.PrepareToJump();
     }
 
@@ -67,5 +70,6 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
         base.EndState();
         _inputManager.IsAimingEnabled = false;
         _inputManager.IsOpeningInventoryEnabled = false;
+        _uiManager.PauseGameplayTimer();
     }
 }

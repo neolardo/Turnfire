@@ -6,6 +6,7 @@ Shader "Unlit/UI_AimRingShader"
         _InnerColor("InnerColor", Color) = (0.8,0.8,0.8,1)
         _OuterThickness("OuterThickness", Float) = 0.02
         _InnerThickness("InnerThickness", Float) = 0.5
+        _MainTex("Texture", 2D) = "white" {}
     }
     SubShader
     {
@@ -39,6 +40,7 @@ Shader "Unlit/UI_AimRingShader"
             float4 _OuterColor;
             float _InnerThickness;
             float _OuterThickness;
+            sampler2D _MainTex;
 
             v2f vert(appdata v)
             {

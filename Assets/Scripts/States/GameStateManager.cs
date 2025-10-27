@@ -29,8 +29,6 @@ public class GameStateManager : MonoBehaviour
         }
     }
 
-
-
     public event Action <GameStateType> StateChanged;
 
     private void Awake()

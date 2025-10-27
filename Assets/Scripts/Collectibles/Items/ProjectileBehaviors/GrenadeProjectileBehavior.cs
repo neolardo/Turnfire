@@ -27,14 +27,13 @@ public class GrenadeProjectileBehavior : SimpleProjectileBehavior
     protected override void PlaceProjectile(ProjectileLaunchContext context)
     {
         var rb = context.ProjectileRigidbody;
-        var desiredPosition = context.AimOrigin + context.AimVector.normalized * Constants.ProjectileOffset;
-        if (SafeObjectPlacer.TryFindSafePosition(desiredPosition, context.AimVector.normalized, LayerMaskHelper.GetCombinedLayerMask(Constants.ProjectileCollisionLayers), context.ProjectileCollider.radius, out var safePosition))
+        if (SafeObjectPlacer.TryFindSafePosition(context.AimOrigin, context.AimVector.normalized, LayerMaskHelper.GetCombinedLayerMask(Constants.ProjectileCollisionLayers), context.ProjectileCollider.radius, out var safePosition))
         {
             rb.transform.position = safePosition;
         }
-        else if(TryContactImmadiatelyOnLaunchIfNearAnyCollider(context))
+        else 
         {
-            rb.transform.position = context.AimOrigin - context.AimVector.normalized * Constants.ProjectileOffset / 2;
+            rb.transform.position = context.AimOrigin;
         }
     }
 

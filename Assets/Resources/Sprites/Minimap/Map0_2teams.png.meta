@@ -1,19 +1,16 @@
 fileFormatVersion: 2
-guid: ff77d752e46ae264e9b7d7ef6345f17a
+guid: daa056f55c29f67489f0b464f8dd7b6c
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 241291237998619879
-    second: SampleScene_0
+      213: -4818668578765790380
+    second: Map0_2teams_0
   - first:
-      213: 4533192193684588567
-    second: SampleScene_1
+      213: -5548428740724766579
+    second: Map0_2teams_1
   - first:
-      213: 8168979094676618638
-    second: SampleScene_2
-  - first:
-      213: 6618728160322373407
-    second: SampleScene_3
+      213: -7127787912096153972
+    second: Map0_2teams_2
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -105,50 +102,11 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: Android
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: iOS
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: SampleScene_0
+      name: Map0_2teams_0
       rect:
         serializedVersion: 2
         x: 0
@@ -163,42 +121,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 7ec62504a1d395300800000000000000
-      internalID: 241291237998619879
+      spriteID: 45324504576a02db0800000000000000
+      internalID: -4818668578765790380
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: SampleScene_1
-      rect:
-        serializedVersion: 2
-        x: 2
-        y: 16
-        width: 11
-        height: 10
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 718c423484229ee30800000000000000
-      internalID: 4533192193684588567
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SampleScene_2
+      name: Map0_2teams_1
       rect:
         serializedVersion: 2
         x: 15
         y: 24
         width: 10
-        height: 8
+        height: 7
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -207,14 +143,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e8dbacb943b0e5170800000000000000
-      internalID: 8168979094676618638
+      spriteID: d88488705750003b0800000000000000
+      internalID: -5548428740724766579
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: SampleScene_3
+      name: Map0_2teams_2
       rect:
         serializedVersion: 2
         x: 40
@@ -229,8 +165,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f17c3ecb1327adb50800000000000000
-      internalID: 6618728160322373407
+      spriteID: c8e7f2998a2051d90800000000000000
+      internalID: -7127787912096153972
       vertices: []
       indices: 
       edges: []
@@ -249,10 +185,9 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      SampleScene_0: 241291237998619879
-      SampleScene_1: 4533192193684588567
-      SampleScene_2: 8168979094676618638
-      SampleScene_3: 6618728160322373407
+      Map0_2teams_0: -4818668578765790380
+      Map0_2teams_1: -5548428740724766579
+      Map0_2teams_2: -7127787912096153972
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

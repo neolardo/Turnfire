@@ -29,31 +29,27 @@ public class SimpleProjectileBehavior : UnityDriven, IProjectileBehavior
         rb.linearVelocity = Vector2.zero;
         PlaceProjectile(context);
         rb.AddForce(context.AimVector, ForceMode2D.Impulse);
-        TryContactImmadiatelyOnLaunchIfNearAnyCollider(context);
     }
 
     protected virtual void PlaceProjectile(ProjectileLaunchContext context)
     {
         var rb = context.ProjectileRigidbody;
-        var desiredPosition = context.AimOrigin + context.AimVector.normalized * Constants.ProjectileOffset;
-        if (SafeObjectPlacer.TryFindSafePosition(desiredPosition, context.AimVector.normalized, LayerMaskHelper.GetCombinedLayerMask(Constants.ProjectileCollisionLayers), context.ProjectileCollider.radius, out var safePosition))
+        rb.transform.position = context.AimOrigin + context.AimVector.normalized * Constants.ProjectileOffset;
+        if (IsAnyColliderAtLaunchPoint(context, out var tag))
         {
-            rb.transform.position = safePosition;
-        }
-        else
-        {
-            TryContactImmadiatelyOnLaunchIfNearAnyCollider(context);
+            OnContact(new ProjectileContactContext(context.ProjectileCollider.transform.position, tag));
         }
     }
 
-    protected bool TryContactImmadiatelyOnLaunchIfNearAnyCollider(ProjectileLaunchContext context)
+    protected bool IsAnyColliderAtLaunchPoint(ProjectileLaunchContext context, out string tag)
     {
-        Physics2D.RaycastNonAlloc(context.AimOrigin, context.AimVector.normalized, _raycastHits,Constants.ProjectileOffset, LayerMaskHelper.GetCombinedLayerMask(Constants.ProjectileCollisionLayers));
+        tag = null;
+        Physics2D.RaycastNonAlloc(context.AimOrigin, context.AimVector.normalized, _raycastHits, Constants.ProjectileOffset, LayerMaskHelper.GetCombinedLayerMask(Constants.ProjectileCollisionLayers));
         foreach(var hit in _raycastHits)
         {
             if (hit.collider != null && hit.collider != context.OwnerCollider)
             {
-                OnContact(new ProjectileContactContext(context.ProjectileCollider.transform.position, hit.collider.tag));
+                tag = hit.collider.tag;
                 return true;
             }
         }

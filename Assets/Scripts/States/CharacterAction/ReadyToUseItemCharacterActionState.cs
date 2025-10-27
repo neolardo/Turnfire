@@ -8,13 +8,15 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
     private InputManager _inputManager;
     private ProjectilePool _projectileManager;
     private TrajectoryRenderer _trajectoryRenderer;
+    private GameplayUIManager _uiManager;
 
-    public ReadyToUseItemCharacterActionState(ItemPreviewRendererManager rendererManager, InputManager inputManager, ProjectilePool projectileManager, TrajectoryRenderer trajectoryRenderer, MonoBehaviour coroutineManager, UISoundsDefinition uiSounds) : base(coroutineManager, uiSounds)
+    public ReadyToUseItemCharacterActionState(ItemPreviewRendererManager rendererManager, InputManager inputManager, ProjectilePool projectileManager, TrajectoryRenderer trajectoryRenderer, GameplayUIManager uiManager, MonoBehaviour coroutineManager, UISoundsDefinition uiSounds) : base(coroutineManager, uiSounds)
     {
         _rendererManager = rendererManager;
         _projectileManager = projectileManager;
         _inputManager = inputManager;
         _trajectoryRenderer = trajectoryRenderer;
+        _uiManager = uiManager;
     }
     protected override void SubscribeToEvents()
     {
@@ -65,6 +67,7 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
             return;
         }
 
+        _uiManager.ResumeGameplayTimer();
         _inputManager.IsAimingEnabled = true;
         _inputManager.IsOpeningInventoryEnabled = true;
         var context = new ItemUsageContext(_currentCharacter.transform.position, Vector2.zero, _currentCharacter.ItemTransform, _currentCharacter.Collider, _projectileManager);
@@ -82,6 +85,7 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
         base.EndState();
         _inputManager.IsAimingEnabled = false;
         _inputManager.IsOpeningInventoryEnabled = false;
+        _uiManager.PauseGameplayTimer();
     }
 
     private void OnImpulseReleased(Vector2 aimVector)

@@ -4,7 +4,9 @@ using UnityEngine.UI;
 
 public class InventoryToggleUI : MonoBehaviour
 {
-    [SerializeField] private Image _leftImage; 
+    [SerializeField] private InventoryToggleButtonUI _leftButton; 
+    [SerializeField] private InventoryToggleButtonUI _rightButton; 
+    [SerializeField] private Image _leftImage;
     [SerializeField] private Image _rightImage;
     [SerializeField] private TextMeshProUGUI _leftText;
     [SerializeField] private TextMeshProUGUI _rightText;
@@ -21,6 +23,11 @@ public class InventoryToggleUI : MonoBehaviour
 
     private bool _isToggledLeft;
 
+    private void Awake()
+    {
+        _leftButton.ButtonPressed += ToggleToLeft;
+        _rightButton.ButtonPressed += ToggleToRight;
+    }
 
     private void Start()
     {
@@ -37,6 +44,22 @@ public class InventoryToggleUI : MonoBehaviour
     {
         _isToggledLeft = !_isToggledLeft;
         UpdateLayout();
+    }
+
+    private void ToggleToLeft()
+    {
+        if(!_isToggledLeft)
+        {
+            Toggle();
+        }
+    }
+
+    private void ToggleToRight()
+    {
+        if (_isToggledLeft)
+        {
+            Toggle();
+        }
     }
 
     private void UpdateLayout()

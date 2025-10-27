@@ -47,7 +47,6 @@ public class DestructibleTerrainCollider : MonoBehaviour
         RebuildFinished?.Invoke();
     }
 
-
     #region Islands
 
     private void ClearIslands()

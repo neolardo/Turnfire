@@ -8,13 +8,13 @@ public static class LayerMaskHelper
         return 1 << layer;
     }
 
-    public static bool HasLayer(LayerMask mask, int layer)
+    public static bool HasLayer(this LayerMask mask , int layer)
     {
         return (mask & GetLayerMask(layer)) == GetLayerMask(layer); 
     }
-    public static LayerMask RemoveLayer(LayerMask mask, int layer)
+    public static LayerMask RemoveLayer(this LayerMask mask , int layer)
     {
-        return mask - GetLayerMask(layer);
+        return mask.HasLayer(layer) ? mask - GetLayerMask(layer) : mask;
     }
 
     public static LayerMask GetCombinedLayerMask(params int[] layers)

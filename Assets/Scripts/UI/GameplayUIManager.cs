@@ -87,12 +87,30 @@ public class GameplayUIManager : MonoBehaviour
         }
     }
 
+    public void PauseGameplayTimer()
+    {
+        if (_useTimer)
+        {
+            _gameplayTimer.StopTimer();
+        }
+    }
+
+    public void ResumeGameplayTimer()
+    {
+        if (_useTimer)
+        {
+            _gameplayTimer.ResumeTimer();
+        }
+    }
+
     public void OnGameStarted(GameplaySceneSettings gameplaySettings)
     {
         _useTimer = gameplaySettings.UseTimer;
         if(_useTimer)
         {
             _gameplayTimer.gameObject.SetActive(true);
+            StartGameplayTimer();
+            PauseGameplayTimer();
         }
     }
 

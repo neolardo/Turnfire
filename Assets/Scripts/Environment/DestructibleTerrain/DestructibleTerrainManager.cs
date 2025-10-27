@@ -30,12 +30,15 @@ public class DestructibleTerrainManager : MonoBehaviour
         _removableHoles = new List<ExplosionHole>();
         _renderer.InitializeFromTilemap(_tilemap, _tilemapRenderer);
         _collider.RebuildFinished += OnColliderRebuildFinished;
+        SafeObjectPlacer.SetDestructibleTerrain(this);
     }
 
     private void Start()
     {
         InitiateColliderRebuild();
     }
+
+    #region Explosion
 
     public void ApplyExplosion(Vector2 position, float radius)
     {
@@ -54,11 +57,15 @@ public class DestructibleTerrainManager : MonoBehaviour
         hole.transform.SetParent(_explosionHoleContainer, true);
         hole.Initialize(position, radius);
         _newHoles.Add(hole);
-    }
+    } 
+
+    #endregion
+
+    #region Collider Rebuild
 
     private void InitiateColliderRebuild()
     {
-        if(_collider.RebuildInProgress)
+        if (_collider.RebuildInProgress)
         {
             return;
         }
@@ -70,17 +77,17 @@ public class DestructibleTerrainManager : MonoBehaviour
     }
     private void OnColliderRebuildFinished()
     {
-        foreach(var hole in _removableHoles)
+        foreach (var hole in _removableHoles)
         {
             _explosionHolePool.Release(hole);
         }
         _removableHoles.Clear();
 
-        if(!_firstRebuildDone)
+        if (!_firstRebuildDone)
         {
             OnFirstRebuildDone();
         }
-        
+
         Debug.Log($"{nameof(DestructibleTerrainCollider)} rebuild finished.");
     }
 
@@ -96,5 +103,20 @@ public class DestructibleTerrainManager : MonoBehaviour
         _firstRebuildDone = true;
     }
 
+    #endregion
+
+    #region Overlap Checks
+
+    public bool OverlapCircle(Vector2 worldPos, float radius)
+    {
+        return _renderer.OverlapCircle(worldPos, radius);
+    }
+
+    public bool OverlapPoint(Vector2 worldPos)
+    {
+        return _renderer.OverlapPoint(worldPos);
+    }
+
+    #endregion
 
 }

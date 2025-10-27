@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿
+#if UNITY_EDITOR
+
+using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -16,6 +19,8 @@ public class MinimapBaker : MonoBehaviour
     [SerializeField] private Color _waterColor = new Color(0, 0.2f, .6f);
 
      private Texture2D bakedMinimap;
+
+    private const int TeamCountMin = 2;
 
     public Texture2D BakedMinimap => bakedMinimap;
 
@@ -38,6 +43,7 @@ public class MinimapBaker : MonoBehaviour
 
         // clear texture
         Color[] clear = new Color[_targetSize.x * _targetSize.y];
+        bool[,] groundMask = new bool[_targetSize.x, _targetSize.y];
         for (int i = 0; i < clear.Length; i++) clear[i] = Color.clear;
         tex.SetPixels(clear);
 
@@ -46,7 +52,7 @@ public class MinimapBaker : MonoBehaviour
             (float)_targetSize.y / bounds.size.y
         );
 
-        // daint ground and water
+        // draw ground and water
         foreach (var pos in bounds.allPositionsWithin)
         {
             bool hasGround = _groundTilemap.HasTile(pos);
@@ -72,12 +78,15 @@ public class MinimapBaker : MonoBehaviour
                 for (int y = yMin; y < yMax; y++)
                 {
                     tex.SetPixel(x, y, color);
+                    groundMask[x,y] = hasGround;
                 }
             }
         }
+        tex.Apply();
 
         // draw characters 
         var characters = new List<Character>();
+        int teamCount = 0;
         foreach (var team in _teams)
         {
             characters.Clear();
@@ -95,6 +104,12 @@ public class MinimapBaker : MonoBehaviour
                 int x = Mathf.FloorToInt((cellPos.x - offset.x) * scale.x);
                 int y = Mathf.FloorToInt((cellPos.y - offset.y) * scale.y);
 
+                // drop the characters on the ground
+                while (y > 0 && !groundMask[x,y-1] )
+                {
+                    y--;
+                }    
+
                 for (int px = -1; px <= 1; px++)
                 {
                     for (int py = -1; py <= 1; py++)
@@ -105,17 +120,19 @@ public class MinimapBaker : MonoBehaviour
                     }
                 }
             }
+            teamCount++;
+            if(teamCount >= TeamCountMin)
+            {
+                tex.Apply();
+                SaveAsPng(tex, teamCount);
+            }
         }
 
-
-        tex.Apply();
         bakedMinimap = tex;
-        SaveAsPng(tex);
-
         Debug.Log("[MinimapBaker] Minimap baked and saved.");
     }
 
-    private void SaveAsPng(Texture2D texture)
+    private void SaveAsPng(Texture2D texture, int teamCount)
     {
         string sceneName = Path.GetFileNameWithoutExtension(EditorSceneManager.GetActiveScene().path);
         string folderPath = Constants.MinimapFolderPath;
@@ -126,12 +143,12 @@ public class MinimapBaker : MonoBehaviour
         }
 
         string baseFile = $"{sceneName}";
-        string filePath = $"{folderPath}/{baseFile}.png";
+        string filePath = $"{folderPath}/{baseFile}_{teamCount}teams.png";
         int index = 1;
 
         while (File.Exists(filePath))
         {
-            filePath = $"{folderPath}/{baseFile}_{index}.png";
+            filePath = $"{folderPath}/{baseFile}_{teamCount}teams_{index}.png";
             index++;
         }
 
@@ -144,3 +161,4 @@ public class MinimapBaker : MonoBehaviour
     }
 
 }
+#endif

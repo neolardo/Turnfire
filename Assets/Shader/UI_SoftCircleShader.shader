@@ -4,6 +4,7 @@ Shader "Unlit/UI_SoftCircleShader"
     {
         _Color("Color", Color) = (0.8,0.8,0.8,1)
         _Thickness("Thickness", Float) = 0.02
+        _MainTex("Texture", 2D) = "white" {}
     }
     SubShader
     {
@@ -35,6 +36,7 @@ Shader "Unlit/UI_SoftCircleShader"
 
             float4 _Color;
             float _Thickness;
+            sampler2D _MainTex; 
 
             v2f vert(appdata v)
             {

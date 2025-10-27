@@ -22,6 +22,10 @@ public class TurnManager : MonoBehaviour
         {
             Debug.LogWarning("There are no teams.");
         }
+    }
+
+    private void Start()
+    {
         _teams = new List<Team>(_possibleTeams.Take(SceneLoader.Instance.CurrentGameplaySceneSettings.NumTeams));
         foreach (var team in _teams)
         {
@@ -46,9 +50,9 @@ public class TurnManager : MonoBehaviour
         {
             turnState.StateEnded += OnTurnStateEnded;
         }
-        uiManager.CreateTeamHealthbars(_teams);
         GameStarted += (_) => inputManager.OnGameStarted();
         GameEnded += (_) => inputManager.OnGameEnded();
+        uiManager.CreateTeamHealthbars(_teams);
     }
 
     public void StartGame(GameplaySceneSettings gameplaySettings)

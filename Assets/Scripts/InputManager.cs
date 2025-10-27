@@ -42,8 +42,11 @@ public class InputManager : MonoBehaviour
     //menu
     public event Action MenuConfirmPerformed;
     public event Action MenuBackPerformed;
+    //pause
+    public event Action PausedScreenConfirmPerformed;
     //game over
     public event Action GameOverScreenConfirmPerformed;
+
 
 
     private void Awake()
@@ -72,6 +75,7 @@ public class InputManager : MonoBehaviour
         _inputActions.Gameplay.ToggleInventory.started += OnToggleInventory;
         _inputActions.Gameplay.PauseGameplay.started += OnTogglePauseGameplay;
         _inputActions.PausedGamplay.ResumeGameplay.started += OnTogglePauseGameplay;
+        _inputActions.PausedGamplay.Confirm.performed += OnPausedGameplayConfirmPressed;
         _inputActions.Inventory.ToggleInventory.started += OnToggleInventory;
         _inputActions.Inventory.ToggleCreateDestroy.started += OnToggleCreateDestroy;
         _inputActions.Inventory.SelectInventorySlot.started += OnSelectInventorySlot;
@@ -167,7 +171,8 @@ public class InputManager : MonoBehaviour
         if (!IsAimingEnabled || !_isAiming)
             return;
 
-        if(_aimVector.Approximately(Vector2.zero))
+        Cursor.visible = true;
+        if (_aimVector.Approximately(Vector2.zero))
         {
             CancelAiming();
             return;
@@ -175,7 +180,6 @@ public class InputManager : MonoBehaviour
 
         _isAiming = false;
         ImpulseReleased?.Invoke(_aimVector);
-        Cursor.visible = true;
     }
 
     private Vector2 GetGamepadStickValue(InputAction.CallbackContext ctx)
@@ -319,7 +323,7 @@ public class InputManager : MonoBehaviour
         SwitchToInputActionMap(InputActionMapType.GameOverScreen);
     }
 
-    private void OnTogglePauseGameplay(InputAction.CallbackContext ctx)
+    public void TogglePauseResumeGameplay()
     {
         if (_currentActionMap != InputActionMapType.Gameplay && _currentActionMap != InputActionMapType.PausedGameplay)
         {
@@ -332,6 +336,16 @@ public class InputManager : MonoBehaviour
         }
         SwitchToInputActionMap(targetActionMapType);
         TogglePauseGameplayPerformed?.Invoke();
+    }
+
+    private void OnPausedGameplayConfirmPressed(InputAction.CallbackContext ctx)
+    {
+        PausedScreenConfirmPerformed?.Invoke();
+    }
+
+    private void OnTogglePauseGameplay(InputAction.CallbackContext ctx)
+    {
+        TogglePauseResumeGameplay();
     }
 
     private void OnDeviceChange(InputDevice device, InputDeviceChange change)

@@ -294,6 +294,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Confirm"",
+                    ""type"": ""Button"",
+                    ""id"": ""c2893f72-ce31-41ac-996c-9ee8c88d82e2"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -327,6 +336,28 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""ResumeGameplay"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c7c42263-7e84-480b-9e18-dc97dd90784f"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Confirm"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2692b961-d558-48b3-a919-1e16e73dade8"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Confirm"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -628,6 +659,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         // PausedGamplay
         m_PausedGamplay = asset.FindActionMap("PausedGamplay", throwIfNotFound: true);
         m_PausedGamplay_ResumeGameplay = m_PausedGamplay.FindAction("ResumeGameplay", throwIfNotFound: true);
+        m_PausedGamplay_Confirm = m_PausedGamplay.FindAction("Confirm", throwIfNotFound: true);
         // Inventory
         m_Inventory = asset.FindActionMap("Inventory", throwIfNotFound: true);
         m_Inventory_ToggleCreateDestroy = m_Inventory.FindAction("ToggleCreateDestroy", throwIfNotFound: true);
@@ -876,6 +908,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_PausedGamplay;
     private List<IPausedGamplayActions> m_PausedGamplayActionsCallbackInterfaces = new List<IPausedGamplayActions>();
     private readonly InputAction m_PausedGamplay_ResumeGameplay;
+    private readonly InputAction m_PausedGamplay_Confirm;
     /// <summary>
     /// Provides access to input actions defined in input action map "PausedGamplay".
     /// </summary>
@@ -891,6 +924,10 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "PausedGamplay/ResumeGameplay".
         /// </summary>
         public InputAction @ResumeGameplay => m_Wrapper.m_PausedGamplay_ResumeGameplay;
+        /// <summary>
+        /// Provides access to the underlying input action "PausedGamplay/Confirm".
+        /// </summary>
+        public InputAction @Confirm => m_Wrapper.m_PausedGamplay_Confirm;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -920,6 +957,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @ResumeGameplay.started += instance.OnResumeGameplay;
             @ResumeGameplay.performed += instance.OnResumeGameplay;
             @ResumeGameplay.canceled += instance.OnResumeGameplay;
+            @Confirm.started += instance.OnConfirm;
+            @Confirm.performed += instance.OnConfirm;
+            @Confirm.canceled += instance.OnConfirm;
         }
 
         /// <summary>
@@ -934,6 +974,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @ResumeGameplay.started -= instance.OnResumeGameplay;
             @ResumeGameplay.performed -= instance.OnResumeGameplay;
             @ResumeGameplay.canceled -= instance.OnResumeGameplay;
+            @Confirm.started -= instance.OnConfirm;
+            @Confirm.performed -= instance.OnConfirm;
+            @Confirm.canceled -= instance.OnConfirm;
         }
 
         /// <summary>
@@ -1417,6 +1460,13 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnResumeGameplay(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Confirm" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnConfirm(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Inventory" which allows adding and removing callbacks.

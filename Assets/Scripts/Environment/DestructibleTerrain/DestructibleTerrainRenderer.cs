@@ -15,15 +15,13 @@ public class DestructibleTerrainRenderer : MonoBehaviour
 
     private Vector2 _textureOffset;
 
-    #region Initialize
+    private const float OverlapCheckAngleStep = 45;
 
-    private void Awake()
-    {
-        _renderer = GetComponent<SpriteRenderer>();
-    }
+    #region Initialize
 
     public void InitializeFromTilemap(Tilemap tilemap, TilemapRenderer tilemapRenderer)
     {
+        _renderer = GetComponent<SpriteRenderer>();
         Texture = BakeTilemapToTexture(tilemap);
         _width = Texture.width;
         _height = Texture.height;
@@ -96,26 +94,68 @@ public class DestructibleTerrainRenderer : MonoBehaviour
 
     public void ApplyExplosion(Vector2 worldPos, float radius)
     {
-        Vector2 local = worldPos - CenteredPivotOffset;
+        Vector2 local = WorldToLocal(worldPos);
 
-        int px = Mathf.RoundToInt(local.x * _pixelsPerUnit + _width / 2f);
-        int py = Mathf.RoundToInt(local.y * _pixelsPerUnit + _height / 2f);
+        var p = LocalPointToPixelCoordinate(local);
         int r = Mathf.RoundToInt(radius * _pixelsPerUnit);
 
         for (int y = -r; y <= r; y++)
+        {
             for (int x = -r; x <= r; x++)
             {
                 if (x * x + y * y > r * r) continue;
 
-                int tx = px + x;
-                int ty = py + y;
+                int tx = p.x + x;
+                int ty = p.y + y;
                 if (tx < 0 || ty < 0 || tx >= _width || ty >= _height) continue;
 
                 Texture.SetPixel(tx, ty, Color.clear);
             }
+        }
 
         Texture.Apply();
-    } 
+    }
 
     #endregion
+
+    #region Overlap Checks
+
+    public bool OverlapCircle(Vector2 worldPos, float radius)
+    {
+        Vector2 localCenter = WorldToLocal(worldPos);
+ 
+        float angle = 0;
+        while (angle < 360)
+        {
+            var ringPoint = localCenter + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
+            var p = LocalPointToPixelCoordinate(ringPoint);
+            if (Texture.GetPixel(p.x, p.y).a >= Constants.AlphaThreshold)
+            {
+                return true;
+            }
+            angle += OverlapCheckAngleStep;
+        }
+        return false;
+    }
+
+    public bool OverlapPoint(Vector2 worldPos)
+    {
+        Vector2 local = WorldToLocal(worldPos);
+        var p = LocalPointToPixelCoordinate(local);
+        return Texture.GetPixel(p.x, p.y).a >= Constants.AlphaThreshold;
+    }
+
+    #endregion
+
+    private Vector2 WorldToLocal(Vector2 worldPos)
+    {
+        return worldPos - CenteredPivotOffset;
+    }
+
+    private Vector2Int LocalPointToPixelCoordinate(Vector2 local)
+    {
+        return new Vector2Int(
+            Mathf.RoundToInt(local.x * _pixelsPerUnit + _width / 2f),
+         Mathf.RoundToInt(local.y * _pixelsPerUnit + _height / 2f));
+    }
 }
