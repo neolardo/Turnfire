@@ -24,6 +24,8 @@ public class InputManager : MonoBehaviour
     public InputDevice CurrentInputDevice => _currentInputDevice;
     private InputDevice _currentInputDevice;
 
+    private static readonly Vector2 DefaultAimStartPosition = new Vector2(-1, -1);
+
     public bool IsAimingEnabled { get; set; }
     public bool IsOpeningInventoryEnabled { get; set; }
     public bool IsPausingGameplayEnabled { get; set; }
@@ -108,7 +110,7 @@ public class InputManager : MonoBehaviour
         _aimVector = GetGamepadStickValue(ctx);
         if (!_isAiming)
         {
-            AimStarted?.Invoke(new Vector2(-1, -1)); //TODO: no magic
+            AimStarted?.Invoke(DefaultAimStartPosition);
         }
         _isAiming = true;
         SanitizeAimVector();
@@ -155,11 +157,10 @@ public class InputManager : MonoBehaviour
         _isAiming = true;
         _isInitialMouseAimPositionSet = false;
         _aimVector = Vector2.zero;
-        var initialPos = new Vector2(-1, -1);
+        var initialPos = DefaultAimStartPosition;
         if (ctx.control.device is Mouse)
         {
-            var mouse = (ctx.control.device as Mouse);
-            initialPos = new Vector2(mouse.position.x.magnitude, mouse.position.y.magnitude);
+            initialPos = Mouse.current.position.ReadValue();
             _mouseAimRadius = (Constants.AimCircleOuterRadiusPercent - Constants.AimCircleInnerRadiusPercent) * Screen.width;
         }
         AimStarted?.Invoke(initialPos);

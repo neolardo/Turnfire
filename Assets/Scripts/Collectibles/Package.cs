@@ -9,6 +9,8 @@ public class Package : MonoBehaviour
     private Rigidbody2D _rb;
     private ICollectible _collectible;
 
+    private bool _destroyed;
+
 
     private void Awake()
     {
@@ -20,22 +22,29 @@ public class Package : MonoBehaviour
         AudioManager.Instance.PlaySFXAt(spawnSFX, transform);
     }
 
-    private void OnTriggerEnter2D(Collider2D collider)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collider.CompareTag(Constants.DeadZoneTag))
+        if (collision.CompareTag(Constants.CharacterTag))
         {
-            gameObject.SetActive(false);
-            Destroy(gameObject);
-        }
-        else if (collider.CompareTag(Constants.CharacterTag))
-        {
-            var character = collider.GetComponent<Character>();
+            var character = collision.GetComponent<Character>();
             if (_collectible.TryCollect(character))
             {
                 AudioManager.Instance.PlaySFXAt(collectSFX, transform.position);
-                Destroy(gameObject);
+                Destroy();
             }
         }
+    }
+
+    public void Destroy()
+    {
+        if (_destroyed)
+        {
+            return;
+        }
+
+        _destroyed = true;
+        gameObject.SetActive(false);
+        Destroy(gameObject);
     }
 
     public void SetCollectible(ICollectible collectible)

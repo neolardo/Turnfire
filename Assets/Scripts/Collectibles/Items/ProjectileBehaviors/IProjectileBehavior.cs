@@ -6,4 +6,5 @@ public interface IProjectileBehavior
     public void Launch(ProjectileLaunchContext context);
     public void OnContact(ProjectileContactContext context);
     public void SetProjectile(Projectile projectile);
+    public void ForceExplode();
 }

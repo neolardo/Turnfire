@@ -27,6 +27,11 @@ public class TurnManager : MonoBehaviour
     private void Start()
     {
         _teams = new List<Team>(_possibleTeams.Take(SceneLoader.Instance.CurrentGameplaySceneSettings.NumTeams));
+        for(int i = _teams.Count; i < _possibleTeams.Count; i++)
+        {
+            _possibleTeams[i].gameObject.SetActive(false);
+        }
+
         foreach (var team in _teams)
         {
             team.TeamLost += OnAnyTeamLost;

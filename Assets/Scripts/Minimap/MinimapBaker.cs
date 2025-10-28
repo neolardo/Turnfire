@@ -108,11 +108,11 @@ public class MinimapBaker : MonoBehaviour
                 while (y > 0 && !groundMask[x,y-1] )
                 {
                     y--;
-                }    
+                }
 
-                for (int px = -1; px <= 1; px++)
+                for (int px = 0; px <= 1; px++)
                 {
-                    for (int py = -1; py <= 1; py++)
+                    for (int py = 0; py <= 1; py++)
                     {
                         int tx = Mathf.Clamp(x + px, 0, _targetSize.x - 1);
                         int ty = Mathf.Clamp(y + py, 0, _targetSize.y - 1);

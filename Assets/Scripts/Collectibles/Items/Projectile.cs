@@ -67,5 +67,10 @@ public class Projectile : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+    public void ForceExplode()
+    {
+        _behavior.ForceExplode();
+    }
+
 
 }

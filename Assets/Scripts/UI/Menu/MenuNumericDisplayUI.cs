@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -10,13 +11,29 @@ public class MenuNumericDisplayUI : MonoBehaviour
     private int _max;
     private int _value;
 
-    public int Value => _value;
+    public event Action<int> ValueChanged;
+
+    public int Value
+    {
+        get
+        {
+            return _value;
+        }
+        private set
+        {
+            if(_value != value) 
+            {
+                _value = value;
+                ValueChanged?.Invoke(_value);
+            }
+        }
+    }
 
     public void Initialize(int min, int max, int initialValue)
     {
         _min = min;
         _max = max;
-        _value = initialValue;
+        Value = initialValue;
         Refresh();
     }
 
@@ -29,21 +46,21 @@ public class MenuNumericDisplayUI : MonoBehaviour
 
     private void IncrementValue()
     {
-        _value++;
+        Value++;
         Refresh();
     }
 
     private void DecrementValue()
     {
-        _value--;
+        Value--;
         Refresh();
     }
 
     private void Refresh()
     {
-        _valueText.text = _value.ToString();
-        _upButton.SetIsActive(_value < _max);
-        _downButton.SetIsActive(_value > _min);
+        _valueText.text = Value.ToString();
+        _upButton.SetIsActive(Value < _max);
+        _downButton.SetIsActive(Value > _min);
     }
 
 }

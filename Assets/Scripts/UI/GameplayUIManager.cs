@@ -73,17 +73,13 @@ public class GameplayUIManager : MonoBehaviour
 
     public void StartGameplayTimer()
     {
-        if(_useTimer && _gameStateManager.CurrentState == GameStateType.Playing)
+        if(_useTimer)
         {
             _gameplayTimer.StartTimer();
-        }
-    }
-
-    public void StopGameplayTimer()
-    {
-        if (_useTimer)
-        {
-            _gameplayTimer.StopTimer();
+            if(_gameStateManager.CurrentState != GameStateType.Playing)
+            {
+                _gameplayTimer.StopTimer();
+            }
         }
     }
 
@@ -97,7 +93,7 @@ public class GameplayUIManager : MonoBehaviour
 
     public void ResumeGameplayTimer()
     {
-        if (_useTimer)
+        if (_useTimer && _gameStateManager.CurrentState == GameStateType.Playing)
         {
             _gameplayTimer.ResumeTimer();
         }
@@ -116,7 +112,7 @@ public class GameplayUIManager : MonoBehaviour
 
     public void OnGameOver(Team winnerTeam)
     {
-        StopGameplayTimer();
+        PauseGameplayTimer();
         string gameOverText = string.Empty; 
         if(winnerTeam == null)
         {

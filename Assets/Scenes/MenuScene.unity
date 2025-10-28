@@ -945,8 +945,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rightButton: {fileID: 750730354}
   _leftButton: {fileID: 5061752432426554861}
-  _mapImages:
-  - {fileID: 21300000, guid: f7d805297bf3a184392a72c857c68702, type: 3}
+  _maps:
+  - {fileID: 11400000, guid: f56c0755f7997af418e09dedc01b32bf, type: 2}
+  - {fileID: 11400000, guid: a84c57915c7476647a608e54a49d9de1, type: 2}
   _mapImage: {fileID: 1119348052}
 --- !u!1 &939159658
 GameObject:

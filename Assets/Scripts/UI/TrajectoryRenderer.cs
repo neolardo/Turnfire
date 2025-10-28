@@ -18,6 +18,7 @@ public class TrajectoryRenderer : MonoBehaviour
     private float _trajectoryMultiplier;
     private Transform _origin;
     private bool _useGravity = true;
+    private Camera _camera;
 
 
     private void Awake()
@@ -28,6 +29,7 @@ public class TrajectoryRenderer : MonoBehaviour
         _line.textureMode = LineTextureMode.Stretch;
         _line.useWorldSpace = true;
         _line.alignment = LineAlignment.TransformZ;
+        _camera = Camera.main;
     }
 
 
@@ -94,22 +96,30 @@ public class TrajectoryRenderer : MonoBehaviour
         _line.enabled = true;
     }
 
-    private void ShowCircles(Vector2 initialPosition)
+    private void ShowCircles(Vector2 initialScreenPosition)
     {
         Vector2 canvasSize = _rootCanvasRect.rect.size;
-        _outerCircle.sizeDelta = new Vector2(canvasSize.x * Constants.AimCircleOuterRadiusPercent * 2, canvasSize.x * Constants.AimCircleOuterRadiusPercent * 2);
-        _innerCircle.sizeDelta = new Vector2(canvasSize.x * Constants.AimCircleInnerRadiusPercent * 2, canvasSize.x * Constants.AimCircleInnerRadiusPercent * 2);
+        _outerCircle.sizeDelta = new Vector2(canvasSize.x * Constants.AimCircleOuterRadiusPercent * 2f,
+                                             canvasSize.x * Constants.AimCircleOuterRadiusPercent * 2f);
+        _innerCircle.sizeDelta = new Vector2(canvasSize.x * Constants.AimCircleInnerRadiusPercent * 2f,
+                                             canvasSize.x * Constants.AimCircleInnerRadiusPercent * 2f);
 
-        if (initialPosition.x < 0 && initialPosition.y < 0)
+
+        Vector2 localPoint;
+        bool valid = RectTransformUtility.ScreenPointToLocalPointInRectangle(_rootCanvasRect, initialScreenPosition, _camera, out localPoint);
+
+        if (!valid)
         {
-            _circleCenter = new Vector2(Constants.AimCircleOffsetPercentX * canvasSize.x, Constants.AimCircleOffsetPercentY * canvasSize.x);
+            _circleCenter = new Vector2(Constants.AimCircleOffsetPercentX * canvasSize.x,Constants.AimCircleOffsetPercentY * canvasSize.x);
         }
         else
         {
-            _circleCenter = initialPosition;
+            _circleCenter = localPoint;
         }
-        _innerCircle.position = _circleCenter;
-        _outerCircle.position = _circleCenter;
+
+        _innerCircle.anchoredPosition = _circleCenter;
+        _outerCircle.anchoredPosition = _circleCenter;
+
         _innerCircle.gameObject.SetActive(true);
         _outerCircle.gameObject.SetActive(true);
     }
@@ -132,9 +142,9 @@ public class TrajectoryRenderer : MonoBehaviour
 
     private void MoveInnerCircle(Vector2 aimVector)
     {
-        Vector2 canvasSize = _rootCanvasRect.rect.size;
-        var screenScaler = Screen.width / (float)canvasSize.x;
-        _innerCircle.position = _circleCenter - aimVector * screenScaler * (_outerCircle.sizeDelta.x / 2 - _innerCircle.sizeDelta.x / 2);
+        float maxRadius = (_outerCircle.sizeDelta.x - _innerCircle.sizeDelta.x)* 0.5f;
+        Vector2 offset = -aimVector * maxRadius;
+        _innerCircle.anchoredPosition = _circleCenter + offset;
     }
 
     public void HideTrajectory()

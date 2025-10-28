@@ -63,7 +63,7 @@ public class CharacterActionManager : UnityDriven
 
     private void EndActions()
     {
-        _uiManager.StopGameplayTimer();
+        _uiManager.PauseGameplayTimer();
         CharacterActionsFinished?.Invoke();
     }
 

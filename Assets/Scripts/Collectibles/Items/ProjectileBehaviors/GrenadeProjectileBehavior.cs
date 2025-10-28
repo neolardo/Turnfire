@@ -53,14 +53,4 @@ public class GrenadeProjectileBehavior : SimpleProjectileBehavior
         }
     }
 
-    protected override void Explode(ProjectileContactContext context)
-    {
-        if(_exploded)
-        {
-            return;
-        }
-        base.Explode(context);
-        _exploded = true;
-    }
-
 }

@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngineInternal;
 
 public class SimpleProjectileBehavior : UnityDriven, IProjectileBehavior
 {
@@ -16,7 +15,8 @@ public class SimpleProjectileBehavior : UnityDriven, IProjectileBehavior
     {
         _definition = definition;
         _raycastHits = new RaycastHit2D[Constants.RaycastHitColliderNumMax];
-}
+    }
+
     public void SetProjectile(Projectile projectile)
     {
         _projectile = projectile;
@@ -79,6 +79,11 @@ public class SimpleProjectileBehavior : UnityDriven, IProjectileBehavior
         var explodedCharacters = exp.Explode(context.ContactPoint, damage);
         _exploded = true;
         Exploded?.Invoke(new ExplosionInfo(explodedCharacters, _projectile, exp));
+    }
+
+    public virtual void ForceExplode()
+    {
+        Explode(new ProjectileContactContext(_projectile.transform.position, null));
     }
 
 }

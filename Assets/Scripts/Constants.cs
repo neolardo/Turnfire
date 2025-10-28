@@ -48,7 +48,6 @@ public static class Constants
     public const int MultiplayerMaxPlayers = 4;
 
     //scenes
-    public const string GameplaySceneNamePrefix = "Map";
     public const string MenuSceneName = "MenuScene";
 
     //minimap

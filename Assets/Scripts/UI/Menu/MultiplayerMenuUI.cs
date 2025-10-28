@@ -15,6 +15,7 @@ public class MultiplayerMenuUI : MonoBehaviour
         _menuUIManager = FindFirstObjectByType<MenuUIManager>();
         _confirmButton.ButtonPressed += OnCofirmPressed;
         _cancelButton.ButtonPressed += OnCancelPressed;
+        _numPlayersDisplay.ValueChanged += _mapDisplay.SetTeamCount;
     }
 
     private void Start()
@@ -26,7 +27,7 @@ public class MultiplayerMenuUI : MonoBehaviour
     {
         var settings = new GameplaySceneSettings()
         {
-            SceneName = Constants.GameplaySceneNamePrefix + _mapDisplay.MapIndex,
+            SceneName = _mapDisplay.SelectedMap.SceneName,
             NumTeams = _numPlayersDisplay.Value,
             UseTimer = _useTimerCheckbox.Value
         };
