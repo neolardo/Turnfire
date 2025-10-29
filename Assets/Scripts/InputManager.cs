@@ -196,7 +196,7 @@ public class InputManager : MonoBehaviour
     {
         CancelAiming();
     }
-    private void CancelAiming()
+    public void CancelAiming()
     {
         if (_isAiming)
         {

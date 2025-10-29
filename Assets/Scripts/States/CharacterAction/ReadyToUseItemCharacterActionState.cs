@@ -76,16 +76,21 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
 
     public void OnSelectedItemChanged(Item selectedItem)
     {
+        if(selectedItem == null)
+        {
+            return;
+        }
         var context = new ItemUsageContext(_currentCharacter.transform.position, Vector2.zero, _currentCharacter.ItemTransform, _currentCharacter.Collider, _projectileManager);
         selectedItem.Behavior.InitializePreview(context, _rendererManager);
     }
 
     protected override void EndState()
     {
-        base.EndState();
+        _inputManager.CancelAiming();
         _inputManager.IsAimingEnabled = false;
         _inputManager.IsOpeningInventoryEnabled = false;
         _uiManager.PauseGameplayTimer();
+        base.EndState();
     }
 
     private void OnImpulseReleased(Vector2 aimVector)

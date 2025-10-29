@@ -16,6 +16,7 @@ public static class Constants
 
     // raycast
     public const int RaycastHitColliderNumMax = 5;
+    public const int ProjectileRaycastDistance = 30;
 
     //healthbar
     public const int TeamHealthbarOffsetPixelsX = 20;
@@ -26,6 +27,7 @@ public static class Constants
     public const int CharacterLayer = 3;
     public const int GroundLayer = 8;
     public const int DeadZoneLayer = 9;
+    public const int DeadCharacterLayer = 11;
 
     public static readonly int[] ProjectileCollisionLayers = new int[]{ CharacterLayer, GroundLayer, DeadZoneLayer };
 

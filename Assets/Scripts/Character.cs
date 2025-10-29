@@ -54,7 +54,7 @@ public class Character : MonoBehaviour
         _items = new List<Item>();
         foreach(var itemDefinition in CharacterDefinition.InitialItems)
         {
-            _items.Add(CollectibleFactory.CreateCollectible(itemDefinition));
+            TryAddItem(CollectibleFactory.CreateCollectible(itemDefinition, false));
         }
         _rb = GetComponent<Rigidbody2D>();
         _col = GetComponent<Collider2D>();
@@ -87,6 +87,7 @@ public class Character : MonoBehaviour
     private void Die()
     {
         _animator.PlayDeathAnimation();
+        gameObject.layer = Constants.DeadCharacterLayer;
         Debug.Log(gameObject.name + " died.");
         Died?.Invoke();
     }
@@ -160,9 +161,9 @@ public class Character : MonoBehaviour
     #region Items
 
     public void UseSelectedItem(ItemUsageContext context)
-    { 
-        _selectedItem.Behavior.Use(context);
+    {
         _animator.PlayItemActionAnimation(_selectedItem);
+        _selectedItem.Behavior.Use(context);
     }
 
     public bool TryAddItem(Item item)
@@ -198,7 +199,7 @@ public class Character : MonoBehaviour
         _items.Remove(item);
         if(_selectedItem == item)
         {
-            _selectedItem = _items.FirstOrDefault();
+            SelectItem(_items.FirstOrDefault());
         }
     }
 
@@ -209,7 +210,7 @@ public class Character : MonoBehaviour
 
     public void SelectItem(Item item)
     {
-        if (_items.Contains(item) && item != _selectedItem)
+        if ((item == null) || (_items.Contains(item) && item != _selectedItem))
         {
             _selectedItem = item;
             SelectedItemChanged?.Invoke(item);

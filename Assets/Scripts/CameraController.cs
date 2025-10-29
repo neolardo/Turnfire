@@ -24,7 +24,7 @@ public class CameraController : MonoBehaviour
     }
     public void SetProjectileTarget(Projectile p)
     {
-        _brain.DefaultBlend.Style = CinemachineBlendDefinition.Styles.EaseInOut;
+        _brain.DefaultBlend.Style = CinemachineBlendDefinition.Styles.EaseIn;
         _projectileCam.Prioritize();
         _projectileCam.Follow = p.transform;
     }
@@ -38,7 +38,7 @@ public class CameraController : MonoBehaviour
 
     public void SetPackageTarget(Package p)
     {
-        _brain.DefaultBlend.Style = CinemachineBlendDefinition.Styles.EaseInOut;
+        _brain.DefaultBlend.Style = CinemachineBlendDefinition.Styles.EaseIn;
         _packageCam.Prioritize();
         _packageCam.Follow = p.transform;
     }

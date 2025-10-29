@@ -1,16 +1,17 @@
 using System;
+using Unity.VisualScripting;
 
 public static class CollectibleFactory
 {
-    public static ICollectible CreateCollectible(CollectibleDefinition definition)
+    public static ICollectible CreateCollectible(CollectibleDefinition definition, bool asDrop = true)
     {
         if (definition.CollectibleType == CollectibleType.Item)
         {
-            return CreateCollectible(definition as ItemDefinition);
+            return CreateCollectible(definition as ItemDefinition, asDrop);
         }
         else if (definition.CollectibleType == CollectibleType.Effect)
         {
-            return CreateCollectible(definition as EffectDefinition);
+            return CreateCollectible(definition as EffectDefinition, asDrop);
         }
         else
         {
@@ -18,12 +19,12 @@ public static class CollectibleFactory
         }
     }
 
-    public static Item CreateCollectible(ItemDefinition definition)
+    public static Item CreateCollectible(ItemDefinition definition, bool asDrop = true)
     {
-        return new Item(definition);
+        return new Item(definition, asDrop);
     }
-    public static Effect CreateCollectible(EffectDefinition definition)
+    public static Effect CreateCollectible(EffectDefinition definition, bool asDrop = true)
     {
-        return new Effect(definition);
+        return new Effect(definition, asDrop);
     }
 }

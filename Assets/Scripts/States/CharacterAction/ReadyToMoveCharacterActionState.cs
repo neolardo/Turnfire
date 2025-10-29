@@ -67,9 +67,10 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
 
     protected override void EndState()
     {
-        base.EndState();
+        _inputManager.CancelAiming();
         _inputManager.IsAimingEnabled = false;
         _inputManager.IsOpeningInventoryEnabled = false;
         _uiManager.PauseGameplayTimer();
+        base.EndState();
     }
 }

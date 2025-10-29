@@ -13,6 +13,8 @@ public class DropManager : MonoBehaviour
 
     public event Action AllPackagesLanded;
 
+    private const float DelayAfterAllPackagesSpawned = 1f;
+
     private void Awake()
     {
         _cameraController = FindFirstObjectByType<CameraController>();
@@ -52,7 +54,10 @@ public class DropManager : MonoBehaviour
             _currentPackages.Add(package);
             yield return WaitForPackageToLand(package);
         }
-
+        if(numDrops > 0)
+        {
+            yield return new WaitForSeconds(DelayAfterAllPackagesSpawned);
+        }
         AllPackagesLanded?.Invoke();
     }
 

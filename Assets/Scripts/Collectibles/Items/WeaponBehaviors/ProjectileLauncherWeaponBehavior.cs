@@ -11,7 +11,7 @@ public class ProjectileLauncherWeaponBehavior : UnityDriven, IItemBehavior
     private IProjectileBehavior _projectileBehavior;
     private ProjectileLauncherWeaponDefinition _definition;
 
-    public event Action ItemUsed;
+    public event Action ItemUsageFinished;
 
     public ProjectileLauncherWeaponBehavior(IProjectileBehavior projectileBehavior, ProjectileLauncherWeaponDefinition definition) : base(CoroutineRunner.Instance)
     {
@@ -26,7 +26,6 @@ public class ProjectileLauncherWeaponBehavior : UnityDriven, IItemBehavior
         var p = context.ProjectilePool.Get();
         p.Initialize(_definition.ProjectileDefinition, _projectileBehavior);
         p.Launch(context, _definition.FireStrength.CalculateValue());
-        ItemUsed?.Invoke();
     }
 
     private void OnProjectileExploded(ExplosionInfo ei)
@@ -41,6 +40,7 @@ public class ProjectileLauncherWeaponBehavior : UnityDriven, IItemBehavior
             yield return null;
         }
         _isFiring = false;
+        ItemUsageFinished?.Invoke();
     }
 
     public virtual void InitializePreview(ItemUsageContext context, ItemPreviewRendererManager rendererManager)

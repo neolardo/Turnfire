@@ -6,7 +6,7 @@ public class Effect : ICollectible
 
     public event Action<ICollectible> CollectibleDestroyed;
 
-    public Effect(EffectDefinition definition)
+    public Effect(EffectDefinition definition, bool asDrop = true)
     {
         Definition = definition;
     }

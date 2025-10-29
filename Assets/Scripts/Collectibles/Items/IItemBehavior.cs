@@ -2,7 +2,7 @@ using System;
 
 public interface IItemBehavior
 {
-    public event Action ItemUsed;
+    public event Action ItemUsageFinished;
     public bool IsInUse { get; }
     public void Use(ItemUsageContext context);
     public void InitializePreview(ItemUsageContext context, ItemPreviewRendererManager rendererManager);

@@ -8,14 +8,14 @@ public class Item : ICollectible
 
     public event Action<ICollectible> CollectibleDestroyed;
 
-    public Item(ItemDefinition definition)
+    public Item(ItemDefinition definition, bool initializeAsDrop = true)
     {
         Definition = definition;
         Behavior = definition.CreateItemBehavior();
-        Ammo = definition.InitialAmmo;
-        Behavior.ItemUsed += OnItemUsed;
+        Ammo = initializeAsDrop ? definition.DropAmmoRange.CalculateValue() : definition.InitialAmmo;
+        Behavior.ItemUsageFinished += OnItemUsageFinished;
     }
-    private void OnItemUsed()
+    private void OnItemUsageFinished()
     {
         DecreaseAmmo();
     }
