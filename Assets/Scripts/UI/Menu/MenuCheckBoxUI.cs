@@ -17,9 +17,9 @@ public class MenuCheckBoxUI : MonoBehaviour,
     [SerializeField] private Sprite _checkedSprite;
     [SerializeField] private Sprite _hoveredSprite;
     [SerializeField] private bool _initialValue;
+    private MenuInputManager _inputManager;
     private Sprite _normalSprite;
     private Image _image;
-    private InputManager _inputManager;
     private bool _hovered;
     private bool _value;
     public bool Value => _value;
@@ -28,9 +28,9 @@ public class MenuCheckBoxUI : MonoBehaviour,
     private void Awake()
     {
         _image = GetComponent<Image>();
-        _inputManager = FindFirstObjectByType<InputManager>();
         _normalSprite = _image.sprite;
         var canvas = FindFirstObjectByType<Canvas>();
+        _inputManager = FindFirstObjectByType<MenuInputManager>();
     }
     private void Start()
     {
@@ -85,7 +85,7 @@ public class MenuCheckBoxUI : MonoBehaviour,
         UnHoverButton();
     }
 
-    private void ToggleValue(bool playSound = true)
+    public void ToggleValue(bool playSound = true)
     {
         if(playSound)
         {

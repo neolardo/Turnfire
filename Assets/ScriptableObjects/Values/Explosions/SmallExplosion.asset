@@ -18,7 +18,7 @@ MonoBehaviour:
     _randomness: 0.05
     _group: {fileID: 11400000, guid: 94d2c71f550b1f64f8c1bcf3cdeaaf3b, type: 2}
   Radius:
-    _normalizedValue: 0.15
+    _normalizedValue: 0.2
     _isRandomized: 0
     _randomness: 0.05
     _group: {fileID: 11400000, guid: 31a5227b1c02f8f448e1094ce68575a4, type: 2}

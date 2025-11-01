@@ -8,6 +8,7 @@ public class MenuMapDisplayUI : MonoBehaviour
     [SerializeField] private MenuArrowButtonUI _leftButton;
     [SerializeField] private MapDefinition[] _maps;
     [SerializeField] private Image _mapImage;
+    private MenuInputManager _inputManager;
     private int _mapIndex;
     private int _teamCount;
     public MapDefinition SelectedMap => _maps[_mapIndex];
@@ -18,9 +19,22 @@ public class MenuMapDisplayUI : MonoBehaviour
         {
             Debug.LogWarning($"No maps set for the {nameof(MenuMapDisplayUI)}.");
         }
+        _inputManager = FindFirstObjectByType<MenuInputManager>();
         _teamCount = _maps[0].Minimaps.Min(mm => mm.NumTeams);
         _rightButton.ArrowPressed += IncrementMapIndex;
         _leftButton.ArrowPressed += DecrementMapIndex;
+    }
+
+    private void OnEnable()
+    {
+        _inputManager.MenuNavigateRightPerformed += _rightButton.Press;
+        _inputManager.MenuNavigateLeftPerformed += _leftButton.Press;
+    }
+
+    private void OnDisable()
+    {
+        _inputManager.MenuNavigateRightPerformed -= _rightButton.Press;
+        _inputManager.MenuNavigateLeftPerformed -= _leftButton.Press;
     }
 
     private void Start()

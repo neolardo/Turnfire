@@ -35,7 +35,7 @@ public class ProjectileLauncherWeaponBehavior : UnityDriven, IItemBehavior
 
     private IEnumerator WaitUntilFiringFinished(ExplosionInfo ei)
     {
-        while (ei.ExplodedCharacters.Any(c => c.IsAlive && c.IsMoving) || ei.Explosion.IsAnimationPlaying)
+        while (ei.ExplodedCharacters.Any(c => c.IsAlive && c.IsMoving) || ei.Explosion.IsExploding)
         {
             yield return null;
         }

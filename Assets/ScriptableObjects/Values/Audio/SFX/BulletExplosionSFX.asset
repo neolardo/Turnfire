@@ -9,9 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a53b3b46539369147aa13b9d2147f1b5, type: 3}
-  m_Name: ExplosionRadiusRangedStatGroup
+  m_Script: {fileID: 11500000, guid: 7dfde59b4a656724db07f3b707c091d3, type: 3}
+  m_Name: BulletExplosionSFX
   m_EditorClassIdentifier: 
-  DisplayName: Radius
-  Minimum: 0.3
-  Maximum: 2.5
+  clips:
+  - {fileID: 8300000, guid: fae73f3877f01bb4884186bafaf4e837, type: 3}

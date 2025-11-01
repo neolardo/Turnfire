@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class InventoryUI : MonoBehaviour
 {
@@ -28,10 +29,11 @@ public class InventoryUI : MonoBehaviour
 
     private void Awake()
     {
-        var inputManager = FindFirstObjectByType<InputManager>();
-        inputManager.ToggleInventoryCreateDestroyPerformed += ToggleItemType;
+        var inputManager = FindFirstObjectByType<GameplayInputManager>();
+        inputManager.ToggleInventoryCreateDestroyPerformed += _weaponConsumableToggle.Toggle;
         inputManager.SelectInventorySlotPerformed += SelectPreviewedSlot;
         _weaponConsumableToggle.InitializeToggledLeftValue(true);
+        _weaponConsumableToggle.Toggled += OnItemTypeToggled;
 
         _itemSlots = new List<InventoryItemSlotUI>();
         for (int i = 0; i < _slotContainer.childCount; i++)
@@ -59,6 +61,7 @@ public class InventoryUI : MonoBehaviour
     {
         AudioManager.Instance.PlayUISound(_uiSounds.InventoryOn);
         RefreshInventory();
+        EventSystem.current.SetSelectedGameObject(_itemSlots.First().gameObject);
     }
 
     private void OnDisable()
@@ -93,9 +96,8 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
-    public void ToggleItemType()
+    private void OnItemTypeToggled()
     {
-        _weaponConsumableToggle.Toggle();
         AudioManager.Instance.PlayUISound(_uiSounds.Toggle);
         RefreshInventory();
     }

@@ -13,7 +13,9 @@ public class Explosion : MonoBehaviour
 
     public event Action<Explosion> ExplosionFinished;
 
-    public bool IsAnimationPlaying => _animator.IsPlaying;
+    private const float DelayAfterExplosion = .3f; 
+
+    public bool IsExploding { get; private set; }
 
     private void Awake()
     {
@@ -32,6 +34,7 @@ public class Explosion : MonoBehaviour
     {
         _explodedCharacters.Clear();
         transform.position = contactPoint;
+        IsExploding = true;
         _animator.PlayAnimation(_animatorDefinition.ExplosionAnimationDurationPerFrame);
 
         var mask = LayerMaskHelper.GetCombinedLayerMask(Constants.GroundLayer, Constants.CharacterLayer);
@@ -60,6 +63,8 @@ public class Explosion : MonoBehaviour
     private IEnumerator WaitForExplosionToFinishThenFireEventCoroutine()
     {
         yield return new WaitUntil(() => !_animator.IsPlaying);
+        yield return new WaitForSeconds(DelayAfterExplosion);
+        IsExploding = false;
         ExplosionFinished?.Invoke(this);
     }
 

@@ -8,10 +8,11 @@ public class TrajectoryRenderer : MonoBehaviour
     [SerializeField] private RectTransform _innerCircle;
     [SerializeField] private RectTransform _outerCircle;
     [SerializeField] private int _maxSegments = 50;
-    [SerializeField] private float _maxLength = 2.5f; // world units
+    [SerializeField] private float _maxLength = 2.5f;
     [SerializeField] private float _stepTime = 0.05f;
     [SerializeField] private float _lineThickness = 2f;
 
+    private ItemPreviewRendererSettingsDefinition _previewSettings;
     private LineRenderer _line;
     private Vector2 _circleCenter;
     private RectTransform _rootCanvasRect;
@@ -32,6 +33,10 @@ public class TrajectoryRenderer : MonoBehaviour
         _camera = Camera.main;
     }
 
+    public void SetPreviewSettings(ItemPreviewRendererSettingsDefinition previewSettings)
+    {
+        _previewSettings = previewSettings;
+    }
 
     private void DrawStraightTrajectory(Vector2 aimVector)
     {
@@ -99,18 +104,17 @@ public class TrajectoryRenderer : MonoBehaviour
     private void ShowCircles(Vector2 initialScreenPosition)
     {
         Vector2 canvasSize = _rootCanvasRect.rect.size;
-        _outerCircle.sizeDelta = new Vector2(canvasSize.x * Constants.AimCircleOuterRadiusPercent * 2f,
-                                             canvasSize.x * Constants.AimCircleOuterRadiusPercent * 2f);
-        _innerCircle.sizeDelta = new Vector2(canvasSize.x * Constants.AimCircleInnerRadiusPercent * 2f,
-                                             canvasSize.x * Constants.AimCircleInnerRadiusPercent * 2f);
-
+        _outerCircle.sizeDelta = new Vector2(canvasSize.x * _previewSettings.AimCircleOuterRadiusPercent * 2f,
+                                             canvasSize.x * _previewSettings.AimCircleOuterRadiusPercent * 2f);
+        _innerCircle.sizeDelta = new Vector2(canvasSize.x * _previewSettings.AimCircleInnerRadiusPercent * 2f,
+                                             canvasSize.x * _previewSettings.AimCircleInnerRadiusPercent * 2f);
 
         Vector2 localPoint;
-        bool valid = RectTransformUtility.ScreenPointToLocalPointInRectangle(_rootCanvasRect, initialScreenPosition, _camera, out localPoint);
-
-        if (!valid)
+        bool isValid = !initialScreenPosition.Approximately(GameplayInputManager.DefaultAimStartPosition);
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(_rootCanvasRect, initialScreenPosition, _camera, out localPoint);
+        if (!isValid)
         {
-            _circleCenter = new Vector2(Constants.AimCircleOffsetPercentX * canvasSize.x,Constants.AimCircleOffsetPercentY * canvasSize.x);
+            _circleCenter = new Vector2(_previewSettings.DefaultAimCircleOffsetPercentX * canvasSize.x, _previewSettings.DefaultAimCircleOffsetPercentY * canvasSize.x);
         }
         else
         {
@@ -154,17 +158,13 @@ public class TrajectoryRenderer : MonoBehaviour
         _line.enabled = false;
     }
 
-
     public void SetOrigin(Transform origin)
     {
         _origin = origin;
     }
 
-
     public void SetTrajectoryMultipler(float multiplier)
     {
         _trajectoryMultiplier = multiplier;
     }
-
-
 }

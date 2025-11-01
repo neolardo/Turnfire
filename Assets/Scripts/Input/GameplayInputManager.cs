@@ -1,30 +1,23 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Utilities;
 
-public class InputManager : MonoBehaviour
+public class GameplayInputManager : InputManagerBase
 {
-
-    [SerializeField] private AnimationCurve gamepadStickResponseCurve =
+    [SerializeField] private AnimationCurve _gamepadStickResponseCurve =
     new AnimationCurve(
         new Keyframe(0, 0),
         new Keyframe(0.5f, 0.2f),
         new Keyframe(1, 1));
+    [SerializeField] private ItemPreviewRendererSettingsDefinition _previewSettings;
 
     private float _mouseAimRadius;
     private Vector2 _aimVector;
     private Vector2 _initialMouseAimPosition;
     private bool _isAiming;
     private bool _isInitialMouseAimPositionSet;
-    private PlayerInputActions _inputActions;
 
-    private InputActionMapType _currentActionMap;
-
-    public InputDevice CurrentInputDevice => _currentInputDevice;
-    private InputDevice _currentInputDevice;
-
-    private static readonly Vector2 DefaultAimStartPosition = new Vector2(-1, -1);
+    public static readonly Vector2 DefaultAimStartPosition = new Vector2(-1, -1);
 
     public bool IsAimingEnabled { get; set; }
     public bool IsOpeningInventoryEnabled { get; set; }
@@ -41,38 +34,26 @@ public class InputManager : MonoBehaviour
     public event Action ToggleInventoryCreateDestroyPerformed;
     public event Action TogglePauseGameplayPerformed;
     public event Action SelectInventorySlotPerformed;
-    //menu
-    public event Action MenuConfirmPerformed;
-    public event Action MenuBackPerformed;
     //pause
     public event Action PausedScreenConfirmPerformed;
     //game over
     public event Action GameOverScreenConfirmPerformed;
 
 
-
-    private void Awake()
+    protected override void Awake()
     {
-        _inputActions = new PlayerInputActions();
+        base.Awake();
         SwitchToInputActionMap(InputActionMapType.Gameplay);
-        SubscribeToInputEvents();
-        DisableInputBeforeGameStart();
     }
 
-
-    private void DisableInputBeforeGameStart()
+    protected override void SubscribeToInputEvents()
     {
-        IsAimingEnabled = false;
-        IsPausingGameplayEnabled = false;
-        IsOpeningInventoryEnabled = false;
-    }
-
-    private void SubscribeToInputEvents()
-    {
+        base.SubscribeToInputEvents();
         _inputActions.Gameplay.Aim.performed += OnAimPerformed;
+        _inputActions.Gameplay.Aim.canceled += OnCancelAimingPerformed;
         _inputActions.Gameplay.ReleaseImpulse.started += OnImpulseReleaseStarted;
         _inputActions.Gameplay.ReleaseImpulse.canceled += OnImpulseReleaseEnded;
-        _inputActions.Gameplay.Cancel.started += OnCancelPerformed;
+        _inputActions.Gameplay.Cancel.started += OnCancelAimingPerformed;
         _inputActions.Gameplay.SkipAction.started += OnSkipActionPerformed;
         _inputActions.Gameplay.ToggleInventory.started += OnToggleInventory;
         _inputActions.Gameplay.PauseGameplay.started += OnTogglePauseGameplay;
@@ -81,12 +62,40 @@ public class InputManager : MonoBehaviour
         _inputActions.Inventory.ToggleInventory.started += OnToggleInventory;
         _inputActions.Inventory.ToggleCreateDestroy.started += OnToggleCreateDestroy;
         _inputActions.Inventory.SelectInventorySlot.started += OnSelectInventorySlot;
-        _inputActions.Menu.Back.performed += OnMenuBackPerformed;
-        _inputActions.Menu.Confirm.performed += OnMenuConfirmPerformed;
         _inputActions.GameOverScreen.Confirm.performed += OnGameOverScreenConfirmPerformed;
-        InputSystem.onDeviceChange += OnDeviceChange;
-        InputSystem.onAnyButtonPress.CallOnce(control => OnDeviceChange(control.device, InputDeviceChange.Reconnected));
+       
     }
+
+    #region Game States
+
+    public void PrepareForGameStart()
+    {
+        DisableInputBeforeGameStart();
+    }
+
+    private void DisableInputBeforeGameStart()
+    {
+        IsAimingEnabled = false;
+        IsPausingGameplayEnabled = false;
+        IsOpeningInventoryEnabled = false;
+    }
+
+    public void OnGameStarted()
+    {
+        IsPausingGameplayEnabled = true;
+        IsOpeningInventoryEnabled = true;
+    }
+
+    public void OnGameEnded()
+    {
+        IsAimingEnabled = false;
+        IsPausingGameplayEnabled = false;
+        IsOpeningInventoryEnabled = false;
+        ForceCloseInventory();
+        SwitchToInputActionMap(InputActionMapType.GameOverScreen);
+    } 
+
+    #endregion
 
     #region Gameplay
 
@@ -102,11 +111,12 @@ public class InputManager : MonoBehaviour
         else if (ctx.control.device is Mouse)
         {
             HandleMouseAiming(ctx);
-        } //TODO: other inputs?
+        }
     }
 
     private void HandleGamepadAiming(InputAction.CallbackContext ctx)
     {
+        Cursor.visible = false;
         _aimVector = GetGamepadStickValue(ctx);
         if (!_isAiming)
         {
@@ -148,10 +158,9 @@ public class InputManager : MonoBehaviour
         }
     }
 
-
     private void OnImpulseReleaseStarted(InputAction.CallbackContext ctx)
     {
-        if (!IsAimingEnabled)
+        if (!IsAimingEnabled || (ctx.control.device is not Mouse && ctx.control.device is not Keyboard))
             return;
 
         _isAiming = true;
@@ -161,7 +170,7 @@ public class InputManager : MonoBehaviour
         if (ctx.control.device is Mouse)
         {
             initialPos = Mouse.current.position.ReadValue();
-            _mouseAimRadius = (Constants.AimCircleOuterRadiusPercent - Constants.AimCircleInnerRadiusPercent) * Screen.width;
+            _mouseAimRadius = (_previewSettings.AimCircleOuterRadiusPercent - _previewSettings.AimCircleInnerRadiusPercent) * Screen.width;
         }
         AimStarted?.Invoke(initialPos);
         Cursor.visible = false;
@@ -172,7 +181,10 @@ public class InputManager : MonoBehaviour
         if (!IsAimingEnabled || !_isAiming)
             return;
 
-        Cursor.visible = true;
+        if (ctx.control.device is Mouse || ctx.control.device is Keyboard)
+        {
+            Cursor.visible = true;
+        }
         if (_aimVector.Approximately(Vector2.zero))
         {
             CancelAiming();
@@ -188,14 +200,15 @@ public class InputManager : MonoBehaviour
         Vector2 raw = ctx.ReadValue<Vector2>();
         float mag = raw.magnitude;
         Vector2 normalized = raw.normalized;
-        float adjustedMag = gamepadStickResponseCurve.Evaluate(mag);
-        return -normalized * adjustedMag;
+        float adjustedMag = _gamepadStickResponseCurve.Evaluate(mag);
+        return normalized * adjustedMag;
     }
 
-    private void OnCancelPerformed(InputAction.CallbackContext ctx)
+    private void OnCancelAimingPerformed(InputAction.CallbackContext ctx)
     {
         CancelAiming();
     }
+
     public void CancelAiming()
     {
         if (_isAiming)
@@ -211,10 +224,10 @@ public class InputManager : MonoBehaviour
         ActionSkipped?.Invoke();
     }
 
-
     #endregion
 
     #region Inventory
+
     private void OnSelectInventorySlot(InputAction.CallbackContext ctx)
     {
         SelectInventorySlotPerformed?.Invoke();
@@ -252,19 +265,6 @@ public class InputManager : MonoBehaviour
 
     #endregion
 
-    #region Menu
-
-    private void OnMenuBackPerformed(InputAction.CallbackContext ctx)
-    {
-        MenuBackPerformed?.Invoke();
-    }
-    private void OnMenuConfirmPerformed(InputAction.CallbackContext ctx)
-    {
-        MenuConfirmPerformed?.Invoke();
-    }
-
-    #endregion
-
     #region Game Over
 
     private void OnGameOverScreenConfirmPerformed(InputAction.CallbackContext ctx)
@@ -274,55 +274,7 @@ public class InputManager : MonoBehaviour
 
     #endregion
 
-    #region Input Action Map
-
-    private void SwitchToInputActionMap(InputActionMapType type)
-    {
-        _inputActions.Gameplay.Disable();
-        _inputActions.Inventory.Disable();
-        _inputActions.PausedGamplay.Disable();
-        _inputActions.GameOverScreen.Disable();
-        _inputActions.Menu.Disable();
-
-        ActionMapTypeToActionMap(type).Enable();
-        _currentActionMap = type;
-    }
-
-    private InputActionMap ActionMapTypeToActionMap(InputActionMapType type)
-    {
-        switch (type)
-        {
-            case InputActionMapType.Gameplay:
-                return _inputActions.Gameplay;
-            case InputActionMapType.Inventory:
-                return _inputActions.Inventory;
-            case InputActionMapType.PausedGameplay:
-                return _inputActions.PausedGamplay;
-            case InputActionMapType.GameOverScreen:
-                return _inputActions.GameOverScreen;
-            case InputActionMapType.Menu:
-                return _inputActions.Menu;
-            default:
-                throw new Exception("Invalid input action type: " + type);
-        }
-    }
-
-    #endregion
-
-    public void OnGameStarted()
-    {
-        IsPausingGameplayEnabled = true;
-        IsOpeningInventoryEnabled = true;
-    }
-
-    public void OnGameEnded()
-    {
-        IsAimingEnabled = false;
-        IsPausingGameplayEnabled = false;
-        IsOpeningInventoryEnabled = false;
-        ForceCloseInventory();
-        SwitchToInputActionMap(InputActionMapType.GameOverScreen);
-    }
+    #region Pause / Resume
 
     public void TogglePauseResumeGameplay()
     {
@@ -349,12 +301,6 @@ public class InputManager : MonoBehaviour
         TogglePauseResumeGameplay();
     }
 
-    private void OnDeviceChange(InputDevice device, InputDeviceChange change)
-    {
-        if (change == InputDeviceChange.Added || change == InputDeviceChange.Reconnected)
-        {
-            _currentInputDevice = device;
-        }
-    }
+    #endregion
 
 }

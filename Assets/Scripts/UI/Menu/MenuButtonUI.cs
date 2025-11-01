@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(Selectable))]
 public class MenuButtonUI : ScreenSizeDependantUI, 
     IPointerEnterHandler,
     IPointerExitHandler,
@@ -20,11 +21,11 @@ public class MenuButtonUI : ScreenSizeDependantUI,
     [SerializeField] private TextMeshProUGUI _text;
     [SerializeField] private Color _disabledTextColor;
     [SerializeField] private bool _disabled;
+    private MenuInputManager _inputManager;
     private Sprite _normalSprite;
 
     private Image _image;
     private bool _hovered;
-    private InputManager _inputManager;
 
     public event Action ButtonPressed;
 
@@ -32,17 +33,22 @@ public class MenuButtonUI : ScreenSizeDependantUI,
     private Vector2 _originalTextPosition;
     private RectTransform _parentCanvasRect;
 
+    private Selectable _selectable;
+
     private void Awake()
     {
+        _inputManager = FindFirstObjectByType<MenuInputManager>();
+        _selectable = GetComponent<Selectable>();
+        _selectable.transition = Selectable.Transition.None;
         _image = GetComponent<Image>();
-        _inputManager = FindFirstObjectByType<InputManager>();
         _normalSprite = _image.sprite;
         var canvas = FindFirstObjectByType<Canvas>();
         _parentCanvasRect = canvas.GetComponent<RectTransform>();
-        if(_disabled)
+        if (_disabled)
         {
             _image.sprite = _disabledSprite;
             _text.color = _disabledTextColor;
+            _selectable.interactable = false;
         }
     }
 
@@ -96,7 +102,7 @@ public class MenuButtonUI : ScreenSizeDependantUI,
         UnHoverButton();
     }
 
-    private void Press()
+    public void Press()
     {
         SetPressedVisuals();
         InvokePressed();

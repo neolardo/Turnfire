@@ -16,10 +16,10 @@ public class MenuArrowButtonUI : MonoBehaviour, IPointerEnterHandler,
     [SerializeField] private Sprite _inactiveSprite;
     [SerializeField] private Sprite _hoveredSprite;
     private Sprite _activeSprite;
+    private MenuInputManager _inputManager;
 
     private Image _image;
     private bool _hovered;
-    private InputManager _inputManager;
 
     public event Action ArrowPressed;
 
@@ -34,9 +34,9 @@ public class MenuArrowButtonUI : MonoBehaviour, IPointerEnterHandler,
     private void Awake()
     {
         _image = GetComponent<Image>();
-        _inputManager = FindFirstObjectByType<InputManager>();
         _activeSprite = _image.sprite;
         _image.sprite = _isActive ? _activeSprite : _inactiveSprite;
+        _inputManager = FindFirstObjectByType<MenuInputManager>();
     }
 
     private void OnEnable()
@@ -89,7 +89,7 @@ public class MenuArrowButtonUI : MonoBehaviour, IPointerEnterHandler,
         UnHoverButton();
     }
 
-    private void Press()
+    public void Press()
     {
         if(!_isActive)
         {

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class MainMenuUI : MonoBehaviour
 {
@@ -14,6 +15,11 @@ public class MainMenuUI : MonoBehaviour
         _multiplayerButton.ButtonPressed += OnMultiplayerButtonPressed;
         _exitButton.ButtonPressed += OnExitButtonPressed;
         _menuUIManager = FindFirstObjectByType<MenuUIManager>();
+    }
+
+    private void Start()
+    {
+        EventSystem.current.SetSelectedGameObject(_multiplayerButton.gameObject);
     }
 
     private void OnSingleplayerButtonPressed()

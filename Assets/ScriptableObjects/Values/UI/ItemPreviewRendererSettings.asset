@@ -9,9 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a53b3b46539369147aa13b9d2147f1b5, type: 3}
-  m_Name: ExplosionRadiusRangedStatGroup
+  m_Script: {fileID: 11500000, guid: 973f51e4ca20811449efa01e26ca7ede, type: 3}
+  m_Name: ItemPreviewRendererSettings
   m_EditorClassIdentifier: 
-  DisplayName: Radius
-  Minimum: 0.3
-  Maximum: 2.5
+  AimCircleOuterRadiusPercent: 0.06
+  AimCircleInnerRadiusPercent: 0.018
+  DefaultAimCircleOffsetPercentX: 0.1
+  DefaultAimCircleOffsetPercentY: 0.85

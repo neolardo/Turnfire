@@ -2,10 +2,16 @@ using UnityEngine;
 
 public class ItemPreviewRendererManager : MonoBehaviour
 {
+    [SerializeField] private ItemPreviewRendererSettingsDefinition _previewSettings;
     [SerializeField] private TrajectoryRenderer _trajectoryRenderer;
     public TrajectoryRenderer TrajectoryRenderer => _trajectoryRenderer;
 
     private ItemPreviewRendererType _currentRenderer;
+
+    private void Awake()
+    {
+        _trajectoryRenderer.SetPreviewSettings(_previewSettings);
+    }
 
     public void SelectRenderer(ItemPreviewRendererType renderer)
     {

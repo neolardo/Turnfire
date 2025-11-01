@@ -4,14 +4,14 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
 {
     public override CharacterActionStateType State => CharacterActionStateType.ReadyToMove;
     private TrajectoryRenderer _trajectoryRenderer;
-    private InputManager _inputManager;
     private GameplayUIManager _uiManager;
+    private GameplayInputManager _inputManager;
 
-    public ReadyToMoveCharacterActionState(TrajectoryRenderer trajectoryRenderer, InputManager inputManager, GameplayUIManager uiManager, MonoBehaviour manager, UISoundsDefinition uiSounds) : base(manager, uiSounds)
+    public ReadyToMoveCharacterActionState(TrajectoryRenderer trajectoryRenderer, GameplayUIManager uiManager, GameplayInputManager inputManager, MonoBehaviour manager, UISoundsDefinition uiSounds) : base(manager, uiSounds)
     {
         _trajectoryRenderer = trajectoryRenderer;
-        _inputManager = inputManager;
         _uiManager = uiManager;
+        _inputManager = inputManager;
     }
 
     protected override void SubscribeToEvents()

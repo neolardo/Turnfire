@@ -7,15 +7,31 @@ public class MultiplayerMenuUI : MonoBehaviour
     [SerializeField] private MenuNumericDisplayUI _numPlayersDisplay;
     [SerializeField] private MenuMapDisplayUI _mapDisplay;
     [SerializeField] private MenuCheckBoxUI _useTimerCheckbox;
+    private MenuInputManager _inputManager;
 
     private MenuUIManager _menuUIManager;
 
     private void Awake()
     {
         _menuUIManager = FindFirstObjectByType<MenuUIManager>();
-        _confirmButton.ButtonPressed += OnCofirmPressed;
+        _inputManager = FindFirstObjectByType<MenuInputManager>();
+        _confirmButton.ButtonPressed += OnConfirmPressed;
         _cancelButton.ButtonPressed += OnCancelPressed;
         _numPlayersDisplay.ValueChanged += _mapDisplay.SetTeamCount;
+    }
+
+    private void OnEnable()
+    {
+        _inputManager.MenuConfirmPerformed += _confirmButton.Press;
+        _inputManager.MenuBackPerformed += _cancelButton.Press;
+        _inputManager.MenuToggleCheckboxPerformed += OnMenuToggleCheckboxPerformed;
+    }
+
+    private void OnDisable()
+    {
+        _inputManager.MenuConfirmPerformed -= _confirmButton.Press;
+        _inputManager.MenuBackPerformed -= _cancelButton.Press;
+        _inputManager.MenuToggleCheckboxPerformed -= OnMenuToggleCheckboxPerformed;
     }
 
     private void Start()
@@ -23,7 +39,12 @@ public class MultiplayerMenuUI : MonoBehaviour
         _numPlayersDisplay.Initialize(Constants.MultiplayerMinPlayers, Constants.MultiplayerMaxPlayers, Constants.MultiplayerMinPlayers);
     }
 
-    public void OnCofirmPressed()
+    private void OnMenuToggleCheckboxPerformed()
+    {
+        _useTimerCheckbox.ToggleValue(true);
+    }
+
+    public void OnConfirmPressed()
     {
         var settings = new GameplaySceneSettings()
         {

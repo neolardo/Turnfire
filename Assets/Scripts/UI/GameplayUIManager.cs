@@ -22,8 +22,8 @@ public class GameplayUIManager : MonoBehaviour
         turnManager.GameStarted += OnGameStarted;
         _gameStateManager = FindFirstObjectByType<GameStateManager>();
         _gameStateManager.StateChanged += OnGameStateChanged;
-        var inputManager = FindFirstObjectByType<InputManager>();
-        inputManager.ToggleInventoryPerformed += ToggleInventory;//TODO: refactor?
+        var inputManager = FindFirstObjectByType<GameplayInputManager>();
+        inputManager.ToggleInventoryPerformed += ToggleInventory;
         _gameplayTimer.gameObject.SetActive(false);
         _gameplayTimer.TimerEnded += () => GameplayTimerEnded?.Invoke();
         _countdownTimer.gameObject.SetActive(true);

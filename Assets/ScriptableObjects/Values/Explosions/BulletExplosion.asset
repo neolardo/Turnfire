@@ -23,4 +23,4 @@ MonoBehaviour:
     _randomness: 0
     _group: {fileID: 11400000, guid: 31a5227b1c02f8f448e1094ce68575a4, type: 2}
   Animation: {fileID: 11400000, guid: 9361c9c3f4b08c44d92a30779ee3c911, type: 2}
-  SFX: {fileID: 0}
+  SFX: {fileID: 11400000, guid: 5bcdfeabe9949b94190fb501e2dc69be, type: 2}

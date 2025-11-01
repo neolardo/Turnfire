@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,6 +24,8 @@ public class InventoryToggleUI : MonoBehaviour
 
     private bool _isToggledLeft;
 
+    public event Action Toggled;
+
     private void Awake()
     {
         _leftButton.ButtonPressed += ToggleToLeft;
@@ -37,12 +40,14 @@ public class InventoryToggleUI : MonoBehaviour
     public void InitializeToggledLeftValue(bool isToggledLeft)
     {
         _isToggledLeft = isToggledLeft;
+        Toggled?.Invoke();
         UpdateLayout();
     }
 
     public void Toggle()
     {
         _isToggledLeft = !_isToggledLeft;
+        Toggled?.Invoke();
         UpdateLayout();
     }
 

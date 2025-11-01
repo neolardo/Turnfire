@@ -5,18 +5,18 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
 {
     public override CharacterActionStateType State => CharacterActionStateType.ReadyToUseItem;
     private ItemPreviewRendererManager _rendererManager;
-    private InputManager _inputManager;
     private ProjectilePool _projectileManager;
     private TrajectoryRenderer _trajectoryRenderer;
     private GameplayUIManager _uiManager;
+    private GameplayInputManager _inputManager;
 
-    public ReadyToUseItemCharacterActionState(ItemPreviewRendererManager rendererManager, InputManager inputManager, ProjectilePool projectileManager, TrajectoryRenderer trajectoryRenderer, GameplayUIManager uiManager, MonoBehaviour coroutineManager, UISoundsDefinition uiSounds) : base(coroutineManager, uiSounds)
+    public ReadyToUseItemCharacterActionState(ItemPreviewRendererManager rendererManager, ProjectilePool projectileManager, TrajectoryRenderer trajectoryRenderer, GameplayUIManager uiManager, GameplayInputManager inputManager, MonoBehaviour coroutineManager, UISoundsDefinition uiSounds) : base(coroutineManager, uiSounds)
     {
         _rendererManager = rendererManager;
         _projectileManager = projectileManager;
-        _inputManager = inputManager;
         _trajectoryRenderer = trajectoryRenderer;
         _uiManager = uiManager;
+        _inputManager = inputManager;
     }
     protected override void SubscribeToEvents()
     {

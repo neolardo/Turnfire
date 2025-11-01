@@ -1,4 +1,3 @@
-using TMPro;
 using UnityEngine;
 
 public class PausedScreenUI : MonoBehaviour
@@ -6,15 +5,15 @@ public class PausedScreenUI : MonoBehaviour
     [SerializeField] private TextButtonUI _resumeButton;
     [SerializeField] private TextButtonUI _restartButton;
     [SerializeField] private TextButtonUI _exitButton;
+    private GameplayInputManager _inputManager;
 
-    private InputManager _inputManager;
 
     private void Awake()
     {
-        _inputManager = FindFirstObjectByType<InputManager>();
         _resumeButton.ButtonPressed += OnResumeButtonPressed;
         _restartButton.ButtonPressed += OnRestartButtonPressed;
         _exitButton.ButtonPressed += OnExitButtonPressed;
+        _inputManager = FindFirstObjectByType<GameplayInputManager>();
     }
 
     private void OnEnable()
@@ -47,6 +46,5 @@ public class PausedScreenUI : MonoBehaviour
         SceneLoader.Instance.LoadMenuScene();
         gameObject.SetActive(false);
     }
-
 
 }

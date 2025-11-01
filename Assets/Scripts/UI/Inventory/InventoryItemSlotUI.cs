@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(Selectable))]
 [RequireComponent(typeof(RectTransform))]
 public class InventoryItemSlotUI : MonoBehaviour, 
     IPointerEnterHandler,
@@ -18,7 +19,8 @@ public class InventoryItemSlotUI : MonoBehaviour,
     [SerializeField] private Sprite _selectedSlotSprite;
     [SerializeField] private Sprite _deselectedSlotSprite;
     [SerializeField] private TextMeshProUGUI _ammoText;
-    private InputManager _inputManager;
+    private GameplayInputManager _inputManager;
+    private Selectable _selectable;
     public Item Item => _item;
     private Item _item;
 
@@ -28,7 +30,9 @@ public class InventoryItemSlotUI : MonoBehaviour,
 
     private void Awake()
     {
-        _inputManager = FindFirstObjectByType<InputManager>();
+        _inputManager = FindFirstObjectByType<GameplayInputManager>();
+        _selectable = GetComponent<Selectable>();
+        _selectable.transition = Selectable.Transition.None;
     }
 
     #region Item
@@ -66,27 +70,20 @@ public class InventoryItemSlotUI : MonoBehaviour,
 
     #endregion
 
-
     #region Hovering
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (_inputManager.CurrentInputDevice is Mouse || _inputManager.CurrentInputDevice is Keyboard)
-        {
-            Hover();
-        }
+        Hover();
     }
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (_inputManager.CurrentInputDevice is Mouse || _inputManager.CurrentInputDevice is Keyboard)
-        {
-            UnHover();
-        }
+        UnHover();
     }
 
     public void OnSelect(BaseEventData eventData)
     {
-        if (_inputManager.CurrentInputDevice is not Mouse && _inputManager.CurrentInputDevice is not Keyboard)
+        if(_inputManager.CurrentInputDevice is not Mouse && _inputManager.CurrentInputDevice is not Keyboard)
         {
             Hover();
         }

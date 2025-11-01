@@ -37,7 +37,7 @@ public class TurnManager : MonoBehaviour
             team.TeamLost += OnAnyTeamLost;
         }
 
-        var inputManager = FindFirstObjectByType<InputManager>();
+        var inputManager = FindFirstObjectByType<GameplayInputManager>();
         var trajectoryRenderer = FindFirstObjectByType<TrajectoryRenderer>();
         var itemPreviewRendererManager = FindFirstObjectByType<ItemPreviewRendererManager>();
         var dropManager = FindFirstObjectByType<DropManager>();

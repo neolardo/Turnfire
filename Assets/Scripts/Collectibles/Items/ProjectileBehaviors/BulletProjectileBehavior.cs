@@ -31,14 +31,16 @@ public class BulletProjectileBehavior : SimpleProjectileBehavior
             yield break;
         }
         var dist = hit.distance;
-        var lastDist = dist;
-        while(dist <= lastDist)
+        var nextPoint = (Vector2)rb.transform.position + rb.linearVelocity * Time.fixedDeltaTime;
+        var nextDist = (hit.point - nextPoint).magnitude;
+        while(nextDist <= dist && !_exploded)
         {
-            lastDist = dist;
-            dist = (hit.point - (Vector2) rb.transform.position).magnitude;
             yield return new WaitForFixedUpdate();
+            dist = (hit.point - (Vector2)rb.transform.position).magnitude;
+            nextPoint = (Vector2)rb.transform.position + rb.linearVelocity * Time.fixedDeltaTime;
+            nextDist = (hit.point - nextPoint).magnitude;
         }
-        ForceExplode();
+        Explode(new ProjectileContactContext(hit.point, hit.collider.tag));
     }
 
 

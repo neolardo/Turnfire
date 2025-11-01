@@ -35,20 +35,22 @@ public class SimpleProjectileBehavior : UnityDriven, IProjectileBehavior
     {
         var rb = context.ProjectileRigidbody;
         rb.transform.position = context.AimOrigin + context.AimVector.normalized * Constants.ProjectileOffset;
-        if (IsAnyColliderAtLaunchPoint(context, out var tag))
+        if (IsAnyColliderAtLaunchPoint(context, out var tag, out var contactPoint))
         {
-            OnContact(new ProjectileContactContext(context.ProjectileCollider.transform.position, tag));
+            OnContact(new ProjectileContactContext(contactPoint, tag));
         }
     }
 
-    protected bool IsAnyColliderAtLaunchPoint(ProjectileLaunchContext context, out string tag)
+    protected bool IsAnyColliderAtLaunchPoint(ProjectileLaunchContext context, out string tag, out Vector2 point)
     {
         tag = null;
+        point = Vector2.zero;
         Physics2D.RaycastNonAlloc(context.AimOrigin, context.AimVector.normalized, _raycastHits, Constants.ProjectileOffset, LayerMaskHelper.GetCombinedLayerMask(Constants.ProjectileCollisionLayers));
         foreach(var hit in _raycastHits)
         {
             if (hit.collider != null && hit.collider != context.OwnerCollider)
             {
+                point = hit.point;
                 tag = hit.collider.tag;
                 return true;
             }

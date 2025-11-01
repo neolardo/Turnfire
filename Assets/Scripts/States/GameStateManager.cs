@@ -33,9 +33,10 @@ public class GameStateManager : MonoBehaviour
 
     private void Awake()
     {
-        var inputManager = FindFirstObjectByType<InputManager>();
+        var inputManager = FindFirstObjectByType<GameplayInputManager>();
         var turnManager = FindFirstObjectByType<TurnManager>();
         inputManager.TogglePauseGameplayPerformed += OnTogglePauseResumeGameplay;
+        inputManager.PrepareForGameStart();
         _countdownTimer.TimerEnded += OnCountdownEnded;
         turnManager.GameEnded += OnGameOver;
     }
