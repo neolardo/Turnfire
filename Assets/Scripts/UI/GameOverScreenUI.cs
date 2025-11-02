@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class GameOverScreenUI : MonoBehaviour
 {
@@ -19,6 +20,7 @@ public class GameOverScreenUI : MonoBehaviour
     {
         _inputManager.GameOverScreenConfirmPerformed += _rematchButton.PressIfHoveredOrSelected;
         _inputManager.GameOverScreenConfirmPerformed += _exitButton.PressIfHoveredOrSelected;
+        EventSystem.current.SetSelectedGameObject(_rematchButton.gameObject);
     }
 
     private void OnDisable()

@@ -16,8 +16,8 @@ public class BulletProjectileBehavior : SimpleProjectileBehavior
         var rb = context.ProjectileRigidbody;
         float angle = Mathf.Atan2(context.AimVector.y, context.AimVector.x) * Mathf.Rad2Deg;
         rb.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-        PlaceProjectile(context);
         rb.gravityScale = 0;
+        PlaceProjectile(context);
         rb.linearVelocity = context.AimVector / rb.mass;
         StartCoroutine(ExplodeAtRaycastTarget(context));
     }

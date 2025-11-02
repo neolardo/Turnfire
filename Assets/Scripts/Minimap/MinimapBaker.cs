@@ -1,10 +1,12 @@
 ﻿
-#if UNITY_EDITOR
-
 using System.Collections.Generic;
 using System.IO;
+#if UNITY_EDITOR
+
 using UnityEditor;
 using UnityEditor.SceneManagement;
+
+#endif
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -23,6 +25,9 @@ public class MinimapBaker : MonoBehaviour
     private const int TeamCountMin = 2;
 
     public Texture2D BakedMinimap => bakedMinimap;
+
+
+    #if UNITY_EDITOR
 
     [ContextMenu("Bake Minimap")]
     public void BakeMinimap()
@@ -160,5 +165,5 @@ public class MinimapBaker : MonoBehaviour
         Debug.Log($"[MinimapBaker] Saved to: {filePath}");
     }
 
+    #endif
 }
-#endif

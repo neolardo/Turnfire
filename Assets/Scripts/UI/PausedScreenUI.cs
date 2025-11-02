@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class PausedScreenUI : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class PausedScreenUI : MonoBehaviour
         _inputManager.PausedScreenConfirmPerformed += _resumeButton.PressIfHoveredOrSelected;
         _inputManager.PausedScreenConfirmPerformed += _restartButton.PressIfHoveredOrSelected;
         _inputManager.PausedScreenConfirmPerformed += _exitButton.PressIfHoveredOrSelected;
+        EventSystem.current.SetSelectedGameObject(_resumeButton.gameObject);
     }
 
     private void OnDisable()

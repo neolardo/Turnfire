@@ -17,6 +17,7 @@ public class Projectile : MonoBehaviour
 
     public event Action<ExplosionInfo> Exploded;
 
+
     private void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
@@ -30,7 +31,11 @@ public class Projectile : MonoBehaviour
         _col.isTrigger = true;
         _col.sharedMaterial = null;
         _rb.gravityScale = 1;
-        if(_behavior != null) 
+        _rb.linearVelocity = Vector2.zero;
+        _rb.angularVelocity = 0;
+        _rb.Sleep();
+        _rb.WakeUp();
+        if (_behavior != null) 
         {
             _behavior.Exploded -= OnExploded;
         }
@@ -51,13 +56,13 @@ public class Projectile : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-         _behavior.OnContact(new ProjectileContactContext(_rb.position, collision.collider.tag));
+        _behavior.OnContact(new ProjectileContactContext(_rb.position, collision.collider.tag));
     }
 
     public void Launch(ItemUsageContext itemContext, float fireStrength)
     {
-        gameObject.SetActive(true);
         _spriteRenderer.sprite = _definition.Sprite;
+        gameObject.SetActive(true);
         _behavior.Launch(new ProjectileLaunchContext(itemContext, fireStrength * _rb.mass, _rb, _col));
     }
 

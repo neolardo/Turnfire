@@ -21706,6 +21706,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7466165071236623355, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
+      propertyPath: _UIDefintion
+      value: 
+      objectReference: {fileID: 11400000, guid: 93667ed427ce1234d954789779612623, type: 2}
+    - target: {fileID: 7466165071236623355, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
       propertyPath: _mapTransform
       value: 
       objectReference: {fileID: 650410085}

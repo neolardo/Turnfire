@@ -8,8 +8,8 @@ public class ProjectileLauncherWeaponBehavior : UnityDriven, IItemBehavior
 
     protected bool _isFiring;
 
-    private IProjectileBehavior _projectileBehavior;
-    private ProjectileLauncherWeaponDefinition _definition;
+    protected IProjectileBehavior _projectileBehavior;
+    protected ProjectileLauncherWeaponDefinition _definition;
 
     public event Action ItemUsageFinished;
 

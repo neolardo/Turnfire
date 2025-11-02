@@ -60,10 +60,9 @@ public class Pool<T> : MonoBehaviour where T : Component
 
     public void Release(T item)
     {
-        if (!_inUse.Contains(item))
+        if(!_inUse.Contains(item))
         {
-            Debug.LogWarning($"Trying to release an object not managed by this pool: {item.name}");
-            return;
+            Debug.LogWarning($"Trying to release a(n) {item.name} not managed by this pool.");
         }
 
         item.gameObject.SetActive(false);

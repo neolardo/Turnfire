@@ -18,7 +18,6 @@ public class GrenadeProjectileBehavior : SimpleProjectileBehavior
         var col = context.ProjectileCollider;
         col.isTrigger = false;
         col.sharedMaterial = _definition.GrenadePhysicsMaterial;
-        rb.linearVelocity = Vector2.zero;
         PlaceProjectile(context);
         rb.AddForce(context.AimVector, ForceMode2D.Impulse);
         StartCoroutine(ExplodeAfterDelay(_definition.ExplosionDelaySeconds));

@@ -2,7 +2,9 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
+[RequireComponent(typeof(Selectable))]
 public class TextButtonUI : ScreenSizeDependantUI,
     IPointerEnterHandler,
     IPointerExitHandler,
@@ -30,6 +32,9 @@ public class TextButtonUI : ScreenSizeDependantUI,
         _normalColor = _text.color;
         var canvas = FindFirstObjectByType<Canvas>();
         _parentCanvasRect = canvas.GetComponent<RectTransform>();
+        var selectable = GetComponent<Selectable>();
+        selectable.transition = Selectable.Transition.None;
+        
     }
 
     protected override void OnEnable()

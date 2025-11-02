@@ -26,7 +26,6 @@ public class SimpleProjectileBehavior : UnityDriven, IProjectileBehavior
     {
         _exploded = false;
         var rb = context.ProjectileRigidbody;
-        rb.linearVelocity = Vector2.zero;
         PlaceProjectile(context);
         rb.AddForce(context.AimVector, ForceMode2D.Impulse);
     }
@@ -34,7 +33,9 @@ public class SimpleProjectileBehavior : UnityDriven, IProjectileBehavior
     protected virtual void PlaceProjectile(ProjectileLaunchContext context)
     {
         var rb = context.ProjectileRigidbody;
-        rb.transform.position = context.AimOrigin + context.AimVector.normalized * Constants.ProjectileOffset;
+        var targetPos = context.AimOrigin + context.AimVector.normalized * Constants.ProjectileOffset;
+        rb.MovePosition(targetPos);
+        rb.transform.position = targetPos;
         if (IsAnyColliderAtLaunchPoint(context, out var tag, out var contactPoint))
         {
             OnContact(new ProjectileContactContext(contactPoint, tag));
@@ -45,9 +46,25 @@ public class SimpleProjectileBehavior : UnityDriven, IProjectileBehavior
     {
         tag = null;
         point = Vector2.zero;
-        Physics2D.RaycastNonAlloc(context.AimOrigin, context.AimVector.normalized, _raycastHits, Constants.ProjectileOffset, LayerMaskHelper.GetCombinedLayerMask(Constants.ProjectileCollisionLayers));
-        foreach(var hit in _raycastHits)
+
+        int hitCount = Physics2D.RaycastNonAlloc(
+            context.AimOrigin,
+            context.AimVector.normalized,
+            _raycastHits,
+            Constants.ProjectileOffset,
+            LayerMaskHelper.GetCombinedLayerMask(Constants.ProjectileCollisionLayers)
+        );
+
+        if (hitCount == 0)
         {
+            return false;
+        }
+
+        Array.Sort(_raycastHits, 0, hitCount, RaycastHit2DComparer.Instance);
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            var hit = _raycastHits[i];
             if (hit.collider != null && hit.collider != context.OwnerCollider)
             {
                 point = hit.point;
@@ -55,6 +72,7 @@ public class SimpleProjectileBehavior : UnityDriven, IProjectileBehavior
                 return true;
             }
         }
+
         return false;
     }
 

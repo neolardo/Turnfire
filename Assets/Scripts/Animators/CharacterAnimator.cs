@@ -9,7 +9,7 @@ public class CharacterAnimator : MonoBehaviour
 
     public Transform ItemTransform => _itemRenderer.transform;
 
-    private const float JumpCancelThreshold = 0.8f;
+    private const float JumpCancelThreshold = 1.0f;
 
     private void Awake()
     {

@@ -20,7 +20,6 @@ public class InventoryItemSlotUI : MonoBehaviour,
     [SerializeField] private Sprite _deselectedSlotSprite;
     [SerializeField] private TextMeshProUGUI _ammoText;
     private GameplayInputManager _inputManager;
-    private Selectable _selectable;
     public Item Item => _item;
     private Item _item;
 
@@ -31,8 +30,8 @@ public class InventoryItemSlotUI : MonoBehaviour,
     private void Awake()
     {
         _inputManager = FindFirstObjectByType<GameplayInputManager>();
-        _selectable = GetComponent<Selectable>();
-        _selectable.transition = Selectable.Transition.None;
+        var selectable = GetComponent<Selectable>();
+        selectable.transition = Selectable.Transition.None;
     }
 
     #region Item

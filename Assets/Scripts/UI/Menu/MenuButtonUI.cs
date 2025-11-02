@@ -33,13 +33,12 @@ public class MenuButtonUI : ScreenSizeDependantUI,
     private Vector2 _originalTextPosition;
     private RectTransform _parentCanvasRect;
 
-    private Selectable _selectable;
 
     private void Awake()
     {
         _inputManager = FindFirstObjectByType<MenuInputManager>();
-        _selectable = GetComponent<Selectable>();
-        _selectable.transition = Selectable.Transition.None;
+        var selectable = GetComponent<Selectable>();
+        selectable.transition = Selectable.Transition.None;
         _image = GetComponent<Image>();
         _normalSprite = _image.sprite;
         var canvas = FindFirstObjectByType<Canvas>();
@@ -48,7 +47,7 @@ public class MenuButtonUI : ScreenSizeDependantUI,
         {
             _image.sprite = _disabledSprite;
             _text.color = _disabledTextColor;
-            _selectable.interactable = false;
+            selectable.interactable = false;
         }
     }
 
