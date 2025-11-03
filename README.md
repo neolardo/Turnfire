@@ -1,155 +1,120 @@
-# Turnfire - Game Design Document
+# Turnfire
 
 ## Overview  
-Turnfire is a **2D turn-based artillery game** built in **Unity 6.0 LTS** with support for **singleplayer (AI bots)** and **multiplayer (Netcode for GameObjects)**. The game combines classic artillery mechanics with tactical team-based play, procedural map alterations, and  Unity features such as **Shader Graph, VFX Graph, UI Toolkit, Cinemachine, and the new Input System**.  
+Turnfire is a **2D turn-based artillery game** built in **Unity 6.0**.  
 
-The GDD is structured to emphasize **gameplay logic and implementation details**, showcasing the use of **design patterns, Unity systems, and scalable architecture** as a game developer portfolio.  
+This document is structured to emphasize **gameplay logic and implementation details**, showcasing the use of **design patterns, Unity systems, and scalable architecture** as a game developer portfolio.  
 
----
+--- 
 
 ## How to Play  
 
-1. **Main Menu**  
+1 - **Main Menu**  
    - Choose between **Singleplayer** or **Multiplayer**.  
-
-2. **Singleplayer Setup**  
-   - Select the **number of teams** (e.g., 2–4).  
-   - Choose the **team type**.  
+ 
+  2/A - **Singleplayer Setup**  
+   - Select the **number of bots** (1–3).  
    - Select the **map**.  
-   - Set the **time limit per turn**.  
-   - Choose the **AI bot difficulty** (Easy, Normal, Hard).  
+   - Select whether you want to play with a **timer**.  
+   - Choose the **bot difficulty**.
+   - Play! 
+  
+  2/B - **Multiplayer Setup**  
+   - Select the **number of players** (2–4).  
+   - Select the **map**.  
+   - Select whether you want to play with a **timer**.  
    - Play! 
 
-3. **Multiplayer Setup**  
-   - Choose to **Host** or **Join** a game.  
-   - Host sets up:  
-     - **Number of teams**  
-     - **Team type**  
-     - **Map**  
-     - **Time limit per turn**  
-   - Other players can join via the **lobby system**.
-   - Play!  
+3 - **Gameplay**
+  
+  - 3.1. **Character Action Phase**
+      - Your team's turn starts with a random character
+        - Move your character
+        - Choose a weapon
+        - Fire weapon
+     - The next team's turn starts
+      ...
+      - Continue until all active teams have played this round
+  - 3.2. **Package Drop Phase**
+     - Packages containing items may drop from the sky
+    ...
+  - 3.3. **Win condition**
+     - The turns continue one team remains
+   
+--- 
 
----
+## Features  & Gameplay Systems 
 
-## Core Gameplay Loop  
+### Characters
+- Separated classes for character data, behavior and animator
+- Multiple **character types** per team implemented via **ScriptableObjects**
+- Each type has different tactical roles (max health and initial items vary)
+- Current types:
+  - gunslinger (gun as initial item)
+  - grenadier (grenade as initial item)
+  - tank (no initial item, but more health) 
 
-1. **Turn Phase**  
-   - Player 1 moves → Player 1 fires  
-   - Player 2 moves → Player 2 fires  
-   - ...
-   - Continue until all active players have completed their actions.  
+### Map & Terrain System
+- The game features **tile-based maps** with a **destructible terrain** system.
+- The destructible terrain generation happens asynchronously with the usage of coroutines:
+   - First, a texture is generated from the initial tilemap as the visual of the terrain. (And the tilemap's renderer gets deactivated).
+   - The visual is automatically updated each time an explosion happens, while temporary hole colliders are placed upon the existing collider.
+   - If the number of holes reaches a certain threshold the regeneration of colliders is initiated.
+   - The outlines of individual pixel islands are calculated from the texture's current state.
+   - Based on the outlines, polygon colliders are generated.
+   - When this process finishes the newly made islands become the collider and the temporary holes are removed (since the generated collider islands now contain the previously made holes). 
 
-2. **Item Phase**  
-   - Items spawn or fall from the sky.  
-   - Certain items may modify the terrain or alter gameplay (e.g., bombs, terrain manipulators).  
+### Minimap Generation
+- Based on a scene's tilemaps and characters a minimap sprite can be automatically generated via a custom helper script. 
 
-3. **Next Turn**  
-   - New turn starts after all players have moved and items resolved.  
-
-4. **End Condition**  
-   - The game ends when only **one player/team remains**.  
-
----
-
-## Features  
-
-### Characters & Teams  
-- Multiple character classes per team.  
-- Each class has different tactical roles (movement range, number of shots, initial items vary)  
-- Class types: #TODO
-
-### Map & Environment  
-- **Tile-based maps** with destructible terrain.  
-- Terrain visuals handled via **Shader Graph and custom shaders**.  
-- Mesh recalculated and smoothly interpolated when terrain changes.  
-- Items and projectiles can **modify terrain dynamically**.  
-
-### Singleplayer & AI  
-- **GOAP (Goal-Oriented Action Planning) bots** for strategic AI decision-making.  
-- AI considers movement, aiming, terrain, and item use.  
-
-### Multiplayer  
-- **Netcode for GameObjects** for online play.  
-- Synchronization of:  
-  - Player turns  
-  - Projectile physics  
-  - Terrain changes  
-  - Item spawns  
+### Combat & Items
+- 2D **physics based** combat system with collision detection
+- **Object pools** for projectiles and explosions
+- Items are designed in two parts, using the **type object and strategy patterns** for modularity:
+  - **ScriptableObject definitions** holding the data, and
+  -  **behaviors** holding the logic 
 
 ### Input & Platforms  
-- **Unity New Input System** for cross-platform input.  
-- Supports **mobile (touch controls)** and **desktop (mouse/keyboard/controller)**.  
-
----
-
-## Gameplay Systems  
+- **Unity's New Input System** for cross-platform input
+- Currently supported inputs: keyboard, mouse, controller 
 
 ### Turn Management  
-- Implemented with a **State Machine**:  
-  - **Move State → Shoot State → Move State → ... → Shoot State → Item Spawn State → Check Win Condition → Next Turn**.  
-- Ensures deterministic flow across singleplayer and multiplayer.  
+- **State-machine classes** for turn phases and character action phases
 
-### Combat & Physics  
-- Weapons fire projectiles.  
-- **Physics vs. Scripted System** (to be prototyped and tested):  
-  - *Physics-based*: realistic trajectories, collision detection.  
-  - *Script-based*: deterministic calculations, easier multiplayer sync.  
+### Camera System 
+- **Cinemachine** for smooth, dynamic camera control
+- Multiple virtual cameras for characters, projectiles, packages and the overall map view 
 
-### Terrain System  
-- Uses **tile-based map with mesh interpolation**.  
-- Modified dynamically by:  
-  - Projectiles  
-  - Explosions  
-  - Terrain-altering items  
-- Optimized with **Flyweight Pattern** to reduce memory overhead for tiles.  
+### Graphics & Animation
+- Sprite animations for characters and explosions
+- Layered sprites for character types and teams
+- Coded, state-driven animation transitions 
 
-### Items & Weapons  
-- Defined as **ScriptableObjects**:  
-  - Store stats, effects, and visuals.  
-  - Trigger **C# events** on use (e.g., `OnItemUsed`, `OnTerrainChanged`).  
-- Weapons/items created using the **Type Object Pattern** for flexible extension.  
-
-### Camera System (Cinemachine)  
-- Uses **Unity Cinemachine** for smooth, dynamic camera control.  
-- Automatically adjusts framing based on:  
-  - Active player  
-  - Projectile trajectories  
-  - Explosions or terrain changes  
-- Provides **smooth transitions and zooming** across different devices.  
-- Ensures readability on **mobile and desktop** without manual camera coding.  
-
----
-
-## Technical Design  
-
-### Key Patterns & Architectures  
-- **Component Pattern** – -Gameplay objects (movement, shooting, health).  
-- **Strategy Pattern** – Different classes with different initial capabilities / strategies.  
-- **State Machine** – Turn flow control and AI decision states.  
-- **Flyweight Pattern** – Optimize tile storage and repeated visual assets.  
-- **Object Pooling** – Projectiles, VFX, and items reused to minimize instantiation cost.  
-- **Type Object Pattern** – Weapons/items as extensible types without hardcoding.  
-- **ScriptableObjects + Events** – Decouple game logic from data definitions.  
-
-### Animation & VFX  
-- **Sprite animations** for characters and weapons.  
-- **Coded animation transitions** (state-driven).  
-- **VFX Graph** for explosions, smoke, and item drops.  
-
-### Rendering  
-- **Universal Render Pipeline**
-- **Shader Graph** for terrain blending and materials.  
-- **Custom shaders** for deformable terrain and special effects (e.g., glowing pickups).  
+### Audio
+- Object pooled SFX audio resources
+- Global audio manager
 
 ### UI/UX  
-- **UI Toolkit** for menus, HUD, turn indicators, and inventory management.  
-- Cross-platform scaling for desktop/mobile.  
+- Pixel art UI with custom scaler classes 
+- Minimal shader code for UI elements
 
-### Networking  
-- **Netcode for GameObjects** manages:  
-  - Turn sync  
-  - Movement and projectile trajectory sync  
-  - Terrain modification sync   
+### Bots
+- **GOAP (Goal-Oriented Action Planning) bots** for strategic AI decision-making (To be implemented...) 
 
----
+### Multiplayer
+- Offline multiplayer
+- Online multiplayer via **Netcode for GameObjects** (To be implemented...) 
+
+--- 
+
+## Notes
+- This project is under development.
+- The current build (ver0.5) includes a fully implemented local multiplayer version of the game.
+
+--- 
+
+## Next Steps
+- Online multiplayer
+- Singleplayer with bots
+- Consumable items
+- More weapons, maps, character types
