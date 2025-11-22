@@ -7,14 +7,14 @@ public class MultiplayerMenuUI : MonoBehaviour
     [SerializeField] private MenuNumericDisplayUI _numPlayersDisplay;
     [SerializeField] private MenuMapDisplayUI _mapDisplay;
     [SerializeField] private MenuCheckBoxUI _useTimerCheckbox;
-    private MenuInputManager _inputManager;
+    private LocalMenuInput _inputManager;
 
     private MenuUIManager _menuUIManager;
 
     private void Awake()
     {
         _menuUIManager = FindFirstObjectByType<MenuUIManager>();
-        _inputManager = FindFirstObjectByType<MenuInputManager>();
+        _inputManager = FindFirstObjectByType<LocalMenuInput>();
         _confirmButton.ButtonPressed += OnConfirmPressed;
         _cancelButton.ButtonPressed += OnCancelPressed;
         _numPlayersDisplay.ValueChanged += _mapDisplay.SetTeamCount;

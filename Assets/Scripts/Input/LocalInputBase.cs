@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Users;
 using UnityEngine.InputSystem.Utilities;
 
-public abstract class InputManagerBase : MonoBehaviour
+public abstract class LocalInputBase : MonoBehaviour
 {
     protected PlayerInputActions _inputActions;
     protected InputActionMapType _currentActionMap;

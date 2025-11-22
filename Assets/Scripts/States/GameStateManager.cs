@@ -33,7 +33,7 @@ public class GameStateManager : MonoBehaviour
 
     private void Awake()
     {
-        var inputManager = FindFirstObjectByType<GameplayInputManager>();
+        var inputManager = FindFirstObjectByType<LocalGameplayInput>();
         var turnManager = FindFirstObjectByType<TurnManager>();
         inputManager.TogglePauseGameplayPerformed += OnTogglePauseResumeGameplay;
         inputManager.PrepareForGameStart();

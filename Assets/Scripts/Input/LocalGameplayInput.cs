@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class GameplayInputManager : InputManagerBase
+public class LocalGameplayInput : LocalInputBase, IGameplayInputSource
 {
     [SerializeField] private AnimationCurve _gamepadStickResponseCurve =
     new AnimationCurve(
@@ -29,6 +29,9 @@ public class GameplayInputManager : InputManagerBase
     public event Action<Vector2> ImpulseReleased;
     public event Action AimCancelled;
     public event Action ActionSkipped;
+    public event Action ItemUsed;
+    public event Action SelectedItemUsed; //TODO
+    public event Action<Item> ItemSwitched;  //TODO! implement
     //inventory
     public event Action ToggleInventoryPerformed;
     public event Action ToggleInventoryCreateDestroyPerformed;
@@ -38,7 +41,6 @@ public class GameplayInputManager : InputManagerBase
     public event Action PausedScreenConfirmPerformed;
     //game over
     public event Action GameOverScreenConfirmPerformed;
-
 
     protected override void Awake()
     {
@@ -63,7 +65,7 @@ public class GameplayInputManager : InputManagerBase
         _inputActions.Inventory.ToggleCreateDestroy.started += OnToggleCreateDestroy;
         _inputActions.Inventory.SelectInventorySlot.started += OnSelectInventorySlot;
         _inputActions.GameOverScreen.Confirm.performed += OnGameOverScreenConfirmPerformed;
-       
+
     }
 
     #region Game States
@@ -93,7 +95,7 @@ public class GameplayInputManager : InputManagerBase
         IsOpeningInventoryEnabled = false;
         ForceCloseInventory();
         SwitchToInputActionMap(InputActionMapType.GameOverScreen);
-    } 
+    }
 
     #endregion
 
@@ -189,7 +191,7 @@ public class GameplayInputManager : InputManagerBase
         {
             CancelAiming();
             return;
-        }    
+        }
 
         _isAiming = false;
         ImpulseReleased?.Invoke(_aimVector);
@@ -209,7 +211,7 @@ public class GameplayInputManager : InputManagerBase
         CancelAiming();
     }
 
-    public void CancelAiming()
+    private void CancelAiming()
     {
         if (_isAiming)
         {
@@ -219,10 +221,21 @@ public class GameplayInputManager : InputManagerBase
         }
     }
 
+    public void ForceCancelAiming()
+    {
+        CancelAiming();
+    }
+
     private void OnSkipActionPerformed(InputAction.CallbackContext ctx)
     {
         ActionSkipped?.Invoke();
     }
+
+    public void StartProvidingInputForAction(CharacterActionStateType action) { } // local input is provided automatically
+
+
+    public void Initialize(Team team) { } // no need to initialize
+
 
     #endregion
 
@@ -300,6 +313,7 @@ public class GameplayInputManager : InputManagerBase
     {
         TogglePauseResumeGameplay();
     }
+
 
     #endregion
 

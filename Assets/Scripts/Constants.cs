@@ -51,4 +51,8 @@ public static class Constants
     //minimap
     public const string MinimapFolderPath = "Assets/Resources/Sprites/Minimap";
 
+    //simulation & bots
+    public const float MaxParabolicPathSimulationTime = 10f; 
+    public const float ParabolicPathSimulationDeltaForMovement = .05f;
+    public const float ParabolicPathSimulationDeltaForProjectiles = .02f;
 }

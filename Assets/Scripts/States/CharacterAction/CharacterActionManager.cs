@@ -10,22 +10,20 @@ public class CharacterActionManager : UnityDriven
     private Character _character;
     private CameraController _cameraController;
     private GameplayUIManager _uiManager;
-    private GameplayInputManager _inputManager;
     private bool _forceEndActions;
     private CharacterActionState CurrentCharacterActionState => _characterActionStates[_characterActionIndex];
 
     public event Action CharacterActionsFinished;
 
-    public CharacterActionManager(MonoBehaviour coroutineManager, TrajectoryRenderer trajectoryRenderer, ItemPreviewRendererManager itemPreviewRendererManager, GameplayInputManager inputManager, CameraController cameraController, GameplayUIManager uiManager, ProjectilePool projectileManager, UISoundsDefinition uiSounds) : base(coroutineManager)
+    public CharacterActionManager(MonoBehaviour coroutineManager, TrajectoryRenderer trajectoryRenderer, ItemPreviewRendererManager itemPreviewRendererManager, CameraController cameraController, GameplayUIManager uiManager, ProjectilePool projectileManager, UISoundsDefinition uiSounds) : base(coroutineManager)
     {
         _cameraController = cameraController;
         _uiManager = uiManager;
-        _inputManager = inputManager;
         _characterActionStates = new List<CharacterActionState>
         {
-            new ReadyToMoveCharacterActionState(trajectoryRenderer, uiManager, inputManager, coroutineManager, uiSounds),
+            new ReadyToMoveCharacterActionState(trajectoryRenderer, uiManager, coroutineManager, uiSounds),
             new MovingCharacterActionState(coroutineManager, uiSounds),
-            new ReadyToUseItemCharacterActionState(itemPreviewRendererManager, projectileManager, trajectoryRenderer, uiManager,inputManager, coroutineManager, uiSounds),
+            new ReadyToUseItemCharacterActionState(itemPreviewRendererManager, projectileManager, trajectoryRenderer, uiManager, coroutineManager, uiSounds),
             new UsingItemCharacterActionState(coroutineManager, uiSounds),
             new FinishedCharacterActionState(coroutineManager, uiSounds),
         };
@@ -41,7 +39,7 @@ public class CharacterActionManager : UnityDriven
         _forceEndActions = false;
         _character = character;
         _cameraController.SetCharacterTarget(_character);
-        _inputManager.ForceCloseInventory();
+        character.Team.InputSource.ForceCloseInventory();
         _uiManager.LoadCharacterData(_character);
         _characterActionIndex = 0;
         StartCoroutine(WaitForCameraToStopBlendingThenStartFirstAction());

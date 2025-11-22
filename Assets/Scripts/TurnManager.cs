@@ -27,7 +27,21 @@ public class TurnManager : MonoBehaviour
     private void Start()
     {
         _teams = new List<Team>(_possibleTeams.Take(SceneLoader.Instance.CurrentGameplaySceneSettings.NumTeams));
-        for(int i = _teams.Count; i < _possibleTeams.Count; i++)
+        bool first = true;//TODO
+        foreach ( var team in _teams) 
+        {
+            if(first) //TODO
+            {
+                team.InitializeInputSource(InputSourceType.Local);
+                first = false;
+            }
+            else
+            {
+                team.InitializeInputSource(InputSourceType.Bot);
+            }
+        }
+
+        for (int i = _teams.Count; i < _possibleTeams.Count; i++)
         {
             _possibleTeams[i].gameObject.SetActive(false);
         }
@@ -37,14 +51,14 @@ public class TurnManager : MonoBehaviour
             team.TeamLost += OnAnyTeamLost;
         }
 
-        var inputManager = FindFirstObjectByType<GameplayInputManager>();
+        var localInput = FindFirstObjectByType<LocalGameplayInput>();
         var trajectoryRenderer = FindFirstObjectByType<TrajectoryRenderer>();
         var itemPreviewRendererManager = FindFirstObjectByType<ItemPreviewRendererManager>();
         var dropManager = FindFirstObjectByType<DropManager>();
         var cameraController = FindFirstObjectByType<CameraController>();
         var uiManager = FindFirstObjectByType<GameplayUIManager>();
         var projectileManager = FindFirstObjectByType<ProjectilePool>();
-        var characterActionManager = new CharacterActionManager(this, trajectoryRenderer, itemPreviewRendererManager, inputManager, cameraController, uiManager, projectileManager, _uiSounds);
+        var characterActionManager = new CharacterActionManager(this, trajectoryRenderer, itemPreviewRendererManager, cameraController, uiManager, projectileManager, _uiSounds);
         _turnStates = new List<TurnState>
         {
             new AlternativelyDoCharacterActionsForAllTeamsTurnState(this, characterActionManager, _teams),
@@ -55,8 +69,8 @@ public class TurnManager : MonoBehaviour
         {
             turnState.StateEnded += OnTurnStateEnded;
         }
-        GameStarted += (_) => inputManager.OnGameStarted();
-        GameEnded += (_) => inputManager.OnGameEnded();
+        GameStarted += (_) => localInput.OnGameStarted();
+        GameEnded += (_) => localInput.OnGameEnded();
         uiManager.CreateTeamHealthbars(_teams);
     }
 

@@ -5,39 +5,40 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
     public override CharacterActionStateType State => CharacterActionStateType.ReadyToMove;
     private TrajectoryRenderer _trajectoryRenderer;
     private GameplayUIManager _uiManager;
-    private GameplayInputManager _inputManager;
+    private IGameplayInputSource _inputSource;
 
-    public ReadyToMoveCharacterActionState(TrajectoryRenderer trajectoryRenderer, GameplayUIManager uiManager, GameplayInputManager inputManager, MonoBehaviour manager, UISoundsDefinition uiSounds) : base(manager, uiSounds)
+    public ReadyToMoveCharacterActionState(TrajectoryRenderer trajectoryRenderer, GameplayUIManager uiManager, MonoBehaviour manager, UISoundsDefinition uiSounds) : base(manager, uiSounds)
     {
         _trajectoryRenderer = trajectoryRenderer;
         _uiManager = uiManager;
-        _inputManager = inputManager;
     }
 
     protected override void SubscribeToEvents()
     {
-        _inputManager.ImpulseReleased += OnImpulseReleased;
-        _inputManager.AimStarted += OnAimStarted;
-        _inputManager.AimChanged += OnAimChanged;
-        _inputManager.AimCancelled += OnAimCancelled;
-        _inputManager.ActionSkipped += OnActionSkipped;
+        _inputSource.ImpulseReleased += OnImpulseReleased;
+        _inputSource.AimStarted += OnAimStarted;
+        _inputSource.AimChanged += OnAimChanged;
+        _inputSource.AimCancelled += OnAimCancelled;
+        _inputSource.ActionSkipped += OnActionSkipped;
     }
     protected override void UnsubscribeFromEvents()
     {
-        _inputManager.ImpulseReleased -= OnImpulseReleased;
-        _inputManager.AimStarted -= OnAimStarted;
-        _inputManager.AimChanged -= OnAimChanged;
-        _inputManager.AimCancelled -= OnAimCancelled;
-        _inputManager.ActionSkipped -= OnActionSkipped;
+        _inputSource.ImpulseReleased -= OnImpulseReleased;
+        _inputSource.AimStarted -= OnAimStarted;
+        _inputSource.AimChanged -= OnAimChanged;
+        _inputSource.AimCancelled -= OnAimCancelled;
+        _inputSource.ActionSkipped -= OnActionSkipped;
     }
 
     public override void StartState(Character currentCharacter)
     {
+        _inputSource = currentCharacter.Team.InputSource;
         base.StartState(currentCharacter);
         _uiManager.ResumeGameplayTimer();
-        _inputManager.IsAimingEnabled = true;
-        _inputManager.IsOpeningInventoryEnabled = true;
+        _inputSource.IsAimingEnabled = true;
+        _inputSource.IsOpeningInventoryEnabled = true;
         currentCharacter.InitializeMovementPreview(_trajectoryRenderer);
+        _inputSource.StartProvidingInputForAction(State);
     }
 
     private void OnAimStarted(Vector2 initialPosition)
@@ -67,9 +68,9 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
 
     protected override void EndState()
     {
-        _inputManager.CancelAiming();
-        _inputManager.IsAimingEnabled = false;
-        _inputManager.IsOpeningInventoryEnabled = false;
+        _inputSource.ForceCancelAiming();
+        _inputSource.IsAimingEnabled = false;
+        _inputSource.IsOpeningInventoryEnabled = false;
         _uiManager.PauseGameplayTimer();
         base.EndState();
     }

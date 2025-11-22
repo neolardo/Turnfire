@@ -1,9 +1,12 @@
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 public class BulletProjectileBehavior : SimpleProjectileBehavior
 {
     private BulletProjectileDefinition _definition;
+
+    private readonly RaycastHit2D[] raycastHitArray = new RaycastHit2D[Constants.RaycastHitColliderNumMax];
 
     public BulletProjectileBehavior(BulletProjectileDefinition definition) : base(definition)
     {
@@ -43,5 +46,28 @@ public class BulletProjectileBehavior : SimpleProjectileBehavior
         Explode(new ProjectileContactContext(hit.point, hit.collider.tag));
     }
 
+    public override Vector2 SimulateProjectileBehaviorAndCalculateClosestPositionToTarget(Vector2 start, Vector2 target, Vector2 aimVector, DestructibleTerrainManager terrain, Character owner)
+    {
+        float minDist = Vector2.Distance(start, target);
+        Vector2 minPos = start;
 
+        var numHits = Physics2D.RaycastNonAlloc(start, aimVector, raycastHitArray, Constants.ProjectileRaycastDistance, LayerMaskHelper.GetCombinedLayerMask(Constants.ProjectileCollisionLayers));
+        var closestHit = raycastHitArray.Take(numHits).Where(hit => hit.collider != owner.Collider).OrderBy(hit => Vector2.Distance(hit.point, target)).FirstOrDefault();
+        
+        if (closestHit.collider == null)
+        {
+            return minPos;
+        }
+        else
+        {
+            if(Vector2.Distance(closestHit.point, target) <  minDist)
+            {
+                return closestHit.point;
+            }
+            else
+            {
+                return minPos;
+            }
+        }
+    }
 }

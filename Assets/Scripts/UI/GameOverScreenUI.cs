@@ -7,11 +7,11 @@ public class GameOverScreenUI : MonoBehaviour
     [SerializeField] private TextButtonUI _rematchButton;
     [SerializeField] private TextButtonUI _exitButton;
     [SerializeField] private TextMeshProUGUI _gameOverText;
-    private GameplayInputManager _inputManager;
+    private LocalGameplayInput _inputManager;
 
     private void Awake()
     {
-        _inputManager = FindFirstObjectByType<GameplayInputManager>();
+        _inputManager = FindFirstObjectByType<LocalGameplayInput>();
         _rematchButton.ButtonPressed += OnRematchButtonPressed;
         _exitButton.ButtonPressed += OnExitButtonPressed;
     }

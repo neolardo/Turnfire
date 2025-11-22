@@ -1,7 +1,7 @@
 using System;
 using UnityEngine.InputSystem;
 
-public class MenuInputManager : InputManagerBase
+public class LocalMenuInput : LocalInputBase
 {
     public event Action MenuConfirmPerformed;
     public event Action MenuBackPerformed;

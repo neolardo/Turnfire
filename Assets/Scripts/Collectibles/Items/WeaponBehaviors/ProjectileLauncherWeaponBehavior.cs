@@ -1,17 +1,12 @@
 using System;
 using System.Collections;
 using System.Linq;
+using UnityEngine;
 
-public class ProjectileLauncherWeaponBehavior : UnityDriven, IItemBehavior
+public class ProjectileLauncherWeaponBehavior : WeaponBehavior
 {
-    public bool IsInUse => _isFiring;
-
-    protected bool _isFiring;
-
     protected IProjectileBehavior _projectileBehavior;
     protected ProjectileLauncherWeaponDefinition _definition;
-
-    public event Action ItemUsageFinished;
 
     public ProjectileLauncherWeaponBehavior(IProjectileBehavior projectileBehavior, ProjectileLauncherWeaponDefinition definition) : base(CoroutineRunner.Instance)
     {
@@ -20,7 +15,7 @@ public class ProjectileLauncherWeaponBehavior : UnityDriven, IItemBehavior
         _definition = definition;
     }
 
-    public virtual void Use(ItemUsageContext context)
+    public override void Use(ItemUsageContext context)
     {
         _isFiring = true;
         var p = context.ProjectilePool.Get();
@@ -40,14 +35,20 @@ public class ProjectileLauncherWeaponBehavior : UnityDriven, IItemBehavior
             yield return null;
         }
         _isFiring = false;
-        ItemUsageFinished?.Invoke();
+        InvokeItemUsageFinished();
     }
 
-    public virtual void InitializePreview(ItemUsageContext context, ItemPreviewRendererManager rendererManager)
+    public override void InitializePreview(ItemUsageContext context, ItemPreviewRendererManager rendererManager)
     {
         rendererManager.SelectRenderer(ItemPreviewRendererType.Trajectory);
         rendererManager.TrajectoryRenderer.ToggleGravity(_definition.UseGravityForPreview);
         rendererManager.TrajectoryRenderer.SetOrigin(context.Owner.transform);
         rendererManager.TrajectoryRenderer.SetTrajectoryMultipler(_definition.FireStrength.CalculateValue());
+    }
+
+
+    public override Vector2 SimulateWeaponBehaviorAndCalculateClosestPositionToTarget(Vector2 start, Vector2 target, Vector2 aimVector, DestructibleTerrainManager terrain, Character owner)
+    {
+        return _projectileBehavior.SimulateProjectileBehaviorAndCalculateClosestPositionToTarget(start, target, aimVector * _definition.FireStrength.CalculateValue(), terrain, owner);
     }
 }

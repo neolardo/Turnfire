@@ -106,4 +106,32 @@ public class SimpleProjectileBehavior : UnityDriven, IProjectileBehavior
         Explode(new ProjectileContactContext(_projectile.transform.position, null));
     }
 
+    public virtual Vector2 SimulateProjectileBehaviorAndCalculateClosestPositionToTarget(Vector2 start, Vector2 target, Vector2 aimVector, DestructibleTerrainManager terrain, Character owner)
+    {
+        Vector2 velocity = aimVector;
+        float minDist = Vector2.Distance(start, target);
+        Vector2 minPos = start;
+        Vector2 pos = start;
+        const float dt = Constants.ParabolicPathSimulationDeltaForProjectiles;
+
+        for (float t = 0; t < Constants.MaxParabolicPathSimulationTime; t += Constants.ParabolicPathSimulationDeltaForProjectiles)
+        {
+            pos += velocity * dt;
+            velocity += Physics2D.gravity * dt;
+
+            float currentDist = Vector2.Distance(pos, target);
+            if (currentDist < minDist)
+            {
+                minDist = currentDist;
+                minPos = pos;
+            }
+
+            if (!terrain.IsPointInsideBounds(pos) || terrain.OverlapPoint(pos))
+            {
+                break;
+            }
+        }
+
+        return minPos;
+    }
 }

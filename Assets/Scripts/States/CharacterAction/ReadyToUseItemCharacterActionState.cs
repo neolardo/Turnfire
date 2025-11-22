@@ -8,33 +8,32 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
     private ProjectilePool _projectileManager;
     private TrajectoryRenderer _trajectoryRenderer;
     private GameplayUIManager _uiManager;
-    private GameplayInputManager _inputManager;
+    private IGameplayInputSource _inputSource;
 
-    public ReadyToUseItemCharacterActionState(ItemPreviewRendererManager rendererManager, ProjectilePool projectileManager, TrajectoryRenderer trajectoryRenderer, GameplayUIManager uiManager, GameplayInputManager inputManager, MonoBehaviour coroutineManager, UISoundsDefinition uiSounds) : base(coroutineManager, uiSounds)
+    public ReadyToUseItemCharacterActionState(ItemPreviewRendererManager rendererManager, ProjectilePool projectileManager, TrajectoryRenderer trajectoryRenderer, GameplayUIManager uiManager, MonoBehaviour coroutineManager, UISoundsDefinition uiSounds) : base(coroutineManager, uiSounds)
     {
         _rendererManager = rendererManager;
         _projectileManager = projectileManager;
         _trajectoryRenderer = trajectoryRenderer;
         _uiManager = uiManager;
-        _inputManager = inputManager;
     }
     protected override void SubscribeToEvents()
     {
         _currentCharacter.SelectedItemChanged += OnSelectedItemChanged;
-        _inputManager.ImpulseReleased += OnImpulseReleased;
-        _inputManager.AimStarted += OnAimStarted;
-        _inputManager.AimChanged += OnAimChanged;
-        _inputManager.AimCancelled += OnAimCancelled;
-        _inputManager.ActionSkipped += OnActionSkipped;
+        _inputSource.ImpulseReleased += OnImpulseReleased;
+        _inputSource.AimStarted += OnAimStarted;
+        _inputSource.AimChanged += OnAimChanged;
+        _inputSource.AimCancelled += OnAimCancelled;
+        _inputSource.ActionSkipped += OnActionSkipped;
     }
     protected override void UnsubscribeFromEvents()
     {
         _currentCharacter.SelectedItemChanged -= OnSelectedItemChanged;
-        _inputManager.ImpulseReleased -= OnImpulseReleased;
-        _inputManager.AimStarted -= OnAimStarted;
-        _inputManager.AimChanged -= OnAimChanged;
-        _inputManager.AimCancelled -= OnAimCancelled;
-        _inputManager.ActionSkipped -= OnActionSkipped;
+        _inputSource.ImpulseReleased -= OnImpulseReleased;
+        _inputSource.AimStarted -= OnAimStarted;
+        _inputSource.AimChanged -= OnAimChanged;
+        _inputSource.AimCancelled -= OnAimCancelled;
+        _inputSource.ActionSkipped -= OnActionSkipped;
     }
 
 
@@ -59,6 +58,7 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
 
     public override void StartState(Character currentCharacter)
     {
+        _inputSource = currentCharacter.Team.InputSource;
         base.StartState(currentCharacter);
 
         if (!_currentCharacter.GetAllItems().Any())
@@ -68,10 +68,11 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
         }
 
         _uiManager.ResumeGameplayTimer();
-        _inputManager.IsAimingEnabled = true;
-        _inputManager.IsOpeningInventoryEnabled = true;
+        _inputSource.IsAimingEnabled = true;
+        _inputSource.IsOpeningInventoryEnabled = true;
         var context = new ItemUsageContext(_currentCharacter.transform.position, Vector2.zero, _currentCharacter.ItemTransform, _currentCharacter.Collider, _projectileManager);
         currentCharacter.GetSelectedItem().Behavior.InitializePreview(context, _rendererManager);
+        _inputSource.StartProvidingInputForAction(State);
     }
 
     public void OnSelectedItemChanged(Item selectedItem)
@@ -86,9 +87,9 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
 
     protected override void EndState()
     {
-        _inputManager.CancelAiming();
-        _inputManager.IsAimingEnabled = false;
-        _inputManager.IsOpeningInventoryEnabled = false;
+        _inputSource.ForceCancelAiming();
+        _inputSource.IsAimingEnabled = false;
+        _inputSource.IsOpeningInventoryEnabled = false;
         _uiManager.PauseGameplayTimer();
         base.EndState();
     }

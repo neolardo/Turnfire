@@ -491,6 +491,7 @@ Transform:
   - {fileID: 208064088}
   - {fileID: 1468355171}
   - {fileID: 1506207790}
+  - {fileID: 1969731779}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &168059451
@@ -656,7 +657,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6382275653246855566, guid: 3aaf0fbb756e50e4298491e4a05eea3e, type: 3}
       propertyPath: m_Name
-      value: GameplayInputManager
+      value: LocalGameplayInput
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -21450,6 +21451,75 @@ MonoBehaviour:
   _prefab: {fileID: 1815279661593783411, guid: 44b51e6e8ed295a46ad2cebb64bce28c, type: 3}
   _initialSize: 10
   _container: {fileID: 1881816531}
+--- !u!1 &1969731776
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1969731779}
+  - component: {fileID: 1969731778}
+  - component: {fileID: 1969731777}
+  m_Layer: 0
+  m_Name: BotManagers
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1969731777
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1969731776}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d55b5ff5ed9d49f40aac303c2d663216, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1969731778
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1969731776}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a2cb1e6117bf234fac818ab3d49b6fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _easyTuning:
+    FleeHealthThreshold: 0
+    FleeBias: 0.4
+    PackageBias: 0.8
+  _mediumTuning:
+    FleeHealthThreshold: 0.4
+    FleeBias: 0.4
+    PackageBias: 0.8
+  _hardTuning:
+    FleeHealthThreshold: 0.4
+    FleeBias: 0.4
+    PackageBias: 0.8
+--- !u!4 &1969731779
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1969731776}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 140908810}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1973031914
 GameObject:
   m_ObjectHideFlags: 0

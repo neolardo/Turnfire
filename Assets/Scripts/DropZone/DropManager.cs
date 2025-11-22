@@ -20,12 +20,12 @@ public class DropManager : MonoBehaviour
         _cameraController = FindFirstObjectByType<CameraController>();
         _currentPackages = new List<Package>();
         _dropZones = new List<DropZone>();
-        for(int i = 0; i< transform.childCount; i++)
+        for (int i = 0; i < transform.childCount; i++)
         {
             var dropZone = transform.GetChild(i).GetComponent<DropZone>();
             _dropZones.Add(dropZone);
         }
-        if(_dropZones.Count == 0)
+        if (_dropZones.Count == 0)
         {
             Debug.LogWarning("No drop zones to drop from.");
         }
@@ -51,16 +51,21 @@ public class DropManager : MonoBehaviour
             int zoneIndex = UnityEngine.Random.Range(0, _dropZones.Count);
             var zone = _dropZones[zoneIndex];
             var package = zone.DropRandomPackage(_gameplaySettings.PossibleDrops);
+            package.Destroyed += OnPackageDestroyed;
             _currentPackages.Add(package);
             yield return WaitForPackageToLand(package);
         }
-        if(numDrops > 0)
+        if (numDrops > 0)
         {
             yield return new WaitForSeconds(DelayAfterAllPackagesSpawned);
         }
         AllPackagesLanded?.Invoke();
     }
 
+    private void OnPackageDestroyed(Package package)
+    {
+        _currentPackages.Remove(package);
+    }
 
     private IEnumerator WaitForPackageToLand(Package package)
     {
@@ -71,6 +76,11 @@ public class DropManager : MonoBehaviour
         {
             yield return null;
         }
+    }
+
+    public IEnumerable<Package> GetAllAvailablePackages()
+    {
+        return _currentPackages;
     }
    
 }

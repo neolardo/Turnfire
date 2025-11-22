@@ -6,7 +6,7 @@ public class PausedScreenUI : MonoBehaviour
     [SerializeField] private TextButtonUI _resumeButton;
     [SerializeField] private TextButtonUI _restartButton;
     [SerializeField] private TextButtonUI _exitButton;
-    private GameplayInputManager _inputManager;
+    private LocalGameplayInput _inputManager;
 
 
     private void Awake()
@@ -14,7 +14,7 @@ public class PausedScreenUI : MonoBehaviour
         _resumeButton.ButtonPressed += OnResumeButtonPressed;
         _restartButton.ButtonPressed += OnRestartButtonPressed;
         _exitButton.ButtonPressed += OnExitButtonPressed;
-        _inputManager = FindFirstObjectByType<GameplayInputManager>();
+        _inputManager = FindFirstObjectByType<LocalGameplayInput>();
     }
 
     private void OnEnable()

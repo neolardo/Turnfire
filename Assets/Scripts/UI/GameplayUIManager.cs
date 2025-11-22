@@ -22,7 +22,7 @@ public class GameplayUIManager : MonoBehaviour
         turnManager.GameStarted += OnGameStarted;
         _gameStateManager = FindFirstObjectByType<GameStateManager>();
         _gameStateManager.StateChanged += OnGameStateChanged;
-        var inputManager = FindFirstObjectByType<GameplayInputManager>();
+        var inputManager = FindFirstObjectByType<LocalGameplayInput>();
         inputManager.ToggleInventoryPerformed += ToggleInventory;
         _gameplayTimer.gameObject.SetActive(false);
         _gameplayTimer.TimerEnded += () => GameplayTimerEnded?.Invoke();

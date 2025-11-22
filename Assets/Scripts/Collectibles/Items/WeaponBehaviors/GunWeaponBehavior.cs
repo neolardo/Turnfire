@@ -10,7 +10,7 @@ public class GunWeaponBehavior : ProjectileLauncherWeaponBehavior
         _isFiring = true;
         var p = context.ProjectilePool.Get();
         p.Initialize(_definition.ProjectileDefinition, _projectileBehavior);
-        // normalize aimvector since guns should not have variable strength
+        // aimvector is normalized since guns should not have variable strength
         var updatedContext = new ItemUsageContext(context.AimOrigin, context.AimVector.normalized, context.Owner, context.OwnerCollider, context.ProjectilePool);
         p.Launch(updatedContext, _definition.FireStrength.CalculateValue());
     }

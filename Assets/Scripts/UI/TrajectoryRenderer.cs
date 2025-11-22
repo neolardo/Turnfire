@@ -110,7 +110,7 @@ public class TrajectoryRenderer : MonoBehaviour
                                              canvasSize.x * _previewSettings.AimCircleInnerRadiusPercent * 2f);
 
         Vector2 localPoint;
-        bool isValid = !initialScreenPosition.Approximately(GameplayInputManager.DefaultAimStartPosition);
+        bool isValid = !initialScreenPosition.Approximately(LocalGameplayInput.DefaultAimStartPosition);
         RectTransformUtility.ScreenPointToLocalPointInRectangle(_rootCanvasRect, initialScreenPosition, _camera, out localPoint);
         if (!isValid)
         {

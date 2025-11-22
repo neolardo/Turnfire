@@ -19,6 +19,10 @@ public class Team : MonoBehaviour
 
     public int NumAliveCharacters => _characters.Count(c => c.IsAlive);
 
+    public IGameplayInputSource InputSource => _inputSource;
+    
+    private IGameplayInputSource _inputSource;
+
     private void Awake()
     {
         TeamName = gameObject.name;
@@ -40,6 +44,12 @@ public class Team : MonoBehaviour
             character.SetTeam(this);
         }
         _characterIndex = 0;
+    }
+
+    public void InitializeInputSource(InputSourceType inputType)
+    {
+        _inputSource = GameplayInputSourceFactory.Create(inputType, gameObject);
+        _inputSource.Initialize(this);
     }
 
     private void OnAnyTeamCharacterHealthChanged()

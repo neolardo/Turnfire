@@ -1,4 +1,7 @@
+using System;
+using System.Net.NetworkInformation;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.Tilemaps;
 
 [RequireComponent(typeof(SpriteRenderer))]
@@ -16,6 +19,26 @@ public class DestructibleTerrainRenderer : MonoBehaviour
     private Vector2 _textureOffset;
 
     private const float OverlapCheckAngleStep = 45;
+    private const int MaxSearchRadiusForNormalCalculation = 4;
+
+    private readonly Vector2Int[] NormalNeighbors = {
+        new Vector2Int(-1,  0),
+        new Vector2Int( 1,  0),
+        new Vector2Int( 0, -1),
+        new Vector2Int( 0,  1),
+        new Vector2Int(-1, -1),
+        new Vector2Int(-1,  1),
+        new Vector2Int( 1, -1),
+        new Vector2Int( 1,  1)
+    };
+
+    private readonly Vector2Int[] EdgeNeighbors =
+    {
+       new Vector2Int( 1, 0 ),
+       new Vector2Int( -1, 0 ),
+       new Vector2Int( 0, 1 ),
+       new Vector2Int( 0, -1 )
+    };
 
     #region Initialize
 
@@ -107,7 +130,7 @@ public class DestructibleTerrainRenderer : MonoBehaviour
 
                 int tx = p.x + x;
                 int ty = p.y + y;
-                if (tx < 0 || ty < 0 || tx >= _width || ty >= _height) continue;
+                if (IsPixelOutOfBounds(tx, ty)) continue;
 
                 Texture.SetPixel(tx, ty, Color.clear);
             }
@@ -118,7 +141,7 @@ public class DestructibleTerrainRenderer : MonoBehaviour
 
     #endregion
 
-    #region Overlap Checks
+    #region Overlap and Bound Checks
 
     public bool OverlapCircle(Vector2 worldPos, float radius)
     {
@@ -129,7 +152,7 @@ public class DestructibleTerrainRenderer : MonoBehaviour
         {
             var ringPoint = localCenter + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
             var p = LocalPointToPixelCoordinate(ringPoint);
-            if (Texture.GetPixel(p.x, p.y).a >= Constants.AlphaThreshold)
+            if (IsSolidPixel(p))
             {
                 return true;
             }
@@ -142,10 +165,130 @@ public class DestructibleTerrainRenderer : MonoBehaviour
     {
         Vector2 local = WorldToLocal(worldPos);
         var p = LocalPointToPixelCoordinate(local);
-        return Texture.GetPixel(p.x, p.y).a >= Constants.AlphaThreshold;
+        return IsSolidPixel(p);
+    }
+
+    public bool IsPointInsideBounds(Vector2 worldPos)
+    {
+        Vector2 local = WorldToLocal(worldPos);
+        var p = LocalPointToPixelCoordinate(local);
+        return !IsPixelOutOfBounds(p); 
     }
 
     #endregion
+
+    #region Normal Calculation
+
+    public Vector2 GetNearestNormalAtPoint(Vector2 worldPos)
+    {
+        Vector2 local = WorldToLocal(worldPos);
+        Vector2Int origin = LocalPointToPixelCoordinate(local);
+
+        if (!TryFindNearestSolidEdgePixel(origin, MaxSearchRadiusForNormalCalculation, out Vector2Int nearestSolidPixel))
+        {
+            return Vector2.up;
+        }
+
+        return ComputeNormalAtPoint(nearestSolidPixel);
+    }
+
+    private bool TryFindNearestSolidEdgePixel(Vector2Int origin, int searchRadius, out Vector2Int edgePixel)
+    {
+        edgePixel = origin;
+
+        for (int r = 0; r <= searchRadius; r++)
+        {
+            for (int dx = -r; dx <= r; dx++)
+            {
+                for (int dy = -r; dy <= r; dy++)
+                {
+                    if (Mathf.Abs(dx) != r && Mathf.Abs(dy) != r)
+                        continue; // only check the edges of the square ring
+
+                    int px = origin.x + dx;
+                    int py = origin.y + dy;
+
+                    if (IsPixelOutOfBounds(px, py))
+                        continue;
+
+                    if (!IsSolidPixel(px, py))
+                        continue;
+
+                    if (IsEdgePixel(px, py))
+                    {
+                        edgePixel = new Vector2Int(px, py);
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private bool IsEdgePixel(int x, int y)
+    {
+        foreach (var edgeNeighbor in EdgeNeighbors)
+        {
+            int nx = x + edgeNeighbor.x;
+            int ny = y + edgeNeighbor.y;
+
+            // out of bounds counts as air (edge)
+            if (IsPixelOutOfBounds(nx, ny))
+                return true;
+
+            if (!IsSolidPixel(nx, ny))
+                return true; 
+        }
+
+        return false;
+    }
+
+    private Vector2 ComputeNormalAtPoint(Vector2Int point)
+    {
+        Vector2 normal = Vector2.zero;
+
+        foreach (var normalNeighbor in NormalNeighbors)
+        {
+            int nx = point.x + normalNeighbor.x;
+            int ny = point.y + normalNeighbor.y;
+
+            if (IsPixelOutOfBounds(nx, ny))
+                continue;
+
+            if (!IsSolidPixel(nx, ny)) // edge
+            {
+                normal += new Vector2(normalNeighbor.x, normalNeighbor.y);
+            }
+        }
+
+        if (Mathf.Approximately(normal.sqrMagnitude, 0))
+        {
+            return Vector2.up;
+        }
+
+        return normal.normalized;
+    }
+
+    #endregion
+
+    private bool IsSolidPixel(Vector2Int p)
+    {
+        return Texture.GetPixel(p.x, p.y).a >= Constants.AlphaThreshold;
+    }
+    private bool IsSolidPixel(int px, int py)
+    {
+        return Texture.GetPixel(px, py).a >= Constants.AlphaThreshold;
+    }
+
+    private bool IsPixelOutOfBounds(int px, int py)
+    {
+        return px < 0 || py < 0 || px >= _width || py >= _height;
+    }
+    private bool IsPixelOutOfBounds(Vector2Int p)
+    {
+        return p.x < 0 || p.y < 0 || p.x >= _width|| p.y >= _height;
+    }
 
     private Vector2 WorldToLocal(Vector2 worldPos)
     {

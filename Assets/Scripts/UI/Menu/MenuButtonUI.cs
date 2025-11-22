@@ -21,7 +21,7 @@ public class MenuButtonUI : ScreenSizeDependantUI,
     [SerializeField] private TextMeshProUGUI _text;
     [SerializeField] private Color _disabledTextColor;
     [SerializeField] private bool _disabled;
-    private MenuInputManager _inputManager;
+    private LocalMenuInput _inputManager;
     private Sprite _normalSprite;
 
     private Image _image;
@@ -36,7 +36,7 @@ public class MenuButtonUI : ScreenSizeDependantUI,
 
     private void Awake()
     {
-        _inputManager = FindFirstObjectByType<MenuInputManager>();
+        _inputManager = FindFirstObjectByType<LocalMenuInput>();
         var selectable = GetComponent<Selectable>();
         selectable.transition = Selectable.Transition.None;
         _image = GetComponent<Image>();

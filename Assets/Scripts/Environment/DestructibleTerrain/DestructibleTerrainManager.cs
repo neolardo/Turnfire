@@ -105,7 +105,7 @@ public class DestructibleTerrainManager : MonoBehaviour
 
     #endregion
 
-    #region Overlap Checks
+    #region Overlap and Bound Checks
 
     public bool OverlapCircle(Vector2 worldPos, float radius)
     {
@@ -115,6 +115,19 @@ public class DestructibleTerrainManager : MonoBehaviour
     public bool OverlapPoint(Vector2 worldPos)
     {
         return _renderer.OverlapPoint(worldPos);
+    }
+
+    public bool IsPointInsideBounds(Vector2 worldPos)
+    {
+        return _renderer.IsPointInsideBounds(worldPos);
+    }
+
+    #endregion
+    #region Normal Calculation
+
+    public Vector2 GetNearestNormalAtPoint(Vector2 worldPos)
+    {
+        return _renderer.GetNearestNormalAtPoint(worldPos);
     }
 
     #endregion

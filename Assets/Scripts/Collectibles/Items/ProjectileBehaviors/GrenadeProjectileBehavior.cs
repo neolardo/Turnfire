@@ -52,4 +52,49 @@ public class GrenadeProjectileBehavior : SimpleProjectileBehavior
         }
     }
 
+    public override Vector2 SimulateProjectileBehaviorAndCalculateClosestPositionToTarget(Vector2 start, Vector2 target, Vector2 aimVector, DestructibleTerrainManager terrain, Character owner)
+    {
+        Vector2 velocity = aimVector;
+        float minDist = Vector2.Distance(start, target);
+        Vector2 minPos = start;
+        Vector2 pos = start;
+        int contactCount = 0;
+        const float dt = Constants.ParabolicPathSimulationDeltaForProjectiles;
+
+        for (float t = 0; t < Constants.MaxParabolicPathSimulationTime; t += Constants.ParabolicPathSimulationDeltaForProjectiles)
+        {
+            pos += velocity * dt;
+            velocity += Physics2D.gravity * dt;
+
+            float currentDist = Vector2.Distance(pos, target);
+            if (currentDist < minDist)
+            {
+                minDist = currentDist;
+                minPos = pos;
+            }
+
+            if (terrain.OverlapPoint(pos))
+            {
+                contactCount++;
+
+                var normal = terrain.GetNearestNormalAtPoint(pos);
+                Debug.DrawRay(pos, normal, Color.blue, 10); //TODO: delete
+                velocity = PhysicsMaterial2DHelpers.ApplyMaterialBounce(velocity, normal, _definition.GrenadePhysicsMaterial);
+                if (contactCount >= _definition.ExplosionContactThreshold)
+                {
+                    break;
+                }
+            }
+
+            if (!terrain.IsPointInsideBounds(pos))
+            {
+                break;
+            }
+        }
+
+        return minPos;
+    }
+
+   
+
 }

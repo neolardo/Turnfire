@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using UnityEditor.U2D.Animation;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -154,6 +155,23 @@ public class Character : MonoBehaviour
         trajectoryRenderer.SetOrigin(transform);
         trajectoryRenderer.ToggleGravity(true);
         trajectoryRenderer.SetTrajectoryMultipler(CharacterDefinition.JumpStrength);
+    }
+
+    public Vector2 SimulateJumpAndCalculateDestination(Vector2 start, Vector2 jumpVector, DestructibleTerrainManager terrain)
+    {
+        Vector2 pos = start;
+        var velocity = jumpVector * CharacterDefinition.JumpStrength / _rb.mass;
+        const float dt = Constants.ParabolicPathSimulationDeltaForMovement;
+        for (float t = 0; t < Constants.MaxParabolicPathSimulationTime; t += Constants.ParabolicPathSimulationDeltaForMovement)
+        {
+            pos += velocity * dt;
+            velocity += Physics2D.gravity * dt;
+
+            if (!terrain.IsPointInsideBounds(pos) || terrain.OverlapPoint(pos))
+                return pos;
+        }
+
+        return default;
     }
 
     #endregion

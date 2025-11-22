@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -10,6 +11,8 @@ public class Package : MonoBehaviour
     private ICollectible _collectible;
 
     private bool _destroyed;
+
+    public event Action<Package> Destroyed;
 
 
     private void Awake()
@@ -43,6 +46,7 @@ public class Package : MonoBehaviour
         }
 
         _destroyed = true;
+        Destroyed?.Invoke(this);
         gameObject.SetActive(false);
         Destroy(gameObject);
     }

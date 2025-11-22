@@ -11,7 +11,7 @@ public class SceneLoader : MonoBehaviour
 
     private void Awake()
     {
-        //CurrentGameplaySceneSettings = new GameplaySceneSettings() { NumTeams = 2, SceneName = "Map0", UseTimer = false };
+        CurrentGameplaySceneSettings = new GameplaySceneSettings() { NumTeams = 2, NumBots= 1,  SceneName = "Map0", UseTimer = false }; //TODO: remove
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
