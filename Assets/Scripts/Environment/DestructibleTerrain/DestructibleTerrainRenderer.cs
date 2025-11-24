@@ -178,6 +178,13 @@ public class DestructibleTerrainRenderer : MonoBehaviour
 
     #region Standing Point
 
+    public bool TryFindNearestStandingPoint(Vector2 worldPos, int searchRadius, int standingPointId, out StandingPoint standingPoint)
+    {
+        var local = WorldToLocal(worldPos);
+        var pixelCoordinates = LocalPointToPixelCoordinates(local);
+        return TryFindNearestStandingPoint(pixelCoordinates, searchRadius, standingPointId, out standingPoint);
+    }
+
     public bool TryFindNearestStandingPoint(Vector2Int pixelCoordinates, int searchRadius, int standingPointId, out StandingPoint standingPoint)
     {
         standingPoint = default;

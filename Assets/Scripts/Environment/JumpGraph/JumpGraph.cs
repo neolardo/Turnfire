@@ -18,8 +18,10 @@ public class JumpGraph : UnityDriven
     private float GridPointHalfDistance =>  (_pixelResolution / 2f) / _pixelsPerUnit;
     private float JumpValidationDistance =>  _pixelResolution  / (float)_pixelsPerUnit;
 
+    private const float ExplosionRadiusMultiplierForNewJumpLinks = 3;
+
     private bool _isReady;
-    public bool IsGraphCreationFinished => _isReady;
+    public bool IsReady => _isReady;
 
 
     public JumpGraph(MonoBehaviour coroutineManager, int pixelResolution, int pixelsPerUnit, float jumpStrength, float characterWidth, float characterHeight) : base(coroutineManager)
@@ -34,12 +36,12 @@ public class JumpGraph : UnityDriven
 
     private void CacheCharacterColliderCornerPoints()
     {
-        CharacterColliderCornerPoints[0] = new Vector2(0, 0);
-        CharacterColliderCornerPoints[1] = new Vector2(0,_characterHeight);
-        CharacterColliderCornerPoints[2] = new Vector2(-_characterWidth/2, 0);
-        CharacterColliderCornerPoints[3] = new Vector2(_characterWidth/2, 0);
-        CharacterColliderCornerPoints[4] = new Vector2(-_characterWidth/2, _characterHeight );
-        CharacterColliderCornerPoints[5] = new Vector2(_characterWidth/2, _characterHeight );
+        CharacterColliderCornerPoints[0] = new Vector2(-_characterWidth / 2, 0);
+        CharacterColliderCornerPoints[1] = new Vector2(_characterWidth / 2, 0);
+        CharacterColliderCornerPoints[2] = new Vector2(-_characterWidth / 2, _characterHeight / 2);
+        CharacterColliderCornerPoints[3] = new Vector2(_characterWidth / 2, _characterHeight/2);
+        CharacterColliderCornerPoints[4] = new Vector2(-_characterWidth/2, _characterHeight);
+        CharacterColliderCornerPoints[5] = new Vector2(_characterWidth/2, _characterHeight);
     }
 
     #region Creation
@@ -52,7 +54,9 @@ public class JumpGraph : UnityDriven
     private IEnumerator CreateStandingPointsAndJumpLinks(DestructibleTerrainManager terrain)
     {
         yield return CreateStandingPoints(terrain);
-        yield return SimulateAllJumpsFromAllPointsAndCreateJumpLinks(terrain);
+        yield return SimulateJumpsFromGivenPointsAndCreateJumpLinks(_points, _points, terrain);
+        _isReady = true;
+        Debug.Log($"Jump graph creation finished");
     }
 
     private IEnumerator CreateStandingPoints(DestructibleTerrainManager terrain)
@@ -79,12 +83,14 @@ public class JumpGraph : UnityDriven
         }
         Debug.Log($"Created {_points.Count} standing points");
     }
-    private IEnumerator SimulateAllJumpsFromAllPointsAndCreateJumpLinks(DestructibleTerrainManager terrain)
+    private IEnumerator SimulateJumpsFromGivenPointsAndCreateJumpLinks(IEnumerable<StandingPoint> startPoints, IEnumerable<StandingPoint> endPoints, DestructibleTerrainManager terrain)
     {
         int linkCount = 0;
-        foreach (var startP in _points)
+        foreach (var startP in startPoints)
         {
-
+            if(!startP.IsValid)
+                 continue;
+            
             for (float angle = 0; angle < 180f; angle += Constants.AimAngleSimulationStep) // negative jumps are not simulated
             {
                 Vector2 direction = angle.AngleDegreesToVector();
@@ -93,9 +99,9 @@ public class JumpGraph : UnityDriven
                 {
                     Vector2 jumpVector = direction * strength;
                     var destination = SimulateJumpAndCalculateDestination(startP.WorldPos, jumpVector, terrain);
-                    foreach (var endP in _points) 
+                    foreach (var endP in endPoints) 
                     {
-                        if (endP.Id == startP.Id)
+                        if (endP.Id == startP.Id || !endP.IsValid)
                             continue;
 
                         var delta = endP.WorldPos - destination;
@@ -114,8 +120,7 @@ public class JumpGraph : UnityDriven
             }
             yield return null;
         }
-        Debug.Log($"Jump graph creation finished: {linkCount} links created in total");
-        _isReady = true;
+        Debug.Log($"Jump graph updated with: {linkCount} links");
     }
 
     private Vector2 SimulateJumpAndCalculateDestination(Vector2 start, Vector2 jumpVector, DestructibleTerrainManager terrain)
@@ -143,6 +148,82 @@ public class JumpGraph : UnityDriven
         return pos;
     }
 
+    #endregion
+
+    #region Update
+
+    public void ApplyExplosion(Vector2 explosionCenter, float explosionRadius, DestructibleTerrainManager terrain)
+    {
+        Debug.Log($"Jump graph update started");
+        _isReady = false;
+        var numPointsRemoved = RemovePointsAndLinksInsideExplosion(explosionCenter, explosionRadius);
+        if (numPointsRemoved>0)
+        {
+            StartCoroutine(AddNewStandingPointAndJumpLinksAfterExplosion(explosionCenter, explosionRadius, terrain));
+        }
+        else
+        {
+            _isReady = true;
+            Debug.Log($"Jump graph update finished");
+        }
+    }
+
+    private int RemovePointsAndLinksInsideExplosion(Vector2 explosionCenter, float explosionRadius)
+    {
+        var explodedPoints = new List<StandingPoint>();
+        for (int i = 0; i < _points.Count; i++)
+        {
+            var p = _points[i];
+            if (p.IsValid && Vector2.Distance(p.WorldPos, explosionCenter) < explosionRadius)
+            {
+                explodedPoints.Add(p);
+                _points[i] = StandingPoint.InvalidPoint;
+                _adjency[p.Id].Clear();
+            }
+        }
+
+        foreach (var p in _points)
+        {
+            if(!p.IsValid)
+                continue;
+            
+            foreach (var exP in explodedPoints)
+            {
+                if (_adjency[p.Id].ContainsKey(exP.Id))
+                {
+                    _adjency[p.Id].Remove(exP.Id);
+                }
+            }
+        }
+
+        return explodedPoints.Count;
+    }
+
+    private IEnumerator AddNewStandingPointAndJumpLinksAfterExplosion(Vector2 explosionCenter, float explosionRadius, DestructibleTerrainManager terrain)
+    {
+        if(terrain.TryFindNearestStandingPoint(explosionCenter + Vector2.down * explosionRadius, _pixelResolution / 2, _points.Count, out var newStandingPoint))
+        {
+            var possibleLinkedPoints = new List<StandingPoint>();
+            foreach(var p in _points)
+            {
+                if (!p.IsValid)
+                    continue;
+
+                if(Vector2.Distance(p.WorldPos, explosionCenter) < explosionRadius * ExplosionRadiusMultiplierForNewJumpLinks)
+                {
+                    possibleLinkedPoints.Add(p);
+                }
+            }
+
+            _points.Add(newStandingPoint);
+            _adjency.Add(new Dictionary<int, JumpLink>());
+
+            yield return SimulateJumpsFromGivenPointsAndCreateJumpLinks(possibleLinkedPoints, new StandingPoint[] { newStandingPoint }, terrain);
+            yield return SimulateJumpsFromGivenPointsAndCreateJumpLinks(new StandingPoint[] { newStandingPoint }, _points , terrain);
+        }
+        Debug.Log($"Jump graph update finished");
+        _isReady = true;
+    }
 
 
     #endregion
@@ -158,7 +239,7 @@ public class JumpGraph : UnityDriven
 
     private StandingPoint FindClosestStandingPoint(Vector2 position)
     {
-        return _points[_points.Select(p => (Vector2.Distance(p.WorldPos, position), p.Id)).Min().Id];
+        return _points[_points.Where(p=> p.IsValid).Select(p => (Vector2.Distance(p.WorldPos, position), p.Id)).Min().Id];
     }
 
     private List<JumpLink> FindShortestJumpPath(int startId, int endId) // BFS

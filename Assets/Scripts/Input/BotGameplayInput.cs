@@ -43,6 +43,7 @@ public class BotGameplayInput : MonoBehaviour, IGameplayInputSource
     {
         yield return new WaitForSeconds(0.3f);
         var context = _contextProvider.CreateContext(_team, action);
+        yield return new WaitUntil(() => context.JumpGraph.IsReady);
         _brain.ThinkAndAct(context);
     }
 

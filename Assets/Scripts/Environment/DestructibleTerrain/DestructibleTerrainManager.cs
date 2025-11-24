@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -26,6 +27,8 @@ public class DestructibleTerrainManager : MonoBehaviour
     private List<ExplosionHole> _newHoles;
     private List<ExplosionHole> _removableHoles;
 
+    public event Action<Vector2, float> TerrainModifiedByExplosion;
+
     private void Awake()
     {
         _explosionHoleContainer = _initialExplosionHoleContainer;
@@ -47,6 +50,7 @@ public class DestructibleTerrainManager : MonoBehaviour
     {
         _renderer.ApplyExplosion(position, radius);
         AddNewExplosionHole(position, radius);
+        TerrainModifiedByExplosion?.Invoke(position, radius);
         if (_newHoles.Count >= _explosionHoleThresholdForColliderRebuild)
         {
             InitiateColliderRebuild();
@@ -141,6 +145,11 @@ public class DestructibleTerrainManager : MonoBehaviour
     public bool TryFindNearestStandingPoint(Vector2Int pixelCoordinates, int searchRadius, int standingPointId, out StandingPoint result)
     {
         return _renderer.TryFindNearestStandingPoint(pixelCoordinates, searchRadius, standingPointId, out result);
+    }
+
+    public bool TryFindNearestStandingPoint(Vector2 worldPos, int searchRadius, int standingPointId, out StandingPoint result)
+    {
+        return _renderer.TryFindNearestStandingPoint(worldPos, searchRadius, standingPointId, out result);
     }
 
     #endregion

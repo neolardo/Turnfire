@@ -13,6 +13,12 @@ public class JumpGraphManager : MonoBehaviour
     {
         JumpGraph = new JumpGraph(this, PixelResolution, _pixelUI.PixelsPerUnit, Constants.MinJumpStrength, _characterWidth, _characterHeight);
         JumpGraph.InitiateGraphCreationFromTerrain(_terrain);
+        _terrain.TerrainModifiedByExplosion += OnTerrainModifiedByExplosion;
+    }
+
+    private void OnTerrainModifiedByExplosion(Vector2 position, float radius)
+    {
+        JumpGraph.ApplyExplosion(position, radius, _terrain);
     }
 
 }
