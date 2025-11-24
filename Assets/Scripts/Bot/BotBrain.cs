@@ -1,13 +1,11 @@
 using System.Linq;
+using System.Net.Mime;
 using UnityEngine;
 
 public class BotBrain
 {
     private BotTuning _tuning;
     public BotGameplayInput _input;
-
-    private const float AimAngleStep = 5f;
-    private const float AimStrengthStep = .1f;
 
     public BotBrain(BotTuning tuning, BotGameplayInput input)
     {
@@ -38,6 +36,12 @@ public class BotBrain
 
     private BotGoal DecideGoalWhenReadyToMove(BotContext context)
     {
+        if (context.Packages.Count() > 0)
+        {
+            return new BotGoal(BotGoalType.MoveToTarget, context.Packages.First().transform.position); //TODO: closest by jump
+        }
+
+
         if (context.Self.NormalizedHealth < _tuning.FleeHealthThreshold || context.Self.GetSelectedItem() == null)
         {
             if(context.Packages.Count() > 0)
@@ -104,42 +108,30 @@ public class BotBrain
 
     private void MoveToTarget(Vector2 target, BotContext context)
     {
-        var jumpVector = CalculateJumpVector(context.Self.transform.position, target, context);
-        _input.AimAndRelease(jumpVector);
-    }
-
-    //TODO: to coroutine
-    public Vector2 CalculateJumpVector(Vector2 start, Vector2 target, BotContext context)
-    {
-        Vector2 bestJump = default;
-        float bestScore = 0;
-
-        for (float angle = 0; angle < 360f; angle += AimAngleStep)
+        var start = context.Self.FeetPosition;
+        var jumpPath = context.JumpGraph.FindShortestJumpPath(start, target);
+        if (jumpPath == null || jumpPath.Count == 0)
         {
-            Vector2 direction = angle.AngleDegreesToVector();
-            if( ((target-start).x * direction.x < 0  )        // target and jump vector are at facing the opposite side
-                || (target.y > start.y && direction.y < 0))   // or target is upwards, but the jump would go downwards
+            _input.SkipAction();
+        }
+        else
+        {
+            var jumpLink = jumpPath.First();
+            if (context.JumpGraph.IsJumpPredictionValid(start, jumpLink, context.DestructibleTerrain))
             {
-                continue;
+                _input.AimAndRelease(jumpLink.JumpVector);
+                Debug.Log("Jump is valid!");
+                context.JumpGraph.DrawLink(jumpLink, context.DestructibleTerrain);
             }
-            for (float strength = 0; strength <= 1f; strength += AimStrengthStep)
+            else
             {
-                Vector2 jumpVector = direction * strength;
-                var destination = context.Self.SimulateJumpAndCalculateDestination(start, jumpVector, context.DestructibleTerrain);
-                //TODO: calculate score based on a* distance
-                float score = destination.Approximately(target) ? float.PositiveInfinity : 1f / Vector2.Distance(destination, target);
-
-                if (score > bestScore)
-                {
-                    bestScore = score;
-                    bestJump = jumpVector;
-                }
-
+                var jumpVector = context.JumpGraph.CalculateCorrectedJumpVectorToStandingPoint(start, jumpLink.FromId);
+                _input.AimAndRelease(jumpVector);
+                Debug.Log("Jump is not valid...");
             }
         }
-
-        return bestJump;
     }
+
 
     private void Flee(BotContext context)
     {
@@ -165,10 +157,10 @@ public class BotBrain
         float bestScore = float.NegativeInfinity;
         Vector2 bestShot = default;
 
-        for (float angle = 0; angle < 360f; angle+= AimAngleStep)
+        for (float angle = 0; angle < 360f; angle+= Constants.AimAngleSimulationStep)
         {
             Vector2 direction = angle.AngleDegreesToVector();
-            for (float strength = 0; strength <= 1f; strength += AimStrengthStep)
+            for (float strength = 0; strength <= 1f; strength += Constants.AimStrengthSimulationStep)
             {
                 Vector2 aimVector = direction * strength;
 

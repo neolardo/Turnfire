@@ -10,6 +10,10 @@ public static class Constants
     //projectile
     public const float ProjectileOffset = 1.1f;
 
+    //jump
+    public const float MinJumpStrength = 7;
+    public const float MaxJumpStrength = 10;
+
     // raycast
     public const int RaycastHitColliderNumMax = 5;
     public const int ProjectileRaycastDistance = 30;
@@ -55,4 +59,6 @@ public static class Constants
     public const float MaxParabolicPathSimulationTime = 10f; 
     public const float ParabolicPathSimulationDeltaForMovement = .05f;
     public const float ParabolicPathSimulationDeltaForProjectiles = .02f;
+    public const float AimAngleSimulationStep = 5f;
+    public const float AimStrengthSimulationStep = .1f;
 }

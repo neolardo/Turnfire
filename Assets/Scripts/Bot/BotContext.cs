@@ -8,8 +8,9 @@ public readonly struct BotContext
     public readonly IEnumerable<Character> Enemies;
     public readonly IEnumerable<Package> Packages;
     public readonly DestructibleTerrainManager DestructibleTerrain;
+    public readonly JumpGraph JumpGraph;
 
-    public BotContext(CharacterActionStateType actionState, Character self, IEnumerable<Character> teamMates, IEnumerable<Character> enemies, IEnumerable<Package> packages, DestructibleTerrainManager destructibleTerrain)
+    public BotContext(CharacterActionStateType actionState, Character self, IEnumerable<Character> teamMates, IEnumerable<Character> enemies, IEnumerable<Package> packages, DestructibleTerrainManager destructibleTerrain, JumpGraph jumpGraph)
     {
         ActionState = actionState;
         Self = self;
@@ -17,6 +18,7 @@ public readonly struct BotContext
         Enemies = enemies;
         Packages = packages;
         DestructibleTerrain = destructibleTerrain;
+        JumpGraph = jumpGraph;
     }
 
 }

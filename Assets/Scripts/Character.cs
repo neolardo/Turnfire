@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TMPro;
-using UnityEditor.U2D.Animation;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class Character : MonoBehaviour
@@ -44,6 +41,8 @@ public class Character : MonoBehaviour
     public bool IsMoving => _rb.linearVelocity.magnitude > Mathf.Epsilon;
     public bool IsUsingSelectedItem => _selectedItem == null ? false : _selectedItem.Behavior.IsInUse;
     public float NormalizedHealth => _health / (float)CharacterDefinition.MaxHealth;
+
+    public Vector2 FeetPosition => (Vector2)transform.position + Vector2.down *_col.bounds.extents.y;
 
     public event Action<float, int> HealthChanged;
     public event Action Died;

@@ -14,10 +14,10 @@ public static class VectorExtensions
 
     public static Vector2 AngleDegreesToVector(this float angle)
     {
-        return new Vector2(Mathf.Sin(angle * Mathf.Deg2Rad), Mathf.Cos(angle * Mathf.Deg2Rad));
+        return new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad));
     }
     public static Vector2 AngleRadiansToVector(this float angle)
     {
-        return new Vector2(Mathf.Sin(angle), Mathf.Cos(angle));
+        return new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
     }
 }

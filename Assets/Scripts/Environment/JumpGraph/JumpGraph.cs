@@ -1,0 +1,275 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+
+public class JumpGraph : UnityDriven
+{
+    private readonly List<StandingPoint> _points = new List<StandingPoint>();
+    private readonly List<Dictionary<int, JumpLink>> _adjency = new List<Dictionary<int, JumpLink>>();
+
+    private readonly int _pixelResolution;
+    private readonly int _pixelsPerUnit;
+    private readonly float _jumpStrength;
+    private readonly float _characterWidth;
+    private readonly float _characterHeight;
+
+    private readonly Vector2[] CharacterColliderCornerPoints = new Vector2[6];
+    private float GridPointHalfDistance =>  (_pixelResolution / 2f) / _pixelsPerUnit;
+    private float JumpValidationDistance =>  _pixelResolution  / (float)_pixelsPerUnit;
+
+    private bool _isReady;
+    public bool IsGraphCreationFinished => _isReady;
+
+
+    public JumpGraph(MonoBehaviour coroutineManager, int pixelResolution, int pixelsPerUnit, float jumpStrength, float characterWidth, float characterHeight) : base(coroutineManager)
+    {
+        _pixelResolution = pixelResolution;
+        _pixelsPerUnit = pixelsPerUnit;
+        _jumpStrength = jumpStrength;
+        _characterWidth = characterWidth;
+        _characterHeight = characterHeight;
+        CacheCharacterColliderCornerPoints();
+    }
+
+    private void CacheCharacterColliderCornerPoints()
+    {
+        CharacterColliderCornerPoints[0] = new Vector2(0, 0);
+        CharacterColliderCornerPoints[1] = new Vector2(0,_characterHeight);
+        CharacterColliderCornerPoints[2] = new Vector2(-_characterWidth/2, 0);
+        CharacterColliderCornerPoints[3] = new Vector2(_characterWidth/2, 0);
+        CharacterColliderCornerPoints[4] = new Vector2(-_characterWidth/2, _characterHeight );
+        CharacterColliderCornerPoints[5] = new Vector2(_characterWidth/2, _characterHeight );
+    }
+
+    #region Creation
+
+    public void InitiateGraphCreationFromTerrain(DestructibleTerrainManager terrain)
+    {
+        StartCoroutine(CreateStandingPointsAndJumpLinks(terrain));
+    }
+
+    private IEnumerator CreateStandingPointsAndJumpLinks(DestructibleTerrainManager terrain)
+    {
+        yield return CreateStandingPoints(terrain);
+        yield return SimulateAllJumpsFromAllPointsAndCreateJumpLinks(terrain);
+    }
+
+    private IEnumerator CreateStandingPoints(DestructibleTerrainManager terrain)
+    {
+        Debug.Log($"Jump graph creation started");
+        const int iterationThreshold = 100;
+        int iteration = 0;
+        var terrainPixelSize = terrain.PixelSize;
+        for (int x = 0; x < terrainPixelSize.x; x += _pixelResolution)
+        {
+            for (int y = 0; y < terrainPixelSize.y; y += _pixelResolution)
+            {
+                if (terrain.TryFindNearestStandingPoint(new Vector2Int(x, y), _pixelResolution / 2, _points.Count, out var standingPoint))
+                {
+                    _points.Add(standingPoint);
+                    _adjency.Add(new Dictionary<int, JumpLink>());
+                }
+                iteration++;
+                if (iteration % iterationThreshold == 0)
+                {
+                    yield return null;
+                }
+            }
+        }
+        Debug.Log($"Created {_points.Count} standing points");
+    }
+    private IEnumerator SimulateAllJumpsFromAllPointsAndCreateJumpLinks(DestructibleTerrainManager terrain)
+    {
+        int linkCount = 0;
+        foreach (var startP in _points)
+        {
+
+            for (float angle = 0; angle < 180f; angle += Constants.AimAngleSimulationStep) // negative jumps are not simulated
+            {
+                Vector2 direction = angle.AngleDegreesToVector();
+
+                for (float strength = 0; strength <= 1f; strength += Constants.AimStrengthSimulationStep)
+                {
+                    Vector2 jumpVector = direction * strength;
+                    var destination = SimulateJumpAndCalculateDestination(startP.WorldPos, jumpVector, terrain);
+                    foreach (var endP in _points) 
+                    {
+                        if (endP.Id == startP.Id)
+                            continue;
+
+                        var delta = endP.WorldPos - destination;
+                        if (Mathf.Abs(delta.x) < GridPointHalfDistance && Mathf.Abs(delta.y) < GridPointHalfDistance)
+                        {
+                            if (!_adjency[startP.Id].ContainsKey(endP.Id))
+                            {
+                                _adjency[startP.Id].Add(endP.Id, new JumpLink(startP.Id, endP.Id, jumpVector));
+                                linkCount++;
+                            }
+                            break;
+                        }
+                    }
+
+                }
+            }
+            yield return null;
+        }
+        Debug.Log($"Jump graph creation finished: {linkCount} links created in total");
+        _isReady = true;
+    }
+
+    private Vector2 SimulateJumpAndCalculateDestination(Vector2 start, Vector2 jumpVector, DestructibleTerrainManager terrain)
+    {
+        Vector2 pos = start;
+        var velocity = jumpVector * _jumpStrength;
+        const float dt = Constants.ParabolicPathSimulationDeltaForMovement;
+        for (float t = 0; t < Constants.MaxParabolicPathSimulationTime; t += Constants.ParabolicPathSimulationDeltaForMovement)
+        {
+            pos += velocity * dt;
+            velocity += Physics2D.gravity * dt;
+
+            if (!terrain.IsPointInsideBounds(pos))
+                return pos;
+
+            foreach(var colliderPoint in CharacterColliderCornerPoints)
+            {
+                if (terrain.OverlapPoint(pos + colliderPoint))
+                {
+                    return pos;
+                }
+            }
+
+        }
+        return pos;
+    }
+
+
+
+    #endregion
+
+    #region Path Search
+
+    public List<JumpLink> FindShortestJumpPath(Vector2 startPos, Vector2 endPos)
+    {
+        var start = FindClosestStandingPoint(startPos);
+        var end = FindClosestStandingPoint(endPos);
+        return FindShortestJumpPath(start.Id, end.Id);
+    }
+
+    private StandingPoint FindClosestStandingPoint(Vector2 position)
+    {
+        return _points[_points.Select(p => (Vector2.Distance(p.WorldPos, position), p.Id)).Min().Id];
+    }
+
+    private List<JumpLink> FindShortestJumpPath(int startId, int endId) // BFS
+    {
+        if (startId == endId)
+            return new List<JumpLink>();
+
+        var queue = new Queue<int>();
+        var visited = new HashSet<int>();
+        var parent = new Dictionary<int, int>();            // childId -> parentId
+        var parentLink = new Dictionary<int, JumpLink>();   // childId -> incoming JumpLink
+
+        queue.Enqueue(startId);
+        visited.Add(startId);
+
+        while (queue.Count > 0)
+        {
+            int current = queue.Dequeue();
+
+            foreach (var kvp in _adjency[current])
+            {
+                int nextId = kvp.Key;
+                JumpLink link = kvp.Value;
+
+                if (visited.Contains(nextId))
+                    continue;
+
+                visited.Add(nextId);
+                parent[nextId] = current;
+                parentLink[nextId] = link;
+
+                if (nextId == endId)
+                {
+                    return ReconstructPath(startId, endId, parent, parentLink);
+                }
+
+                queue.Enqueue(nextId);
+            }
+        }
+
+        return null;
+    }
+
+    private List<JumpLink> ReconstructPath(int startId, int endId, Dictionary<int, int> parent, Dictionary<int, JumpLink> parentLink)
+    {
+        var path = new List<JumpLink>();
+        int current = endId;
+
+        while (current != startId)
+        {
+            if (!parentLink.TryGetValue(current, out var link))
+                break;
+
+            path.Add(link);
+            current = parent[current];
+        }
+
+        path.Reverse();
+        return path;
+    }
+
+    #endregion
+
+    #region Validation and Correction
+
+    public bool IsJumpPredictionValid(Vector2 start, JumpLink jumpLink, DestructibleTerrainManager terrain)
+    {
+        var destination = SimulateJumpAndCalculateDestination(start, jumpLink.JumpVector, terrain);
+        var startDelta = start - _points[jumpLink.FromId].WorldPos;
+        var predictedEnd = _points[jumpLink.ToId].WorldPos + startDelta;
+        return Vector2.Distance(predictedEnd, destination) < JumpValidationDistance;
+    }
+
+    public Vector2 CalculateCorrectedJumpVectorToStandingPoint(Vector2 start, int standingPointId)
+    {
+        return CalculateJumpVector(start, _points[standingPointId].WorldPos);
+    }
+
+    private Vector2 CalculateJumpVector( Vector2 from, Vector2 to)
+    {
+        Vector2 jumpVector = (to - from).normalized;
+        Vector2 g = Physics2D.gravity;
+
+        const int steps = 30;
+        const float minTime = 0.5f;
+        const float maxTime = 10f;
+        float bestT = -1f;
+        Vector2 bestV = Vector2.zero;
+
+        for (int i = 0; i < steps; i++)
+        {
+            float t = Mathf.Lerp(minTime, maxTime, i / (float)(steps - 1));
+
+            Vector2 V = (to - from - 0.5f * g * t * t) / t;
+
+            if (V.magnitude <= _jumpStrength)
+            {
+                bestT = t;
+                bestV = V;
+                break; // shortest-arc valid jump
+            }
+        }
+
+        if (bestT > 0f)
+        {
+            jumpVector = bestV / _jumpStrength;
+        }
+
+        return jumpVector;
+    }
+
+    #endregion
+
+}

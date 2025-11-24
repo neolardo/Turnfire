@@ -78,7 +78,6 @@ public class GrenadeProjectileBehavior : SimpleProjectileBehavior
                 contactCount++;
 
                 var normal = terrain.GetNearestNormalAtPoint(pos);
-                Debug.DrawRay(pos, normal, Color.blue, 10); //TODO: delete
                 velocity = PhysicsMaterial2DHelpers.ApplyMaterialBounce(velocity, normal, _definition.GrenadePhysicsMaterial);
                 if (contactCount >= _definition.ExplosionContactThreshold)
                 {

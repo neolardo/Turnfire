@@ -1,7 +1,4 @@
-using System;
-using System.Net.NetworkInformation;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 using UnityEngine.Tilemaps;
 
 [RequireComponent(typeof(SpriteRenderer))]
@@ -14,6 +11,8 @@ public class DestructibleTerrainRenderer : MonoBehaviour
     private int _width, _height;
     public Texture2D Texture { get; private set; }
 
+    public Vector2 Size => new Vector2(Texture.width / (float)_pixelsPerUnit, Texture.height / (float)_pixelsPerUnit);
+    public Vector2 PixelSize => new Vector2(Texture.width, Texture.height);
     public Vector2 CenteredPivotOffset { get; private set; }
 
     private Vector2 _textureOffset;
@@ -119,7 +118,7 @@ public class DestructibleTerrainRenderer : MonoBehaviour
     {
         Vector2 local = WorldToLocal(worldPos);
 
-        var p = LocalPointToPixelCoordinate(local);
+        var p = LocalPointToPixelCoordinates(local);
         int r = Mathf.RoundToInt(radius * _pixelsPerUnit);
 
         for (int y = -r; y <= r; y++)
@@ -151,7 +150,7 @@ public class DestructibleTerrainRenderer : MonoBehaviour
         while (angle < 360)
         {
             var ringPoint = localCenter + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
-            var p = LocalPointToPixelCoordinate(ringPoint);
+            var p = LocalPointToPixelCoordinates(ringPoint);
             if (IsSolidPixel(p))
             {
                 return true;
@@ -164,15 +163,59 @@ public class DestructibleTerrainRenderer : MonoBehaviour
     public bool OverlapPoint(Vector2 worldPos)
     {
         Vector2 local = WorldToLocal(worldPos);
-        var p = LocalPointToPixelCoordinate(local);
+        var p = LocalPointToPixelCoordinates(local);
         return IsSolidPixel(p);
     }
 
     public bool IsPointInsideBounds(Vector2 worldPos)
     {
         Vector2 local = WorldToLocal(worldPos);
-        var p = LocalPointToPixelCoordinate(local);
+        var p = LocalPointToPixelCoordinates(local);
         return !IsPixelOutOfBounds(p); 
+    }
+
+    #endregion
+
+    #region Standing Point
+
+    public bool TryFindNearestStandingPoint(Vector2Int pixelCoordinates, int searchRadius, int standingPointId, out StandingPoint standingPoint)
+    {
+        standingPoint = default;
+
+        for (int r = 0; r <= searchRadius; r++)
+        {
+            for (int dx = -r; dx <= r; dx++)
+            {
+                for (int dy = -r; dy <= r; dy++)
+                {
+                    if (Mathf.Abs(dx) != r && Mathf.Abs(dy) != r)
+                        continue; // only check the edges of the square ring
+
+                    int px = pixelCoordinates.x + dx;
+                    int py = pixelCoordinates.y + dy;
+
+                    if (IsPixelOutOfBounds(px, py))
+                        continue;
+
+                    if (!IsSolidPixel(px, py))
+                        continue;
+
+                    if (!IsHorizontalEdgePixel(px, py))
+                        continue;
+
+                    var p = new Vector2Int(px, py);
+                    if (StandingPoint.IsStandingNormal(ComputeNormalAtPoint(p)))
+                    {
+                        var localP = PixelCoordinatesToLocalPoint(p);
+                        var worldP = LocalToWorld(localP);
+                        standingPoint = new StandingPoint(standingPointId, worldP, p);
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     #endregion
@@ -182,7 +225,7 @@ public class DestructibleTerrainRenderer : MonoBehaviour
     public Vector2 GetNearestNormalAtPoint(Vector2 worldPos)
     {
         Vector2 local = WorldToLocal(worldPos);
-        Vector2Int origin = LocalPointToPixelCoordinate(local);
+        Vector2Int origin = LocalPointToPixelCoordinates(local);
 
         if (!TryFindNearestSolidEdgePixel(origin, MaxSearchRadiusForNormalCalculation, out Vector2Int nearestSolidPixel))
         {
@@ -226,6 +269,7 @@ public class DestructibleTerrainRenderer : MonoBehaviour
         return false;
     }
 
+
     private bool IsEdgePixel(int x, int y)
     {
         foreach (var edgeNeighbor in EdgeNeighbors)
@@ -244,6 +288,24 @@ public class DestructibleTerrainRenderer : MonoBehaviour
         return false;
     }
 
+    private bool IsHorizontalEdgePixel(int x, int y, int minHalfWidth = 8)
+    {
+        if(!IsEdgePixel(x, y))
+        { 
+            return false;
+        }
+
+        for (int nx = 1; nx <= minHalfWidth; nx++)
+        {
+            if(!IsSolidPixel(x + nx, y) || !IsSolidPixel(x - nx, y))
+            {
+                return false; 
+            }    
+        }
+
+        return true;
+    }
+
     private Vector2 ComputeNormalAtPoint(Vector2Int point)
     {
         Vector2 normal = Vector2.zero;
@@ -253,10 +315,7 @@ public class DestructibleTerrainRenderer : MonoBehaviour
             int nx = point.x + normalNeighbor.x;
             int ny = point.y + normalNeighbor.y;
 
-            if (IsPixelOutOfBounds(nx, ny))
-                continue;
-
-            if (!IsSolidPixel(nx, ny)) // edge
+            if (IsPixelOutOfBounds(nx, ny) || !IsSolidPixel(nx, ny))
             {
                 normal += new Vector2(normalNeighbor.x, normalNeighbor.y);
             }
@@ -271,6 +330,8 @@ public class DestructibleTerrainRenderer : MonoBehaviour
     }
 
     #endregion
+
+    #region Pixel Utilities
 
     private bool IsSolidPixel(Vector2Int p)
     {
@@ -287,7 +348,7 @@ public class DestructibleTerrainRenderer : MonoBehaviour
     }
     private bool IsPixelOutOfBounds(Vector2Int p)
     {
-        return p.x < 0 || p.y < 0 || p.x >= _width|| p.y >= _height;
+        return p.x < 0 || p.y < 0 || p.x >= _width || p.y >= _height;
     }
 
     private Vector2 WorldToLocal(Vector2 worldPos)
@@ -295,10 +356,23 @@ public class DestructibleTerrainRenderer : MonoBehaviour
         return worldPos - CenteredPivotOffset;
     }
 
-    private Vector2Int LocalPointToPixelCoordinate(Vector2 local)
+    private Vector2 LocalToWorld(Vector2 localPos)
+    {
+        return localPos + CenteredPivotOffset;
+    }
+
+    private Vector2Int LocalPointToPixelCoordinates(Vector2 local)
     {
         return new Vector2Int(
             Mathf.RoundToInt(local.x * _pixelsPerUnit + _width / 2f),
          Mathf.RoundToInt(local.y * _pixelsPerUnit + _height / 2f));
     }
+    private Vector2 PixelCoordinatesToLocalPoint(Vector2Int pixelCoordinates)
+    {
+        return new Vector2(
+            (pixelCoordinates.x - _width / 2f)  / _pixelsPerUnit,
+            (pixelCoordinates.y - _height / 2f) / _pixelsPerUnit);
+    }
+
+    #endregion
 }

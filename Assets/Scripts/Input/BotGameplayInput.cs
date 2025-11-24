@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class BotGameplayInput : MonoBehaviour, IGameplayInputSource
@@ -35,6 +36,12 @@ public class BotGameplayInput : MonoBehaviour, IGameplayInputSource
 
     public void StartProvidingInputForAction(CharacterActionStateType action)
     {
+        StartCoroutine(DelayThenThinkAndAct(action));
+    }
+
+    private IEnumerator DelayThenThinkAndAct(CharacterActionStateType action)
+    {
+        yield return new WaitForSeconds(0.8f);
         var context = _contextProvider.CreateContext(_team, action);
         _brain.ThinkAndAct(context);
     }

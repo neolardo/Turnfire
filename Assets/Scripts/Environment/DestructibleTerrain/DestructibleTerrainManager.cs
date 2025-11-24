@@ -16,6 +16,9 @@ public class DestructibleTerrainManager : MonoBehaviour
     [SerializeField] private Transform _initialExplosionHoleContainer;
     [SerializeField] private int _explosionHoleThresholdForColliderRebuild;
 
+    public Vector2 Size => _renderer.Size;
+    public Vector2 PixelSize => _renderer.PixelSize;
+
     private Transform _explosionHoleContainer;
 
     private bool _firstRebuildDone;
@@ -57,7 +60,7 @@ public class DestructibleTerrainManager : MonoBehaviour
         hole.transform.SetParent(_explosionHoleContainer, true);
         hole.Initialize(position, radius);
         _newHoles.Add(hole);
-    } 
+    }
 
     #endregion
 
@@ -123,11 +126,21 @@ public class DestructibleTerrainManager : MonoBehaviour
     }
 
     #endregion
+
     #region Normal Calculation
 
     public Vector2 GetNearestNormalAtPoint(Vector2 worldPos)
     {
         return _renderer.GetNearestNormalAtPoint(worldPos);
+    }
+
+    #endregion
+
+    #region Standing Point
+
+    public bool TryFindNearestStandingPoint(Vector2Int pixelCoordinates, int searchRadius, int standingPointId, out StandingPoint result)
+    {
+        return _renderer.TryFindNearestStandingPoint(pixelCoordinates, searchRadius, standingPointId, out result);
     }
 
     #endregion
