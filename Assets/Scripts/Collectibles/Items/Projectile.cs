@@ -12,8 +12,9 @@ public class Projectile : MonoBehaviour
     private IProjectileBehavior _behavior;
     private ProjectileDefinition _definition;
     private ExplosionPool _explosionPool;
-
     public ExplosionPool ExplosionPool => _explosionPool;
+    public CircleCollider2D Collider => _col;
+    public Rigidbody2D Rigidbody => _rb;
 
     public event Action<ExplosionInfo> Exploded;
 
@@ -28,6 +29,7 @@ public class Projectile : MonoBehaviour
 
     public void Initialize(ProjectileDefinition definition, IProjectileBehavior behavior)
     {
+        _col.radius = definition.ColliderRadius;
         _col.isTrigger = true;
         _col.sharedMaterial = null;
         _rb.gravityScale = 1;
@@ -63,7 +65,7 @@ public class Projectile : MonoBehaviour
     {
         _spriteRenderer.sprite = _definition.Sprite;
         gameObject.SetActive(true);
-        _behavior.Launch(new ProjectileLaunchContext(itemContext, fireStrength * _rb.mass, _rb, _col));
+        _behavior.Launch(new ProjectileLaunchContext(itemContext, fireStrength * _rb.mass));
     }
 
     private void OnExploded(ExplosionInfo ei)

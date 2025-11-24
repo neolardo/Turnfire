@@ -1,8 +1,9 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class BulletProjectileBehavior : SimpleProjectileBehavior
+public class BulletProjectileBehavior : BallisticProjectileBehavior
 {
     private BulletProjectileDefinition _definition;
 
@@ -16,7 +17,7 @@ public class BulletProjectileBehavior : SimpleProjectileBehavior
     public override void Launch(ProjectileLaunchContext context)
     {
         _exploded = false;
-        var rb = context.ProjectileRigidbody;
+        var rb = _projectile.Rigidbody;
         float angle = Mathf.Atan2(context.AimVector.y, context.AimVector.x) * Mathf.Rad2Deg;
         rb.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         rb.gravityScale = 0;
@@ -27,7 +28,7 @@ public class BulletProjectileBehavior : SimpleProjectileBehavior
 
     private IEnumerator ExplodeAtRaycastTarget(ProjectileLaunchContext context)
     {
-        var rb = context.ProjectileRigidbody;
+        var rb = _projectile.Rigidbody;
         var hit = Physics2D.Raycast(rb.transform.position, context.AimVector.normalized, Constants.ProjectileRaycastDistance, LayerMaskHelper.GetCombinedLayerMask(Constants.ProjectileCollisionLayers));
         if(hit.collider == null)
         {
@@ -46,28 +47,18 @@ public class BulletProjectileBehavior : SimpleProjectileBehavior
         Explode(new ProjectileContactContext(hit.point, hit.collider.tag));
     }
 
-    public override Vector2 SimulateProjectileBehaviorAndCalculateClosestPositionToTarget(Vector2 start, Vector2 target, Vector2 aimVector, DestructibleTerrainManager terrain, Character owner)
+    public override Vector2 SimulateProjectileBehaviorAndCalculateDestination(Vector2 start, Vector2 aimVector, DestructibleTerrainManager terrain, Character owner, IEnumerable<Character> others, bool asd)
     {
-        float minDist = Vector2.Distance(start, target);
-        Vector2 minPos = start;
-
         var numHits = Physics2D.RaycastNonAlloc(start, aimVector, raycastHitArray, Constants.ProjectileRaycastDistance, LayerMaskHelper.GetCombinedLayerMask(Constants.ProjectileCollisionLayers));
-        var closestHit = raycastHitArray.Take(numHits).Where(hit => hit.collider != owner.Collider).OrderBy(hit => Vector2.Distance(hit.point, target)).FirstOrDefault();
+        var closestHit = raycastHitArray.Take(numHits).Where(hit => hit.collider != owner.Collider).OrderBy(hit => hit.distance).FirstOrDefault();
         
         if (closestHit.collider == null)
         {
-            return minPos;
+            return start;
         }
         else
         {
-            if(Vector2.Distance(closestHit.point, target) <  minDist)
-            {
-                return closestHit.point;
-            }
-            else
-            {
-                return minPos;
-            }
+            return closestHit.point;
         }
     }
 }

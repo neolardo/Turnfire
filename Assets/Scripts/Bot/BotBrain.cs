@@ -1,12 +1,14 @@
+using System;
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 
-public class BotBrain
+public class BotBrain : UnityDriven
 {
     private BotTuning _tuning;
     public BotGameplayInput _input;
 
-    public BotBrain(BotTuning tuning, BotGameplayInput input)
+    public BotBrain(BotTuning tuning, BotGameplayInput input, MonoBehaviour coroutineManager) : base(coroutineManager)
     {
         _tuning = tuning;
         _input = input;
@@ -109,7 +111,7 @@ public class BotBrain
     {
         var start = context.Self.FeetPosition;
         var jumpPath = context.JumpGraph.FindShortestJumpPath(start, target);
-        if (jumpPath == null || jumpPath.Count == 0)
+        if (jumpPath == null || jumpPath.Count == 0) //TODO: why? where to jump instead?
         {
             _input.SkipAction();
         }
@@ -131,7 +133,7 @@ public class BotBrain
 
     private void Flee(BotContext context)
     {
-        var direction = Random.insideUnitCircle; //TODO: safe position instead
+        var direction = UnityEngine.Random.insideUnitCircle; //TODO: safe position instead
         _input.AimAndRelease(direction);
     }
 
@@ -142,13 +144,20 @@ public class BotBrain
     private void ShootTarget(Vector2 target, Item weapon, BotContext context)
     {
         _input.SwitchSelectedItemTo(weapon);
-        var aimVector = CalculateShootVector(context.Self.transform.position, target, weapon.Behavior as WeaponBehavior, context);
+        StartCoroutine(CalculateShootVectorAndFireAtTarget(target, weapon, context));
+    }
+
+    private IEnumerator CalculateShootVectorAndFireAtTarget(Vector2 target, Item weapon, BotContext context)
+    {
+        Vector2 aimVector = default;
+        yield return CalculateShootVector(context.Self.transform.position, target, weapon.Behavior as WeaponBehavior, context, vec => aimVector = vec);
         //TODO: apply randomness
+        (weapon.Behavior as WeaponBehavior).SimulateWeaponBehaviorAndCalculateDestination(context.Self.transform.position, aimVector, context.DestructibleTerrain, context.Self, context.Enemies.Concat(context.TeamMates), true);
         _input.AimAndRelease(aimVector);
     }
 
     //TODO: to coroutine
-    public Vector2 CalculateShootVector(Vector2 start, Vector2 target, WeaponBehavior weaponBehavior, BotContext context)
+    public IEnumerator CalculateShootVector(Vector2 start, Vector2 target, WeaponBehavior weaponBehavior, BotContext context, Action<Vector2> onDone)
     {
         float bestScore = float.NegativeInfinity;
         Vector2 bestShot = default;
@@ -160,7 +169,7 @@ public class BotBrain
             {
                 Vector2 aimVector = direction * strength;
 
-                var destination = weaponBehavior.SimulateWeaponBehaviorAndCalculateClosestPositionToTarget(start, target, aimVector, context.DestructibleTerrain, context.Self);
+                var destination = weaponBehavior.SimulateWeaponBehaviorAndCalculateDestination(start, aimVector, context.DestructibleTerrain, context.Self, context.Enemies.Concat(context.TeamMates), false);
                 float score = destination.Approximately(target) ? float.PositiveInfinity :  1f / Vector2.Distance(destination, target);
 
                 if (score > bestScore)
@@ -169,9 +178,10 @@ public class BotBrain
                     bestShot = aimVector;
                 }
             }
+            yield return null;
         }
 
-        return bestShot;
+        onDone?.Invoke(bestShot);
     }
 
     #endregion

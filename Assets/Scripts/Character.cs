@@ -237,7 +237,29 @@ public class Character : MonoBehaviour
     public Item GetSelectedItem()
     {
         return _selectedItem;
-    }    
+    }
+
+    #endregion
+
+    #region Simulation Helpers
+
+    public bool OverlapPoint(Vector2 point)
+    {
+        return _col.bounds.Contains(point);
+    }
+
+    public Vector2 NormalAtPoint(Vector2 point)
+    {
+        float linearHalfLength = _col.bounds.extents.y - _col.bounds.extents.x;
+        if (Mathf.Abs(point.y - transform.position.y) < linearHalfLength)
+        {
+            return new Vector2(point.x - transform.position.x, 0).normalized;
+        }
+        else
+        {
+            return (point - (Vector2)transform.position).normalized;
+        }
+    }
 
     #endregion
 

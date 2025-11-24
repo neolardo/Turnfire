@@ -21,5 +21,6 @@ MonoBehaviour:
   ExplosionDefinition: {fileID: 11400000, guid: 5788c650c2c9edc4390278b0809e001f, type: 2}
   ExplosionContactThreshold: 4
   ExplosionDelaySeconds: 3
+  ColliderRadius: 0.1
   ContactSFX: {fileID: 11400000, guid: 62d186c8ecb3ab54882b78b5380030c4, type: 2}
   GrenadePhysicsMaterial: {fileID: 6200000, guid: 5801f470da9e3f44abf61cd1781f8383, type: 2}

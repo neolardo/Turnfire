@@ -1,21 +1,24 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class GrenadeProjectileBehavior : SimpleProjectileBehavior
+public class GrenadeProjectileBehavior : BallisticProjectileBehavior
 {
     private GrenadeProjectileDefinition _definition;
     private int _contactCount;
+
     public GrenadeProjectileBehavior(GrenadeProjectileDefinition definition) : base(definition)
     {
         _definition = definition;
     }
 
+
     public override void Launch(ProjectileLaunchContext context)
     {
         _contactCount = 0;
         _exploded = false;
-        var rb = context.ProjectileRigidbody;
-        var col = context.ProjectileCollider;
+        var rb = _projectile.Rigidbody;
+        var col = _projectile.Collider;
         col.isTrigger = false;
         col.sharedMaterial = _definition.GrenadePhysicsMaterial;
         PlaceProjectile(context);
@@ -25,8 +28,8 @@ public class GrenadeProjectileBehavior : SimpleProjectileBehavior
 
     protected override void PlaceProjectile(ProjectileLaunchContext context)
     {
-        var rb = context.ProjectileRigidbody;
-        if (SafeObjectPlacer.TryFindSafePosition(context.AimOrigin, context.AimVector.normalized, LayerMaskHelper.GetCombinedLayerMask(Constants.ProjectileCollisionLayers), context.ProjectileCollider.radius, out var safePosition))
+        var rb = _projectile.Rigidbody;
+        if (SafeObjectPlacer.TryFindSafePosition(context.AimOrigin, context.AimVector.normalized, LayerMaskHelper.GetCombinedLayerMask(Constants.ProjectileCollisionLayers), _definition.ColliderRadius, out var safePosition))
         {
             rb.transform.position = safePosition;
         }
@@ -52,37 +55,70 @@ public class GrenadeProjectileBehavior : SimpleProjectileBehavior
         }
     }
 
-    public override Vector2 SimulateProjectileBehaviorAndCalculateClosestPositionToTarget(Vector2 start, Vector2 target, Vector2 aimVector, DestructibleTerrainManager terrain, Character owner)
+    public override Vector2 SimulateProjectileBehaviorAndCalculateDestination(Vector2 start, Vector2 aimVector, DestructibleTerrainManager terrain, Character owner, IEnumerable<Character> others, bool asd)
     {
         Vector2 velocity = aimVector;
-        float minDist = Vector2.Distance(start, target);
-        Vector2 minPos = start;
+
         Vector2 pos = start;
+
+        if (SafeObjectPlacer.TryFindSafePosition(start, aimVector.normalized, LayerMaskHelper.GetCombinedLayerMask(Constants.ProjectileCollisionLayers), _definition.ColliderRadius, out var safePosition))
+        {
+            pos = safePosition;
+        }
+
+
         int contactCount = 0;
         const float dt = Constants.ParabolicPathSimulationDeltaForProjectiles;
 
         for (float t = 0; t < Constants.MaxParabolicPathSimulationTime; t += Constants.ParabolicPathSimulationDeltaForProjectiles)
         {
+            var lastPos = pos; //TODO: delete
             pos += velocity * dt;
             velocity += Physics2D.gravity * dt;
 
-            float currentDist = Vector2.Distance(pos, target);
-            if (currentDist < minDist)
+            if (asd)
             {
-                minDist = currentDist;
-                minPos = pos;
+                Debug.DrawLine(lastPos, pos, Color.green, 3f);
             }
 
-            if (terrain.OverlapPoint(pos))
+            bool contacted = false;
+            Vector2 normal = default;
+            foreach (var cornerPoint in _colliderCornerPoints)
             {
-                contactCount++;
-
-                var normal = terrain.GetNearestNormalAtPoint(pos);
-                velocity = PhysicsMaterial2DHelpers.ApplyMaterialBounce(velocity, normal, _definition.GrenadePhysicsMaterial);
-                if (contactCount >= _definition.ExplosionContactThreshold)
+                var cornerPos = pos + cornerPoint;
+                
+                if (terrain.OverlapPoint(cornerPos)) // terrain contact
                 {
+                    normal = terrain.GetNearestNormalAtPoint(cornerPos);
+                    contacted = true;
+                }
+                else
+                {
+                    foreach(var c in others)
+                    {
+                        if (c.OverlapPoint(cornerPos)) // character contact
+                        {
+                            normal = c.NormalAtPoint(cornerPos);
+                            contacted = true;
+                            break;
+                        }
+                    }
+                }
+                if(contacted)
+                {
+                    contactCount++;
+                    velocity = PhysicsMaterial2DHelpers.ApplyMaterialBounce(velocity, normal, _definition.GrenadePhysicsMaterial);
+                    if (contactCount >= _definition.ExplosionContactThreshold)
+                    {
+                        return pos;
+                    }
                     break;
                 }
+            }
+
+            if(t > _definition.ExplosionDelaySeconds)
+            {
+                break;
             }
 
             if (!terrain.IsPointInsideBounds(pos))
@@ -91,7 +127,7 @@ public class GrenadeProjectileBehavior : SimpleProjectileBehavior
             }
         }
 
-        return minPos;
+        return pos;
     }
 
    

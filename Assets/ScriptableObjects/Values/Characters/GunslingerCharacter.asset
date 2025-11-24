@@ -33,4 +33,4 @@ MonoBehaviour:
   MaxHealth: 8
   JumpStrength: 7
   InitialItems:
-  - {fileID: 11400000, guid: 3adb2e281e926714ca60f3a253fa55dc, type: 2}
+  - {fileID: 11400000, guid: 0276c8487ff836a47a5b2849c6189187, type: 2}

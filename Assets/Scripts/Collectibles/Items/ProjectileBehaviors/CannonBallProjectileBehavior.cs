@@ -1,4 +1,4 @@
-public class CannonBallProjectileBehavior : SimpleProjectileBehavior
+public class CannonBallProjectileBehavior : BallisticProjectileBehavior
 {
     private CannonBallProjectileDefinition _definition;
 

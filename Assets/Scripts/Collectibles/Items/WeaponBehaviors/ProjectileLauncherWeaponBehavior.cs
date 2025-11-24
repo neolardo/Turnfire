@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -46,9 +47,8 @@ public class ProjectileLauncherWeaponBehavior : WeaponBehavior
         rendererManager.TrajectoryRenderer.SetTrajectoryMultipler(_definition.FireStrength.CalculateValue());
     }
 
-
-    public override Vector2 SimulateWeaponBehaviorAndCalculateClosestPositionToTarget(Vector2 start, Vector2 target, Vector2 aimVector, DestructibleTerrainManager terrain, Character owner)
+    public override Vector2 SimulateWeaponBehaviorAndCalculateDestination(Vector2 start, Vector2 aimVector, DestructibleTerrainManager terrain, Character owner, IEnumerable<Character> others, bool asd)
     {
-        return _projectileBehavior.SimulateProjectileBehaviorAndCalculateClosestPositionToTarget(start, target, aimVector * _definition.FireStrength.CalculateValue(), terrain, owner);
+        return _projectileBehavior.SimulateProjectileBehaviorAndCalculateDestination(start, aimVector * _definition.FireStrength.CalculateValue(), terrain, owner, others,  asd);
     }
 }

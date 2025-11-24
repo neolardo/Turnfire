@@ -115,7 +115,6 @@ public class JumpGraph : UnityDriven
                         {
                             if (!_adjency[startP.Id].ContainsKey(endP.Id))
                             {
-                                Debug.DrawLine(startP.WorldPos, endP.WorldPos, Color.blue, 5);
                                 _adjency[startP.Id].Add(endP.Id, new JumpLink(startP.Id, endP.Id, jumpVector));
                                 linkCount++;
                             }

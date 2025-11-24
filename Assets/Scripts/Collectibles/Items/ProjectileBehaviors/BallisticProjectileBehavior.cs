@@ -1,7 +1,8 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class SimpleProjectileBehavior : UnityDriven, IProjectileBehavior
+public class BallisticProjectileBehavior : UnityDriven, IProjectileBehavior
 {
     public event Action<ExplosionInfo> Exploded;
 
@@ -11,10 +12,22 @@ public class SimpleProjectileBehavior : UnityDriven, IProjectileBehavior
     protected bool _explodeOnce = true;
     protected bool _exploded;
 
-    public SimpleProjectileBehavior(ProjectileDefinition definition) : base(CoroutineRunner.Instance)
+    protected readonly Vector2[] _colliderCornerPoints = new Vector2[4];
+
+    public BallisticProjectileBehavior(ProjectileDefinition definition) : base(CoroutineRunner.Instance)
     {
         _definition = definition;
         _raycastHits = new RaycastHit2D[Constants.RaycastHitColliderNumMax];
+        CacheColliderCornerPoints();
+    }
+
+    private void CacheColliderCornerPoints()
+    {
+        var r = _definition.ColliderRadius;
+        _colliderCornerPoints[0] = new Vector2(-r, 0);
+        _colliderCornerPoints[1] = new Vector2(r, 0);
+        _colliderCornerPoints[2] = new Vector2(0, r);
+        _colliderCornerPoints[3] = new Vector2(0, -r);
     }
 
     public void SetProjectile(Projectile projectile)
@@ -25,14 +38,14 @@ public class SimpleProjectileBehavior : UnityDriven, IProjectileBehavior
     public virtual void Launch(ProjectileLaunchContext context)
     {
         _exploded = false;
-        var rb = context.ProjectileRigidbody;
+        var rb = _projectile.Rigidbody;
         PlaceProjectile(context);
         rb.AddForce(context.AimVector, ForceMode2D.Impulse);
     }
 
     protected virtual void PlaceProjectile(ProjectileLaunchContext context)
     {
-        var rb = context.ProjectileRigidbody;
+        var rb = _projectile.Rigidbody;
         var targetPos = context.AimOrigin + context.AimVector.normalized * Constants.ProjectileOffset;
         rb.MovePosition(targetPos);
         rb.transform.position = targetPos;
@@ -106,11 +119,9 @@ public class SimpleProjectileBehavior : UnityDriven, IProjectileBehavior
         Explode(new ProjectileContactContext(_projectile.transform.position, null));
     }
 
-    public virtual Vector2 SimulateProjectileBehaviorAndCalculateClosestPositionToTarget(Vector2 start, Vector2 target, Vector2 aimVector, DestructibleTerrainManager terrain, Character owner)
+    public virtual Vector2 SimulateProjectileBehaviorAndCalculateDestination(Vector2 start, Vector2 aimVector, DestructibleTerrainManager terrain, Character owner, IEnumerable<Character> others, bool asd)
     {
         Vector2 velocity = aimVector;
-        float minDist = Vector2.Distance(start, target);
-        Vector2 minPos = start;
         Vector2 pos = start;
         const float dt = Constants.ParabolicPathSimulationDeltaForProjectiles;
 
@@ -119,19 +130,30 @@ public class SimpleProjectileBehavior : UnityDriven, IProjectileBehavior
             pos += velocity * dt;
             velocity += Physics2D.gravity * dt;
 
-            float currentDist = Vector2.Distance(pos, target);
-            if (currentDist < minDist)
+            if (!terrain.IsPointInsideBounds(pos))
             {
-                minDist = currentDist;
-                minPos = pos;
+                return pos;
             }
 
-            if (!terrain.IsPointInsideBounds(pos) || terrain.OverlapPoint(pos))
+            foreach (var cornerPoint in _colliderCornerPoints)
             {
-                break;
+                var cornerPos = pos + cornerPoint;
+
+                if (terrain.OverlapPoint(cornerPos))
+                {
+                    return pos;
+                }
+
+                foreach (var c in others)
+                {
+                    if (c.OverlapPoint(cornerPos))
+                    {
+                        return pos;
+                    }
+                }
             }
         }
 
-        return minPos;
+        return pos;
     }
 }

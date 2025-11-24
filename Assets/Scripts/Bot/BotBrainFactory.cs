@@ -10,11 +10,11 @@ public class BotBrainFactory : MonoBehaviour
         switch (difficulty)
         {
             case BotDifficulty.Easy:
-                return new BotBrain(_easyTuning, input);
+                return new BotBrain(_easyTuning, input, this);
             case BotDifficulty.Medium:
-                return new BotBrain(_mediumTuning, input);
+                return new BotBrain(_mediumTuning, input, this);
             case BotDifficulty.Hard:
-                return new BotBrain(_hardTuning, input);
+                return new BotBrain(_hardTuning, input, this);
             default:
                 throw new System.Exception($"Invalid {nameof(BotDifficulty)} when creating {nameof(BotBrain)}s: {difficulty}");
         }

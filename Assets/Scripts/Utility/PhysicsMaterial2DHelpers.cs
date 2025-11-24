@@ -2,6 +2,9 @@ using UnityEngine;
 
 public static class PhysicsMaterial2DHelpers
 {
+    private const float ExtraTangentDamping = 0.75f;
+    private const float NormalMagnitudeBounceThreshold = 1.5f;
+
     public static Vector2 ApplyMaterialBounce(Vector2 velocity, Vector2 normal, PhysicsMaterial2D mat)
     {
         normal = normal.normalized;
@@ -11,12 +14,20 @@ public static class PhysicsMaterial2DHelpers
         Vector2 vNormal = vN * normal;
         Vector2 vTangent = velocity - vNormal;
 
+
         if (vN < 0f)
         {
             vNormal = -vNormal * mat.bounciness;
         }
-        vTangent *= (1f - Mathf.Clamp01(mat.friction));
 
-        return vNormal + vTangent;
+        if (Mathf.Abs(vN) < NormalMagnitudeBounceThreshold)
+        {
+            vNormal = Vector2.zero;
+        }
+
+        float frictionFactor = Mathf.Clamp01(mat.friction * 0.5f);
+        vTangent *= (1f - frictionFactor) * ExtraTangentDamping;
+
+        return (vNormal + vTangent) ;
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class WeaponBehavior : UnityDriven, IItemBehavior
@@ -22,5 +23,5 @@ public abstract class WeaponBehavior : UnityDriven, IItemBehavior
 
     public abstract void Use(ItemUsageContext context);
 
-    public abstract Vector2 SimulateWeaponBehaviorAndCalculateClosestPositionToTarget(Vector2 start, Vector2 target, Vector2 aimVector, DestructibleTerrainManager terrain, Character owner);
+    public abstract Vector2 SimulateWeaponBehaviorAndCalculateDestination(Vector2 start, Vector2 aimVector, DestructibleTerrainManager terrain, Character owner, IEnumerable<Character> others, bool asd);
 }
