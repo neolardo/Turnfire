@@ -41,7 +41,7 @@ public class BotGameplayInput : MonoBehaviour, IGameplayInputSource
 
     private IEnumerator DelayThenThinkAndAct(CharacterActionStateType action)
     {
-        yield return new WaitForSeconds(0.8f);
+        yield return new WaitForSeconds(0.3f);
         var context = _contextProvider.CreateContext(_team, action);
         _brain.ThinkAndAct(context);
     }

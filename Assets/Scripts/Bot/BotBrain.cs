@@ -120,14 +120,11 @@ public class BotBrain
             if (context.JumpGraph.IsJumpPredictionValid(start, jumpLink, context.DestructibleTerrain))
             {
                 _input.AimAndRelease(jumpLink.JumpVector);
-                Debug.Log("Jump is valid!");
-                context.JumpGraph.DrawLink(jumpLink, context.DestructibleTerrain);
             }
             else
             {
                 var jumpVector = context.JumpGraph.CalculateCorrectedJumpVectorToStandingPoint(start, jumpLink.FromId);
                 _input.AimAndRelease(jumpVector);
-                Debug.Log("Jump is not valid...");
             }
         }
     }
