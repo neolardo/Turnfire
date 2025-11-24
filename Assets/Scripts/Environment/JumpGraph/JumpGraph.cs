@@ -19,10 +19,16 @@ public class JumpGraph : UnityDriven
     private float JumpValidationDistance =>  _pixelResolution  / (float)_pixelsPerUnit;
 
     private const float ExplosionRadiusMultiplierForNewJumpLinks = 3;
+    private const float CollisionCheckDelaySeconds = .1f;
 
     private bool _isReady;
     public bool IsReady => _isReady;
 
+    // path calculation
+    private readonly Queue<int> _pointQueue = new Queue<int>();
+    private readonly HashSet<int> _visitedHashSet = new HashSet<int>();
+    private readonly Dictionary<int, int> _parentDict = new Dictionary<int, int>(); // childId -> parentId
+    private readonly Dictionary<int, JumpLink> _parentLinkDict = new Dictionary<int, JumpLink>();
 
     public JumpGraph(MonoBehaviour coroutineManager, int pixelResolution, int pixelsPerUnit, float jumpStrength, float characterWidth, float characterHeight) : base(coroutineManager)
     {
@@ -39,9 +45,9 @@ public class JumpGraph : UnityDriven
         CharacterColliderCornerPoints[0] = new Vector2(-_characterWidth / 2, 0);
         CharacterColliderCornerPoints[1] = new Vector2(_characterWidth / 2, 0);
         CharacterColliderCornerPoints[2] = new Vector2(-_characterWidth / 2, _characterHeight / 2);
-        CharacterColliderCornerPoints[3] = new Vector2(_characterWidth / 2, _characterHeight/2);
-        CharacterColliderCornerPoints[4] = new Vector2(-_characterWidth/2, _characterHeight);
-        CharacterColliderCornerPoints[5] = new Vector2(_characterWidth/2, _characterHeight);
+        CharacterColliderCornerPoints[3] = new Vector2(_characterWidth / 2, _characterHeight / 2);
+        CharacterColliderCornerPoints[4] = new Vector2(-_characterWidth / 2, _characterHeight);
+        CharacterColliderCornerPoints[5] = new Vector2(_characterWidth / 2, _characterHeight);
     }
 
     #region Creation
@@ -101,7 +107,7 @@ public class JumpGraph : UnityDriven
                     var destination = SimulateJumpAndCalculateDestination(startP.WorldPos, jumpVector, terrain);
                     foreach (var endP in endPoints) 
                     {
-                        if (endP.Id == startP.Id || !endP.IsValid)
+                        if (endP.Id == startP.Id || !endP.IsValid || endP.IsCornerPoint)
                             continue;
 
                         var delta = endP.WorldPos - destination;
@@ -109,6 +115,7 @@ public class JumpGraph : UnityDriven
                         {
                             if (!_adjency[startP.Id].ContainsKey(endP.Id))
                             {
+                                Debug.DrawLine(startP.WorldPos, endP.WorldPos, Color.blue, 5);
                                 _adjency[startP.Id].Add(endP.Id, new JumpLink(startP.Id, endP.Id, jumpVector));
                                 linkCount++;
                             }
@@ -136,11 +143,14 @@ public class JumpGraph : UnityDriven
             if (!terrain.IsPointInsideBounds(pos))
                 return pos;
 
-            foreach(var colliderPoint in CharacterColliderCornerPoints)
+            if (t >= CollisionCheckDelaySeconds)
             {
-                if (terrain.OverlapPoint(pos + colliderPoint))
+                foreach (var colliderPoint in CharacterColliderCornerPoints)
                 {
-                    return pos;
+                    if (terrain.OverlapPoint(pos + colliderPoint))
+                    {
+                        return pos;
+                    }
                 }
             }
 
@@ -247,36 +257,36 @@ public class JumpGraph : UnityDriven
         if (startId == endId)
             return new List<JumpLink>();
 
-        var queue = new Queue<int>();
-        var visited = new HashSet<int>();
-        var parent = new Dictionary<int, int>();            // childId -> parentId
-        var parentLink = new Dictionary<int, JumpLink>();   // childId -> incoming JumpLink
+        _pointQueue.Clear();
+        _visitedHashSet.Clear();
+        _parentDict.Clear();
+        _parentLinkDict.Clear();
 
-        queue.Enqueue(startId);
-        visited.Add(startId);
+        _pointQueue.Enqueue(startId);
+        _visitedHashSet.Add(startId);
 
-        while (queue.Count > 0)
+        while (_pointQueue.Count > 0)
         {
-            int current = queue.Dequeue();
+            int current = _pointQueue.Dequeue();
 
             foreach (var kvp in _adjency[current])
             {
                 int nextId = kvp.Key;
                 JumpLink link = kvp.Value;
 
-                if (visited.Contains(nextId))
+                if (_visitedHashSet.Contains(nextId))
                     continue;
 
-                visited.Add(nextId);
-                parent[nextId] = current;
-                parentLink[nextId] = link;
+                _visitedHashSet.Add(nextId);
+                _parentDict[nextId] = current;
+                _parentLinkDict[nextId] = link;
 
                 if (nextId == endId)
                 {
-                    return ReconstructPath(startId, endId, parent, parentLink);
+                    return ReconstructPath(startId, endId, _parentDict, _parentLinkDict);
                 }
 
-                queue.Enqueue(nextId);
+                _pointQueue.Enqueue(nextId);
             }
         }
 

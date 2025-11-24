@@ -215,7 +215,7 @@ public class DestructibleTerrainRenderer : MonoBehaviour
                     {
                         var localP = PixelCoordinatesToLocalPoint(p);
                         var worldP = LocalToWorld(localP);
-                        standingPoint = new StandingPoint(standingPointId, worldP, p);
+                        standingPoint = new StandingPoint(standingPointId, worldP, p, !IsHorizontalEdgePixel(p.x, p.y, (int)(StandingPoint.NonCornerPointNeighbourHalfWidth * _pixelsPerUnit)));
                         return true;
                     }
                 }
