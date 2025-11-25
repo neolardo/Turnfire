@@ -119,7 +119,7 @@ public class BallisticProjectileBehavior : UnityDriven, IProjectileBehavior
         Explode(new ProjectileContactContext(_projectile.transform.position, null));
     }
 
-    public virtual Vector2 SimulateProjectileBehaviorAndCalculateDestination(Vector2 start, Vector2 aimVector, DestructibleTerrainManager terrain, Character owner, IEnumerable<Character> others, bool asd)
+    public virtual WeaponBehaviorSimulationResult SimulateProjectileBehavior(Vector2 start, Vector2 aimVector, DestructibleTerrainManager terrain, Character owner, IEnumerable<Character> others)
     {
         Vector2 velocity = aimVector;
         Vector2 pos = start;

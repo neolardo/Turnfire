@@ -1,7 +1,12 @@
 using System;
 using System.Collections;
 using System.Linq;
+using System.Net;
+using TMPro.EditorUtilities;
+using Unity.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 
 public class BotBrain : UnityDriven
 {
@@ -37,31 +42,134 @@ public class BotBrain : UnityDriven
 
     private BotGoal DecideGoalWhenReadyToMove(BotContext context)
     {
-        if (context.Packages.Count() > 0)
+        var startPos = context.JumpGraph.FindClosestStandingPoint(context.Self.FeetPosition);
+        var possiblePositions = context.JumpGraph.GetAllLinkedStandingPointsFromStartPosition(startPos);
+        possiblePositions = possiblePositions.Append(startPos);
+
+        float bestScore = float.NegativeInfinity;
+        StandingPoint bestPos = default;
+        
+        foreach(var pos in possiblePositions) 
         {
-            return new BotGoal(BotGoalType.MoveToTarget, context.Packages.First().transform.position); //TODO: closest by jump
+            var score = EvaluatePositionScore(pos, context);
+            if(score > bestScore)
+            {
+                bestScore = score;
+                bestPos = pos;
+            }
         }
 
-
-        if (context.Self.NormalizedHealth < _tuning.FleeHealthThreshold || context.Self.GetSelectedItem() == null)
+        if(bestPos == startPos)
         {
-            if(context.Packages.Count() > 0)
+            return new BotGoal(BotGoalType.SkipAction);
+        }
+        else 
+        {
+            return new BotGoal(BotGoalType.MoveToTarget, bestPos);
+        }
+    }
+
+    private IEnumerator EvaluatePositionScore(StandingPoint pos, BotContext context, Action<float> onDone)
+    {
+        float score = 0;
+        // offense
+        var selectedItem = context.Self.GetSelectedItem();
+        Item preferredWeapon = null;
+        if (selectedItem != null) 
+        {
+            var weapons = context.Self.GetAllItems().Where(i => i.Definition.ItemType == ItemType.Weapon);
+            preferredWeapon = selectedItem.Definition.ItemType == ItemType.Weapon ? selectedItem : weapons.FirstOrDefault();
+            float bestDamageScore = 0;
+            if (_tuning.PreferHighestDamageDealingWeapon)
             {
-                return new BotGoal(BotGoalType.MoveToTarget, context.Packages.First().transform.position); //TODO: closest by jump
+                float damageScore = 0;
+                foreach (var weapon in weapons)
+                {
+                    var weaponBehavior = (weapon.Behavior as WeaponBehavior);
+                    yield return CalculateBestShootVector(pos.WorldPos - context.Self.FeetOffset, weaponBehavior, context, (_, s) => damageScore = s);
+                    if( damageScore > bestDamageScore)
+                    {
+                        preferredWeapon = weapon;
+                        bestDamageScore = damageScore;
+                    }
+                }
             }
             else
             {
-                return new BotGoal(BotGoalType.Flee);
+                var weaponBehavior = (preferredWeapon.Behavior as WeaponBehavior);
+                yield return CalculateBestShootVector(pos.WorldPos - context.Self.FeetOffset, weaponBehavior, context, (_, s) => bestDamageScore = s);
+            }
+            score += _tuning.BestDamagingPlaceSearchWeight * bestDamageScore; 
+        }
+        // defense
+        if(context.Self.NormalizedHealth < _tuning.SafePlaceSearchHealthThreshold)
+        {
+            score -= _tuning.SafePlaceSearchWeight * NumEnemiesVisibleFromPoint(pos);
+        }
+        // package
+        float bestPackageScore = 0;
+        foreach (Package p in context.Packages)
+        {
+            var packagePos = context.JumpGraph.FindClosestStandingPoint(p.transform.position);
+            if(context.JumpGraph.TryCalculateJumpDistanceBetween(pos, packagePos, out var numJumps))
+            {
+                float packageScore = numJumps * _tuning.PackageSearchWeight;
+                if(packageScore > bestPackageScore) 
+                {
+                    bestPackageScore = packageScore;
+                }
             }
         }
-        else
+        score += bestPackageScore;
+        // decision randomness
+        score += UnityEngine.Random.Range(-_tuning.DecisionRandomnessBias/2f, _tuning.DecisionRandomnessBias/2f);
+        //TODO: preferred weapon!
+        onDone?.Invoke(score);
+    }
+
+    public IEnumerator CalculateBestShootVector(Vector2 start, WeaponBehavior weaponBehavior, BotContext context, Action<Vector2, float> onDone)
+    {
+        float bestScore = float.NegativeInfinity;
+        Vector2 bestShot = default;
+        var others = context.TeamMates.Concat(context.Enemies);
+
+        for (float angle = 0; angle < 360f; angle += Constants.AimAngleSimulationStep)
         {
-            return new BotGoal(BotGoalType.SkipAction); //TODO
+            Vector2 direction = angle.AngleDegreesToVector();
+            for (float strength = 0; strength <= 1f; strength += Constants.AimStrengthSimulationStep)
+            {
+                Vector2 aimVector = direction * strength;
+
+                var result = weaponBehavior.SimulateWeaponBehavior(start, aimVector, context.Terrain, context.Self, others);
+
+                float score = 
+                if (score > bestScore)
+                {
+                    bestScore = score;
+                    bestShot = aimVector;
+                }
+            }
+            yield return null;
         }
+
+        onDone?.Invoke(bestShot, bestScore);
+    }
+
+    private int NumEnemiesVisibleFromPoint(StandingPoint pos)
+    {
+        //TODO: implement
+        return 0;
     }
 
     private BotGoal DecideGoalWhenReadyToUseItem(BotContext context)
     {
+        // damage to enemies?
+        // damage to allies?
+        // ammo?
+        // best weapon?
+        // + aim randomness
+        // + decision randomness
+
         if (context.Self.GetSelectedItem() == null)
         {
             return new BotGoal(BotGoalType.SkipAction);
@@ -83,10 +191,6 @@ public class BotBrain : UnityDriven
             case BotGoalType.MoveToTarget:
                 MoveToTarget(goal.Target, context);
                 Debug.Log("Bot moved to target");
-                break;
-            case BotGoalType.Flee:
-                Flee(context);
-                Debug.Log("Bot flee");
                 break;
             case BotGoalType.ShootTarget:
                 ShootTarget(goal.Target, goal.PreferredItem, context);
@@ -118,7 +222,7 @@ public class BotBrain : UnityDriven
         else
         {
             var jumpLink = jumpPath.First();
-            if (context.JumpGraph.IsJumpPredictionValid(start, jumpLink, context.DestructibleTerrain))
+            if (context.JumpGraph.IsJumpPredictionValid(start, jumpLink, context.Terrain))
             {
                 _input.AimAndRelease(jumpLink.JumpVector);
             }
@@ -130,12 +234,6 @@ public class BotBrain : UnityDriven
         }
     }
 
-
-    private void Flee(BotContext context)
-    {
-        var direction = UnityEngine.Random.insideUnitCircle; //TODO: safe position instead
-        _input.AimAndRelease(direction);
-    }
 
     #endregion
 
@@ -152,37 +250,11 @@ public class BotBrain : UnityDriven
         Vector2 aimVector = default;
         yield return CalculateShootVector(context.Self.transform.position, target, weapon.Behavior as WeaponBehavior, context, vec => aimVector = vec);
         //TODO: apply randomness
-        (weapon.Behavior as WeaponBehavior).SimulateWeaponBehaviorAndCalculateDestination(context.Self.transform.position, aimVector, context.DestructibleTerrain, context.Self, context.Enemies.Concat(context.TeamMates), true);
+        (weapon.Behavior as WeaponBehavior).SimulateWeaponBehavior(context.Self.transform.position, aimVector, context.Terrain, context.Self, context.Enemies.Concat(context.TeamMates), true);
         _input.AimAndRelease(aimVector);
     }
 
-    //TODO: to coroutine
-    public IEnumerator CalculateShootVector(Vector2 start, Vector2 target, WeaponBehavior weaponBehavior, BotContext context, Action<Vector2> onDone)
-    {
-        float bestScore = float.NegativeInfinity;
-        Vector2 bestShot = default;
-
-        for (float angle = 0; angle < 360f; angle+= Constants.AimAngleSimulationStep)
-        {
-            Vector2 direction = angle.AngleDegreesToVector();
-            for (float strength = 0; strength <= 1f; strength += Constants.AimStrengthSimulationStep)
-            {
-                Vector2 aimVector = direction * strength;
-
-                var destination = weaponBehavior.SimulateWeaponBehaviorAndCalculateDestination(start, aimVector, context.DestructibleTerrain, context.Self, context.Enemies.Concat(context.TeamMates), false);
-                float score = destination.Approximately(target) ? float.PositiveInfinity :  1f / Vector2.Distance(destination, target);
-
-                if (score > bestScore)
-                {
-                    bestScore = score;
-                    bestShot = aimVector;
-                }
-            }
-            yield return null;
-        }
-
-        onDone?.Invoke(bestShot);
-    }
+   
 
     #endregion
 

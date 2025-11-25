@@ -1,8 +1,23 @@
 [System.Serializable]
 public class BotTuning
 {
-    public float FleeHealthThreshold = 0.4f;
+    // personality
 
-    public float FleeBias = 0.4f;
-    public float PackageBias = 0.8f;
+    // movement weights
+    public float SafePlaceSearchHealthThreshold;
+    public float SafePlaceSearchWeight;
+    public float PackageSearchWeight;
+    public float BestDamagingPlaceSearchWeight;
+
+    // attack weights
+    public float DamageDealtWeight;
+    public float FriendlyFireDamageDealtWeight;
+    public float RemainingAmmoWeight;
+    public bool PreferHighestDamageDealingWeapon;
+
+    // skills
+    public float AimRandomnessBias;
+
+    // noise
+    public float DecisionRandomnessBias;
 }

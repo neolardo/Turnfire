@@ -47,8 +47,8 @@ public class ProjectileLauncherWeaponBehavior : WeaponBehavior
         rendererManager.TrajectoryRenderer.SetTrajectoryMultipler(_definition.FireStrength.CalculateValue());
     }
 
-    public override Vector2 SimulateWeaponBehaviorAndCalculateDestination(Vector2 start, Vector2 aimVector, DestructibleTerrainManager terrain, Character owner, IEnumerable<Character> others, bool asd)
+    public override WeaponBehaviorSimulationResult SimulateWeaponBehavior(Vector2 start, Vector2 aimVector, DestructibleTerrainManager terrain, Character owner, IEnumerable<Character> others)
     {
-        return _projectileBehavior.SimulateProjectileBehaviorAndCalculateDestination(start, aimVector * _definition.FireStrength.CalculateValue(), terrain, owner, others,  asd);
+        return _projectileBehavior.SimulateProjectileBehavior(start, aimVector * _definition.FireStrength.CalculateValue(), terrain, owner, others);
     }
 }

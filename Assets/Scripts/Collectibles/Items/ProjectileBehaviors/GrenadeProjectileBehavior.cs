@@ -55,7 +55,7 @@ public class GrenadeProjectileBehavior : BallisticProjectileBehavior
         }
     }
 
-    public override Vector2 SimulateProjectileBehaviorAndCalculateDestination(Vector2 start, Vector2 aimVector, DestructibleTerrainManager terrain, Character owner, IEnumerable<Character> others, bool asd)
+    public override WeaponBehaviorSimulationResult SimulateProjectileBehavior(Vector2 start, Vector2 aimVector, DestructibleTerrainManager terrain, Character owner, IEnumerable<Character> others)
     {
         Vector2 velocity = aimVector;
 

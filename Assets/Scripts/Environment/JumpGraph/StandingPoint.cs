@@ -26,5 +26,13 @@ public readonly struct StandingPoint
         return normal.y >= StandingNormalYMin;
     }
 
+    public static bool operator== (StandingPoint a, StandingPoint b)
+    {
+        return a.Id == b.Id;
+    }
 
+    public static bool operator!= (StandingPoint a, StandingPoint b)
+    {
+        return a.Id != b.Id;
+    }
 }

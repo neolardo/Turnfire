@@ -23,5 +23,5 @@ public abstract class WeaponBehavior : UnityDriven, IItemBehavior
 
     public abstract void Use(ItemUsageContext context);
 
-    public abstract Vector2 SimulateWeaponBehaviorAndCalculateDestination(Vector2 start, Vector2 aimVector, DestructibleTerrainManager terrain, Character owner, IEnumerable<Character> others, bool asd);
+    public abstract WeaponBehaviorSimulationResult SimulateWeaponBehavior(Vector2 start, Vector2 aimVector, DestructibleTerrainManager terrain, Character owner, IEnumerable<Character> others);
 }

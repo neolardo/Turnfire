@@ -44,6 +44,8 @@ public class Character : MonoBehaviour
 
     public Vector2 FeetPosition => (Vector2)transform.position + Vector2.down *_col.bounds.extents.y;
 
+    public Vector2 FeetOffset => Vector2.down * _col.bounds.extents.y;
+
     public event Action<float, int> HealthChanged;
     public event Action Died;
     public event Action<Item> SelectedItemChanged;

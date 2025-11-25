@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 public class JumpGraph : UnityDriven
@@ -246,7 +247,19 @@ public class JumpGraph : UnityDriven
         return FindShortestJumpPath(start.Id, end.Id);
     }
 
-    private StandingPoint FindClosestStandingPoint(Vector2 position)
+    public bool TryCalculateJumpDistanceBetween(StandingPoint start, StandingPoint end, out int numJumps)
+    {
+        var path = FindShortestJumpPath(start.Id, end.Id);
+        numJumps = path == null ? -1 : path.Count;
+        return path != null; 
+    }
+
+    public IEnumerable<StandingPoint> GetAllLinkedStandingPointsFromStartPosition(StandingPoint startPoint)
+    {
+        return _adjency[startPoint.Id].Values.Select(link => _points[link.ToId]);
+    }
+
+    public StandingPoint FindClosestStandingPoint(Vector2 position)
     {
         return _points[_points.Where(p=> p.IsValid).Select(p => (Vector2.Distance(p.WorldPos, position), p.Id)).Min().Id];
     }
