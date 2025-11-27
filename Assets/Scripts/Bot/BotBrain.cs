@@ -177,8 +177,8 @@ public class BotBrain : UnityDriven
             }
             if (!_tuning.OnlyShootIfCanDealDamage || bestDamageScore > 0)
             {
-                var aimRandomVec = UnityEngine.Random.insideUnitCircle * _tuning.AimRandomnessBias;
-                onDone?.Invoke(BotGoal.Shoot(Vector2.ClampMagnitude(bestShootVector + aimRandomVec, 1f), preferredWeapon));
+                var aimVector = ApplyAimRandomness(bestShootVector);
+                onDone?.Invoke(BotGoal.Shoot(aimVector, preferredWeapon));
             }
             else
             {
@@ -220,6 +220,15 @@ public class BotBrain : UnityDriven
         }
 
         onDone?.Invoke(bestShot, bestScore);
+    }
+
+    private Vector2 ApplyAimRandomness(Vector2 aimVector)
+    {
+        var angle = aimVector.ToAngleDegrees();
+        angle += UnityEngine.Random.Range(-_tuning.AimRandomnessBias / 2f, _tuning.AimRandomnessBias / 2f) * 360f;
+        var newDirection = angle.AngleDegreesToVector();
+        var newMagnitude = Mathf.Clamp01(aimVector.magnitude + UnityEngine.Random.Range(-_tuning.AimRandomnessBias / 2f, _tuning.AimRandomnessBias / 2f));
+        return newDirection * newMagnitude;
     }
 
     #endregion

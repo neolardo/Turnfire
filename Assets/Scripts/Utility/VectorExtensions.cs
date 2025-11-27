@@ -20,4 +20,8 @@ public static class VectorExtensions
     {
         return new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
     }
+    public static float ToAngleDegrees(this Vector2 vector)
+    {
+        return Vector2.SignedAngle(Vector2.right, vector);
+    }
 }

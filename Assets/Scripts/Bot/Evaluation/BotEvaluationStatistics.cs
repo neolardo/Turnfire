@@ -7,7 +7,7 @@ public static class BotEvaluationStatistics
 {
     private static Dictionary<Team, BotEvaluationData> _dataPerTeam;
     private static Dictionary<Team, BotDifficulty> _difficultyPerTeam;
-    private static string GetFilePath(BotEvaluationConfiguration config) => Path.Combine(Application.persistentDataPath, $"bot_evaluation_result_{config}.csv");
+    private static string GetFilePath(BotEvaluationConfiguration config) => Path.Combine(Application.persistentDataPath, $"bot_evaluation_result_{SceneLoader.Instance.CurrentGameplaySceneSettings.SceneName}_{config}.csv");
 
     public static void RegisterBot(Team team, BotDifficulty difficulty)
     {
