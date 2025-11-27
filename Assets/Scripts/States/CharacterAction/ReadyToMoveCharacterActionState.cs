@@ -38,7 +38,7 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
         _inputSource.IsAimingEnabled = true;
         _inputSource.IsOpeningInventoryEnabled = true;
         currentCharacter.InitializeMovementPreview(_trajectoryRenderer);
-        _inputSource.StartProvidingInputForAction(State);
+        _inputSource.InputRequestedForAction(State);
     }
 
     private void OnAimStarted(Vector2 initialPosition)

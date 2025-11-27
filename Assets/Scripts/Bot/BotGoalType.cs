@@ -1,7 +1,7 @@
 public enum BotGoalType
 {
     SkipAction = 0,
-    MoveToTarget = 1,
-    ShootTarget = 2,
+    Move = 1,
+    Shoot = 2,
     UseItem = 3,
 }

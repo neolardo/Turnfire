@@ -49,7 +49,6 @@ public class Team : MonoBehaviour
     public void InitializeInputSource(InputSourceType inputType)
     {
         _inputSource = GameplayInputSourceFactory.Create(inputType, gameObject);
-        _inputSource.Initialize(this);
     }
 
     private void OnAnyTeamCharacterHealthChanged()

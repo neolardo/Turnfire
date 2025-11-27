@@ -231,7 +231,7 @@ public class LocalGameplayInput : LocalInputBase, IGameplayInputSource
         ActionSkipped?.Invoke();
     }
 
-    public void StartProvidingInputForAction(CharacterActionStateType action) { } // local input is provided automatically
+    public void InputRequestedForAction(CharacterActionStateType action) { } // local input is provided automatically
 
 
     public void Initialize(Team team) { } // no need to initialize

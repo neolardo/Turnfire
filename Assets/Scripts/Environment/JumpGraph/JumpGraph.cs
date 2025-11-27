@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 public class JumpGraph : UnityDriven
@@ -240,33 +239,69 @@ public class JumpGraph : UnityDriven
 
     #region Path Search
 
-    public List<JumpLink> FindShortestJumpPath(Vector2 startPos, Vector2 endPos)
-    {
-        var start = FindClosestStandingPoint(startPos);
-        var end = FindClosestStandingPoint(endPos);
-        return FindShortestJumpPath(start.Id, end.Id);
-    }
-
     public bool TryCalculateJumpDistanceBetween(StandingPoint start, StandingPoint end, out int numJumps)
     {
-        var path = FindShortestJumpPath(start.Id, end.Id);
+        var path = FindShortestJumpPath(start, end);
         numJumps = path == null ? -1 : path.Count;
         return path != null; 
     }
 
-    public IEnumerable<StandingPoint> GetAllLinkedStandingPointsFromStartPosition(StandingPoint startPoint)
+    public IEnumerable<StandingPoint> GetAllLinkedStandingPointsFromPoint(StandingPoint startPoint)
     {
         return _adjency[startPoint.Id].Values.Select(link => _points[link.ToId]);
     }
+
+    public IEnumerable<StandingPoint> GetAllReachableStandingPointsFromPoint(StandingPoint startPoint) //BFS
+    {
+        var reachable = new List<StandingPoint>();
+
+        if (!startPoint.IsValid)
+            return reachable;
+
+        var visited = new HashSet<int>();
+        var queue = new Queue<int>();
+
+        visited.Add(startPoint.Id);
+        queue.Enqueue(startPoint.Id);
+
+        while (queue.Count > 0)
+        {
+            int currentId = queue.Dequeue();
+            var currentPoint = _points[currentId];
+
+            // Collect valid points only
+            if (currentPoint.IsValid)
+                reachable.Add(currentPoint);
+
+            // For each outgoing jump from this point
+            foreach (var kvp in _adjency[currentId])
+            {
+                int nextId = kvp.Key;
+
+                // skip invalid or visited nodes
+                if (visited.Contains(nextId))
+                    continue;
+
+                if (!_points[nextId].IsValid)
+                    continue;
+
+                visited.Add(nextId);
+                queue.Enqueue(nextId);
+            }
+        }
+
+        return reachable;
+    }
+
 
     public StandingPoint FindClosestStandingPoint(Vector2 position)
     {
         return _points[_points.Where(p=> p.IsValid).Select(p => (Vector2.Distance(p.WorldPos, position), p.Id)).Min().Id];
     }
 
-    private List<JumpLink> FindShortestJumpPath(int startId, int endId) // BFS
+    public List<JumpLink> FindShortestJumpPath(StandingPoint start, StandingPoint end) // BFS
     {
-        if (startId == endId)
+        if (start.Id == end.Id)
             return new List<JumpLink>();
 
         _pointQueue.Clear();
@@ -274,8 +309,8 @@ public class JumpGraph : UnityDriven
         _parentDict.Clear();
         _parentLinkDict.Clear();
 
-        _pointQueue.Enqueue(startId);
-        _visitedHashSet.Add(startId);
+        _pointQueue.Enqueue(start.Id);
+        _visitedHashSet.Add(start.Id);
 
         while (_pointQueue.Count > 0)
         {
@@ -293,9 +328,9 @@ public class JumpGraph : UnityDriven
                 _parentDict[nextId] = current;
                 _parentLinkDict[nextId] = link;
 
-                if (nextId == endId)
+                if (nextId == end.Id)
                 {
-                    return ReconstructPath(startId, endId, _parentDict, _parentLinkDict);
+                    return ReconstructPath(start.Id, end.Id, _parentDict, _parentLinkDict);
                 }
 
                 _pointQueue.Enqueue(nextId);
@@ -323,6 +358,8 @@ public class JumpGraph : UnityDriven
         return path;
     }
 
+
+
     #endregion
 
     #region Validation and Correction
@@ -335,9 +372,9 @@ public class JumpGraph : UnityDriven
         return Vector2.Distance(predictedEnd, destination) < JumpValidationDistance;
     }
 
-    public Vector2 CalculateCorrectedJumpVectorToStandingPoint(Vector2 start, int standingPointId)
+    public Vector2 CalculateCorrectedJumpVectorToStandingPoint(Vector2 start, StandingPoint standingPoint)
     {
-        return CalculateJumpVector(start, _points[standingPointId].WorldPos);
+        return CalculateJumpVector(start, standingPoint.WorldPos);
     }
 
     private Vector2 CalculateJumpVector( Vector2 from, Vector2 to)

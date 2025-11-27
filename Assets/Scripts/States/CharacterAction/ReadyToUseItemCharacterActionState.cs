@@ -72,7 +72,7 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
         _inputSource.IsOpeningInventoryEnabled = true;
         var context = new ItemUsageContext(_currentCharacter.transform.position, Vector2.zero, _currentCharacter.ItemTransform, _currentCharacter.Collider, _projectileManager);
         currentCharacter.GetSelectedItem().Behavior.InitializePreview(context, _rendererManager);
-        _inputSource.StartProvidingInputForAction(State);
+        _inputSource.InputRequestedForAction(State);
     }
 
     public void OnSelectedItemChanged(Item selectedItem)

@@ -7,7 +7,7 @@ public class BulletProjectileBehavior : BallisticProjectileBehavior
 {
     private BulletProjectileDefinition _definition;
 
-    private readonly RaycastHit2D[] raycastHitArray = new RaycastHit2D[Constants.RaycastHitColliderNumMax];
+    private readonly RaycastHit2D[] _raycastHitArray = new RaycastHit2D[Constants.RaycastHitColliderNumMax];
 
     public BulletProjectileBehavior(BulletProjectileDefinition definition) : base(definition)
     {
@@ -49,16 +49,16 @@ public class BulletProjectileBehavior : BallisticProjectileBehavior
 
     public override WeaponBehaviorSimulationResult SimulateProjectileBehavior(Vector2 start, Vector2 aimVector, DestructibleTerrainManager terrain, Character owner, IEnumerable<Character> others)
     {
-        var numHits = Physics2D.RaycastNonAlloc(start, aimVector, raycastHitArray, Constants.ProjectileRaycastDistance, LayerMaskHelper.GetCombinedLayerMask(Constants.ProjectileCollisionLayers));
-        var closestHit = raycastHitArray.Take(numHits).Where(hit => hit.collider != owner.Collider).OrderBy(hit => hit.distance).FirstOrDefault();
+        var numHits = Physics2D.RaycastNonAlloc(start, aimVector, _raycastHitArray, Constants.ProjectileRaycastDistance, LayerMaskHelper.GetCombinedLayerMask(Constants.ProjectileCollisionLayers));
+        var closestHit = _raycastHitArray.Take(numHits).Where(hit => hit.collider != owner.Collider).OrderBy(hit => hit.distance).FirstOrDefault();
         
         if (closestHit.collider == null)
         {
-            return start;
+            return WeaponBehaviorSimulationResult.Zero;
         }
         else
         {
-            return closestHit.point;
+            return SimulateExplosion(closestHit.point, owner);
         }
     }
 }

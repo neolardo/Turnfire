@@ -3,44 +3,20 @@ using UnityEngine;
 public readonly struct BotGoal
 {
     public readonly BotGoalType GoalType;
-    public readonly Vector2 Target;
-    public readonly StandingPoint TargetPoint;
+    public readonly Vector2 ShootVector;
+    public readonly StandingPoint Destination;
     public readonly Item PreferredItem;
 
-    public BotGoal(BotGoalType goal)
-    {
-        GoalType = goal;
-        Target = default;
-        TargetPoint = default;
-        PreferredItem = default;
-    }
-    public BotGoal(BotGoalType goal, Vector2 target)
-    {
-        GoalType = goal;
-        Target = target;
-        TargetPoint = default;
-        PreferredItem = default;
-    }
-    public BotGoal(BotGoalType goal, StandingPoint point)
-    {
-        GoalType = goal;
-        Target = point.WorldPos;
-        TargetPoint = point;
-        PreferredItem = default;
-    }
+    public static BotGoal SkipAction() => new BotGoal(BotGoalType.SkipAction, default, default, default);
+    public static BotGoal Move(StandingPoint destination) => new BotGoal(BotGoalType.Move, destination, default, default);
+    public static BotGoal Shoot(Vector2 shootVector, Item preferredItem) => new BotGoal(BotGoalType.Shoot, default, shootVector, preferredItem);
+    public static BotGoal UseItem(Item preferredItem) => new BotGoal(BotGoalType.UseItem, default, default, preferredItem);
 
-    public BotGoal(BotGoalType goal, Vector2 target, Item preferredItem)
+    public BotGoal(BotGoalType goal, StandingPoint destination, Vector2 shootVecor, Item preferredItem)
     {
         GoalType = goal;
-        Target = target;
-        TargetPoint = default;
-        PreferredItem = preferredItem;
-    }
-    public BotGoal(BotGoalType goal, Item preferredItem)
-    {
-        GoalType = goal;
-        Target = default;
-        TargetPoint = default;
+        ShootVector = shootVecor;
+        Destination = destination;
         PreferredItem = preferredItem;
     }
 }

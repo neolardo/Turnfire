@@ -14,8 +14,9 @@ public static class Constants
     public const float MinJumpStrength = 7;
     public const float MaxJumpStrength = 10;
 
-    // raycast
+    // raycast & overlap check
     public const int RaycastHitColliderNumMax = 5;
+    public const int OverlapHitColliderNumMax = 10;
     public const int ProjectileRaycastDistance = 30;
 
     //healthbar

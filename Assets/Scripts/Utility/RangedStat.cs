@@ -14,6 +14,7 @@ public abstract class RangedStat
 [Serializable]
 public abstract class RangedStat<T> : RangedStat where T: struct
 {
+    public abstract T AvarageValue { get; }
     public abstract T CalculateValue(); 
 }
 
@@ -23,6 +24,8 @@ public class RangedStatInt : RangedStat<int>
     [SerializeField] private RangedStatIntGroupDefinition _group;
 
     public override RangedStatGroupDefinition Group => _group;
+
+    public override int AvarageValue => Mathf.RoundToInt(Mathf.Lerp(_group.Minimum, _group.Maximum, NormalizedValue));
 
     public override int CalculateValue()
     {
@@ -46,6 +49,8 @@ public class RangedStatFloat : RangedStat<float>
 {
     [SerializeField] private RangedStatFloatGroupDefinition _group;
     public override RangedStatGroupDefinition Group => _group;
+
+    public override float AvarageValue => Mathf.Lerp(_group.Minimum, _group.Maximum, NormalizedValue);
 
     public override float CalculateValue()
     {

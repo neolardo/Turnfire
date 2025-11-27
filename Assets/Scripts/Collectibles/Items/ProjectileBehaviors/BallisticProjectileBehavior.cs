@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BallisticProjectileBehavior : UnityDriven, IProjectileBehavior
 {
@@ -12,7 +14,9 @@ public class BallisticProjectileBehavior : UnityDriven, IProjectileBehavior
     protected bool _explodeOnce = true;
     protected bool _exploded;
 
+    // simulation
     protected readonly Vector2[] _colliderCornerPoints = new Vector2[4];
+    private readonly Collider2D[] _overlapCheckColliders = new Collider2D[Constants.OverlapHitColliderNumMax];
 
     public BallisticProjectileBehavior(ProjectileDefinition definition) : base(CoroutineRunner.Instance)
     {
@@ -119,6 +123,8 @@ public class BallisticProjectileBehavior : UnityDriven, IProjectileBehavior
         Explode(new ProjectileContactContext(_projectile.transform.position, null));
     }
 
+    #region Simulation
+
     public virtual WeaponBehaviorSimulationResult SimulateProjectileBehavior(Vector2 start, Vector2 aimVector, DestructibleTerrainManager terrain, Character owner, IEnumerable<Character> others)
     {
         Vector2 velocity = aimVector;
@@ -132,7 +138,7 @@ public class BallisticProjectileBehavior : UnityDriven, IProjectileBehavior
 
             if (!terrain.IsPointInsideBounds(pos))
             {
-                return pos;
+                return SimulateExplosion(pos, owner);
             }
 
             foreach (var cornerPoint in _colliderCornerPoints)
@@ -141,19 +147,50 @@ public class BallisticProjectileBehavior : UnityDriven, IProjectileBehavior
 
                 if (terrain.OverlapPoint(cornerPos))
                 {
-                    return pos;
+                    return SimulateExplosion(pos, owner);
                 }
 
                 foreach (var c in others)
                 {
                     if (c.OverlapPoint(cornerPos))
                     {
-                        return pos;
+                        return SimulateExplosion(pos, owner);
                     }
                 }
             }
         }
 
-        return pos;
+        return SimulateExplosion(pos, owner);
     }
+
+    protected WeaponBehaviorSimulationResult SimulateExplosion(Vector2 position, Character owner)
+    {
+        float radius = _definition.ExplosionDefinition.Radius.AvarageValue;
+        float damage = _definition.Damage.AvarageValue;
+        float allyDamage = 0;
+        float enemyDamage = 0;
+
+        var mask = LayerMaskHelper.GetLayerMask(Constants.CharacterLayer);
+        var filter = new ContactFilter2D();
+        filter.SetLayerMask(mask);
+        int numHits = Physics2D.OverlapCircle(position, radius, filter, _overlapCheckColliders);
+        for (int i = 0; i < numHits; i++)
+        {
+            var hit = _overlapCheckColliders[i];
+            if (hit.TryGetComponent(out Character character))
+            {
+                if(character.Team == owner.Team)
+                {
+                    allyDamage += damage;
+                }
+                else
+                {
+                    enemyDamage += damage;
+                }
+            }
+        }
+        return new WeaponBehaviorSimulationResult(position, enemyDamage, allyDamage);
+    } 
+
+    #endregion
 }

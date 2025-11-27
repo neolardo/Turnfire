@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using UnityEngine;
 
 public class BotGameplayInput : MonoBehaviour, IGameplayInputSource
@@ -15,37 +14,16 @@ public class BotGameplayInput : MonoBehaviour, IGameplayInputSource
     public event Action SelectedItemUsed;
     public event Action<Item> ItemSwitched;
 
-    private Team _team;
-    private BotBrain _brain;
-    private BotContextProvider _contextProvider;
+    public event Action<CharacterActionStateType> InputRequested;
 
-    private void Awake()
+    public void InputRequestedForAction(CharacterActionStateType action)
     {
-        _contextProvider = FindFirstObjectByType<BotContextProvider>();
-    }
-    public void Initialize(Team team)
-    {
-        _team = team;
-        var botBrainFactory = FindFirstObjectByType<BotBrainFactory>();
-        _brain = botBrainFactory.CreateBrain(BotDifficulty.Easy, this); //TODO: get from scene loader
+        InputRequested?.Invoke(action);
     }
 
     public void ForceCancelAiming() { }
 
     public void ForceCloseInventory() { }
-
-    public void StartProvidingInputForAction(CharacterActionStateType action)
-    {
-        StartCoroutine(DelayThenThinkAndAct(action));
-    }
-
-    private IEnumerator DelayThenThinkAndAct(CharacterActionStateType action)
-    {
-        yield return new WaitForSeconds(0.3f);
-        var context = _contextProvider.CreateContext(_team, action);
-        yield return new WaitUntil(() => context.JumpGraph.IsReady);
-        _brain.ThinkAndAct(context);
-    }
 
     public void AimAndRelease(Vector2 aimVector)
     {

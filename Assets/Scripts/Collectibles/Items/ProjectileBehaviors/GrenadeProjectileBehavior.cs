@@ -58,7 +58,6 @@ public class GrenadeProjectileBehavior : BallisticProjectileBehavior
     public override WeaponBehaviorSimulationResult SimulateProjectileBehavior(Vector2 start, Vector2 aimVector, DestructibleTerrainManager terrain, Character owner, IEnumerable<Character> others)
     {
         Vector2 velocity = aimVector;
-
         Vector2 pos = start;
 
         if (SafeObjectPlacer.TryFindSafePosition(start, aimVector.normalized, LayerMaskHelper.GetCombinedLayerMask(Constants.ProjectileCollisionLayers), _definition.ColliderRadius, out var safePosition))
@@ -66,20 +65,13 @@ public class GrenadeProjectileBehavior : BallisticProjectileBehavior
             pos = safePosition;
         }
 
-
         int contactCount = 0;
         const float dt = Constants.ParabolicPathSimulationDeltaForProjectiles;
 
         for (float t = 0; t < Constants.MaxParabolicPathSimulationTime; t += Constants.ParabolicPathSimulationDeltaForProjectiles)
         {
-            var lastPos = pos; //TODO: delete
             pos += velocity * dt;
             velocity += Physics2D.gravity * dt;
-
-            if (asd)
-            {
-                Debug.DrawLine(lastPos, pos, Color.green, 3f);
-            }
 
             bool contacted = false;
             Vector2 normal = default;
@@ -110,7 +102,7 @@ public class GrenadeProjectileBehavior : BallisticProjectileBehavior
                     velocity = PhysicsMaterial2DHelpers.ApplyMaterialBounce(velocity, normal, _definition.GrenadePhysicsMaterial);
                     if (contactCount >= _definition.ExplosionContactThreshold)
                     {
-                        return pos;
+                        return SimulateExplosion(pos, owner);
                     }
                     break;
                 }
@@ -127,9 +119,9 @@ public class GrenadeProjectileBehavior : BallisticProjectileBehavior
             }
         }
 
-        return pos;
+        return SimulateExplosion(pos, owner);
     }
 
-   
+
 
 }

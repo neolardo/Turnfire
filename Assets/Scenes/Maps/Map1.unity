@@ -13885,6 +13885,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 582868025}
+  - component: {fileID: 582868026}
   m_Layer: 0
   m_Name: Teams
   m_TagString: Untagged
@@ -13911,6 +13912,23 @@ Transform:
   - {fileID: 200378577}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &582868026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 582868024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4f94d6e91fe0c443a0c98e5ddc8b0bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _possibleTeams:
+  - {fileID: 790148708}
+  - {fileID: 1383331854}
+  - {fileID: 862414571}
+  - {fileID: 200378576}
 --- !u!1 &605498159
 GameObject:
   m_ObjectHideFlags: 0
@@ -14130,6 +14148,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _pixelUI: {fileID: 11400000, guid: 93667ed427ce1234d954789779612623, type: 2}
   _terrain: {fileID: 527595123}
+  _characterHeight: 1
+  _characterWidth: 0.5
 --- !u!1001 &641705203
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -20551,11 +20571,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9db8cb41e493f964ca2a75e904e78008, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _possibleTeams:
-  - {fileID: 790148708}
-  - {fileID: 1383331854}
-  - {fileID: 862414571}
-  - {fileID: 200378576}
   _uiSounds: {fileID: 11400000, guid: 24e90cd52b550ec4d9553c5fd74a5aa0, type: 2}
 --- !u!114 &1468355173
 MonoBehaviour:
@@ -21507,8 +21522,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1969731779}
-  - component: {fileID: 1969731778}
   - component: {fileID: 1969731777}
+  - component: {fileID: 1969731780}
   m_Layer: 0
   m_Name: BotManagers
   m_TagString: Untagged
@@ -21528,30 +21543,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d55b5ff5ed9d49f40aac303c2d663216, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1969731778
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1969731776}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a2cb1e6117bf234fac818ab3d49b6fc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _easyTuning:
-    FleeHealthThreshold: 0
-    FleeBias: 0.4
-    PackageBias: 0.8
-  _mediumTuning:
-    FleeHealthThreshold: 0.4
-    FleeBias: 0.4
-    PackageBias: 0.8
-  _hardTuning:
-    FleeHealthThreshold: 0.4
-    FleeBias: 0.4
-    PackageBias: 0.8
 --- !u!4 &1969731779
 Transform:
   m_ObjectHideFlags: 0
@@ -21567,6 +21558,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 140908810}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1969731780
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1969731776}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64834f1a482b83e44b4886079f52657e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _easyTuning: {fileID: 11400000, guid: 5a6f36744b2d2d04f98a0919382e7d42, type: 2}
+  _mediumTuning: {fileID: 11400000, guid: aecfc1c2c242664409bb00e9834ab1e9, type: 2}
+  _hardTuning: {fileID: 11400000, guid: 87a3c985097f74648b085d78f99eac94, type: 2}
 --- !u!1 &1973031914
 GameObject:
   m_ObjectHideFlags: 0
@@ -21652,7 +21658,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 14.05
+  m_fontSize: 14.95
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -21732,15 +21738,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 111535900474779470, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.19000006
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 111535900474779470, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 111535900474779470, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1130317210070368361, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
       propertyPath: m_Size.x
@@ -21764,7 +21770,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5491490051535995749, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
       propertyPath: orthographic size
-      value: 6
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6070684801221486192, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
       propertyPath: Lens.OrthographicSize

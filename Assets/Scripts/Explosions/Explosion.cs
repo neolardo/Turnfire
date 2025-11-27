@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 [RequireComponent(typeof(OneShotAnimator))]
 public class Explosion : MonoBehaviour
@@ -13,7 +14,9 @@ public class Explosion : MonoBehaviour
 
     public event Action<Explosion> ExplosionFinished;
 
-    private const float DelayAfterExplosion = .3f; 
+    private const float DelayAfterExplosion = .3f;
+
+    private readonly Collider2D[] _overlapCheckColliders = new Collider2D[Constants.OverlapHitColliderNumMax];
 
     public bool IsExploding { get; private set; }
 
@@ -40,9 +43,12 @@ public class Explosion : MonoBehaviour
         var mask = LayerMaskHelper.GetCombinedLayerMask(Constants.GroundLayer, Constants.CharacterLayer);
         var explosionRadius = _explosionDefinition.Radius.CalculateValue();
         var explosionStrength = _explosionDefinition.Force.CalculateValue();
-        Collider2D[] hits = Physics2D.OverlapCircleAll(contactPoint, explosionRadius, mask);
-        foreach (var hit in hits)
+        var filter = new ContactFilter2D();
+        filter.SetLayerMask(mask);
+        int numHits = Physics2D.OverlapCircle(contactPoint, explosionRadius, filter, _overlapCheckColliders);
+        for(int i = 0; i < numHits; i++)
         {
+            var hit = _overlapCheckColliders[i];
             if (hit.TryGetComponent(out Character character))
             {
                 var pushVector = ((Vector2)character.transform.position - contactPoint) / explosionRadius;

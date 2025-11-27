@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class TurnManager : MonoBehaviour
 {
-    [SerializeField] private List<Team> _possibleTeams;
     [SerializeField] private UISoundsDefinition _uiSounds;
     private List<Team> _teams;
     private List<TurnState> _turnStates;
@@ -16,36 +15,10 @@ public class TurnManager : MonoBehaviour
     public event Action<GameplaySceneSettings> GameStarted;
     public event Action<Team> GameEnded;
 
-    void Awake()
+    public void Initialize(IEnumerable<Team> teams)
     {
-        if (_possibleTeams == null || _possibleTeams.Count == 0)
-        {
-            Debug.LogWarning("There are no teams.");
-        }
-    }
-
-    private void Start()
-    {
-        _teams = new List<Team>(_possibleTeams.Take(SceneLoader.Instance.CurrentGameplaySceneSettings.NumTeams));
-        bool first = true;//TODO
-        foreach ( var team in _teams) 
-        {
-            if(first) //TODO
-            {
-                team.InitializeInputSource(InputSourceType.Local);
-                first = false;
-            }
-            else
-            {
-                team.InitializeInputSource(InputSourceType.Bot);
-            }
-        }
-
-        for (int i = _teams.Count; i < _possibleTeams.Count; i++)
-        {
-            _possibleTeams[i].gameObject.SetActive(false);
-        }
-
+        _teams = new List<Team>(teams);
+       
         foreach (var team in _teams)
         {
             team.TeamLost += OnAnyTeamLost;

@@ -14,8 +14,7 @@ public interface IGameplayInputSource
     bool IsAimingEnabled { get; set; }
     bool IsOpeningInventoryEnabled { get; set; }
 
-    void Initialize(Team team);
     void ForceCloseInventory();
     void ForceCancelAiming();
-    void StartProvidingInputForAction(CharacterActionStateType action);
+    void InputRequestedForAction(CharacterActionStateType action);
 }
