@@ -53,6 +53,7 @@ public class TeamManager : MonoBehaviour
         Team analyzedTeam = _teams[Random.Range(0, _teams.Count)];
         analyzedTeam.InitializeInputSource(InputSourceType.Bot);
         botManagerFactory.CreateBotForTeam(analyzedTeam, analyzedDifficulty);
+        BotEvaluationStatistics.RegisterBot(analyzedTeam, analyzedDifficulty);
         foreach (var team in _teams)
         {
             if (team == analyzedTeam)
@@ -60,6 +61,7 @@ public class TeamManager : MonoBehaviour
 
             team.InitializeInputSource(InputSourceType.Bot);
             botManagerFactory.CreateBotForTeam(team, otherDifficulty);
+            BotEvaluationStatistics.RegisterBot(team, otherDifficulty);
         }
     }
 

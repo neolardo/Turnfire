@@ -6,8 +6,12 @@ public readonly struct ExplosionInfo
     public readonly Projectile Source;
     public readonly Explosion Explosion;
 
-    public ExplosionInfo(IEnumerable<Character> explodedCharacters, Projectile source, Explosion explosion)
+    // stats
+    public readonly int Damage;
+
+    public ExplosionInfo(int damage, IEnumerable<Character> explodedCharacters, Projectile source, Explosion explosion)
     {
+        Damage = damage;
         ExplodedCharacters = explodedCharacters;
         Source = source;
         Explosion = explosion;

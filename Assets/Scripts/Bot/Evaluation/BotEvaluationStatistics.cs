@@ -1,18 +1,25 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using UnityEngine;
 
 public static class BotEvaluationStatistics
 {
-    private static Dictionary<Team, BotEvaluationData> _dataPerTeam;
-    private static Dictionary<Team, BotDifficulty> _difficultyPerTeam;
+    private static readonly Dictionary<Team, BotEvaluationData> _dataPerTeam = new Dictionary<Team, BotEvaluationData>();
+    private static readonly Dictionary<Team, BotDifficulty> _difficultyPerTeam = new Dictionary<Team, BotDifficulty>();
     private static string GetFilePath(BotEvaluationConfiguration config) => Path.Combine(Application.persistentDataPath, $"bot_evaluation_result_{SceneLoader.Instance.CurrentGameplaySceneSettings.SceneName}_{config}.csv");
+
+    private static int CurrentSimulationCount;
+    private static int RequestedSimulationCount = 100;
+
+    public static bool IsInitialized;
 
     public static void RegisterBot(Team team, BotDifficulty difficulty)
     {
         _dataPerTeam[team] = new BotEvaluationData();
         _difficultyPerTeam[team] = difficulty;
+        IsInitialized = true;
     } 
 
     public static BotEvaluationData GetData(Team team)
@@ -20,12 +27,15 @@ public static class BotEvaluationStatistics
         return _dataPerTeam[team];
     }
 
+    public static IEnumerable<BotEvaluationData> GetAllData()
+    {
+        return _dataPerTeam.Values;
+    }
+
     public static void Clear()
     {
-        foreach (var data in _dataPerTeam.Values)
-        {
-            data.Clear();
-        }
+        _dataPerTeam.Clear();
+        _difficultyPerTeam.Clear();
     }
 
     public static void Save()
@@ -37,6 +47,19 @@ public static class BotEvaluationStatistics
             var other = teams.Where(t=> t != analyzed).First();
             var config = new BotEvaluationConfiguration(_difficultyPerTeam[analyzed], _difficultyPerTeam[other]);
             AppendToFile(config, _dataPerTeam[analyzed]);
+        }
+        CurrentSimulationCount++;
+    }
+
+    public static void TryToRestartSimulation()
+    {
+        if(CurrentSimulationCount <  RequestedSimulationCount)
+        {
+            SceneLoader.Instance.ReloadScene();
+        }
+        else 
+        {
+            Application.Quit();
         }
     }
 

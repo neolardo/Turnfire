@@ -9,6 +9,8 @@ public class ProjectileLauncherWeaponBehavior : WeaponBehavior
     protected IProjectileBehavior _projectileBehavior;
     protected ProjectileLauncherWeaponDefinition _definition;
 
+    //stats
+    protected Character _lastOwner;
     public ProjectileLauncherWeaponBehavior(IProjectileBehavior projectileBehavior, ProjectileLauncherWeaponDefinition definition) : base(CoroutineRunner.Instance)
     {
         _projectileBehavior = projectileBehavior;
@@ -18,6 +20,7 @@ public class ProjectileLauncherWeaponBehavior : WeaponBehavior
 
     public override void Use(ItemUsageContext context)
     {
+        _lastOwner = context.OwnerCollider.GetComponent<Character>();
         _isFiring = true;
         var p = context.ProjectilePool.Get();
         p.Initialize(_definition.ProjectileDefinition, _projectileBehavior);
@@ -26,6 +29,29 @@ public class ProjectileLauncherWeaponBehavior : WeaponBehavior
 
     private void OnProjectileExploded(ExplosionInfo ei)
     {
+        if (!ei.ExplodedCharacters.Any())
+        {
+            BotEvaluationStatistics.GetData(_lastOwner.Team).TotalNonDamagingProjectileCount++;
+        }
+        else
+        {
+            foreach (var character in ei.ExplodedCharacters)
+            {
+                var data = BotEvaluationStatistics.GetData(character.Team);
+                if(character.Team == _lastOwner.Team)
+                {
+                    data.TotalDamageDealtToAllies += ei.Damage;
+                }
+                else
+                {
+                    data.TotalDamageDealtToEnemies += ei.Damage;
+                }
+                if(character == _lastOwner && !_lastOwner.IsAlive)
+                {
+                    data.TotalSuicideCount++;
+                }
+            }
+        }
         StartCoroutine(WaitUntilFiringFinished(ei));
     }
 

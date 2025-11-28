@@ -15,6 +15,9 @@ public class CharacterActionManager : UnityDriven
 
     public event Action CharacterActionsFinished;
 
+    // stats
+    public static Character CurrentCharacter;
+
     public CharacterActionManager(MonoBehaviour coroutineManager, TrajectoryRenderer trajectoryRenderer, ItemPreviewRendererManager itemPreviewRendererManager, CameraController cameraController, GameplayUIManager uiManager, ProjectilePool projectileManager, UISoundsDefinition uiSounds) : base(coroutineManager)
     {
         _cameraController = cameraController;
@@ -38,6 +41,7 @@ public class CharacterActionManager : UnityDriven
     {
         _forceEndActions = false;
         _character = character;
+        CurrentCharacter = character;
         _cameraController.SetCharacterTarget(_character);
         character.Team.InputSource.ForceCloseInventory();
         _uiManager.LoadCharacterData(_character);

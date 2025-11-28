@@ -85,6 +85,13 @@ public class TurnManager : MonoBehaviour
         if (_teams.Any(t => t.IsTeamAlive))
         {
             var winnerTeam = _teams.First(t => t.IsTeamAlive);
+            BotEvaluationStatistics.GetData(winnerTeam).HasWon = true;
+            foreach( var team in _teams)
+            {
+                BotEvaluationStatistics.GetData(team).RemainingNormalizedTeamHealth = team.NormalizedTeamHealth;
+            }
+            BotEvaluationStatistics.Save();
+            BotEvaluationStatistics.TryToRestartSimulation();
             GameEnded?.Invoke(winnerTeam);
         }
         else

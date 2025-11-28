@@ -25,6 +25,7 @@ public class SceneLoader : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        BotEvaluationStatistics.Clear();
         _loadingText = FindFirstObjectByType<LoadingTextUI>(FindObjectsInactive.Include);
     }
 

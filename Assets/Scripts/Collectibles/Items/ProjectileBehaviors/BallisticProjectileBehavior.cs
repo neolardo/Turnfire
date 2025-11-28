@@ -115,7 +115,7 @@ public class BallisticProjectileBehavior : UnityDriven, IProjectileBehavior
         exp.Initialize(_definition.ExplosionDefinition);
         var explodedCharacters = exp.Explode(context.ContactPoint, damage);
         _exploded = true;
-        Exploded?.Invoke(new ExplosionInfo(explodedCharacters, _projectile, exp));
+        Exploded?.Invoke(new ExplosionInfo(damage, explodedCharacters, _projectile, exp));
     }
 
     public virtual void ForceExplode()

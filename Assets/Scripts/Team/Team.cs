@@ -5,23 +5,22 @@ using UnityEngine;
 
 public class Team : MonoBehaviour
 {
-    [HideInInspector] public bool IsTeamAlive => _characters.Any(c => c.IsAlive);
     [SerializeField] private Color _teamColor;
+    public bool IsTeamAlive => _characters.Any(c => c.IsAlive);
+    public int NumAliveCharacters => _characters.Count(c => c.IsAlive);
+    public float NormalizedTeamHealth => _characters.Sum(c => c.NormalizedHealth) / _characters.Count;
+    public Color TeamColor => _teamColor;
+    public string TeamName { get; private set; }
 
     private List<Character> _characters;
-    public Color TeamColor => _teamColor;
     public Character CurrentCharacter => _characters[_characterIndex];
     private int _characterIndex;
-    public string TeamName { get; private set; }
+
+    public IGameplayInputSource InputSource { private set; get; }
 
     public event Action<float> TeamHealthChanged;
     public event Action TeamLost;
 
-    public int NumAliveCharacters => _characters.Count(c => c.IsAlive);
-
-    public IGameplayInputSource InputSource => _inputSource;
-    
-    private IGameplayInputSource _inputSource;
 
     private void Awake()
     {
@@ -48,12 +47,12 @@ public class Team : MonoBehaviour
 
     public void InitializeInputSource(InputSourceType inputType)
     {
-        _inputSource = GameplayInputSourceFactory.Create(inputType, gameObject);
+        InputSource = GameplayInputSourceFactory.Create(inputType, gameObject);
     }
 
     private void OnAnyTeamCharacterHealthChanged()
     {
-        TeamHealthChanged?.Invoke(_characters.Sum(c => c.NormalizedHealth) / _characters.Count);
+        TeamHealthChanged?.Invoke(NormalizedTeamHealth);
     }
 
     public void SelectNextCharacter()

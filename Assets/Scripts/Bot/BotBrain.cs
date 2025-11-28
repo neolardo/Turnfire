@@ -24,6 +24,9 @@ public class BotBrain : UnityDriven
     private float _travelDistanceUtilityDecayMidpoint;
     private float _travelDistanceUtilitySteepness;
 
+    //stats
+    private bool _movingPhaseWasSkipped;
+
     public BotBrain(BotTuningDefinition tuning, MonoBehaviour coroutineManager) : base(coroutineManager)
     {
         _tuning = tuning;
@@ -40,11 +43,20 @@ public class BotBrain : UnityDriven
         BotGoal goal = default;
         if (context.ActionState == CharacterActionStateType.ReadyToMove)
         {
+            _movingPhaseWasSkipped = false;
             yield return DecideGoalWhenReadyToMove(context, g => goal = g);
+            if( goal.GoalType == BotGoalType.SkipAction)
+            {
+                _movingPhaseWasSkipped = true;
+            }
         }
         else if (context.ActionState == CharacterActionStateType.ReadyToUseItem)
         {
             yield return DecideGoalWhenReadyToUseItem(context, g => goal = g);
+            if(_movingPhaseWasSkipped && goal.GoalType == BotGoalType.SkipAction)
+            {
+                BotEvaluationStatistics.GetData(context.Self.Team).TotalSkippedTurnCount++;
+            }
         }
         GoalDecided?.Invoke(goal);
     }

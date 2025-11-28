@@ -196,6 +196,10 @@ public class Character : MonoBehaviour
             {
                 SelectItem(item);
             }
+            if (BotEvaluationStatistics.IsInitialized)
+            {
+                BotEvaluationStatistics.GetData(Team).TotalOpenedPackageCount++;
+            }
             return true;
         }
         else
