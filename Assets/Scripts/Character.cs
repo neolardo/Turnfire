@@ -19,11 +19,11 @@ public class Character : MonoBehaviour
     private int _health;
     public int Health
     {
-        get 
+        get
         {
-            return _health; 
+            return _health;
         }
-        private set 
+        private set
         {
             if (_health != value)
             {
@@ -42,7 +42,7 @@ public class Character : MonoBehaviour
     public bool IsUsingSelectedItem => _selectedItem == null ? false : _selectedItem.Behavior.IsInUse;
     public float NormalizedHealth => _health / (float)CharacterDefinition.MaxHealth;
 
-    public Vector2 FeetPosition => (Vector2)transform.position + Vector2.down *_col.bounds.extents.y;
+    public Vector2 FeetPosition => (Vector2)transform.position + Vector2.down * _col.bounds.extents.y;
 
     public Vector2 FeetOffset => Vector2.down * _col.bounds.extents.y;
 
@@ -62,6 +62,11 @@ public class Character : MonoBehaviour
         _col = GetComponent<Collider2D>();
         _selectedItem = _items.FirstOrDefault();
         HealthChanged += _healthbarRenderer.SetCurrentHealth;
+    }
+
+    private void OnDestroy()
+    {
+        HealthChanged -= _healthbarRenderer.SetCurrentHealth;
     }
 
     private void Start() // after child awake run
@@ -195,10 +200,6 @@ public class Character : MonoBehaviour
             if (_items.Count == 1)
             {
                 SelectItem(item);
-            }
-            if (BotEvaluationStatistics.IsInitialized)
-            {
-                BotEvaluationStatistics.GetData(Team).TotalOpenedPackageCount++;
             }
             return true;
         }

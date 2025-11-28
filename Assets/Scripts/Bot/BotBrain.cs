@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BotBrain : UnityDriven
@@ -31,6 +32,14 @@ public class BotBrain : UnityDriven
     {
         _tuning = tuning;
         CacheUtilityParameters();
+    }
+
+    public void Dispose()
+    {
+        if (!_coroutineRunner.IsDestroyed())
+        {
+            _coroutineRunner.StopAllCoroutines();
+        }
     }
     
     public void BeginThinking(BotContext context)
@@ -79,8 +88,9 @@ public class BotBrain : UnityDriven
                 bestScore = score;
                 bestPoint = targetPoint;
             }
-            yield return null;
+            //yield return null;
         }
+        yield return null;
 
         if (bestPoint == startPoint)
         {
@@ -228,8 +238,9 @@ public class BotBrain : UnityDriven
                     bestShot = aimVector;
                 }
             }
-            yield return null;
+            //yield return null;
         }
+        yield return null;
 
         onDone?.Invoke(bestShot, bestScore);
     }

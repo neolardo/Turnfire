@@ -1,6 +1,7 @@
 public class BotEvaluationData
 {
-    public bool HasWon; 
+    public string TeamName; 
+    public bool HasWon;
     public float TotalDamageDealtToEnemies;
     public float TotalDamageDealtToAllies;
     public int TotalSuicideCount; 
@@ -13,6 +14,7 @@ public class BotEvaluationData
     public override string ToString()
     {
         return $"{System.DateTime.Now:yyyy-MM-dd HH:mm:ss}," +
+            $"{TeamName}," +
             $"{HasWon}," +
             $"{TotalDamageDealtToEnemies}," +
             $"{TotalDamageDealtToAllies}," +
@@ -26,7 +28,8 @@ public class BotEvaluationData
 
     public static string[] Headers => new[]
     {
-        "Timestamp", 
+        "Timestamp",
+        nameof(TeamName),
         nameof(HasWon),
         nameof(TotalDamageDealtToEnemies), 
         nameof(TotalDamageDealtToAllies), 
@@ -40,6 +43,7 @@ public class BotEvaluationData
 
     public void Clear()
     {
+        TeamName = string.Empty;
         HasWon = false;
         TotalDamageDealtToEnemies = 0;
         TotalDamageDealtToAllies = 0;

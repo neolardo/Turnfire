@@ -25,19 +25,20 @@ public class SceneLoader : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        BotEvaluationStatistics.Clear();
         _loadingText = FindFirstObjectByType<LoadingTextUI>(FindObjectsInactive.Include);
     }
 
     private IEnumerator LoadSceneCoroutine(string sceneName)
     {
+        Debug.Log("Scene reload started");
         _loadingText.gameObject.SetActive(true);
         yield return null;
-        AsyncOperation op = SceneManager.LoadSceneAsync(sceneName);
+        AsyncOperation op = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
         while (!op.isDone)
         {
             yield return null;
         }
+        Debug.Log("Scene reload finished");
     }
 
     public void LoadMenuScene()

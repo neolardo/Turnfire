@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -11,6 +12,8 @@ public class TurnManager : MonoBehaviour
     private int _turnStateIndex;
     private TurnState CurrentTurnState => _turnStates[_turnStateIndex];
     private bool IsGameOver => _teams.Count(t => t.IsTeamAlive) <= 1;
+
+    public bool IsInitialized { get; private set; }
 
     public event Action<GameplaySceneSettings> GameStarted;
     public event Action<Team> GameEnded;
@@ -45,11 +48,21 @@ public class TurnManager : MonoBehaviour
         GameStarted += (_) => localInput.OnGameStarted();
         GameEnded += (_) => localInput.OnGameEnded();
         uiManager.CreateTeamHealthbars(_teams);
+        IsInitialized = true;
+    }
+
+    private void OnDestroy()
+    {
+        foreach(var turnState in _turnStates)
+        {
+            turnState.OnDestroy();
+        }
     }
 
     public void StartGame(GameplaySceneSettings gameplaySettings)
     {
         GameStarted?.Invoke(gameplaySettings);
+        Debug.Log("Game started");
         StartTurnState();
     }
 
@@ -90,14 +103,20 @@ public class TurnManager : MonoBehaviour
             {
                 BotEvaluationStatistics.GetData(team).RemainingNormalizedTeamHealth = team.NormalizedTeamHealth;
             }
-            BotEvaluationStatistics.Save();
-            BotEvaluationStatistics.TryToRestartSimulation();
             GameEnded?.Invoke(winnerTeam);
+            StartCoroutine(SaveAndTryRestartSimulation());
         }
         else
         {
             GameEnded?.Invoke(null);
         }
+    }
+
+    private IEnumerator SaveAndTryRestartSimulation()
+    {
+        yield return new WaitForSeconds(0.5f);
+        BotEvaluationStatistics.Save();
+        BotEvaluationStatistics.TryToRestartSimulation();
     }
 
 }

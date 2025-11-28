@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using UnityEngine;
@@ -10,16 +9,15 @@ public static class BotEvaluationStatistics
     private static readonly Dictionary<Team, BotDifficulty> _difficultyPerTeam = new Dictionary<Team, BotDifficulty>();
     private static string GetFilePath(BotEvaluationConfiguration config) => Path.Combine(Application.persistentDataPath, $"bot_evaluation_result_{SceneLoader.Instance.CurrentGameplaySceneSettings.SceneName}_{config}.csv");
 
-    private static int CurrentSimulationCount;
+    public static int CurrentSimulationCount { get; private set; }
     private static int RequestedSimulationCount = 100;
 
-    public static bool IsInitialized;
 
     public static void RegisterBot(Team team, BotDifficulty difficulty)
     {
         _dataPerTeam[team] = new BotEvaluationData();
+        _dataPerTeam[team].TeamName = team.TeamName;
         _difficultyPerTeam[team] = difficulty;
-        IsInitialized = true;
     } 
 
     public static BotEvaluationData GetData(Team team)
@@ -55,6 +53,7 @@ public static class BotEvaluationStatistics
     {
         if(CurrentSimulationCount <  RequestedSimulationCount)
         {
+            Clear();
             SceneLoader.Instance.ReloadScene();
         }
         else 

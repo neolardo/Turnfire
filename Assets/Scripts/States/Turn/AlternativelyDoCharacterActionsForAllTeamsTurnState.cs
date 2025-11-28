@@ -22,8 +22,23 @@ public class AlternativelyDoCharacterActionsForAllTeamsTurnState : TurnState
         foreach (var team in teams)
         {
             _numCharactersActedThisRoundPerTeamDict.Add(team, 0);
-            team.TeamHealthChanged += (_) => UpdateMaxCharactersToActPerRound();
+            team.TeamHealthChanged += OnTeamHealthChanged;
         }
+    }
+
+    public override void OnDestroy()
+    {
+        foreach(var team in _teams)
+        {
+            team.TeamHealthChanged -= OnTeamHealthChanged;
+        }
+    }
+
+    private void OnTeamHealthChanged(float health)
+    {
+        if(_teams == null || _teams.Count == 0)
+            return;
+        UpdateMaxCharactersToActPerRound();
     }
 
     private void UpdateMaxCharactersToActPerRound()

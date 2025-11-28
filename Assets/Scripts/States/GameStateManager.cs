@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 public class GameStateManager : MonoBehaviour
@@ -48,10 +49,21 @@ public class GameStateManager : MonoBehaviour
 
     private IEnumerator StartGameAfterCountdown()
     {
-        _countdownTimer.StartTimer();
-        yield return new WaitUntil(() => _countdownEnded);
-        yield return new WaitForSeconds(_gameplaySettings.DelaySecondsAfterCountdown);
+        if (System.Environment.GetCommandLineArgs().Contains("-fastSim"))
+        {
+            Time.timeScale = 15f;
+            Application.targetFrameRate = 20;
+            QualitySettings.SetQualityLevel(0);
+            yield return new WaitForSeconds(.5f);
+        }
+        else
+        {
+            _countdownTimer.StartTimer();
+            yield return new WaitUntil(() => _countdownEnded);
+            yield return new WaitForSeconds(_gameplaySettings.DelaySecondsAfterCountdown);
+        }
         _countdownTimer.gameObject.SetActive(false);
+        yield return new WaitUntil(()=> _turnManager.IsInitialized);
         StartGame();
     }
     private void StartGame()
