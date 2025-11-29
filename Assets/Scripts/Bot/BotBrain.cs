@@ -98,7 +98,7 @@ public class BotBrain : UnityDriven
         // package
         float bestPackageScore = 0;
         var weapons = context.Self.GetAllItems().Where(i => i.Definition.ItemType == ItemType.Weapon);
-        int remainingTotalAmmo = weapons.Sum(i => i.Ammo);
+        int remainingTotalAmmo = weapons.Sum(i => i.Quantity);
         float packageSearchWeight = _tuning.GeneralPackageSearchWeight;
         if (remainingTotalAmmo == 0)
         {

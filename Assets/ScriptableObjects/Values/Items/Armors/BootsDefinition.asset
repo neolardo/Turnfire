@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f6815f725b2c2a48b4c3cdff7f171dc, type: 3}
+  m_Name: BootsDefinition
+  m_EditorClassIdentifier: 
+  Sprite: {fileID: 0}
+  Name: Boots
+  Description: Makes you jump higher.
+  InitialQuantity: 1
+  MaximumQuantity: 1
+  DropQuantityRange:
+    _normalizedValue: 0
+    _isRandomized: 0
+    _randomness: 0
+    _group: {fileID: 11400000, guid: aaaaf89e65985ec41be3df1534757652, type: 2}
+  ItemActionAnimation: {fileID: 0}
+  ItemActionSFX: {fileID: 0}
+  HideItemDuringUsage: 0
+  MaxDurability:
+    _normalizedValue: 0.5
+    _isRandomized: 0
+    _randomness: 0
+    _group: {fileID: 11400000, guid: 605abe0e4a78f5c4ba2e65d2435bc7a2, type: 2}
+  AdditionalJumpRange:
+    _normalizedValue: 1
+    _isRandomized: 0
+    _randomness: 0
+    _group: {fileID: 11400000, guid: e049b940edb97c043bd5dbaf24c3f90d, type: 2}

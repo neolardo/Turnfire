@@ -29,6 +29,6 @@ public class CharacterDefinition : ScriptableObject
 
     [Header("Stats")]
     public int MaxHealth;
-    [Range(Constants.MinJumpStrength, Constants.MaxJumpStrength)] public float JumpStrength = Constants.MinJumpStrength;
+    [Range(Constants.MinJumpStrength, Constants.MaxJumpStrength)] public float JumpStrength = Constants.MinJumpStrength; //TODO: ranged stat instead?
     public List<ItemDefinition> InitialItems;
 }

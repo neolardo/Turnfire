@@ -41,7 +41,7 @@ public class InventoryItemSlotUI : MonoBehaviour,
         _item = item;
         _itemImage.sprite = item.Definition.Sprite;
         _itemImage.gameObject.SetActive(true);
-        _ammoText.text = item.Ammo.ToString();
+        _ammoText.text = item.Quantity.ToString();
     }
 
     public void UnloadItem()
