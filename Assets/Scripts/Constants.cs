@@ -50,6 +50,10 @@ public static class Constants
     public const int MultiplayerMinPlayers = 2;
     public const int MultiplayerMaxPlayers = 4;
 
+    // singleplayer 
+    public const int SingleplayerMinBots = 1;
+    public const int SingleplayerMaxBots = 3;
+
     //scenes
     public const string MenuSceneName = "MenuScene";
 

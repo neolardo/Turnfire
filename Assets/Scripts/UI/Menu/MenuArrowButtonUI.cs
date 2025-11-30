@@ -26,7 +26,7 @@ public class MenuArrowButtonUI : MonoBehaviour, IPointerEnterHandler,
     private bool _isActive = true;
 
     public void SetIsActive( bool isActive)
-    { 
+    {
         _isActive = isActive;
         UnHoverButton();
     }
