@@ -29,7 +29,6 @@ public class Item : ICollectible
         }
     }
 
-
     public bool TryMerge(Item other)
     {
         if(!other.IsSameType(this))

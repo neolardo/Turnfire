@@ -152,7 +152,7 @@ public class InventoryUI : MonoBehaviour
             _selectedSlot?.OnSlotDeselected();
             _selectedSlot = slot;
             _selectedSlot.OnSlotSelected();
-            _currentCharacter.SelectItem(slot.Item);
+            _currentCharacter.TrySelectItem(slot.Item);
             LoadItemInfo(slot.Item.Definition);
         }
     }

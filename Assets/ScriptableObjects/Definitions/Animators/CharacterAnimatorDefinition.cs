@@ -8,5 +8,6 @@ public class CharacterAnimatorDefinition : ScriptableObject
     public float DeathAnimationFrameDuration;
     public float FlyAnimationFrameDuration;
     public float ItemActionAnimationFrameDuration;
+    public float GuardActionAnimationFrameDuration;
     public float ItemUsageDelay;
 }

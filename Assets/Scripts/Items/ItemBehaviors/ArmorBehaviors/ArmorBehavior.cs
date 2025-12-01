@@ -7,10 +7,22 @@ public abstract class ArmorBehavior : IItemBehavior
     public bool IsInUse {get; protected set;}
 
     public event Action ItemUsageFinished;
+    public event Action<ArmorDefinition> ArmorWornOut;
+
+    private ArmorDefinition _definition;
+
+    protected ArmorBehavior(ArmorDefinition definition)
+    {
+        _definition = definition;
+    }
 
     public void InitializePreview(ItemUsageContext context, ItemPreviewRendererManager rendererManager)
     {
         //TODO
+    }
+    public virtual bool CanUseItem(ItemUsageContext context)
+    {
+        return context.Owner.ArmorManager.CanEquip(_definition);
     }
 
     public virtual void Use(ItemUsageContext context)
@@ -18,9 +30,10 @@ public abstract class ArmorBehavior : IItemBehavior
         IsInUse = true;
         _owner = context.Owner;
     }
-
-    protected abstract void OnOwnerDied();
-    protected abstract void OnArmorWornOut();
+    protected virtual void OnArmorWornOut()
+    {
+        ArmorWornOut?.Invoke(_definition);
+    }
 
     protected void InvokeItemUsageFinished()
     {

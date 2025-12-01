@@ -14,4 +14,12 @@ public readonly struct ItemUsageContext
         Owner = owner;
         ProjectilePool = projectilePool;
     }
+
+    public ItemUsageContext(Character owner)
+    {
+        AimOrigin = default;
+        AimVector = default;
+        Owner = owner;
+        ProjectilePool = default;
+    }
 }

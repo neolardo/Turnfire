@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -12,11 +11,9 @@ public class Character : MonoBehaviour
     [SerializeField] private CharacterAnimator _animator;
 
     public CharacterDefinition CharacterDefinition;
-
     private List<Item> _items;
     private Item _selectedItem;
     private Rigidbody2D _rb;
-    private Collider2D _col;
     private float _jumpBoost;
     private int _health;
     public int Health
@@ -34,45 +31,40 @@ public class Character : MonoBehaviour
             }
         }
     }
-
+    public CharacterArmorManager ArmorManager { get; private set; }
     public Team Team { get; private set; }
-
+    public Collider2D Collider { get; private set; }
     public Transform ItemTransform => _animator.ItemTransform;
-    public Collider2D Collider => _col;
     public bool IsAlive => _health > 0;
     public bool IsMoving => _rb.linearVelocity.magnitude > Mathf.Epsilon;
-    public bool IsUsingSelectedItem => _selectedItem == null ? false : _selectedItem.Behavior.IsInUse;
+    public bool IsUsingSelectedItem => _selectedItem == null ? false : _selectedItem.Behavior.IsInUse || _animator.IsPlayingNonIdleAnimation;
     public float NormalizedHealth => _health / (float)CharacterDefinition.MaxHealth;
+    public Vector2 FeetPosition => (Vector2)transform.position + Vector2.down * Collider.bounds.extents.y;
+    public Vector2 FeetOffset => Vector2.down * Collider.bounds.extents.y;
 
-    public Vector2 FeetPosition => (Vector2)transform.position + Vector2.down * _col.bounds.extents.y;
-
-    public Vector2 FeetOffset => Vector2.down * _col.bounds.extents.y;
-
-    private CharacterArmorManager _armorManager;
 
     public event Action<float, int> HealthChanged;
-    public event Action<Item> BlockedWithArmor;
     public event Action Jumped;
     public event Action Died;
     public event Action<Item> SelectedItemChanged;
+    public event Action SelectedItemUsed;
 
     private void Awake()
     {
         Health = CharacterDefinition.MaxHealth;
-        _armorManager = new CharacterArmorManager();
-        _armorManager.BlockedWithArmor += OnBlockedWithArmor;
+        ArmorManager = new CharacterArmorManager();
         _items = new List<Item>();
         foreach (var itemDefinition in CharacterDefinition.InitialItems)
         {
             TryAddItem(new Item(itemDefinition, false));
         }
         _rb = GetComponent<Rigidbody2D>();
-        _col = GetComponent<Collider2D>();
+        Collider = GetComponent<Collider2D>();
         _selectedItem = _items.FirstOrDefault();
         HealthChanged += _healthbarRenderer.SetCurrentHealth;
     }
 
-    private void Start() // after child awake run
+    private void Start() 
     {
         _healthbarRenderer.SetCurrentHealth(NormalizedHealth, Health);
     }
@@ -81,18 +73,19 @@ public class Character : MonoBehaviour
 
     public void Damage(int value)
     {
-        if(_armorManager.IsProtected)
+        if (ArmorManager.IsProtected)
         {
-            //TODO: play protected animation
-            _armorManager.OnBlockedAttack();
-            return;
+            _animator.PlayBlockAnimation();
+            ArmorManager.BlockAttack();
         }
-
-        _animator.PlayHurtAnimation();
-        Health = Mathf.Max(0, Health - value);
-        if (!IsAlive)
+        else
         {
-            Die();
+            _animator.PlayHurtAnimation();
+            Health = Mathf.Max(0, Health - value);
+            if (!IsAlive)
+            {
+                Die();
+            }
         }
     }
 
@@ -212,20 +205,11 @@ public class Character : MonoBehaviour
 
     #region Items
 
-    private void OnBlockedWithArmor(Item armor)
-    {
-        BlockedWithArmor?.Invoke(armor);
-    }
-
-    public bool TryEquipArmor(Item armor)
-    {
-        return _armorManager.TryEquipArmor(_selectedItem);
-    }
-
     public void UseSelectedItem(ItemUsageContext context)
     {
         _animator.PlayItemActionAnimation(_selectedItem);
         _selectedItem.Behavior.Use(context);
+        SelectedItemUsed?.Invoke();
     }
 
     public bool TryAddItem(Item item)
@@ -234,10 +218,10 @@ public class Character : MonoBehaviour
         if (existingItem == null)
         {
             _items.Add(item);
-            item.CollectibleDestroyed += OnCollectibleDestroyed;
-            if (_items.Count == 1)
+            item.CollectibleDestroyed += OnItemDestroyed;
+            if (_selectedItem == null && item.Definition.ItemType == ItemType.Weapon)
             {
-                SelectItem(item);
+                TrySelectItem(item);
             }
             return true;
         }
@@ -247,7 +231,7 @@ public class Character : MonoBehaviour
         }
     }
 
-    private void OnCollectibleDestroyed(ICollectible collectible)
+    private void OnItemDestroyed(ICollectible collectible)
     {
         var item = _items.FirstOrDefault(i => i == collectible);
         if(item != null)
@@ -261,7 +245,7 @@ public class Character : MonoBehaviour
         _items.Remove(item);
         if(_selectedItem == item)
         {
-            SelectItem(_items.FirstOrDefault());
+            TrySelectItem(_items.FirstOrDefault(i => i.Definition.ItemType == ItemType.Weapon));
         }
     }
 
@@ -270,12 +254,25 @@ public class Character : MonoBehaviour
         return _items;
     }
 
-    public void SelectItem(Item item)
+    public void TrySelectItem(Item item)
     {
         if ((item == null) || (_items.Contains(item) && item != _selectedItem))
         {
-            _selectedItem = item;
-            SelectedItemChanged?.Invoke(item);
+            if(item.Definition.UseInstantlyWhenSelected)
+            {
+                var context = new ItemUsageContext(this);
+                if(item.Behavior.CanUseItem(context))
+                {
+                    _selectedItem = item;
+                    SelectedItemChanged?.Invoke(item);
+                    UseSelectedItem(context);
+                }
+            }
+            else 
+            {
+                _selectedItem = item;
+                SelectedItemChanged?.Invoke(item);
+            }
         }
     }
 
@@ -290,12 +287,12 @@ public class Character : MonoBehaviour
 
     public bool OverlapPoint(Vector2 point)
     {
-        return _col.bounds.Contains(point);
+        return Collider.bounds.Contains(point);
     }
 
     public Vector2 NormalAtPoint(Vector2 point)
     {
-        float linearHalfLength = _col.bounds.extents.y - _col.bounds.extents.x;
+        float linearHalfLength = Collider.bounds.extents.y - Collider.bounds.extents.x;
         if (Mathf.Abs(point.y - transform.position.y) < linearHalfLength)
         {
             return new Vector2(point.x - transform.position.x, 0).normalized;

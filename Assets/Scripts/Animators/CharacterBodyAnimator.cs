@@ -19,6 +19,8 @@ public class CharacterBodyAnimator : MonoBehaviour
     private CharacterAnimationState _currentAnimationState;
     public bool IsFacingLeft => _baseSpriteRenderer.flipX;
 
+    public bool IsPlayingNonIdleAnimation => _currentAnimationState != CharacterAnimationState.Idle && _currentAnimationState != CharacterAnimationState.None;
+
     private void Start()
     {
         if(_currentAnimationRoutine != null)

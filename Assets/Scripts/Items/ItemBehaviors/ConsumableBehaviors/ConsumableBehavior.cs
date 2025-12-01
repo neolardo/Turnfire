@@ -6,6 +6,11 @@ public abstract class ConsumableBehavior : IItemBehavior
 
     public event Action ItemUsageFinished;
 
+    public virtual bool CanUseItem(ItemUsageContext context)
+    {
+        return true;
+    }
+
     public virtual void InitializePreview(ItemUsageContext context, ItemPreviewRendererManager rendererManager)
     {
         //TODO

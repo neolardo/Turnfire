@@ -9,6 +9,8 @@ public class CharacterAnimator : MonoBehaviour
 
     public Transform ItemTransform => _itemRenderer.transform;
 
+    public bool IsPlayingNonIdleAnimation => _bodyAnimator.IsPlayingNonIdleAnimation;
+
     private const float JumpCancelThreshold = 1.0f;
 
     private void Awake()
@@ -75,6 +77,12 @@ public class CharacterAnimator : MonoBehaviour
     public void PlayDeathAnimation()
     {
         _bodyAnimator.PlayDeathAnimation();
+    }
+    public void PlayBlockAnimation()
+    {
+        _itemRenderer.HideItem();
+        //TODO
+        //_bodyAnimator.PlayBlockAnimation();
     }
 
     public void PlayHurtAnimation()

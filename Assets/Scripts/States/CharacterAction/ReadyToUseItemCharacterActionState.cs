@@ -20,6 +20,7 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
     protected override void SubscribeToEvents()
     {
         _currentCharacter.SelectedItemChanged += OnSelectedItemChanged;
+        _currentCharacter.SelectedItemUsed += EndState;
         _inputSource.ImpulseReleased += OnImpulseReleased;
         _inputSource.AimStarted += OnAimStarted;
         _inputSource.AimChanged += OnAimChanged;
@@ -29,6 +30,7 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
     protected override void UnsubscribeFromEvents()
     {
         _currentCharacter.SelectedItemChanged -= OnSelectedItemChanged;
+        _currentCharacter.SelectedItemUsed -= EndState;
         _inputSource.ImpulseReleased -= OnImpulseReleased;
         _inputSource.AimStarted -= OnAimStarted;
         _inputSource.AimChanged -= OnAimChanged;
@@ -98,6 +100,5 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
     {
         _trajectoryRenderer.HideTrajectory();
         _currentCharacter.UseSelectedItem(new ItemUsageContext(_currentCharacter.transform.position, aimVector, _currentCharacter, _projectileManager));
-        EndState();
     }
 }

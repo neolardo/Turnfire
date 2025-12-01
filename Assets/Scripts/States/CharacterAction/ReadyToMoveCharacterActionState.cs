@@ -36,7 +36,6 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
         base.StartState(currentCharacter);
         _uiManager.ResumeGameplayTimer();
         _inputSource.IsAimingEnabled = true;
-        _inputSource.IsOpeningInventoryEnabled = true;
         currentCharacter.InitializeMovementPreview(_trajectoryRenderer);
         _inputSource.InputRequestedForAction(State);
     }
@@ -70,7 +69,6 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
     {
         _inputSource.ForceCancelAiming();
         _inputSource.IsAimingEnabled = false;
-        _inputSource.IsOpeningInventoryEnabled = false;
         _uiManager.PauseGameplayTimer();
         base.EndState();
     }
