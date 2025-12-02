@@ -22,6 +22,7 @@ MonoBehaviour:
   AimMiddleAnimationDefinition: {fileID: 11400000, guid: c51da8171923e5844a482d57d938b51d, type: 2}
   AimHighAnimationDefinition: {fileID: 11400000, guid: 7198989ae427bd74dad7923135a50a42, type: 2}
   BackFromLandAnimationDefinition: {fileID: 11400000, guid: 0597cac638ccab84daee710b1f85e240, type: 2}
+  HurtFlashColor: {r: 1, g: 0, b: 0, a: 1}
   InAirSFX: {fileID: 11400000, guid: d230d235833e97b4ea72e3867bedc065, type: 2}
   PrepareToJumpSFX: {fileID: 11400000, guid: c4faad8b134467a4eab7174020e523ec, type: 2}
   LandSFX: {fileID: 11400000, guid: 2558f50bf2497904b95bc1fe45a1935f, type: 2}
@@ -31,6 +32,5 @@ MonoBehaviour:
   AimStartSFX: {fileID: 11400000, guid: a7bfba19c9cddd34e847d947523ef72a, type: 2}
   AimCancelSFX: {fileID: 11400000, guid: 54274b9904803fc4c8f9b3662815e897, type: 2}
   MaxHealth: 8
-  JumpStrength: 7
   InitialItems:
-  - {fileID: 11400000, guid: 3adb2e281e926714ca60f3a253fa55dc, type: 2}
+  - {fileID: 11400000, guid: 597ba13a37f49cf41aa1765a91f223db, type: 2}

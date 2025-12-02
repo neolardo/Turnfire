@@ -80,12 +80,16 @@ public class RangedStatDrawer : PropertyDrawer
 
         if (target is RangedStat<int> intStat && intStat.Group != null)
         {
-            return intStat.CalculateValue().ToString();
+            int min = intStat.MinimumValue;
+            int max = intStat.MaximumValue;
+            return min == max ? min.ToString() : $"{min}-{max}";
         }
 
         if (target is RangedStat<float> floatStat && floatStat.Group != null)
         {
-            return floatStat.CalculateValue().ToString("0.###");
+            float min = floatStat.MinimumValue;
+            float max = floatStat.MaximumValue;
+            return Mathf.Approximately(min, max) ? min.ToString() : $"{min}-{max}";
         }
 
         return "?";

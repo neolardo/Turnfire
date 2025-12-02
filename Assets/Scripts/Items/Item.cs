@@ -22,6 +22,11 @@ public class Item : ICollectible
 
     private void DecreaseQuantity()
     {
+        if(Definition.IsQuantityInfinite)
+        {
+            return;
+        }
+
         Quantity--;
         if(Quantity == 0)
         {

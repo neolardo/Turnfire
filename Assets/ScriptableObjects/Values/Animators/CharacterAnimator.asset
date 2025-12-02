@@ -17,4 +17,7 @@ MonoBehaviour:
   DeathAnimationFrameDuration: 0.1
   FlyAnimationFrameDuration: 0.1
   ItemActionAnimationFrameDuration: 0.1
+  GuardActionAnimationFrameDuration: 0.1
   ItemUsageDelay: 1
+  HurtAnimationFlashInSeconds: 0.2
+  HurtAnimationFlashOutSeconds: 0.6

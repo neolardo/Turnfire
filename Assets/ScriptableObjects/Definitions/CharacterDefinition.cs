@@ -15,6 +15,7 @@ public class CharacterDefinition : ScriptableObject
     public CharacterAnimationDefinition AimMiddleAnimationDefinition;
     public CharacterAnimationDefinition AimHighAnimationDefinition;
     public CharacterAnimationDefinition BackFromLandAnimationDefinition;
+    public Color HurtFlashColor = Color.red;
 
     [Header("SFXs")]
 

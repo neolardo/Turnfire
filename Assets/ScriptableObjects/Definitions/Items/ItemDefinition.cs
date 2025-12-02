@@ -10,6 +10,7 @@ public abstract class ItemDefinition : ScriptableObject
     public string Description;
     public int InitialQuantity;
     public int MaximumQuantity;
+    public bool IsQuantityInfinite;
     public RangedStatInt DropQuantityRange;
     public AnimationDefinition ItemActionAnimation;
     public SFXDefiniton ItemActionSFX;

@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e65fa2abe7e5a3044b7ab62fb77a3bc1, type: 3}
+  m_Name: Knife
+  m_EditorClassIdentifier: 
+  Sprite: {fileID: 21300000, guid: d0701ca5d56bff3448d2d9567533b9d5, type: 3}
+  Name: Knife
+  Description: Stabs in close combat.
+  InitialQuantity: 1
+  MaximumQuantity: 1
+  IsQuantityInfinite: 1
+  DropQuantityRange:
+    _normalizedValue: 0.114
+    _isRandomized: 0
+    _randomness: 0
+    _group: {fileID: 11400000, guid: aaaaf89e65985ec41be3df1534757652, type: 2}
+  ItemActionAnimation: {fileID: 0}
+  ItemActionSFX: {fileID: 0}
+  HideItemDuringUsage: 0
+  UseInstantlyWhenSelected: 0
+  Damage:
+    _normalizedValue: 0.32
+    _isRandomized: 0
+    _randomness: 0
+    _group: {fileID: 11400000, guid: 0371d52dab082c1409e9eaf7579b9bee, type: 2}
+  AttackRange:
+    _normalizedValue: 0.5
+    _isRandomized: 0
+    _randomness: 0
+    _group: {fileID: 11400000, guid: df9cc931b3cee28488f3853788037d28, type: 2}

@@ -27,8 +27,8 @@ public class TeamManager : MonoBehaviour
             _possibleTeams[i].gameObject.SetActive(false);
         }
 
-        CreateRandomizedBotEvaluationTeamSetup(BotDifficulty.Easy, BotDifficulty.Medium);
-       //CreateRandomizedTeamSetup();
+        //CreateRandomizedBotEvaluationTeamSetup(BotDifficulty.Easy, BotDifficulty.Medium);
+        CreateRandomizedTeamSetup();
     }
 
     private void CreateRandomizedTeamSetup()

@@ -11,6 +11,9 @@ public class CharacterBodyAnimator : MonoBehaviour
     [SerializeField] private SpriteRenderer _clothesSpriteRenderer;
     [SerializeField] private SpriteRenderer _overItemBaseSpriteRenderer;
     [SerializeField] private SpriteRenderer _overItemClothesSpriteRenderer;
+    [SerializeField] private FlashSpriteAnimator _flashAnimator;
+
+    private SpriteRenderer[] AllSpriteRenderers => new[] {_baseSpriteRenderer, _clothesSpriteRenderer, _overItemBaseSpriteRenderer, _overItemClothesSpriteRenderer };
 
     private CharacterDefinition _characterDefinition;
 
@@ -103,6 +106,7 @@ public class CharacterBodyAnimator : MonoBehaviour
     public void PlayHurtAnimation()
     {
         PlayAnimation(CharacterAnimationState.Hurt);
+        _flashAnimator.Flash(AllSpriteRenderers ,_characterDefinition.HurtFlashColor, _animatorDefinition.HurtAnimationFlashInSeconds, _animatorDefinition.HurtAnimationFlashOutSeconds);
     }
 
     public void PlayPrepareToJumpAnimation()

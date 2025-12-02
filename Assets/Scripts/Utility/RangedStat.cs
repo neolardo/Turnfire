@@ -15,6 +15,8 @@ public abstract class RangedStat
 public abstract class RangedStat<T> : RangedStat where T: struct
 {
     public abstract T AvarageValue { get; }
+    public abstract T MinimumValue { get; }
+    public abstract T MaximumValue { get; }
     public abstract T CalculateValue(); 
 }
 
@@ -26,6 +28,34 @@ public class RangedStatInt : RangedStat<int>
     public override RangedStatGroupDefinition Group => _group;
 
     public override int AvarageValue => Mathf.RoundToInt(Mathf.Lerp(_group.Minimum, _group.Maximum, NormalizedValue));
+    public override int MinimumValue
+    {
+        get
+        {
+            if(!_isRandomized)
+            {
+                return AvarageValue;
+            }
+
+            float deltaMax = NormalizedValue > 0.5f ? NormalizedValue : 1f - NormalizedValue;
+            var lerpValue = Mathf.Max(NormalizedValue - deltaMax * _randomness, 0f);
+            return Mathf.RoundToInt(Mathf.Lerp(_group.Minimum, _group.Maximum, lerpValue));
+        }
+    }
+    public override int MaximumValue
+    {
+        get
+        {
+            if (!_isRandomized)
+            {
+                return AvarageValue;
+            }
+
+            float deltaMax = NormalizedValue > 0.5f ? NormalizedValue : 1f - NormalizedValue;
+            var lerpValue = Mathf.Min(NormalizedValue + deltaMax * _randomness, 1f);
+            return Mathf.RoundToInt(Mathf.Lerp(_group.Minimum, _group.Maximum, lerpValue));
+        }
+    }
 
     public override int CalculateValue()
     {
@@ -51,7 +81,34 @@ public class RangedStatFloat : RangedStat<float>
     public override RangedStatGroupDefinition Group => _group;
 
     public override float AvarageValue => Mathf.Lerp(_group.Minimum, _group.Maximum, NormalizedValue);
+    public override float MinimumValue
+    {
+        get
+        {
+            if (!_isRandomized)
+            {
+                return AvarageValue;
+            }
 
+            float deltaMax = NormalizedValue > 0.5f ? NormalizedValue : 1f - NormalizedValue;
+            var lerpValue = Mathf.Max(NormalizedValue - deltaMax * _randomness, 0f);
+            return Mathf.Lerp(_group.Minimum, _group.Maximum, lerpValue);
+        }
+    }
+    public override float MaximumValue
+    {
+        get
+        {
+            if (!_isRandomized)
+            {
+                return AvarageValue;
+            }
+
+            float deltaMax = NormalizedValue > 0.5f ? NormalizedValue : 1f - NormalizedValue;
+            var lerpValue = Mathf.Min(NormalizedValue + deltaMax * _randomness, 1f);
+            return Mathf.Lerp(_group.Minimum, _group.Maximum, lerpValue);
+        }
+    }
     public override float CalculateValue()
     {
         if (_isRandomized)

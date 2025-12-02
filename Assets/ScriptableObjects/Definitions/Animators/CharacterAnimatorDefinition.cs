@@ -10,4 +10,6 @@ public class CharacterAnimatorDefinition : ScriptableObject
     public float ItemActionAnimationFrameDuration;
     public float GuardActionAnimationFrameDuration;
     public float ItemUsageDelay;
+    public float HurtAnimationFlashInSeconds;
+    public float HurtAnimationFlashOutSeconds;
 }

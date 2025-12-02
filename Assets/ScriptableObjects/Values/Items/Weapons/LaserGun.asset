@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 756803562d24d4e4da7cf4c7c26c83bd, type: 3}
+  m_Name: LaserGun
+  m_EditorClassIdentifier: 
+  Sprite: {fileID: 21300000, guid: 2655d98ab5e6c0f4d9f6a53d50805249, type: 3}
+  Name: Laser Gun
+  Description: Fires a bouncing laser beam.
+  InitialQuantity: 3
+  MaximumQuantity: 9
+  IsQuantityInfinite: 0
+  DropQuantityRange:
+    _normalizedValue: 0.305
+    _isRandomized: 1
+    _randomness: 0.231
+    _group: {fileID: 11400000, guid: 5a5b56af88cd285408e8a8c33dfc5e52, type: 2}
+  ItemActionAnimation: {fileID: 0}
+  ItemActionSFX: {fileID: 0}
+  HideItemDuringUsage: 0
+  UseInstantlyWhenSelected: 0
+  Damage:
+    _normalizedValue: 0.275
+    _isRandomized: 0
+    _randomness: 0
+    _group: {fileID: 11400000, guid: 0371d52dab082c1409e9eaf7579b9bee, type: 2}
+  MaximumBounceCount:
+    _normalizedValue: 1
+    _isRandomized: 0
+    _randomness: 0
+    _group: {fileID: 11400000, guid: fea66633beae5684ba6f417be05e91a2, type: 2}
+  MaximumDistance:
+    _normalizedValue: 1
+    _isRandomized: 0
+    _randomness: 0
+    _group: {fileID: 11400000, guid: 726f1a542d5922c4f98e620f3bd3bddf, type: 2}

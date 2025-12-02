@@ -11,7 +11,7 @@ public class GunWeaponBehavior : ProjectileLauncherWeaponBehavior
         var p = context.ProjectilePool.Get();
         p.Initialize(_definition.ProjectileDefinition, _projectileBehavior);
         // aimvector is normalized since guns should not have variable strength
-        var updatedContext = new ItemUsageContext(context.AimOrigin, context.AimVector.normalized, context.Owner,  context.ProjectilePool);
+        var updatedContext = new ItemUsageContext(context.AimOrigin, context.AimVector.normalized, context.Owner, context.LaserRenderer, context.ProjectilePool);
         p.Launch(updatedContext, _definition.FireStrength.CalculateValue());
     }
 }

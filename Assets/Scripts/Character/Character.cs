@@ -258,7 +258,7 @@ public class Character : MonoBehaviour
     {
         if ((item == null) || (_items.Contains(item) && item != _selectedItem))
         {
-            if(item.Definition.UseInstantlyWhenSelected)
+            if(item != null && item.Definition.UseInstantlyWhenSelected)
             {
                 var context = new ItemUsageContext(this);
                 if(item.Behavior.CanUseItem(context))
