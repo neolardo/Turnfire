@@ -1,166 +1,117 @@
+using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(SpriteRenderer))]
+[RequireComponent(typeof(LineRendererCompute))]
 public class PixelLaserRenderer : MonoBehaviour
 {
-    [Header("Laser Appearance")]
-    public Color _laserColor = Color.red;
-    public float _intensity = 1.0f;
-    public float _fadeDuration = 3f;
-    public float _maxAlpha = 1f;
-    public int _pixelsPerUnit = 64;
+    [SerializeField] private float _updateRate = 0f;   // 0 = update every frame
+    [SerializeField] private float _laserLength = 2f;
+    [SerializeField] private float _animationDuration = 2f;
+    private LineRendererCompute _renderer;
+    private Coroutine _runningAnimation;
 
-    private SpriteRenderer _sr;
-    private Texture2D _tex;
-    private Color32[] _buffer;
-
-    private int _texWidth;
-    private int _texHeight;
-
-    private float _timer;
-    private bool _fading;
-
-   private void Start()
+    private void Awake()
     {
-        _sr = GetComponent<SpriteRenderer>();
-        InitializeTexture();
+        _renderer = GetComponent<LineRendererCompute>();
     }
 
-    private void InitializeTexture()
-    {
-
-        var terrainRenderer = FindFirstObjectByType<DestructibleTerrainRenderer>();
-        _texWidth = terrainRenderer.Texture.width;
-        _texHeight = terrainRenderer.Texture.height;
-
-        _tex = new Texture2D(_texWidth, _texHeight, TextureFormat.RGBA32, false);
-        _tex.filterMode = FilterMode.Point;
-        _tex.wrapMode = TextureWrapMode.Clamp;
-
-        _buffer = new Color32[_texWidth * _texHeight];
-        Clear();
-
-        _tex.SetPixels32(_buffer);
-        _tex.Apply();
-
-        // Replace sprite's texture with editable one
-        _sr.sprite = Sprite.Create(
-            _tex,
-            new Rect(0, 0, _texWidth, _texHeight),
-            new Vector2(0.5f, 0.5f),
-            _pixelsPerUnit
-        );
-    }
-
-    /// <summary>
-    /// Draws a laser path using world-space reflection points.
-    /// Call once per shot.
-    /// </summary>
     public void DrawLaser(Vector2[] worldPoints)
     {
-        _fading = true;
-        _timer = 0f;
-
-        for (int i = 0; i < worldPoints.Length - 1; i++)
+        if (_runningAnimation != null)
         {
-            DrawLine(
-                WorldToPixel(worldPoints[i]),
-                WorldToPixel(worldPoints[i + 1])
-            );
+            StopCoroutine(_runningAnimation);
         }
 
-        _tex.SetPixels32(_buffer);
-        _tex.Apply();
+        _runningAnimation = StartCoroutine(AnimateLaserLine(_laserLength, _animationDuration, worldPoints));
     }
 
-    private Vector2Int WorldToPixel(Vector2 worldPos)
+    private IEnumerator AnimateLaserLine(float length, float duration, Vector2[] points)
     {
-        Vector3 local = transform.InverseTransformPoint(worldPos);
+        // Precompute the cumulative lengths along the polyline
+        float totalPathLength;
+        float[] cumulative = ComputeCumulativeLengths(points, out totalPathLength);
 
-        // Sprite uses pivot center + extents
-        float px = (local.x + _sr.sprite.bounds.extents.x)
-                    * _pixelsPerUnit;
-        float py = (local.y + _sr.sprite.bounds.extents.y)
-                    * _pixelsPerUnit;
+        float elapsed = 0f;
 
-        return new Vector2Int(Mathf.RoundToInt(px), Mathf.RoundToInt(py));
-    }
-
-    private void Update()
-    {
-        if (!_fading)
-            return;
-
-        _timer += Time.deltaTime;
-        float t = _timer / _fadeDuration;
-
-        if (t >= 1f)
+        while (elapsed < duration)
         {
-            Clear();
-            _tex.SetPixels32(_buffer);
-            _tex.Apply();
-            _fading = false;
-            return;
+            float t = elapsed / duration;
+            float headDistance = Mathf.Lerp(0f, totalPathLength, t);
+            float tailDistance = Mathf.Max(0f, headDistance - length);
+
+            // Extract the moving segment as world-space pixel coordinates
+            Vector2[] segment = ExtractSegment(points, cumulative, tailDistance, headDistance);
+
+            // Send the new line points to the renderer
+            _renderer.DrawLine(segment);
+
+            // Frame pacing
+            if (_updateRate <= 0f)
+                yield return null;
+            else
+                yield return new WaitForSeconds(_updateRate);
+
+            elapsed += Time.deltaTime;
         }
 
-        float fade = 1f - t;
+        // Ensure it ends fully drawn
+        _renderer.DrawLine(points);
+    }
 
-        for (int i = 0; i < _buffer.Length; i++)
+
+    private float[] ComputeCumulativeLengths(Vector2[] points, out float total)
+    {
+        float[] cLengths = new float[points.Length];
+        cLengths[0] = 0f;
+
+        for (int i = 1; i < points.Length; i++)
         {
-            if (_buffer[i].a == 0) continue;
-            Color32 c = _buffer[i];
-
-            c.r = (byte)(c.r * fade);
-            c.g = (byte)(c.g * fade);
-            c.b = (byte)(c.b * fade);
-            c.a = (byte)(c.a * fade);
-
-            _buffer[i] = c;
+            cLengths[i] = cLengths[i - 1] + Vector2.Distance(points[i], points[i - 1]);
         }
 
-        _tex.SetPixels32(_buffer);
-        _tex.Apply();
+        total = cLengths[cLengths.Length - 1];
+        return cLengths;
     }
 
-    private void DrawLine(Vector2Int a, Vector2Int b)
+
+    private Vector2[] ExtractSegment( Vector2[] points, float[] cumulative, float startDistance,float endDistance)
     {
-        int x0 = a.x, y0 = a.y; //TODO: shader code instead?
-        int x1 = b.x, y1 = b.y;
+        // Worst case: segment spans entire polyline
+        // Allocate small buffer only once per frame
+        Vector2[] buffer = new Vector2[points.Length + 2];
+        int count = 0;
 
-        int dx = Mathf.Abs(x1 - x0);
-        int dy = Mathf.Abs(y1 - y0);
-        int sx = x0 < x1 ? 1 : -1;
-        int sy = y0 < y1 ? 1 : -1;
-        int err = dx - dy;
-
-        while (true)
+        for (int i = 1; i < points.Length; i++)
         {
-            Plot(x0, y0);
-            if (x0 == x1 && y0 == y1) break;
+            float segStart = cumulative[i - 1];
+            float segEnd = cumulative[i];
 
-            int e2 = 2 * err;
-            if (e2 > -dy) { err -= dy; x0 += sx; }
-            if (e2 < dx) { err += dx; y0 += sy; }
+            // Segment outside requested area
+            if (segEnd < startDistance || segStart > endDistance)
+                continue;
+
+            // Clamp interpolation ranges
+            float localStart = Mathf.Clamp(startDistance, segStart, segEnd);
+            float localEnd = Mathf.Clamp(endDistance, segStart, segEnd);
+
+            float t1 = Mathf.InverseLerp(segStart, segEnd, localStart);
+            float t2 = Mathf.InverseLerp(segStart, segEnd, localEnd);
+
+            Vector2 p1 = Vector2.Lerp(points[i - 1], points[i], t1);
+            Vector2 p2 = Vector2.Lerp(points[i - 1], points[i], t2);
+
+            // Add points in order
+            if (count == 0 || buffer[count - 1] != p1)
+                buffer[count++] = p1;
+
+            buffer[count++] = p2;
         }
-    }
 
-    private void Plot(int x, int y)
-    {
-        if (x < 0 || x >= _texWidth || y < 0 || y >= _texHeight)
-            return;
+        // Trim buffer
+        Vector2[] result = new Vector2[count];
+        for (int i = 0; i < count; i++)
+            result[i] = buffer[i];
 
-        int idx = y * _texWidth + x;
-
-        Color c = _buffer[idx];
-        c += (Color)_laserColor * _intensity;
-        c.a = _maxAlpha;
-
-        _buffer[idx] = c;
-    }
-
-    private void Clear()
-    {
-        for (int i = 0; i < _buffer.Length; i++)
-            _buffer[i] = new Color32(0, 0, 0, 0);
+        return result;
     }
 }

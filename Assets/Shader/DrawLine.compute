@@ -1,0 +1,62 @@
+// DrawLine.compute
+#pragma kernel CSMain
+
+RWTexture2D<float4> Result;
+
+StructuredBuffer<int> Points; // x,y,x,y,x,y...
+int pointCount;                // number of points
+int2 texSize;                  // texture size (width, height)
+float4 lineColor;              // RGBA color in 0..1
+int thickness;                 // thickness in pixels (positive int)
+
+[numthreads(8, 8, 1)]
+void CSMain(uint3 dtid : SV_DispatchThreadID)
+{
+    int2 uv = int2(dtid.xy);
+    if (uv.x >= texSize.x || uv.y >= texSize.y) return;
+
+    // pixel center
+    float2 p = float2(uv)+0.5;
+
+    // default transparent
+    float4 outCol = float4(0, 0, 0, 0);
+
+    if (pointCount >= 2)
+    {
+        float minDist = 1e9;
+
+        // iterate segments
+        for (int i = 0; i < pointCount - 1; ++i)
+        {
+            int idx0 = i * 2;
+            int idx1 = idx0 + 2;
+
+            float2 a = float2(Points[idx0], Points[idx0 + 1]);
+            float2 b = float2(Points[idx1], Points[idx1 + 1]);
+
+            // compute distance from p to segment ab
+            float2 ab = b - a;
+            float2 ap = p - a;
+            float abLen2 = dot(ab, ab);
+
+            float t = 0.0;
+            if (abLen2 > 0.0)
+                t = clamp(dot(ap, ab) / abLen2, 0.0, 1.0);
+
+            float2 proj = a + ab * t;
+            float dist = length(p - proj);
+            if (dist < minDist) minDist = dist;
+        }
+
+        // Pixel-perfect threshold: round distance to nearest pixel
+        // If rounded distance <= thicknessHalf -> set pixel.
+        float half = thickness * 0.5;
+        // Use rounding to get pixel-perfect behaviour
+        if (round(minDist) <= half)
+        {
+            outCol = lineColor;
+        }
+    }
+
+    Result[uv] = outCol;
+}
