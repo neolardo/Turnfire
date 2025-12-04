@@ -3,7 +3,6 @@ using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer))]
-[ExecuteAlways]
 public class LineRendererCompute : MonoBehaviour
 {
     [Header("Texture Size")]

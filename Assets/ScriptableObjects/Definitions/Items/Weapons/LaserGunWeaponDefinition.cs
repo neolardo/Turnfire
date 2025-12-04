@@ -4,6 +4,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "LaserGunDefinition", menuName = "Scriptable Objects/Items/Weapons/LaserGunDefinition")]
 public class LaserGunWeaponDefinition : WeaponDefinition
 {
+    public override bool IsRanged => true;
+
     public RangedStatInt Damage;
     public RangedStatInt MaximumBounceCount;
     public RangedStatFloat MaximumDistance;

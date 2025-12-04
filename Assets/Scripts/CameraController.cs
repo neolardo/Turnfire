@@ -37,6 +37,12 @@ public class CameraController : MonoBehaviour
         _projectileCam.Prioritize();
         _projectileCam.Follow = p.transform;
     }
+    public void SetLaserTarget(Transform l)
+    {
+        _brain.DefaultBlend.Style = CinemachineBlendDefinition.Styles.EaseIn;
+        _projectileCam.Prioritize();
+        _projectileCam.Follow = l;
+    }
 
     public void SetCharacterTarget(Character c)
     {
@@ -51,5 +57,7 @@ public class CameraController : MonoBehaviour
         _packageCam.Prioritize();
         _packageCam.Follow = p.transform;
     }
+
+
 
 }

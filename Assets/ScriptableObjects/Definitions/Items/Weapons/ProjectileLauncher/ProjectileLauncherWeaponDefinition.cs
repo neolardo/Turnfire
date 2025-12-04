@@ -5,6 +5,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "ProjectileLauncherWeaponDefinition", menuName = "Scriptable Objects/Items/Weapons/ProjectileLauncherWeaponDefinition")]
 public class ProjectileLauncherWeaponDefinition : WeaponDefinition
 {
+    public override bool IsRanged => true;
+
     public RangedStatFloat FireStrength;
     public ProjectileDefinition ProjectileDefinition;
     public bool UseGravityForPreview = true;

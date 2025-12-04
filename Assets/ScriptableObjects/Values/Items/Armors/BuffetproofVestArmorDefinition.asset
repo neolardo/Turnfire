@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d270b4c567e47d4185db602fe500178, type: 3}
   m_Name: BuffetproofVestArmorDefinition
   m_EditorClassIdentifier: 
-  Sprite: {fileID: 0}
+  Sprite: {fileID: 21300000, guid: 93cc639b3746be240a595aec74bb6448, type: 3}
   Name: Bulletproof Vest
   Description: Helps you dodge the next attack.
   InitialQuantity: 1
   MaximumQuantity: 1
+  IsQuantityInfinite: 0
   DropQuantityRange:
     _normalizedValue: 0
     _isRandomized: 0
@@ -31,3 +32,32 @@ MonoBehaviour:
     _isRandomized: 0
     _randomness: 0
     _group: {fileID: 11400000, guid: 605abe0e4a78f5c4ba2e65d2435bc7a2, type: 2}
+  EquippedSpriteStrip:
+  - {fileID: 2089071446, guid: 550121c32d7259743807c1468eacd067, type: 3}
+  - {fileID: 2041467575, guid: 550121c32d7259743807c1468eacd067, type: 3}
+  - {fileID: 710856133, guid: 550121c32d7259743807c1468eacd067, type: 3}
+  - {fileID: 1287068387, guid: 550121c32d7259743807c1468eacd067, type: 3}
+  - {fileID: 666490915, guid: 550121c32d7259743807c1468eacd067, type: 3}
+  - {fileID: -457481466, guid: 550121c32d7259743807c1468eacd067, type: 3}
+  - {fileID: 1915850027, guid: 550121c32d7259743807c1468eacd067, type: 3}
+  - {fileID: -105825086, guid: 550121c32d7259743807c1468eacd067, type: 3}
+  - {fileID: -1820360624, guid: 550121c32d7259743807c1468eacd067, type: 3}
+  - {fileID: -684171158, guid: 550121c32d7259743807c1468eacd067, type: 3}
+  - {fileID: -778123370, guid: 550121c32d7259743807c1468eacd067, type: 3}
+  - {fileID: -180420874, guid: 550121c32d7259743807c1468eacd067, type: 3}
+  - {fileID: 1713879714, guid: 550121c32d7259743807c1468eacd067, type: 3}
+  - {fileID: 521117006, guid: 550121c32d7259743807c1468eacd067, type: 3}
+  - {fileID: 2048027382, guid: 550121c32d7259743807c1468eacd067, type: 3}
+  - {fileID: 1889556453, guid: 550121c32d7259743807c1468eacd067, type: 3}
+  - {fileID: 247422226, guid: 550121c32d7259743807c1468eacd067, type: 3}
+  - {fileID: 1957795246, guid: 550121c32d7259743807c1468eacd067, type: 3}
+  - {fileID: -836277050, guid: 550121c32d7259743807c1468eacd067, type: 3}
+  - {fileID: -308573805, guid: 550121c32d7259743807c1468eacd067, type: 3}
+  - {fileID: 655979474, guid: 550121c32d7259743807c1468eacd067, type: 3}
+  - {fileID: -348830682, guid: 550121c32d7259743807c1468eacd067, type: 3}
+  - {fileID: -1679345048, guid: 550121c32d7259743807c1468eacd067, type: 3}
+  - {fileID: -1618072053, guid: 550121c32d7259743807c1468eacd067, type: 3}
+  - {fileID: -820367409, guid: 550121c32d7259743807c1468eacd067, type: 3}
+  - {fileID: 1778636360, guid: 550121c32d7259743807c1468eacd067, type: 3}
+  - {fileID: 851587162, guid: 550121c32d7259743807c1468eacd067, type: 3}
+  - {fileID: -607188017, guid: 550121c32d7259743807c1468eacd067, type: 3}

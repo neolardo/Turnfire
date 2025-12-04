@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class MeleeWeaponWeaponBehavior : WeaponBehavior
 {
-    private MeleeWeaponWeaponDefinition _definition;
-    public MeleeWeaponWeaponBehavior(MeleeWeaponWeaponDefinition definition) : base(CoroutineRunner.Instance)
+    private MeleeWeaponDefinition _definition;
+    public MeleeWeaponWeaponBehavior(MeleeWeaponDefinition definition) : base(CoroutineRunner.Instance)
     {
         _definition = definition;
     }

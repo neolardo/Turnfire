@@ -7,12 +7,15 @@ public class PixelLaserRenderer : MonoBehaviour
     [SerializeField] private float _updateRate = 0f;   // 0 = update every frame
     [SerializeField] private float _laserLength = 2f;
     [SerializeField] private float _animationDuration = 2f;
+    [SerializeField] private Transform _laserCenter;
     private LineRendererCompute _renderer;
     private Coroutine _runningAnimation;
+    private CameraController _cameraController;
 
     private void Awake()
     {
         _renderer = GetComponent<LineRendererCompute>();
+        _cameraController = FindFirstObjectByType<CameraController>();
     }
 
     public void DrawLaser(Vector2[] worldPoints)
@@ -21,12 +24,12 @@ public class PixelLaserRenderer : MonoBehaviour
         {
             StopCoroutine(_runningAnimation);
         }
-
         _runningAnimation = StartCoroutine(AnimateLaserLine(_laserLength, _animationDuration, worldPoints));
     }
 
     private IEnumerator AnimateLaserLine(float length, float duration, Vector2[] points)
     {
+        _cameraController.SetLaserTarget(_laserCenter);
         // Precompute the cumulative lengths along the polyline
         float totalPathLength;
         float[] cumulative = ComputeCumulativeLengths(points, out totalPathLength);
@@ -99,6 +102,7 @@ public class PixelLaserRenderer : MonoBehaviour
 
             Vector2 p1 = Vector2.Lerp(points[i - 1], points[i], t1);
             Vector2 p2 = Vector2.Lerp(points[i - 1], points[i], t2);
+            _laserCenter.position = (p1 + p2) / 2;
 
             // Add points in order
             if (count == 0 || buffer[count - 1] != p1)

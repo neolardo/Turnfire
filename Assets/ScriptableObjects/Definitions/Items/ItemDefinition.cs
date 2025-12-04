@@ -16,6 +16,7 @@ public abstract class ItemDefinition : ScriptableObject
     public SFXDefiniton ItemActionSFX;
     public bool HideItemDuringUsage;
     public bool UseInstantlyWhenSelected;
+
     public abstract IItemBehavior CreateItemBehavior();
     public abstract IEnumerable<RangedStat> GetRangedStats();
 

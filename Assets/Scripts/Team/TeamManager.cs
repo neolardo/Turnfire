@@ -35,7 +35,7 @@ public class TeamManager : MonoBehaviour
     {
         //TODO: remote players
         var botManagerFactory = FindFirstObjectByType<BotManagerFactory>();
-        Team localTeam = _teams[Random.Range(0, _teams.Count)];
+        Team localTeam = _teams[0]; //TODO//_teams[Random.Range(0, _teams.Count)];
         localTeam.InitializeInputSource(InputSourceType.Local);
         foreach(var team in _teams)
         {

@@ -36,7 +36,7 @@ public class TurnManager : MonoBehaviour
         _turnStates = new List<TurnState>
         {
             new AlternativelyDoCharacterActionsForAllTeamsTurnState(this, characterActionManager, _teams),
-            new DropItemsAndEffectsTurnState(this, dropManager),
+            new DropPackagesTurnState(this, dropManager),
             new FinishedTurnState(this),
         };
         foreach (var turnState in _turnStates)
