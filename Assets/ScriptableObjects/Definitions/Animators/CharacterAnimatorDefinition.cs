@@ -3,12 +3,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "CharacterAnimatorDefinition", menuName = "Scriptable Objects/Animators/CharacterAnimatorDefinition")]
 public class CharacterAnimatorDefinition : ScriptableObject
 {
-    [Header("Colors")]
-    public Color HurtFlashColor = Color.red;
-    public Color HealFlashColor = Color.green;
-    public Color ItemFlashColor = new Color(.8f,.8f,.8f, 0.3f);
-
-    [Header("Durations")]
+    [Header("Sprite Animations")]
     public float IdleAnimationFrameDuration;
     public float HurtAnimationFrameDuration;
     public float DeathAnimationFrameDuration;
@@ -18,6 +13,11 @@ public class CharacterAnimatorDefinition : ScriptableObject
 
     public float ItemUsageDelay;
 
+    [Header("Flash Animations")]
+    public Color HurtFlashColor = Color.red;
+    public Color HealFlashColor = Color.green;
+    public Color ItemFlashColor = new Color(.8f, .8f, .8f, 0.3f);
+
     public float HurtAnimationFlashInSeconds;
     public float HurtAnimationFlashOutSeconds;
 
@@ -26,5 +26,9 @@ public class CharacterAnimatorDefinition : ScriptableObject
 
     public float ItemFlashInSeconds;
     public float ItemFlashOutSeconds;
+
+    [Header("Healtbar")]
+    public float HealtbarSlideInSeconds;
+    public float HealtbarSlideOutSeconds;
 
 }

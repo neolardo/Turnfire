@@ -66,12 +66,9 @@ public class Character : MonoBehaviour
         Collider = GetComponent<Collider2D>();
         _selectedItem = _items.FirstOrDefault();
         HealthChanged += _healthbarRenderer.SetCurrentHealth;
+        _healthbarRenderer.Initilaize(_health);
     }
 
-    private void Start()
-    {
-        _healthbarRenderer.SetCurrentHealth(NormalizedHealth, Health);
-    }
     public void SetTeam(Team team)
     {
         Team = team;

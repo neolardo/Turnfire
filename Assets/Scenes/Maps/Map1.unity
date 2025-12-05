@@ -21880,15 +21880,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 111535900474779470, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 0.8658153
       objectReference: {fileID: 0}
     - target: {fileID: 111535900474779470, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 3.0471354
       objectReference: {fileID: 0}
     - target: {fileID: 111535900474779470, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -3
       objectReference: {fileID: 0}
     - target: {fileID: 1130317210070368361, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
       propertyPath: m_Size.x
@@ -21912,7 +21912,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5491490051535995749, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
       propertyPath: orthographic size
-      value: 3
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 6070684801221486192, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
       propertyPath: Lens.OrthographicSize

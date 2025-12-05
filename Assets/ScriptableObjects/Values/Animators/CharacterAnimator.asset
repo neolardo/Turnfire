@@ -12,9 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4096b721780c27748abcf89fc1f9eb4e, type: 3}
   m_Name: CharacterAnimator
   m_EditorClassIdentifier: 
-  HurtFlashColor: {r: 1, g: 0, b: 0, a: 1}
-  HealFlashColor: {r: 0, g: 1, b: 0, a: 1}
-  ItemFlashColor: {r: 0.8, g: 0.8, b: 0.8, a: 0.29803923}
   IdleAnimationFrameDuration: 0.6
   HurtAnimationFrameDuration: 0.6
   DeathAnimationFrameDuration: 0.1
@@ -22,9 +19,14 @@ MonoBehaviour:
   ItemActionAnimationFrameDuration: 0.1
   GuardActionAnimationFrameDuration: 0.1
   ItemUsageDelay: 1
+  HurtFlashColor: {r: 1, g: 0, b: 0, a: 1}
+  HealFlashColor: {r: 0, g: 1, b: 0, a: 1}
+  ItemFlashColor: {r: 0.8, g: 0.8, b: 0.8, a: 0.29803923}
   HurtAnimationFlashInSeconds: 0.2
   HurtAnimationFlashOutSeconds: 0.6
   HealAnimationFlashInSeconds: 0.5
   HealAnimationFlashOutSeconds: 0.5
   ItemFlashInSeconds: 0.2
   ItemFlashOutSeconds: 0.6
+  HealtbarSlideInSeconds: 0.2
+  HealtbarSlideOutSeconds: 0.6
