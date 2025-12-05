@@ -4,12 +4,12 @@ using UnityEngine.InputSystem;
 
 public class LocalGameplayInput : LocalInputBase, IGameplayInputSource
 {
+    [SerializeField] private AimCircleUI _aimCircleUI;
     [SerializeField] private AnimationCurve _gamepadStickResponseCurve =
     new AnimationCurve(
         new Keyframe(0, 0),
         new Keyframe(0.5f, 0.2f),
         new Keyframe(1, 1));
-    [SerializeField] private ItemPreviewRendererSettingsDefinition _previewSettings;
 
     private float _mouseAimRadius;
     private Vector2 _aimVector;
@@ -172,7 +172,7 @@ public class LocalGameplayInput : LocalInputBase, IGameplayInputSource
         if (ctx.control.device is Mouse)
         {
             initialPos = Mouse.current.position.ReadValue();
-            _mouseAimRadius = (_previewSettings.AimCircleOuterRadiusPercent - _previewSettings.AimCircleInnerRadiusPercent) * Screen.width;
+            _mouseAimRadius = (AimCircleUI.OuterRadiusPercent - AimCircleUI.InnerRadiusPercent) * Screen.width;
         }
         AimStarted?.Invoke(initialPos);
         Cursor.visible = false;

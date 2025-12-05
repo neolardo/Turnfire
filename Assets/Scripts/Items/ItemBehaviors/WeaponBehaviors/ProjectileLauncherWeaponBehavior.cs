@@ -43,7 +43,7 @@ public class ProjectileLauncherWeaponBehavior : WeaponBehavior
     {
         rendererManager.SelectRenderer(ItemPreviewRendererType.Trajectory);
         rendererManager.TrajectoryRenderer.ToggleGravity(_definition.UseGravityForPreview);
-        rendererManager.TrajectoryRenderer.SetOrigin(context.Owner.transform);
+        rendererManager.TrajectoryRenderer.SetOrigin(context.Owner.ItemTransform);
         rendererManager.TrajectoryRenderer.SetTrajectoryMultipler(_definition.FireStrength.CalculateValue());
     }
 

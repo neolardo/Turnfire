@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.U2D.Animation;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -9,8 +10,7 @@ public class Character : MonoBehaviour
 
     [SerializeField] private CharacterHealthbarRenderer _healthbarRenderer;
     [SerializeField] private CharacterAnimator _animator;
-
-    public CharacterDefinition CharacterDefinition;
+    [SerializeField] private CharacterDefinition _characterDefinition;
     private List<Item> _items;
     private Item _selectedItem;
     private Rigidbody2D _rb;
@@ -31,6 +31,8 @@ public class Character : MonoBehaviour
             }
         }
     }
+
+    public CharacterDefinition CharacterDefinition => _characterDefinition;
     public CharacterArmorManager ArmorManager { get; private set; }
     public Team Team { get; private set; }
     public Collider2D Collider { get; private set; }
@@ -42,6 +44,7 @@ public class Character : MonoBehaviour
     public Vector2 FeetPosition => (Vector2)transform.position + Vector2.down * Collider.bounds.extents.y;
     public Vector2 FeetOffset => Vector2.down * Collider.bounds.extents.y;
 
+    public float JumpStrength => _jumpBoost + CharacterDefinition.JumpStrength;
 
     public event Action<float, int> HealthChanged;
     public event Action Jumped;
@@ -180,13 +183,7 @@ public class Character : MonoBehaviour
         _animator.PlayCancelJumpAnimation();
     }
 
-    public void InitializeMovementPreview(TrajectoryRenderer trajectoryRenderer)
-    {
-        trajectoryRenderer.SetOrigin(transform);
-        trajectoryRenderer.ToggleGravity(true);
-        trajectoryRenderer.SetTrajectoryMultipler(CharacterDefinition.JumpStrength);
-    }
-
+    
     #endregion
 
     #region Items

@@ -25,7 +25,7 @@ public class TurnManager : MonoBehaviour
         }
 
         var localInput = FindFirstObjectByType<LocalGameplayInput>();
-        var trajectoryRenderer = FindFirstObjectByType<TrajectoryRenderer>();
+        var trajectoryRenderer = FindFirstObjectByType<PixelTrajectoryRenderer>();
         var itemPreviewRendererManager = FindFirstObjectByType<ItemPreviewRendererManager>();
         var dropManager = FindFirstObjectByType<DropManager>();
         var cameraController = FindFirstObjectByType<CameraController>();

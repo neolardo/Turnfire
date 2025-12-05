@@ -7,11 +7,11 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
     private ItemPreviewRendererManager _rendererManager;
     private ProjectilePool _projectilePool;
     private PixelLaserRenderer _laserRenderer;
-    private TrajectoryRenderer _trajectoryRenderer;
+    private PixelTrajectoryRenderer _trajectoryRenderer;
     private GameplayUIManager _uiManager;
     private IGameplayInputSource _inputSource;
 
-    public ReadyToUseItemCharacterActionState(ItemPreviewRendererManager rendererManager, PixelLaserRenderer laserRenderer, ProjectilePool projectilePool, TrajectoryRenderer trajectoryRenderer, GameplayUIManager uiManager, MonoBehaviour coroutineManager, UISoundsDefinition uiSounds) : base(coroutineManager, uiSounds)
+    public ReadyToUseItemCharacterActionState(ItemPreviewRendererManager rendererManager, PixelLaserRenderer laserRenderer, ProjectilePool projectilePool, PixelTrajectoryRenderer trajectoryRenderer, GameplayUIManager uiManager, MonoBehaviour coroutineManager, UISoundsDefinition uiSounds) : base(coroutineManager, uiSounds)
     {
         _rendererManager = rendererManager;
         _projectilePool = projectilePool;
@@ -43,22 +43,23 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
 
     private void OnAimStarted(Vector2 initialPosition)
     {
-        _trajectoryRenderer.ShowTrajectory(initialPosition);
+        _uiManager.ShowAimCircles(initialPosition);
         _currentCharacter.StartAiming();
     }
 
     private void OnAimChanged(Vector2 aimVector)
     {
         _trajectoryRenderer.DrawTrajectory(aimVector);
+        _uiManager.UpdateAimCircles(aimVector);
         _currentCharacter.ChangeAim(aimVector);
     }
 
     private void OnAimCancelled()
     {
         _trajectoryRenderer.HideTrajectory();
+        _uiManager.HideAimCircles();
         _currentCharacter.CancelAiming();
     }
-
 
     public override void StartState(Character currentCharacter)
     {
@@ -101,6 +102,7 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
     private void OnImpulseReleased(Vector2 aimVector)
     {
         _trajectoryRenderer.HideTrajectory();
+        _uiManager.HideAimCircles();
         _currentCharacter.UseSelectedItem(new ItemUsageContext(_currentCharacter.transform.position, aimVector, _currentCharacter, _laserRenderer, _projectilePool));
     }
 }

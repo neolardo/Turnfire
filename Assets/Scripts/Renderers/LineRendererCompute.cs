@@ -19,7 +19,7 @@ public class LineRendererCompute : MonoBehaviour
     [SerializeField] private ComputeShader _compute;
     [SerializeField] private Material _material; 
 
-    private RenderTexture _rt;
+    [SerializeField] private RenderTexture _rt;
     private ComputeBuffer _pointsBuffer;
     private SpriteRenderer _sr;
     private int _kernel;
@@ -63,6 +63,12 @@ public class LineRendererCompute : MonoBehaviour
     public void DrawLine(Vector2[] worldPoints)
     {
         _points = worldPoints.Select(p => WorldToPixel(p)).ToArray();
+        Dispatch();
+    }
+
+    public void Clear()
+    {
+        _points = null;
         Dispatch();
     }
 

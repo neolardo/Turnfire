@@ -500,7 +500,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _healthbarRenderer: {fileID: 7159166417766807812}
   _animator: {fileID: 9210120964989600351}
-  CharacterDefinition: {fileID: 11400000, guid: 852bc67809d5a8a40b8018dc7511c79e, type: 2}
+  _characterDefinition: {fileID: 11400000, guid: 852bc67809d5a8a40b8018dc7511c79e, type: 2}
 --- !u!210 &6660850631547194299
 SortingGroup:
   m_ObjectHideFlags: 0
