@@ -18,12 +18,12 @@ public class FlashSpriteAnimator : MonoBehaviour
     {
         IsFlashing = true;
         float t = 0f;
-        var originalColors = renderer.color;
+        var originalColor = renderer.color;
 
         while (t < 1f)
         {
             t += Time.deltaTime / inTime;
-            renderer.color = Color.Lerp(originalColors, color, t);
+            renderer.color = Color.Lerp(originalColor, color, t);
             yield return null;
         }
 
@@ -31,7 +31,7 @@ public class FlashSpriteAnimator : MonoBehaviour
         while (t < 1f)
         {
             t += Time.deltaTime / outTime;
-            renderer.color = Color.Lerp(color, originalColors, t);
+            renderer.color = Color.Lerp(color, originalColor, t);
             yield return null;
         }
         IsFlashing = false;

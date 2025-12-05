@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4096b721780c27748abcf89fc1f9eb4e, type: 3}
   m_Name: CharacterAnimator
   m_EditorClassIdentifier: 
+  HurtFlashColor: {r: 1, g: 0, b: 0, a: 1}
+  HealFlashColor: {r: 0, g: 1, b: 0, a: 1}
+  ItemFlashColor: {r: 0.8, g: 0.8, b: 0.8, a: 0.29803923}
   IdleAnimationFrameDuration: 0.6
   HurtAnimationFrameDuration: 0.6
   DeathAnimationFrameDuration: 0.1

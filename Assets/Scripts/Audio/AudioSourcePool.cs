@@ -33,7 +33,8 @@ public class AudioSourcePool : Pool<AudioSource>
 
     private IEnumerator ReleaseWhenFinishedPlaying(AudioSource source)
     {
-        yield return new WaitForSeconds(source.clip.length / source.pitch);
+        float seconds = source.clip.length / source.pitch;
+        yield return new WaitForSeconds(seconds);
         Release(source);
     }
 }

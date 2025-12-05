@@ -12,9 +12,6 @@ public class CharacterDefinition : ScriptableObject
     public Sprite[] ClothesSpriteStrip;
     public Sprite[] OverItemBodySpriteStrip;
     public Sprite[] OverItemClothesSpriteStrip;
-    public Color HurtFlashColor = Color.red;
-    public Color HealFlashColor = Color.green;
-    public Color ItemFlashColor = Color.white;
 
     public Dictionary<CharacterAnimationState, CharacterAnimationFrame[]> Animations { get; private set; }
 

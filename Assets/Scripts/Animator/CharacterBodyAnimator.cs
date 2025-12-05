@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.InputSystem.LowLevel;
 
 public class CharacterBodyAnimator : MonoBehaviour
 {
@@ -16,7 +15,7 @@ public class CharacterBodyAnimator : MonoBehaviour
     [SerializeField] private SpriteRenderer _clothesSpriteRenderer;
     [SerializeField] private SpriteRenderer _overItemBodySpriteRenderer;
     [SerializeField] private SpriteRenderer _overItemClothesSpriteRenderer;
-    [SerializeField] private SpriteRenderer _equippedArmorSpriteRendererPrefab;
+    [SerializeField] private SpriteRendererPool _equippedArmorSpriteRendererPool;
 
     private Dictionary<CharacterAnimationLayer, SpriteRenderer> _baseSpriteRenderers;
     private Dictionary<ArmorDefinition, SpriteRenderer> _equippedArmorSpriteRenderers;
@@ -25,12 +24,11 @@ public class CharacterBodyAnimator : MonoBehaviour
 
     private CharacterDefinition _characterDefinition;
 
+    private int _lastFrameIndex;
     private Color _teamColor;
     private Coroutine _currentAnimationRoutine;
     private CharacterAnimationState _currentAnimationState;
     public bool IsFacingLeft => _baseSpriteRenderers[CharacterAnimationLayer.Body].flipX;
-
-    private int InitialArmorRendererSortingOrder => _equippedArmorSpriteRendererPrefab.sortingOrder;
 
     public bool IsPlayingNonIdleAnimation => (_currentAnimationState != CharacterAnimationState.Idle && _currentAnimationState != CharacterAnimationState.None) || _flashAnimator.IsFlashing;
 
@@ -89,36 +87,39 @@ public class CharacterBodyAnimator : MonoBehaviour
 
     public void PlayEquipArmorAnimation(ArmorDefinition armor)
     {
-        _equippedArmorSpriteRenderers[armor] = Instantiate(_equippedArmorSpriteRendererPrefab, transform);
-        _equippedArmorSpriteRenderers[armor].sortingOrder = InitialArmorRendererSortingOrder + _equippedArmorSpriteRenderers.Count-1;
+        Debug.Log("Equip animation started");
+        _equippedArmorSpriteRenderers[armor] = _equippedArmorSpriteRendererPool.Get();
         _equippedArmorSpriteRenderers[armor].flipX = _baseSpriteRenderers[0].flipX;
-        _flashAnimator.Flash(new[] { _equippedArmorSpriteRenderers[armor] }, _characterDefinition.ItemFlashColor, _animatorDefinition.ItemFlashInSeconds, _animatorDefinition.ItemFlashOutSeconds);
+        _equippedArmorSpriteRenderers[armor].sprite = armor.Animations[_currentAnimationState][_lastFrameIndex];
+        _flashAnimator.Flash(new[] { _equippedArmorSpriteRenderers[armor] }, _animatorDefinition.ItemFlashColor, _animatorDefinition.ItemFlashInSeconds, _animatorDefinition.ItemFlashOutSeconds);
     }
 
     public void PlayUnequipArmorAnimation(ArmorDefinition armor)
     {
-        _flashAnimator.Flash(new[] { _equippedArmorSpriteRenderers[armor] }, _characterDefinition.ItemFlashColor, _animatorDefinition.ItemFlashInSeconds, _animatorDefinition.ItemFlashOutSeconds);
+        StartCoroutine(PlayUnequipAnimationThenDestroyRenderer(armor));
+    }
+
+    private IEnumerator PlayUnequipAnimationThenDestroyRenderer(ArmorDefinition armor)
+    {
+        _flashAnimator.Flash(new[] { _equippedArmorSpriteRenderers[armor] }, _animatorDefinition.ItemFlashColor, _animatorDefinition.ItemFlashInSeconds, _animatorDefinition.ItemFlashOutSeconds);
+        yield return new WaitUntil(() => !_flashAnimator.IsFlashing);
+        _equippedArmorSpriteRendererPool.Release(_equippedArmorSpriteRenderers[armor]);
         _equippedArmorSpriteRenderers.Remove(armor);
-        var armorRenderers = _equippedArmorSpriteRenderers.Values.ToArray();
-        for (int i = 0; i < armorRenderers.Length; i++)
-        {
-            armorRenderers[i].sortingOrder = InitialArmorRendererSortingOrder + i;
-        }
     }
 
     public void PlayBlockAnimation(ArmorDefinition armor)
     {
-        _flashAnimator.Flash(new[] { _equippedArmorSpriteRenderers[armor] }, _characterDefinition.ItemFlashColor, _animatorDefinition.ItemFlashInSeconds, _animatorDefinition.ItemFlashOutSeconds);
+        _flashAnimator.Flash(new[] { _equippedArmorSpriteRenderers[armor] }, _animatorDefinition.ItemFlashColor, _animatorDefinition.ItemFlashInSeconds, _animatorDefinition.ItemFlashOutSeconds);
     }
 
     public void PlayHurtAnimation()
     {
         PlayAnimation(CharacterAnimationState.Hurt);
-        _flashAnimator.Flash(AllRenderers, _characterDefinition.HurtFlashColor, _animatorDefinition.HurtAnimationFlashInSeconds, _animatorDefinition.HurtAnimationFlashOutSeconds);
+        _flashAnimator.Flash(AllRenderers, _animatorDefinition.HurtFlashColor, _animatorDefinition.HurtAnimationFlashInSeconds, _animatorDefinition.HurtAnimationFlashOutSeconds);
     }
     public void PlayHealAnimation()
     {
-        _flashAnimator.Flash(AllRenderers, _characterDefinition.HealFlashColor, _animatorDefinition.HealAnimationFlashInSeconds, _animatorDefinition.HealAnimationFlashOutSeconds);
+        _flashAnimator.Flash(AllRenderers, _animatorDefinition.HealFlashColor, _animatorDefinition.HealAnimationFlashInSeconds, _animatorDefinition.HealAnimationFlashOutSeconds);
     }
 
     public void PlayAimAnimation(Vector2 aimDirection, bool isRangedWeapon)
@@ -245,6 +246,7 @@ public class CharacterBodyAnimator : MonoBehaviour
         {
             kvp.Value.sprite = kvp.Key.Animations[_currentAnimationState][frameIndex];
         }
+        _lastFrameIndex = frameIndex;
     }
 
     #endregion
