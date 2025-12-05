@@ -18,7 +18,7 @@ public class CharacterAnimatorDefinition : ScriptableObject
     public float HealAnimationFlashInSeconds;
     public float HealAnimationFlashOutSeconds;
 
-    public float EquipItemAnimationFlashInSeconds;
-    public float EquipItemAnimationFlashOutSeconds;
+    public float ItemFlashInSeconds;
+    public float ItemFlashOutSeconds;
 
 }

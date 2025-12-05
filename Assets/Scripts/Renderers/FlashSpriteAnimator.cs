@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class FlashSpriteAnimator : MonoBehaviour
 {
+    public bool IsFlashing { get; private set; }
     public void Flash(IEnumerable<SpriteRenderer> renderers, Color color, float inTime, float outTime)
     {
         StopAllCoroutines();
@@ -15,6 +16,7 @@ public class FlashSpriteAnimator : MonoBehaviour
 
     private IEnumerator FlashRoutine(SpriteRenderer renderer, Color color, float inTime, float outTime)
     {
+        IsFlashing = true;
         float t = 0f;
         var originalColors = renderer.color;
 
@@ -32,5 +34,7 @@ public class FlashSpriteAnimator : MonoBehaviour
             renderer.color = Color.Lerp(color, originalColors, t);
             yield return null;
         }
+        IsFlashing = false;
     }
+
 }

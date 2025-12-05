@@ -49,10 +49,14 @@ public class Character : MonoBehaviour
     public event Action<Item> SelectedItemChanged;
     public event Action SelectedItemUsed;
 
+    #region Initialization
+
     private void Awake()
     {
         Health = CharacterDefinition.MaxHealth;
         ArmorManager = new CharacterArmorManager();
+        ArmorManager.ArmorEquipped += _animator.PlayEquipArmorAnimation;
+        ArmorManager.ArmorUnequipped += _animator.PlayUnequipArmorAnimation;
         _items = new List<Item>();
         foreach (var itemDefinition in CharacterDefinition.InitialItems)
         {
@@ -64,10 +68,17 @@ public class Character : MonoBehaviour
         HealthChanged += _healthbarRenderer.SetCurrentHealth;
     }
 
-    private void Start() 
+    private void Start()
     {
         _healthbarRenderer.SetCurrentHealth(NormalizedHealth, Health);
     }
+    public void SetTeam(Team team)
+    {
+        Team = team;
+        _animator.SetTeamColor(Team.TeamColor);
+    }
+
+    #endregion
 
     #region Health
 
@@ -75,8 +86,8 @@ public class Character : MonoBehaviour
     {
         if (ArmorManager.IsProtected)
         {
-            _animator.PlayBlockAnimation();
-            ArmorManager.BlockAttack();
+            var armor = ArmorManager.BlockAttack();
+            _animator.PlayBlockAnimation(armor);
         }
         else
         {
@@ -92,6 +103,7 @@ public class Character : MonoBehaviour
     public void Heal(int value)
     {
         Health = Mathf.Min(Health + value, CharacterDefinition.MaxHealth);
+        _animator.PlayHealAnimation();
     }
 
     public void Kill()
@@ -105,12 +117,6 @@ public class Character : MonoBehaviour
         gameObject.layer = Constants.DeadCharacterLayer;
         Debug.Log(gameObject.name + " died.");
         Died?.Invoke();
-    }
-
-    public void SetTeam(Team team)
-    {
-        Team = team;
-        _animator.SetTeamColor(Team.TeamColor);
     }
 
 
@@ -184,33 +190,9 @@ public class Character : MonoBehaviour
         trajectoryRenderer.SetTrajectoryMultipler(CharacterDefinition.JumpStrength);
     }
 
-    public Vector2 SimulateJumpAndCalculateDestination(Vector2 start, Vector2 jumpVector, DestructibleTerrainManager terrain)
-    {
-        Vector2 pos = start;
-        var velocity = jumpVector * CharacterDefinition.JumpStrength / _rb.mass;
-        const float dt = Constants.ParabolicPathSimulationDeltaForMovement;
-        for (float t = 0; t < Constants.MaxParabolicPathSimulationTime; t += Constants.ParabolicPathSimulationDeltaForMovement)
-        {
-            pos += velocity * dt;
-            velocity += Physics2D.gravity * dt;
-
-            if (!terrain.IsPointInsideBounds(pos) || terrain.OverlapPoint(pos))
-                return pos;
-        }
-
-        return default;
-    }
-
     #endregion
 
     #region Items
-
-    public void UseSelectedItem(ItemUsageContext context)
-    {
-        _animator.PlayItemActionAnimation(_selectedItem);
-        _selectedItem.Behavior.Use(context);
-        SelectedItemUsed?.Invoke();
-    }
 
     public bool TryAddItem(Item item)
     {
@@ -254,21 +236,30 @@ public class Character : MonoBehaviour
         return _items;
     }
 
+    #region Selected Item
+
+    public void UseSelectedItem(ItemUsageContext context)
+    {
+        _animator.PlayItemActionAnimation(_selectedItem);
+        _selectedItem.Behavior.Use(context);
+        SelectedItemUsed?.Invoke();
+    }
+
     public void TrySelectItem(Item item)
     {
         if ((item == null) || (_items.Contains(item) && item != _selectedItem))
         {
-            if(item != null && item.Definition.UseInstantlyWhenSelected)
+            if (item != null && item.Definition.UseInstantlyWhenSelected)
             {
                 var context = new ItemUsageContext(this);
-                if(item.Behavior.CanUseItem(context))
+                if (item.Behavior.CanUseItem(context))
                 {
                     _selectedItem = item;
                     SelectedItemChanged?.Invoke(item);
                     UseSelectedItem(context);
                 }
             }
-            else 
+            else
             {
                 _selectedItem = item;
                 SelectedItemChanged?.Invoke(item);
@@ -279,7 +270,9 @@ public class Character : MonoBehaviour
     public Item GetSelectedItem()
     {
         return _selectedItem;
-    }
+    } 
+
+    #endregion
 
     #endregion
 

@@ -35,7 +35,7 @@ public abstract class ArmorBehavior : IItemBehavior
         ArmorWornOut?.Invoke(_definition);
     }
 
-    protected void InvokeItemUsageFinished()
+    protected void OnItemUsageFinished()
     {
         IsInUse = false;
         ItemUsageFinished?.Invoke();

@@ -8,9 +8,10 @@ public class BootsArmorBehavior : ArmorBehavior
     public override void Use(ItemUsageContext context)
     {
         base.Use(context);
+        _owner.ArmorManager.TryEquipArmor(_definition, this);
         _owner.AddJumpBoost(_definition.AdditionalJumpRange.CalculateValue());
         _owner.Jumped += OnOwnerJumped;
-        InvokeItemUsageFinished();
+        OnItemUsageFinished();
     }
 
     private void OnOwnerJumped()

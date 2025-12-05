@@ -11,7 +11,7 @@ public class ProtectiveArmorBehavior : ArmorBehavior
         base.Use(context);
         _owner.ArmorManager.BlockedWithArmor += OnBlockedWithArmor;
         _owner.ArmorManager.TryEquipArmor(_definition, this);
-        InvokeItemUsageFinished();
+        OnItemUsageFinished();
     }
 
     private void OnBlockedWithArmor(ArmorDefinition armorDefinition)

@@ -80,17 +80,30 @@ public class CharacterAnimator : MonoBehaviour
     {
         _bodyAnimator.PlayDeathAnimation();
     }
-    public void PlayBlockAnimation()
+
+    public void PlayEquipArmorAnimation(ArmorDefinition armor)
     {
-        _itemRenderer.HideItem();
-        //TODO
-        //_bodyAnimator.PlayBlockAnimation();
+        _bodyAnimator.PlayEquipArmorAnimation(armor);
+    }
+
+    public void PlayUnequipArmorAnimation(ArmorDefinition armor)
+    {
+        _bodyAnimator.PlayUnequipArmorAnimation(armor);
+    }
+
+    public void PlayBlockAnimation(ArmorDefinition armor)
+    {
+        _bodyAnimator.PlayBlockAnimation(armor);
     }
 
     public void PlayHurtAnimation()
     {
         _itemRenderer.HideItem();
         _bodyAnimator.PlayHurtAnimation();
+    }
+    public void PlayHealAnimation()
+    {
+        _bodyAnimator.PlayHealAnimation();
     }
 
     public void OnJumpStarted(Vector2 jumpVector)

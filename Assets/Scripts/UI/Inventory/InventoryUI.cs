@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 public class InventoryUI : MonoBehaviour
 {
     [Header("Panels")]
-    [SerializeField] private InventoryToggleUI _weaponConsumableToggle;
+    [SerializeField] private InventoryToggleUI _itemTypeToggle;
 
     [Header("Item Info")]
     [SerializeField] private TextMeshProUGUI _titleText;
@@ -30,10 +30,10 @@ public class InventoryUI : MonoBehaviour
     private void Awake()
     {
         var inputManager = FindFirstObjectByType<LocalGameplayInput>();
-        inputManager.ToggleInventoryCreateDestroyPerformed += _weaponConsumableToggle.Toggle;
+        inputManager.ToggleInventoryCreateDestroyPerformed += _itemTypeToggle.Toggle;
         inputManager.SelectInventorySlotPerformed += SelectPreviewedSlot;
-        _weaponConsumableToggle.InitializeToggledLeftValue(true);
-        _weaponConsumableToggle.Toggled += OnItemTypeToggled;
+        _itemTypeToggle.InitializeToggledLeftValue(true);
+        _itemTypeToggle.Toggled += OnItemTypeToggled;
 
         _itemSlots = new List<InventoryItemSlotUI>();
         for (int i = 0; i < _slotContainer.childCount; i++)
@@ -80,18 +80,19 @@ public class InventoryUI : MonoBehaviour
         var items = _currentCharacter.GetAllItems().ToList();
         var selectedItem = _currentCharacter.GetSelectedItem();
 
-        bool isToggledToWeapon = _weaponConsumableToggle.IsToggledLeft;
-        var visibleItemType = isToggledToWeapon ? ItemType.Weapon : ItemType.Consumable;
-
-        for (int i = 0; i < items.Count; i++)
+        bool isToggledToWeapon = _itemTypeToggle.IsToggledLeft;
+        int slotIndex = 0;
+        foreach(var item in items)
         {
-            if (items[i].Definition.ItemType == visibleItemType)
+            if ((isToggledToWeapon && item.Definition.ItemType == ItemType.Weapon) ||
+                (!isToggledToWeapon && item.Definition.ItemType != ItemType.Weapon))
             {
-                _itemSlots[i].LoadItem(items[i]);
-                if (selectedItem != null && selectedItem == items[i])
+                _itemSlots[slotIndex].LoadItem(item);
+                if (selectedItem != null && selectedItem == item)
                 {
-                    SelectSlot(_itemSlots[i], false);
+                    SelectSlot(_itemSlots[slotIndex], false);
                 }
+                slotIndex++;
             }
         }
     }
@@ -100,6 +101,11 @@ public class InventoryUI : MonoBehaviour
     {
         AudioManager.Instance.PlayUISound(_uiSounds.Toggle);
         RefreshInventory();
+    }
+
+    private void ForceClose()
+    {
+        _currentCharacter.Team.InputSource.ForceCloseInventory();
     }
 
     #region Select and Preview
@@ -154,8 +160,13 @@ public class InventoryUI : MonoBehaviour
             _selectedSlot.OnSlotSelected();
             _currentCharacter.TrySelectItem(slot.Item);
             LoadItemInfo(slot.Item.Definition);
+            if(slot.Item.Definition.UseInstantlyWhenSelected)
+            {
+                ForceClose();
+            }
         }
     }
+
 
     private void DeselectSlot()
     {

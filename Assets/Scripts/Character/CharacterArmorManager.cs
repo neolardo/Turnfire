@@ -9,6 +9,9 @@ public class CharacterArmorManager
     public bool IsProtected => _protectiveArmors.Any();
 
     public event Action<ArmorDefinition> BlockedWithArmor;
+    public event Action<ArmorDefinition> ArmorEquipped;
+    public event Action<ArmorDefinition> ArmorUnequipped;
+
     public bool CanEquip(ArmorDefinition armorDefinition)
     {
         var armorList = armorDefinition.IsProtective ? _protectiveArmors : _otherArmors;
@@ -26,6 +29,7 @@ public class CharacterArmorManager
 
         armorBehavior.ArmorWornOut += OnArmorWornOut;
         armorList.Add(armorDefinition);
+        ArmorEquipped?.Invoke(armorDefinition);
         return true;
     }
 
@@ -34,12 +38,14 @@ public class CharacterArmorManager
         var armorList = armorDefinition.IsProtective ? _protectiveArmors : _otherArmors;
         var armor = armorList.First(item => item == armorDefinition);
         armorList.Remove(armor);
+        ArmorUnequipped?.Invoke(armorDefinition);
     }
 
 
-    public void BlockAttack()
+    public ArmorDefinition BlockAttack()
     {
         var firstProtectiveArmor = _protectiveArmors.First();
         BlockedWithArmor?.Invoke(firstProtectiveArmor);
+        return firstProtectiveArmor;
     }
 }
