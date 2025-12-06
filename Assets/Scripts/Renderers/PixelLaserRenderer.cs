@@ -7,10 +7,14 @@ public class PixelLaserRenderer : MonoBehaviour
     [SerializeField] private float _updateRate = 0f;   // 0 = update every frame
     [SerializeField] private float _animationSpeed = 18f;
     [SerializeField] private float _animationPostDelay = .5f;
-    [SerializeField] private Transform _laserCenter;
+    [SerializeField] private Transform _laserHead;
     private LineRendererCompute _renderer;
     private Coroutine _runningAnimation;
     private CameraController _cameraController;
+
+    public bool IsAnimationInProgress { get; private set; }
+    public bool IsFirstRay { get; private set; }
+    public Transform LaserHead => _laserHead; 
 
     private void Awake()
     {
@@ -18,7 +22,7 @@ public class PixelLaserRenderer : MonoBehaviour
         _cameraController = FindFirstObjectByType<CameraController>();
     }
 
-    public void DrawLaser(Vector2[] worldPoints)
+    public void StartLaser(Vector2[] worldPoints)
     {
         if (_runningAnimation != null)
             StopCoroutine(_runningAnimation);
@@ -28,7 +32,9 @@ public class PixelLaserRenderer : MonoBehaviour
 
     private IEnumerator AnimateLaserLine(float speed, Vector2[] points)
     {
-        _cameraController.SetLaserTarget(_laserCenter);
+        IsAnimationInProgress = true;
+        IsFirstRay = true;
+        _cameraController.SetLaserTarget(_laserHead);
 
         float totalPathLength;
         float[] cumulative = ComputeCumulativeLengths(points, out totalPathLength);
@@ -48,6 +54,11 @@ public class PixelLaserRenderer : MonoBehaviour
             Vector2[] segment = ExtractSegment(points, cumulative, tailDistance, headDistance);
             _renderer.DrawLine(segment);
 
+            if(segment.Length > 2)
+            {
+                IsFirstRay = false;
+            }
+
             if (_updateRate <= 0f)
             {
                 yield return null;
@@ -65,6 +76,7 @@ public class PixelLaserRenderer : MonoBehaviour
 
         yield return new WaitForSeconds(_animationPostDelay);
         _renderer.Clear();
+        IsAnimationInProgress = false;
     }
 
 
@@ -108,7 +120,7 @@ public class PixelLaserRenderer : MonoBehaviour
 
             Vector2 p1 = Vector2.Lerp(points[i - 1], points[i], t1);
             Vector2 p2 = Vector2.Lerp(points[i - 1], points[i], t2);
-            _laserCenter.position = (p1 + p2) / 2;
+            _laserHead.position = p2;
 
             // Add points in order
             if (count == 0 || buffer[count - 1] != p1)

@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngineInternal;
 
 public class LaserGunWeaponBehavior : WeaponBehavior
 {
@@ -16,31 +15,19 @@ public class LaserGunWeaponBehavior : WeaponBehavior
 
     public override void Use(ItemUsageContext context)
     {
-        //TODO
         _isFiring = true;
-        var points = CalculateLaserPath(context.Owner, context.AimOrigin, context.AimVector, out var hitCharacers);
-        foreach (var c in hitCharacers)
-        {
-            c.Damage(_definition.Damage.CalculateValue());
-        }
-        context.LaserRenderer.DrawLaser(points.ToArray());
-        StartCoroutine(FinishItemUsageWhenLaserAnimationFinishes());
+        var points = CalculateLaserPath(context.Owner, context.AimOrigin, context.AimVector, out var hitCharacters);
+        context.LaserRenderer.StartLaser(points.ToArray());
+        StartCoroutine(FollowLaserAndDamageCharactersOnContact(context.Owner, hitCharacters, context.LaserRenderer));
     }
 
-    private IEnumerator FinishItemUsageWhenLaserAnimationFinishes()
-    {
-        yield return new WaitForSeconds(2);
-        _isFiring = false;
-        InvokeItemUsageFinished();
-    }
-
-    private IEnumerable<Vector2> CalculateLaserPath(Character owner, Vector2 origin, Vector2 direction, out IEnumerable<Character> hitCharacters)
+    private IEnumerable<Vector2> CalculateLaserPath(Character owner, Vector2 origin, Vector2 direction, out HashSet<Character> hitCharacters)
     {
         int maxBounces = _definition.MaximumBounceCount.CalculateValue();
         float maxDistance = _definition.MaximumDistance.CalculateValue();
         
         var points = new List<Vector2>();
-        var characters = new HashSet<Character>();
+        hitCharacters = new HashSet<Character>();
         points.Add(origin);
 
         Vector2 currentPos = origin;
@@ -65,7 +52,7 @@ public class LaserGunWeaponBehavior : WeaponBehavior
                     continue;
                 }
 
-                characters.Add(c);
+                hitCharacters.Add(c);
             }
 
             if (closestGroundHit.collider == null)
@@ -83,9 +70,43 @@ public class LaserGunWeaponBehavior : WeaponBehavior
             // Move slightly away to avoid self-hitting
             currentPos = hit.point + currentDir * 0.01f;
         }
-        hitCharacters = characters;
 
         return points;
+    }
+
+    public IEnumerator FollowLaserAndDamageCharactersOnContact(Character owner, HashSet<Character> hitCharacters, PixelLaserRenderer laserRenderer)
+    {
+        var removableCharacters = new List<Character>();
+        while(laserRenderer.IsAnimationInProgress)
+        {
+            foreach (var c in hitCharacters)
+            {
+                if (c == owner && laserRenderer.IsFirstRay)
+                {
+                    continue;
+                }
+
+                if (c.OverlapPoint(laserRenderer.LaserHead.position))
+                { 
+                    c.Damage(_definition.Damage.CalculateValue());
+                    removableCharacters.Add(c);
+                }
+            }
+            foreach(var c in removableCharacters)
+            {
+                hitCharacters.Remove(c);
+            }
+            removableCharacters.Clear();
+
+            yield return new WaitForFixedUpdate();
+        }
+        // if any unhit characters remain beause of the yield interval, damage now
+        foreach (var c in hitCharacters)
+        {
+            c.Damage(_definition.Damage.CalculateValue());
+        }
+        _isFiring = false;
+        InvokeItemUsageFinished();
     }
 
     public override void InitializePreview(ItemUsageContext context, ItemPreviewRendererManager rendererManager)

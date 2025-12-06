@@ -73,16 +73,19 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
         }
 
         _uiManager.ResumeGameplayTimer();
-        _inputSource.IsAimingEnabled = true;
         _inputSource.IsOpeningInventoryEnabled = true;
-        var context = new ItemUsageContext(_currentCharacter.transform.position, Vector2.zero, _currentCharacter, _laserRenderer, _projectilePool);
-        currentCharacter.GetSelectedItem().Behavior.InitializePreview(context, _rendererManager);
+        var selectedItem = _currentCharacter.GetSelectedItem();
+        if (selectedItem != null)
+        {
+            OnSelectedItemChanged(selectedItem);
+        }
         _inputSource.InputRequestedForAction(State);
     }
 
     public void OnSelectedItemChanged(Item selectedItem)
     {
-        if(selectedItem == null)
+        _inputSource.IsAimingEnabled = selectedItem != null;
+        if (selectedItem == null)
         {
             return;
         }

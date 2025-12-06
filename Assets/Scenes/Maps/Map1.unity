@@ -12806,7 +12806,7 @@ GameObject:
   m_Component:
   - component: {fileID: 308386537}
   m_Layer: 0
-  m_Name: LaserCenter
+  m_Name: LaserHead
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -21768,7 +21768,7 @@ MonoBehaviour:
   _updateRate: 0
   _animationSpeed: 25
   _animationPostDelay: 0.5
-  _laserCenter: {fileID: 308386537}
+  _laserHead: {fileID: 308386537}
 --- !u!212 &2099854925
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -21866,58 +21866,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 111535900474779470, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.19000006
-      objectReference: {fileID: 0}
-    - target: {fileID: 111535900474779470, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 111535900474779470, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -3
-      objectReference: {fileID: 0}
-    - target: {fileID: 1130317210070368361, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
-      propertyPath: m_Size.x
-      value: 1.0222002
-      objectReference: {fileID: 0}
-    - target: {fileID: 1130317210070368361, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
-      propertyPath: m_Offset.x
-      value: 0.02886051
-      objectReference: {fileID: 0}
-    - target: {fileID: 2485297145620610467, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.19000006
-      objectReference: {fileID: 0}
-    - target: {fileID: 2485297145620610467, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 2485297145620610467, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5491490051535995749, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
-      propertyPath: orthographic size
+    - target: {fileID: 289400584636473678, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
+      propertyPath: CameraDistance
       value: 6
       objectReference: {fileID: 0}
-    - target: {fileID: 6070684801221486192, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
+    - target: {fileID: 2497622963172021340, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
       propertyPath: Lens.OrthographicSize
-      value: 6
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6070684801221486192, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
       propertyPath: Target.TrackingTarget
       value: 
       objectReference: {fileID: 650410085}
-    - target: {fileID: 6249221818080188003, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
-      propertyPath: Damping
-      value: 0.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 6249221818080188003, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
-      propertyPath: SlowingDistance
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6548595076821922980, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -21959,32 +21919,12 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7466165071236623355, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
-      propertyPath: _UIDefintion
-      value: 
-      objectReference: {fileID: 11400000, guid: 93667ed427ce1234d954789779612623, type: 2}
-    - target: {fileID: 7466165071236623355, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
       propertyPath: _mapTransform
       value: 
       objectReference: {fileID: 650410085}
     - target: {fileID: 8956051096802517729, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
       propertyPath: m_Name
       value: GameplayCameras
-      objectReference: {fileID: 0}
-    - target: {fileID: 9114254166344368278, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
-      propertyPath: CameraDistance
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 9114254166344368278, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
-      propertyPath: Composition.DeadZone.Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9114254166344368278, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
-      propertyPath: Composition.ScreenPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9114254166344368278, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
-      propertyPath: Composition.ScreenPosition.y
-      value: 0.25
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
