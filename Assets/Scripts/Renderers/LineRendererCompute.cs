@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(SpriteRenderer))]
 public class LineRendererCompute : MonoBehaviour
 {
-    [Header("Texture Size")]
+    [Header("Resolution")]
     [SerializeField] private int _pixelsPerUnit = 64;
     private int _textureWidth;
     private int _textureHeight;
@@ -13,13 +13,16 @@ public class LineRendererCompute : MonoBehaviour
     [Header("Line Settings")]
     [SerializeField] private Color _lineColor = Color.red;
     [SerializeField][Range(1, 5)] private int _thickness = 1;
+    [SerializeField] private bool _fadeOutEnd;
     private Vector2Int[] _points = Array.Empty<Vector2Int>();
 
     [Header("References")]
     [SerializeField] private ComputeShader _compute;
-    [SerializeField] private Material _material; 
+    [SerializeField] private Material _material;
 
-    [SerializeField] private RenderTexture _rt;
+    private const float MapMargin = 7;
+
+    private RenderTexture _rt;
     private ComputeBuffer _pointsBuffer;
     private SpriteRenderer _sr;
     private int _kernel;
@@ -28,8 +31,8 @@ public class LineRendererCompute : MonoBehaviour
     private void Start()
     {
         var terrainRenderer = FindFirstObjectByType<DestructibleTerrainRenderer>();
-        _textureWidth = terrainRenderer.Texture.width;
-        _textureHeight = terrainRenderer.Texture.height;
+        _textureWidth = (int)(terrainRenderer.Texture.width + MapMargin * 2 * _pixelsPerUnit);
+        _textureHeight = (int)(terrainRenderer.Texture.height + MapMargin * 2 * _pixelsPerUnit);
         _sr = GetComponent<SpriteRenderer>();
         InitializeSpriteRenderer();
 
@@ -151,6 +154,7 @@ public class LineRendererCompute : MonoBehaviour
         _compute.SetInts("texSize", _textureWidth, _textureHeight);
         _compute.SetVector("lineColor", new Vector4(_lineColor.r, _lineColor.g, _lineColor.b, _lineColor.a));
         _compute.SetInt("thickness", _thickness);
+        _compute.SetInt("fadeOutEnabled", _fadeOutEnd ? 1 : 0);
 
         // Dispatch
         int tx = Mathf.CeilToInt(_textureWidth / 8f);

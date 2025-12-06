@@ -12924,10 +12924,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _pixelsPerUnit: 64
   _lineColor: {r: 1, g: 1, b: 1, a: 0.5019608}
-  _thickness: 1
+  _thickness: 2
+  _fadeOutEnd: 1
   _compute: {fileID: 7200000, guid: 38a854b0289332e45b5d61339fe41e51, type: 3}
   _material: {fileID: 2100000, guid: 37009c82df85d974985157efe99c39eb, type: 2}
-  _rt: {fileID: 0}
 --- !u!212 &338017613
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -19141,9 +19141,6 @@ MonoBehaviour:
   _uiDefinition: {fileID: 11400000, guid: 93667ed427ce1234d954789779612623, type: 2}
   _innerCircle: {fileID: 1283637319}
   _outerCircle: {fileID: 1410551857}
-  _aimCircleOuterRadiusPercent: 0.12
-  _aimCircleInnerRadiusPercent: 0.4
-  _defaultAimCircleOffsetPercent: {x: 0.8, y: 0.15}
 --- !u!1 &781547133
 GameObject:
   m_ObjectHideFlags: 0
@@ -21667,7 +21664,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 11.5
+  m_fontSize: 13.65
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -21769,8 +21766,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _updateRate: 0
-  _laserLength: 0.5
-  _animationDuration: 2
+  _animationSpeed: 25
+  _animationPostDelay: 0.5
   _laserCenter: {fileID: 308386537}
 --- !u!212 &2099854925
 SpriteRenderer:
@@ -21856,11 +21853,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _pixelsPerUnit: 64
-  _lineColor: {r: 1, g: 0, b: 0.81375647, a: 1}
-  _thickness: 2
+  _lineColor: {r: 1, g: 0.002032471, b: 0, a: 1}
+  _thickness: 1
+  _fadeOutEnd: 0
   _compute: {fileID: 7200000, guid: 38a854b0289332e45b5d61339fe41e51, type: 3}
   _material: {fileID: 2100000, guid: 66edc1712801fc84a8e66b422c677bbc, type: 2}
-  _rt: {fileID: 0}
 --- !u!1001 &5994248514780948518
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -21871,11 +21868,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 111535900474779470, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.8658153
+      value: 0.19000006
       objectReference: {fileID: 0}
     - target: {fileID: 111535900474779470, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.0471354
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 111535900474779470, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
       propertyPath: m_LocalPosition.z

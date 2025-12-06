@@ -5,8 +5,8 @@ using UnityEngine;
 public class PixelLaserRenderer : MonoBehaviour
 {
     [SerializeField] private float _updateRate = 0f;   // 0 = update every frame
-    [SerializeField] private float _laserLength = 2f;
-    [SerializeField] private float _animationDuration = 2f;
+    [SerializeField] private float _animationSpeed = 18f;
+    [SerializeField] private float _animationPostDelay = .5f;
     [SerializeField] private Transform _laserCenter;
     private LineRendererCompute _renderer;
     private Coroutine _runningAnimation;
@@ -21,44 +21,50 @@ public class PixelLaserRenderer : MonoBehaviour
     public void DrawLaser(Vector2[] worldPoints)
     {
         if (_runningAnimation != null)
-        {
             StopCoroutine(_runningAnimation);
-        }
-        _runningAnimation = StartCoroutine(AnimateLaserLine(_laserLength, _animationDuration, worldPoints));
+
+        _runningAnimation = StartCoroutine(AnimateLaserLine(_animationSpeed, worldPoints));
     }
 
-    private IEnumerator AnimateLaserLine(float length, float duration, Vector2[] points)
+    private IEnumerator AnimateLaserLine(float speed, Vector2[] points)
     {
         _cameraController.SetLaserTarget(_laserCenter);
-        // Precompute the cumulative lengths along the polyline
+
         float totalPathLength;
         float[] cumulative = ComputeCumulativeLengths(points, out totalPathLength);
 
         float elapsed = 0f;
 
-        while (elapsed < duration)
+        while (true)
         {
-            float t = elapsed / duration;
-            float headDistance = Mathf.Lerp(0f, totalPathLength, t);
-            float tailDistance = Mathf.Max(0f, headDistance - length);
+            float headDistance = elapsed * speed;
+            if (headDistance >= totalPathLength)
+            {
+                break;
+            }
 
-            // Extract the moving segment as world-space pixel coordinates
+            float tailDistance = 0f;  // always draw from start
+
             Vector2[] segment = ExtractSegment(points, cumulative, tailDistance, headDistance);
-
-            // Send the new line points to the renderer
             _renderer.DrawLine(segment);
 
-            // Frame pacing
             if (_updateRate <= 0f)
+            {
                 yield return null;
+            }
             else
+            {
                 yield return new WaitForSeconds(_updateRate);
+            }
 
             elapsed += Time.deltaTime;
         }
 
-        // Ensure it ends fully drawn
+        // Ensure full path drawn at end
         _renderer.DrawLine(points);
+
+        yield return new WaitForSeconds(_animationPostDelay);
+        _renderer.Clear();
     }
 
 
@@ -77,7 +83,7 @@ public class PixelLaserRenderer : MonoBehaviour
     }
 
 
-    private Vector2[] ExtractSegment( Vector2[] points, float[] cumulative, float startDistance,float endDistance)
+    private Vector2[] ExtractSegment( Vector2[] points, float[] cumulative, float startDistance, float endDistance)
     {
         // Worst case: segment spans entire polyline
         // Allocate small buffer only once per frame
