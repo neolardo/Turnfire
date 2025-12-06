@@ -53,15 +53,15 @@ public class BallisticProjectileBehavior : UnityDriven, IProjectileBehavior
         var targetPos = context.AimOrigin + context.AimVector.normalized * Constants.ProjectileOffset;
         rb.MovePosition(targetPos);
         rb.transform.position = targetPos;
-        if (IsAnyColliderAtLaunchPoint(context, out var tag, out var contactPoint))
+        if (IsAnyColliderAtLaunchPoint(context, out var collider, out var contactPoint))
         {
-            OnContact(new ProjectileContactContext(contactPoint, tag));
+            OnContact(new HitboxContactContext(contactPoint, collider));
         }
     }
 
-    protected bool IsAnyColliderAtLaunchPoint(ProjectileLaunchContext context, out string tag, out Vector2 point)
+    protected bool IsAnyColliderAtLaunchPoint(ProjectileLaunchContext context, out Collider2D collider, out Vector2 point)
     {
-        tag = null;
+        collider = null;
         point = Vector2.zero;
 
         int hitCount = Physics2D.RaycastNonAlloc(
@@ -69,7 +69,7 @@ public class BallisticProjectileBehavior : UnityDriven, IProjectileBehavior
             context.AimVector.normalized,
             _raycastHits,
             Constants.ProjectileOffset,
-            LayerMaskHelper.GetCombinedLayerMask(Constants.ProjectileCollisionLayers)
+            LayerMaskHelper.GetCombinedLayerMask(Constants.HitboxCollisionLayers)
         );
 
         if (hitCount == 0)
@@ -85,7 +85,7 @@ public class BallisticProjectileBehavior : UnityDriven, IProjectileBehavior
             if (hit.collider != null && hit.collider != context.OwnerCollider)
             {
                 point = hit.point;
-                tag = hit.collider.tag;
+                collider = hit.collider;
                 return true;
             }
         }
@@ -94,7 +94,7 @@ public class BallisticProjectileBehavior : UnityDriven, IProjectileBehavior
     }
 
 
-    public virtual void OnContact(ProjectileContactContext context)
+    public virtual void OnContact(HitboxContactContext context)
     {
         Explode(context);
     }
@@ -104,7 +104,7 @@ public class BallisticProjectileBehavior : UnityDriven, IProjectileBehavior
         Exploded?.Invoke(ei);
     }
 
-    protected virtual void Explode(ProjectileContactContext context)
+    protected virtual void Explode(HitboxContactContext context)
     {
         if(_explodeOnce && _exploded)
         {
@@ -120,7 +120,7 @@ public class BallisticProjectileBehavior : UnityDriven, IProjectileBehavior
 
     public virtual void ForceExplode()
     {
-        Explode(new ProjectileContactContext(_projectile.transform.position, null));
+        Explode(new HitboxContactContext(_projectile.transform.position, null));
     }
 
     #region Simulation

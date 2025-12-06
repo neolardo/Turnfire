@@ -28,7 +28,7 @@ MonoBehaviour:
   HideItemDuringUsage: 0
   UseInstantlyWhenSelected: 0
   Damage:
-    _normalizedValue: 0.32
+    _normalizedValue: 0.128
     _isRandomized: 0
     _randomness: 0
     _group: {fileID: 11400000, guid: 0371d52dab082c1409e9eaf7579b9bee, type: 2}
@@ -37,3 +37,8 @@ MonoBehaviour:
     _isRandomized: 0
     _randomness: 0
     _group: {fileID: 11400000, guid: df9cc931b3cee28488f3853788037d28, type: 2}
+  AttackSectorAngleDegrees:
+    _normalizedValue: 0.156
+    _isRandomized: 0
+    _randomness: 0
+    _group: {fileID: 11400000, guid: 6c3c29bc84587e04cb194e22bb5594d0, type: 2}

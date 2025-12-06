@@ -18,7 +18,7 @@ public class ProjectileLauncherWeaponBehavior : WeaponBehavior
 
     public override void Use(ItemUsageContext context)
     {
-        _isFiring = true;
+        _isAttacking = true;
         var p = context.ProjectilePool.Get();
         p.Initialize(_definition.ProjectileDefinition, _projectileBehavior);
         p.Launch(context, _definition.FireStrength.CalculateValue());
@@ -35,7 +35,7 @@ public class ProjectileLauncherWeaponBehavior : WeaponBehavior
         {
             yield return null;
         }
-        _isFiring = false;
+        _isAttacking = false;
         InvokeItemUsageFinished();
     }
 

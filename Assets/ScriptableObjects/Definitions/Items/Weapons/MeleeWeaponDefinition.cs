@@ -8,9 +8,10 @@ public class MeleeWeaponDefinition : WeaponDefinition
 
     public RangedStatInt Damage;
     public RangedStatFloat AttackRange;
+    public RangedStatFloat AttackSectorAngleDegrees;
     public override IItemBehavior CreateItemBehavior()
     {
-        return new MeleeWeaponWeaponBehavior(this);
+        return new MeleeWeaponBehavior(this);
     }
 
     public override IEnumerable<RangedStat> GetRangedStats()

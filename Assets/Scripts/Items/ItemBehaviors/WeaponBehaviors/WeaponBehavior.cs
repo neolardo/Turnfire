@@ -4,9 +4,9 @@ using UnityEngine;
 
 public abstract class WeaponBehavior : UnityDriven, IItemBehavior
 {
-    public bool IsInUse => _isFiring;
+    public bool IsInUse => _isAttacking;
 
-    protected bool _isFiring;
+    protected bool _isAttacking;
 
     protected WeaponBehavior(MonoBehaviour coroutineRunner) : base(coroutineRunner)
     {

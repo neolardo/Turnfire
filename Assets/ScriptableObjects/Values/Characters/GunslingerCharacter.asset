@@ -167,7 +167,7 @@ MonoBehaviour:
   AimCancelSFX: {fileID: 11400000, guid: 54274b9904803fc4c8f9b3662815e897, type: 2}
   MaxHealth: 8
   InitialItems:
-  - {fileID: 11400000, guid: 597ba13a37f49cf41aa1765a91f223db, type: 2}
+  - {fileID: 11400000, guid: 84f833ba920b39b429f645b447d419fe, type: 2}
   - {fileID: 11400000, guid: 00a245049d335e242a792cb120d0e9cc, type: 2}
   - {fileID: 11400000, guid: 67d6c1c6c38aa4d4fbae23590c8137d4, type: 2}
   - {fileID: 11400000, guid: 20aba8eec478fc74b8883aa5cc7dcdef, type: 2}

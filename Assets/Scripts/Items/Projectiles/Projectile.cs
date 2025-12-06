@@ -52,13 +52,13 @@ public class Projectile : MonoBehaviour
     {
         if (collider.CompareTag(Constants.GroundTag) || collider.CompareTag(Constants.CharacterTag) || collider.CompareTag(Constants.DeadZoneTag))
         {
-            _behavior.OnContact(new ProjectileContactContext(_rb.position, collider.tag));
+            _behavior.OnContact(new HitboxContactContext(_rb.position, collider));
         }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        _behavior.OnContact(new ProjectileContactContext(_rb.position, collision.collider.tag));
+        _behavior.OnContact(new HitboxContactContext(_rb.position, collision.collider));
     }
 
     public void Launch(ItemUsageContext itemContext, float fireStrength)

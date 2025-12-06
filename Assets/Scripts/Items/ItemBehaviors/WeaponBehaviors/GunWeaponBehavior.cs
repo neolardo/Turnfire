@@ -7,7 +7,7 @@ public class GunWeaponBehavior : ProjectileLauncherWeaponBehavior
 
     public override void Use(ItemUsageContext context)
     {
-        _isFiring = true;
+        _isAttacking = true;
         var p = context.ProjectilePool.Get();
         p.Initialize(_definition.ProjectileDefinition, _projectileBehavior);
         // aimvector is normalized since guns should not have variable strength

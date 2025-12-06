@@ -29,7 +29,7 @@ public class GrenadeProjectileBehavior : BallisticProjectileBehavior
     protected override void PlaceProjectile(ProjectileLaunchContext context)
     {
         var rb = _projectile.Rigidbody;
-        if (SafeObjectPlacer.TryFindSafePosition(context.AimOrigin, context.AimVector.normalized, LayerMaskHelper.GetCombinedLayerMask(Constants.ProjectileCollisionLayers), _definition.ColliderRadius, out var safePosition))
+        if (SafeObjectPlacer.TryFindSafePosition(context.AimOrigin, context.AimVector.normalized, LayerMaskHelper.GetCombinedLayerMask(Constants.HitboxCollisionLayers), _definition.ColliderRadius, out var safePosition))
         {
             rb.transform.position = safePosition;
         }
@@ -42,14 +42,14 @@ public class GrenadeProjectileBehavior : BallisticProjectileBehavior
     private IEnumerator ExplodeAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        Explode(new ProjectileContactContext(_projectile.transform.position, string.Empty));
+        Explode(new HitboxContactContext(_projectile.transform.position, null));
     }
 
-    public override void OnContact(ProjectileContactContext context)
+    public override void OnContact(HitboxContactContext context)
     {
         _contactCount++;
         AudioManager.Instance.PlaySFXAt(_definition.ContactSFX, context.ContactPoint);
-        if (_contactCount >= _definition.ExplosionContactThreshold || context.ContactObjectTag == Constants.DeadZoneTag)
+        if (_contactCount >= _definition.ExplosionContactThreshold || (context.Collider != null && context.Collider.tag == Constants.DeadZoneTag))
         {
             Explode(context);
         }
@@ -60,7 +60,7 @@ public class GrenadeProjectileBehavior : BallisticProjectileBehavior
         Vector2 velocity = aimVector;
         Vector2 pos = start;
 
-        if (SafeObjectPlacer.TryFindSafePosition(start, aimVector.normalized, LayerMaskHelper.GetCombinedLayerMask(Constants.ProjectileCollisionLayers), _definition.ColliderRadius, out var safePosition))
+        if (SafeObjectPlacer.TryFindSafePosition(start, aimVector.normalized, LayerMaskHelper.GetCombinedLayerMask(Constants.HitboxCollisionLayers), _definition.ColliderRadius, out var safePosition))
         {
             pos = safePosition;
         }

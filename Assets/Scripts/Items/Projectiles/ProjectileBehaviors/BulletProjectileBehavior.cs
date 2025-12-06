@@ -29,7 +29,7 @@ public class BulletProjectileBehavior : BallisticProjectileBehavior
     private IEnumerator ExplodeAtRaycastTarget(ProjectileLaunchContext context)
     {
         var rb = _projectile.Rigidbody;
-        var hit = Physics2D.Raycast(rb.transform.position, context.AimVector.normalized, Constants.ProjectileRaycastDistance, LayerMaskHelper.GetCombinedLayerMask(Constants.ProjectileCollisionLayers));
+        var hit = Physics2D.Raycast(rb.transform.position, context.AimVector.normalized, Constants.ProjectileRaycastDistance, LayerMaskHelper.GetCombinedLayerMask(Constants.HitboxCollisionLayers));
         if(hit.collider == null)
         {
             yield break;
@@ -44,12 +44,12 @@ public class BulletProjectileBehavior : BallisticProjectileBehavior
             nextPoint = (Vector2)rb.transform.position + rb.linearVelocity * Time.fixedDeltaTime;
             nextDist = (hit.point - nextPoint).magnitude;
         }
-        Explode(new ProjectileContactContext(hit.point, hit.collider.tag));
+        Explode(new HitboxContactContext(hit.point, hit.collider));
     }
 
     public override WeaponBehaviorSimulationResult SimulateProjectileBehavior(Vector2 start, Vector2 aimVector, DestructibleTerrainManager terrain, Character owner, IEnumerable<Character> others)
     {
-        var numHits = Physics2D.RaycastNonAlloc(start, aimVector, _raycastHitArray, Constants.ProjectileRaycastDistance, LayerMaskHelper.GetCombinedLayerMask(Constants.ProjectileCollisionLayers));
+        var numHits = Physics2D.RaycastNonAlloc(start, aimVector, _raycastHitArray, Constants.ProjectileRaycastDistance, LayerMaskHelper.GetCombinedLayerMask(Constants.HitboxCollisionLayers));
         var closestHit = _raycastHitArray.Take(numHits).Where(hit => hit.collider != owner.Collider).OrderBy(hit => hit.distance).FirstOrDefault();
         
         if (closestHit.collider == null)

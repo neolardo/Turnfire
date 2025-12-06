@@ -15,7 +15,7 @@ public class LaserGunWeaponBehavior : WeaponBehavior
 
     public override void Use(ItemUsageContext context)
     {
-        _isFiring = true;
+        _isAttacking = true;
         var points = CalculateLaserPath(context.Owner, context.AimOrigin, context.AimVector, out var hitCharacters);
         context.LaserRenderer.StartLaser(points.ToArray());
         StartCoroutine(FollowLaserAndDamageCharactersOnContact(context.Owner, hitCharacters, context.LaserRenderer));
@@ -105,7 +105,7 @@ public class LaserGunWeaponBehavior : WeaponBehavior
         {
             c.Damage(_definition.Damage.CalculateValue());
         }
-        _isFiring = false;
+        _isAttacking = false;
         InvokeItemUsageFinished();
     }
 
