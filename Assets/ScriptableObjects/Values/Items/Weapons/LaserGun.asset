@@ -19,7 +19,7 @@ MonoBehaviour:
   MaximumQuantity: 9
   IsQuantityInfinite: 0
   DropQuantityRange:
-    _normalizedValue: 0.305
+    _normalizedValue: 0
     _isRandomized: 1
     _randomness: 0.231
     _group: {fileID: 11400000, guid: 5a5b56af88cd285408e8a8c33dfc5e52, type: 2}
@@ -27,6 +27,7 @@ MonoBehaviour:
   ItemActionSFX: {fileID: 0}
   HideItemDuringUsage: 0
   UseInstantlyWhenSelected: 0
+  InitialVisualRotationDegrees: 0
   Damage:
     _normalizedValue: 0.275
     _isRandomized: 0

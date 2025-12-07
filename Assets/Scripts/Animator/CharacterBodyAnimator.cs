@@ -144,6 +144,7 @@ public class CharacterBodyAnimator : MonoBehaviour
     public void PlayAimAnimation(Vector2 aimDirection, bool isRangedWeapon)
     {
         StopAnimation();
+        aimDirection = aimDirection.normalized;
         ChangeOrientation(aimDirection.x < 0);
         if (aimDirection.y > Constants.UpwardAimThresholdY)
         {

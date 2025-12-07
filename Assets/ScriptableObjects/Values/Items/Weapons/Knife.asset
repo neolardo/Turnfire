@@ -27,14 +27,14 @@ MonoBehaviour:
   ItemActionSFX: {fileID: 0}
   HideItemDuringUsage: 0
   UseInstantlyWhenSelected: 0
-  InitialVisualRotationDegrees: 315
+  InitialVisualRotationDegrees: 235
   Damage:
     _normalizedValue: 0.128
     _isRandomized: 0
     _randomness: 0
     _group: {fileID: 11400000, guid: 0371d52dab082c1409e9eaf7579b9bee, type: 2}
   AttackRange:
-    _normalizedValue: 0.5
+    _normalizedValue: 0.3
     _isRandomized: 0
     _randomness: 0
     _group: {fileID: 11400000, guid: df9cc931b3cee28488f3853788037d28, type: 2}

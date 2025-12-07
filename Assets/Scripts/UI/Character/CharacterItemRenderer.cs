@@ -23,6 +23,7 @@ public class CharacterItemRenderer : MonoBehaviour
     [SerializeField] private Vector2[] _lowAttackOffsets;
 
     private float _initialRotationDegrees;
+    private bool _isRangedWeapon;
 
 
     private void Awake()
@@ -33,7 +34,12 @@ public class CharacterItemRenderer : MonoBehaviour
     public void ChangeItem(Item item)
     {
         _currentItem = item;
-        _initialRotationDegrees = (item.Definition as WeaponDefinition).InitialVisualRotationDegrees;
+        if (_currentItem.Definition.ItemType == ItemType.Weapon)
+        {
+            var weaponDef = item.Definition as WeaponDefinition;
+            _initialRotationDegrees = weaponDef.InitialVisualRotationDegrees;
+            _isRangedWeapon = weaponDef.IsRanged;
+        }
     }
 
     public void ShowItem()
@@ -46,6 +52,7 @@ public class CharacterItemRenderer : MonoBehaviour
 
     public void StartMoveAlongAnimationThenHide(Vector2 aimVector)
     {
+        aimVector = aimVector.normalized;
         Vector2[] offsetArray = null;
         if (aimVector.y > Constants.UpwardAimThresholdY)
         {
@@ -59,8 +66,9 @@ public class CharacterItemRenderer : MonoBehaviour
         {
             offsetArray = _lowAttackOffsets;
         }
-        transform.rotation = Quaternion.AngleAxis(aimVector.ToAngleDegrees() + _initialRotationDegrees, Vector3.forward);
         bool turnToLeft = aimVector.x < 0;
+        float offsetDegrees = turnToLeft ? -_initialRotationDegrees : _initialRotationDegrees;
+        transform.rotation = Quaternion.AngleAxis(aimVector.ToAngleDegrees() + offsetDegrees, Vector3.forward);
         _spriteRenderer.flipY = turnToLeft;
         StartCoroutine(MoveAlongAnimationThenHide(offsetArray));
     }
@@ -93,8 +101,11 @@ public class CharacterItemRenderer : MonoBehaviour
 
     public void ChangeAim(Vector2 aimVector)
     {
+        aimVector = aimVector.normalized;
         ChangeOrientation(aimVector);
-        transform.rotation = Quaternion.AngleAxis(aimVector.ToAngleDegrees() + _initialRotationDegrees, Vector3.forward);
+        var turnToLeft = aimVector.x < 0;
+        float offsetDegrees = turnToLeft ? -_initialRotationDegrees : _initialRotationDegrees;
+        transform.rotation = Quaternion.AngleAxis(aimVector.ToAngleDegrees() + offsetDegrees, Vector3.forward);
     }
 
     private void ChangeOrientation(Vector2 aimVector)
@@ -102,15 +113,15 @@ public class CharacterItemRenderer : MonoBehaviour
         bool turnToLeft = aimVector.x < 0;
         if (aimVector.y > Constants.UpwardAimThresholdY)
         {
-            transform.localPosition = _rangedHighOffset;
+            transform.localPosition = _isRangedWeapon? _rangedHighOffset : _meleeHighOffset;
         }
         else if (aimVector.y >= Constants.DownwardAimThresholdY)
         {
-            transform.localPosition = _rangedMiddleOffset;
+            transform.localPosition = _isRangedWeapon? _rangedMiddleOffset : _meleeMiddleOffset;
         }
         else
         {
-            transform.localPosition = _rangedLowOffset;
+            transform.localPosition = _isRangedWeapon? _rangedLowOffset : _meleeLowOffset;
         }
         transform.localPosition = new Vector2(turnToLeft ? -transform.localPosition.x : transform.localPosition.x, transform.localPosition.y);
         _spriteRenderer.flipY = turnToLeft;

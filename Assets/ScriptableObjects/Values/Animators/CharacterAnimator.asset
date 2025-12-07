@@ -18,7 +18,7 @@ MonoBehaviour:
   FlyAnimationFrameDuration: 0.1
   ItemActionAnimationFrameDuration: 0.1
   GuardActionAnimationFrameDuration: 0.1
-  MeleeAttackAnimationFrameDuration: 1
+  MeleeAttackAnimationFrameDuration: 0.1
   ItemUsageDelay: 1
   HurtFlashColor: {r: 1, g: 0, b: 0, a: 1}
   HealFlashColor: {r: 0, g: 1, b: 0, a: 1}
