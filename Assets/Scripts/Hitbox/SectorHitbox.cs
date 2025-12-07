@@ -22,7 +22,6 @@ public class SectorHitbox : MonoBehaviour
 
     public void Initialize(float angleDegrees, float distance)
     {
-        Debug.Log("Initialize called");
         if(_collider == null)
         {
             _collider = GetComponent<PolygonCollider2D>();
@@ -35,14 +34,12 @@ public class SectorHitbox : MonoBehaviour
 
     private void OnEnable()
     {
-        Debug.Log("On enable called");
         StartCoroutine(CheckOverlapAfterFixedStep());
     }
 
     private IEnumerator CheckOverlapAfterFixedStep()
     {
         yield return new WaitForFixedUpdate();
-        Debug.Log("Overlap checked");
         var filter = new ContactFilter2D();
         filter.SetLayerMask(LayerMaskHelper.GetLayerMask(Constants.CharacterLayer));
         int count = Physics2D.OverlapCollider(_collider, filter, _overlapColliders);
@@ -80,7 +77,6 @@ public class SectorHitbox : MonoBehaviour
         _collider.pathCount = 1;
         _collider.SetPath(0, points);
         _collider.enabled = true;
-        Debug.Log("Path updated ");
     }
 
     public void Rotate(Vector2 aimVector)

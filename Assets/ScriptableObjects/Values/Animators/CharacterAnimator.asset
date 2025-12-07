@@ -22,12 +22,12 @@ MonoBehaviour:
   ItemUsageDelay: 1
   HurtFlashColor: {r: 1, g: 0, b: 0, a: 1}
   HealFlashColor: {r: 0, g: 1, b: 0, a: 1}
-  ItemFlashColor: {r: 0.8, g: 0.8, b: 0.8, a: 0.29803923}
+  ItemFlashColor: {r: 1, g: 1, b: 1, a: 0.29803923}
   HurtAnimationFlashInSeconds: 0.2
   HurtAnimationFlashOutSeconds: 0.6
   HealAnimationFlashInSeconds: 0.5
   HealAnimationFlashOutSeconds: 0.5
-  ItemFlashInSeconds: 0.2
+  ItemFlashInSeconds: 0.4
   ItemFlashOutSeconds: 0.6
   HealtbarSlideInSeconds: 0.2
   HealtbarSlideOutSeconds: 0.6

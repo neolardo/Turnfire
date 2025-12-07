@@ -85,7 +85,6 @@ public class LocalGameplayInput : LocalInputBase, IGameplayInputSource
     public void OnGameStarted()
     {
         IsPausingGameplayEnabled = true;
-        IsOpeningInventoryEnabled = true;
     }
 
     public void OnGameEnded()

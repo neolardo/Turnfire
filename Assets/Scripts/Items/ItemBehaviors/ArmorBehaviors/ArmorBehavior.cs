@@ -14,6 +14,7 @@ public abstract class ArmorBehavior : IItemBehavior
     protected ArmorBehavior(ArmorDefinition definition)
     {
         _definition = definition;
+        _durability = _definition.MaxDurability.CalculateValue();
     }
 
     public void InitializePreview(ItemUsageContext context, ItemPreviewRendererManager rendererManager)
@@ -44,7 +45,7 @@ public abstract class ArmorBehavior : IItemBehavior
     protected void DecreaseDurability()
     {
         _durability--;
-        if(_durability == 0 ) 
+        if(_durability == 0) 
         {
             OnArmorWornOut();
         }

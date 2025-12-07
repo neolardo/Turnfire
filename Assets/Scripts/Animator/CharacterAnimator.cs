@@ -62,7 +62,7 @@ public class CharacterAnimator : MonoBehaviour
         }
         else
         {
-            if((item.Definition as WeaponDefinition).IsRanged == false)
+            if(item.Definition.ItemType == ItemType.Weapon && (item.Definition as WeaponDefinition).IsRanged == false)
             {
                 _itemRenderer.StartMoveAlongAnimationThenHide(aimVector);
             }

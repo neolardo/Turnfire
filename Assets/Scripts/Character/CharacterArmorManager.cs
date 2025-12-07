@@ -36,9 +36,9 @@ public class CharacterArmorManager
     private void OnArmorWornOut(ArmorDefinition armorDefinition)
     {
         var armorList = armorDefinition.IsProtective ? _protectiveArmors : _otherArmors;
-        var armor = armorList.First(item => item == armorDefinition);
-        armorList.Remove(armor);
+        armorList.Remove(armorDefinition);
         ArmorUnequipped?.Invoke(armorDefinition);
+        UnityEngine.Debug.Log("armor unequipped");
     }
 
 

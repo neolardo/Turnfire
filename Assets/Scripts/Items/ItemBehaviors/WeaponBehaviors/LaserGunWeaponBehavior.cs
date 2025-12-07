@@ -7,6 +7,8 @@ public class LaserGunWeaponBehavior : WeaponBehavior
 {
     private LaserGunWeaponDefinition _definition;
     private RaycastHit2D[] _raycastHitArray;
+    private const float _visualStartOffset = .2f;
+
     public LaserGunWeaponBehavior(LaserGunWeaponDefinition definition) : base(CoroutineRunner.Instance)
     {
         _definition = definition;
@@ -28,6 +30,9 @@ public class LaserGunWeaponBehavior : WeaponBehavior
         
         var points = new List<Vector2>();
         hitCharacters = new HashSet<Character>();
+
+        origin += direction.normalized * _visualStartOffset;
+
         points.Add(origin);
 
         Vector2 currentPos = origin;
