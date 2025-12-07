@@ -7,10 +7,17 @@ public class SectorHitbox : MonoBehaviour
     private float _angle;
     private float _distance;
     private PolygonCollider2D _collider;
+    private Collider2D[] _overlapColliders;
 
     private const float AngleResolution = 20f;
 
     public event Action<HitboxContactContext> Contacted;
+
+
+    private void Awake()
+    {
+        _overlapColliders = new Collider2D[Constants.OverlapHitColliderNumMax];
+    }
 
     public void Initialize(float angleDegrees, float distance)
     {
@@ -22,6 +29,23 @@ public class SectorHitbox : MonoBehaviour
         _distance = distance;
         transform.rotation = Quaternion.identity;
         InitializeSectorPoints();
+    }
+
+    private void OnEnable()
+    {
+        CheckOverlap();
+    }
+
+    private void CheckOverlap()
+    {
+        var filter = new ContactFilter2D();
+        filter.SetLayerMask(LayerMaskHelper.GetLayerMask(Constants.CharacterLayer));
+        int count = Physics2D.OverlapCollider(_collider, filter, _overlapColliders);
+        for (int i = 0; i < count; i++)
+        {
+            var collider = _overlapColliders[i];
+            Contacted?.Invoke(new HitboxContactContext(collider.ClosestPoint(transform.position), collider));
+        }
     }
 
     private void InitializeSectorPoints()
@@ -54,14 +78,6 @@ public class SectorHitbox : MonoBehaviour
     {
         float angle = aimVector.ToAngleDegrees() * Mathf.Deg2Rad;
         transform.rotation = Quaternion.Euler(0f, 0f, angle);
-    }
-
-    private void OnTriggerEnter2D(Collider2D collider)//TODO: overlap check instead?
-    {
-        if (collider.CompareTag(Constants.CharacterTag))
-        {
-            Contacted?.Invoke(new HitboxContactContext(collider.ClosestPoint(transform.position), collider));
-        }
     }
 
 }

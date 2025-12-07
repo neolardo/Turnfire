@@ -27,6 +27,7 @@ MonoBehaviour:
   ItemActionSFX: {fileID: 0}
   HideItemDuringUsage: 0
   UseInstantlyWhenSelected: 0
+  InitialVisualRotationDegrees: 315
   Damage:
     _normalizedValue: 0.128
     _isRandomized: 0

@@ -75,9 +75,28 @@ public class CharacterBodyAnimator : MonoBehaviour
         PlayAnimation(CharacterAnimationState.Idle);
     }
 
-    public void PlayItemActionAnimation()
+    public void PlayItemActionAnimation(Vector2 aimVector, Item selectedItem)
     {
-        PlayAnimation(CharacterAnimationState.Idle, CharacterAnimationState.Idle, _animatorDefinition.ItemUsageDelay);
+        aimVector = aimVector.normalized;
+        var nextAnimation = CharacterAnimationState.Idle;
+        float preDelay = _animatorDefinition.ItemUsageDelay;
+        if (selectedItem.Definition.ItemType == ItemType.Weapon && (selectedItem.Definition as WeaponDefinition).IsRanged == false)
+        {
+            if (aimVector.y > Constants.UpwardAimThresholdY)
+            {
+                nextAnimation = CharacterAnimationState.MeleeAttackHigh;
+            }
+            else if (aimVector.y >= Constants.DownwardAimThresholdY)
+            {
+                nextAnimation = CharacterAnimationState.MeleeAttackMiddle;
+            }
+            else
+            {
+                nextAnimation = CharacterAnimationState.MeleeAttackLow;
+            }
+            preDelay = 0;
+        }
+        PlayAnimation(nextAnimation, CharacterAnimationState.Idle, preDelay);
     }
 
     public void PlayDeathAnimation()
@@ -164,7 +183,7 @@ public class CharacterBodyAnimator : MonoBehaviour
 
     #region Play & Stop
 
-    private void PlayAnimation(CharacterAnimationState state, CharacterAnimationState nextState = CharacterAnimationState.Idle, float delay = 0f)
+    private void PlayAnimation(CharacterAnimationState state, CharacterAnimationState nextState = CharacterAnimationState.Idle, float preDelay = 0f)
     {
         if (_currentAnimationState == CharacterAnimationState.Death)
         {
@@ -178,7 +197,7 @@ public class CharacterBodyAnimator : MonoBehaviour
         int frameCount = _characterDefinition.Animations[_currentAnimationState].Length;
         float frameDuration = GetFrameDuration(_currentAnimationState);
         var sfx = GetSFX(_currentAnimationState);
-        _currentAnimationRoutine = StartCoroutine(PlayAnimationCoroutine(frameCount, frameDuration, sfx, nextState, delay));
+        _currentAnimationRoutine = StartCoroutine(PlayAnimationCoroutine(frameCount, frameDuration, sfx, nextState, preDelay));
     }
 
     private void StopAnimation()
@@ -190,11 +209,11 @@ public class CharacterBodyAnimator : MonoBehaviour
         }
     }
 
-    private IEnumerator PlayAnimationCoroutine(int frameCount, float frameDuration, SFXDefiniton sfx, CharacterAnimationState nextState, float delay = 0f)
+    private IEnumerator PlayAnimationCoroutine(int frameCount, float frameDuration, SFXDefiniton sfx, CharacterAnimationState nextState, float preDelay = 0f)
     {
-        if (delay > 0f)
+        if (preDelay > 0f)
         {
-            yield return new WaitForSeconds(delay);
+            yield return new WaitForSeconds(preDelay);
         }
 
         if (sfx != null)
@@ -301,6 +320,12 @@ public class CharacterBodyAnimator : MonoBehaviour
                 return _animatorDefinition.FlyAnimationFrameDuration;
             case CharacterAnimationState.PrepareToJump:
                 return _animatorDefinition.FlyAnimationFrameDuration;
+            case CharacterAnimationState.MeleeAttackHigh:
+                return _animatorDefinition.MeleeAttackAnimationFrameDuration;
+            case CharacterAnimationState.MeleeAttackMiddle:
+                return _animatorDefinition.MeleeAttackAnimationFrameDuration;
+            case CharacterAnimationState.MeleeAttackLow:
+                return _animatorDefinition.MeleeAttackAnimationFrameDuration;
             default:
                 throw new System.Exception($"Invalid {nameof(CharacterAnimationState)} when getting {nameof(CharacterAnimationFrame)}s");
 
@@ -323,6 +348,12 @@ public class CharacterBodyAnimator : MonoBehaviour
                 return _characterDefinition.CancelJumpSFX;
             case CharacterAnimationState.PrepareToJump:
                 return _characterDefinition.PrepareToJumpSFX;
+            //case CharacterAnimationState.MeleeAttackHigh: //TODO
+            //    return _animatorDefinition.MeleeAttackAnimationFrameDuration;
+            //case CharacterAnimationState.MeleeAttackMiddle:
+            //    return _animatorDefinition.MeleeAttackAnimationFrameDuration;
+            //case CharacterAnimationState.MeleeAttackLow:
+            //    return _animatorDefinition.MeleeAttackAnimationFrameDuration;
             default:
                 return null;
         }

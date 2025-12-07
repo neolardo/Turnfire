@@ -52,7 +52,7 @@ public class MeleeWeaponBehavior : WeaponBehavior
         rendererManager.SelectRenderer(ItemPreviewRendererType.Trajectory);
         rendererManager.TrajectoryRenderer.ToggleGravity(false);
         rendererManager.TrajectoryRenderer.SetOrigin(context.Owner.ItemTransform);
-        rendererManager.TrajectoryRenderer.SetTrajectoryMultipler(0);
+        rendererManager.TrajectoryRenderer.SetTrajectoryMultipler(1);
     }
 
     public override WeaponBehaviorSimulationResult SimulateWeaponBehavior(Vector2 start, Vector2 aimVector, DestructibleTerrainManager terrain, Character owner, IEnumerable<Character> others)

@@ -184,7 +184,7 @@ public class Character : MonoBehaviour
         _animator.PlayCancelJumpAnimation();
     }
 
-    
+
     #endregion
 
     #region Items
@@ -235,7 +235,7 @@ public class Character : MonoBehaviour
 
     public void UseSelectedItem(ItemUsageContext context)
     {
-        _animator.PlayItemActionAnimation(_selectedItem);
+        _animator.PlayItemActionAnimation(context.AimVector, _selectedItem);
         _selectedItem.Behavior.Use(context);
         SelectedItemUsed?.Invoke();
     }

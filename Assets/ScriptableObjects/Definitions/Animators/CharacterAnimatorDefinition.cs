@@ -10,6 +10,7 @@ public class CharacterAnimatorDefinition : ScriptableObject
     public float FlyAnimationFrameDuration;
     public float ItemActionAnimationFrameDuration;
     public float GuardActionAnimationFrameDuration;
+    public float MeleeAttackAnimationFrameDuration;
 
     public float ItemUsageDelay;
 

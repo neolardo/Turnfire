@@ -54,7 +54,7 @@ public class CharacterAnimator : MonoBehaviour
         _bodyAnimator.PlayIdleAnimation();
     }
 
-    public void PlayItemActionAnimation(Item item)
+    public void PlayItemActionAnimation(Vector2 aimVector, Item item)
     {
         if(item.Definition.HideItemDuringUsage)
         {
@@ -62,7 +62,14 @@ public class CharacterAnimator : MonoBehaviour
         }
         else
         {
-            _itemRenderer.HideItemAfterDelay();
+            if((item.Definition as WeaponDefinition).IsRanged == false)
+            {
+                _itemRenderer.StartMoveAlongAnimationThenHide(aimVector);
+            }
+            else
+            {
+                _itemRenderer.HideItemAfterDelay();
+            }
         }
         if (item.Definition.ItemActionAnimation != null)
         {
@@ -73,7 +80,7 @@ public class CharacterAnimator : MonoBehaviour
         {
             AudioManager.Instance.PlaySFXAt(item.Definition.ItemActionSFX, transform.position);
         }
-        _bodyAnimator.PlayItemActionAnimation();
+        _bodyAnimator.PlayItemActionAnimation(aimVector, item);
     }
 
     public void PlayDeathAnimation()
