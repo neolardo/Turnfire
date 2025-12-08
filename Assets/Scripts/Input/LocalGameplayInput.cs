@@ -4,7 +4,6 @@ using UnityEngine.InputSystem;
 
 public class LocalGameplayInput : LocalInputBase, IGameplayInputSource
 {
-    [SerializeField] private AimCircleUI _aimCircleUI;
     [SerializeField] private AnimationCurve _gamepadStickResponseCurve =
     new AnimationCurve(
         new Keyframe(0, 0),
@@ -37,6 +36,8 @@ public class LocalGameplayInput : LocalInputBase, IGameplayInputSource
     public event Action ToggleInventoryCreateDestroyPerformed;
     public event Action TogglePauseGameplayPerformed;
     public event Action SelectInventorySlotPerformed;
+    // map
+    public event Action<bool> ShowMapToggled;
     //pause
     public event Action PausedScreenConfirmPerformed;
     //game over
@@ -59,6 +60,8 @@ public class LocalGameplayInput : LocalInputBase, IGameplayInputSource
         _inputActions.Gameplay.SkipAction.started += OnSkipActionPerformed;
         _inputActions.Gameplay.ToggleInventory.started += OnToggleInventory;
         _inputActions.Gameplay.PauseGameplay.started += OnTogglePauseGameplay;
+        _inputActions.Gameplay.ShowMap.started += OnShowMapPerformed;
+        _inputActions.Gameplay.ShowMap.canceled += OnShowMapCancelled;
         _inputActions.PausedGamplay.ResumeGameplay.started += OnTogglePauseGameplay;
         _inputActions.PausedGamplay.Confirm.performed += OnPausedGameplayConfirmPressed;
         _inputActions.Inventory.ToggleInventory.started += OnToggleInventory;
@@ -99,6 +102,20 @@ public class LocalGameplayInput : LocalInputBase, IGameplayInputSource
     #endregion
 
     #region Gameplay
+
+    #region Show Map
+
+    private void OnShowMapPerformed(InputAction.CallbackContext ctx)
+    {
+        ShowMapToggled?.Invoke(true);
+    }
+
+    private void OnShowMapCancelled(InputAction.CallbackContext ctx)
+    {
+        ShowMapToggled?.Invoke(false);
+    }
+
+    #endregion
 
     private void OnAimPerformed(InputAction.CallbackContext ctx)
     {

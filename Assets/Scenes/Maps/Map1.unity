@@ -21866,22 +21866,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 111535900474779470, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.19000006
-      objectReference: {fileID: 0}
-    - target: {fileID: 111535900474779470, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 111535900474779470, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5491490051535995749, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
-      propertyPath: orthographic size
-      value: 6
-      objectReference: {fileID: 0}
+    - target: {fileID: 1856777704507514701, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
+      propertyPath: _mapTransform
+      value: 
+      objectReference: {fileID: 527595122}
     - target: {fileID: 6070684801221486192, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
       propertyPath: Target.TrackingTarget
       value: 
@@ -21926,10 +21914,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7466165071236623355, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
-      propertyPath: _mapTransform
-      value: 
-      objectReference: {fileID: 650410085}
     - target: {fileID: 8956051096802517729, guid: ac7e3985842a2174890290d7bb2bcbd8, type: 3}
       propertyPath: m_Name
       value: GameplayCameras

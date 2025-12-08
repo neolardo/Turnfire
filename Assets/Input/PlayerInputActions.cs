@@ -145,6 +145,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ShowMap"",
+                    ""type"": ""Button"",
+                    ""id"": ""c6520571-ece6-4a11-9b6d-70074f27abeb"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -277,6 +286,28 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""SkipAction"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d0ab519a-cea7-420d-b1a5-ca8ced64bc5f"",
+                    ""path"": ""<Gamepad>/rightStickPress"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShowMap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""66a23ac6-fa24-41dd-ae75-c635053f0160"",
+                    ""path"": ""<Keyboard>/m"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShowMap"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -963,6 +994,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Gameplay_ToggleInventory = m_Gameplay.FindAction("ToggleInventory", throwIfNotFound: true);
         m_Gameplay_PauseGameplay = m_Gameplay.FindAction("PauseGameplay", throwIfNotFound: true);
         m_Gameplay_SkipAction = m_Gameplay.FindAction("SkipAction", throwIfNotFound: true);
+        m_Gameplay_ShowMap = m_Gameplay.FindAction("ShowMap", throwIfNotFound: true);
         // PausedGamplay
         m_PausedGamplay = asset.FindActionMap("PausedGamplay", throwIfNotFound: true);
         m_PausedGamplay_ResumeGameplay = m_PausedGamplay.FindAction("ResumeGameplay", throwIfNotFound: true);
@@ -1082,6 +1114,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_ToggleInventory;
     private readonly InputAction m_Gameplay_PauseGameplay;
     private readonly InputAction m_Gameplay_SkipAction;
+    private readonly InputAction m_Gameplay_ShowMap;
     /// <summary>
     /// Provides access to input actions defined in input action map "Gameplay".
     /// </summary>
@@ -1117,6 +1150,10 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Gameplay/SkipAction".
         /// </summary>
         public InputAction @SkipAction => m_Wrapper.m_Gameplay_SkipAction;
+        /// <summary>
+        /// Provides access to the underlying input action "Gameplay/ShowMap".
+        /// </summary>
+        public InputAction @ShowMap => m_Wrapper.m_Gameplay_ShowMap;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1161,6 +1198,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @SkipAction.started += instance.OnSkipAction;
             @SkipAction.performed += instance.OnSkipAction;
             @SkipAction.canceled += instance.OnSkipAction;
+            @ShowMap.started += instance.OnShowMap;
+            @ShowMap.performed += instance.OnShowMap;
+            @ShowMap.canceled += instance.OnShowMap;
         }
 
         /// <summary>
@@ -1190,6 +1230,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @SkipAction.started -= instance.OnSkipAction;
             @SkipAction.performed -= instance.OnSkipAction;
             @SkipAction.canceled -= instance.OnSkipAction;
+            @ShowMap.started -= instance.OnShowMap;
+            @ShowMap.performed -= instance.OnShowMap;
+            @ShowMap.canceled -= instance.OnShowMap;
         }
 
         /// <summary>
@@ -1960,6 +2003,13 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnSkipAction(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ShowMap" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnShowMap(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "PausedGamplay" which allows adding and removing callbacks.

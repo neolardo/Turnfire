@@ -506,7 +506,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BoundingShape2D: {fileID: 1130317210070368361}
   Damping: 0.3
-  SlowingDistance: 1
+  SlowingDistance: 0.2
   OversizeWindow:
     Enabled: 0
     MaxWindowSize: 0
@@ -730,8 +730,8 @@ GameObject:
   - component: {fileID: 5491490051535995749}
   - component: {fileID: 3639108881826766326}
   - component: {fileID: 2998272054569685233}
-  - component: {fileID: 7466165071236623355}
   - component: {fileID: 6930219833157733908}
+  - component: {fileID: 1856777704507514701}
   m_Layer: 0
   m_Name: MainCamera
   m_TagString: MainCamera
@@ -845,25 +845,6 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   CustomBlends: {fileID: 0}
---- !u!114 &7466165071236623355
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7889127571407345310}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 87e3b8917b63e24488210665828be0ca, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _characterCam: {fileID: 584811191872080249}
-  _projectileCam: {fileID: 3356263835551021548}
-  _packageCam: {fileID: 2497622963172021340}
-  _mapCam: {fileID: 6070684801221486192}
-  _mapTransform: {fileID: 0}
-  _brain: {fileID: 2998272054569685233}
-  _UIDefintion: {fileID: 11400000, guid: 93667ed427ce1234d954789779612623, type: 2}
 --- !u!114 &6930219833157733908
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -908,6 +889,25 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!114 &1856777704507514701
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7889127571407345310}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c80ef7dd3c52ff1478580b7ac583dc2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _characterCam: {fileID: 584811191872080249}
+  _projectileCam: {fileID: 3356263835551021548}
+  _packageCam: {fileID: 2497622963172021340}
+  _mapCam: {fileID: 6070684801221486192}
+  _mapTransform: {fileID: 0}
+  _brain: {fileID: 2998272054569685233}
+  _UIDefintion: {fileID: 11400000, guid: 93667ed427ce1234d954789779612623, type: 2}
 --- !u!1 &8956051096802517729
 GameObject:
   m_ObjectHideFlags: 0
