@@ -88,7 +88,7 @@ public class Character : MonoBehaviour
         if (ArmorManager.IsProtected)
         {
             var armor = ArmorManager.BlockAttack();
-            _animator.PlayBlockAnimation(armor);
+            _animator.PlayGuardAnimation(armor);
         }
         else
         {

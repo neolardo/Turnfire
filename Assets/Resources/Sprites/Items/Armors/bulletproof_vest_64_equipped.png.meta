@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 550121c32d7259743807c1468eacd067
+guid: 4d73add2201816b47abf3ba323889629
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -89,6 +89,9 @@ TextureImporter:
   - first:
       213: 8894654900232054965
     second: bulletproof_vest_64_equiped_28
+  - first:
+      213: -5589752912940709512
+    second: bulletproof_vest_64_equiped_29
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -223,7 +226,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: bulletproof_vest_64_equipped_0
+      name: bulletproof_vest_64_equiped_0
       rect:
         serializedVersion: 2
         x: 0
@@ -236,16 +239,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: e2118753cb5b0194ebf96bb9af5b497f
-      internalID: 2089071446
+      spriteID: 6f0f786bed0307210800000000000000
+      internalID: 1328615623177531638
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bulletproof_vest_64_equipped_1
+      name: bulletproof_vest_64_equiped_1
       rect:
         serializedVersion: 2
         x: 64
@@ -258,16 +261,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 06a9d6b04db883c45ab01a4ba39f5d52
-      internalID: 2041467575
+      spriteID: 8ff72fe95bee86890800000000000000
+      internalID: -7464453918543413256
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bulletproof_vest_64_equipped_2
+      name: bulletproof_vest_64_equiped_2
       rect:
         serializedVersion: 2
         x: 128
@@ -280,16 +283,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: badb5375ff14c4742bd7289bf75980ea
-      internalID: 710856133
+      spriteID: 23ce3d4648a63bf00800000000000000
+      internalID: 1131365048259963954
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bulletproof_vest_64_equipped_3
+      name: bulletproof_vest_64_equiped_3
       rect:
         serializedVersion: 2
         x: 192
@@ -302,16 +305,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: c5b18f3391bc77e479305b27d016baa4
-      internalID: 1287068387
+      spriteID: 86f7b64c5037a7040800000000000000
+      internalID: 4646152434193497960
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bulletproof_vest_64_equipped_4
+      name: bulletproof_vest_64_equiped_4
       rect:
         serializedVersion: 2
         x: 256
@@ -324,16 +327,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 4aee5b85bc4161f47b8f6cdb7f5399a9
-      internalID: 666490915
+      spriteID: ac23a5d53f1ff8520800000000000000
+      internalID: 2706647928618496714
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bulletproof_vest_64_equipped_5
+      name: bulletproof_vest_64_equiped_5
       rect:
         serializedVersion: 2
         x: 320
@@ -346,16 +349,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 1e35e1d10aef1cb4cabe4457783c16ca
-      internalID: -457481466
+      spriteID: cf0b6d09b60482680800000000000000
+      internalID: -8779696642823114500
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bulletproof_vest_64_equipped_6
+      name: bulletproof_vest_64_equiped_6
       rect:
         serializedVersion: 2
         x: 384
@@ -368,16 +371,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 5c6aaef3d99b39846ba99022934fef79
-      internalID: 1915850027
+      spriteID: 4448d1de20ab315e0800000000000000
+      internalID: -1940002492735716284
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bulletproof_vest_64_equipped_7
+      name: bulletproof_vest_64_equiped_7
       rect:
         serializedVersion: 2
         x: 448
@@ -390,16 +393,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: ed7047620d9b3a547b1522847520430b
-      internalID: -105825086
+      spriteID: f70e53a1f00816580800000000000000
+      internalID: -8835640191571599233
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bulletproof_vest_64_equipped_8
+      name: bulletproof_vest_64_equiped_8
       rect:
         serializedVersion: 2
         x: 512
@@ -412,16 +415,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: d174d67836057d842bb258640be1e150
-      internalID: -1820360624
+      spriteID: e5f09de97f4711290800000000000000
+      internalID: -7921421662697222306
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bulletproof_vest_64_equipped_9
+      name: bulletproof_vest_64_equiped_9
       rect:
         serializedVersion: 2
         x: 576
@@ -434,16 +437,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 6c8d483eac65a1e4a8a05b61c0db7f9e
-      internalID: -684171158
+      spriteID: 8f2cd895cec448dc0800000000000000
+      internalID: -3637698021010062600
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bulletproof_vest_64_equipped_10
+      name: bulletproof_vest_64_equiped_10
       rect:
         serializedVersion: 2
         x: 640
@@ -456,16 +459,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: ee861ffad1f028b4d8092a32c0b590bf
-      internalID: -778123370
+      spriteID: e02ea7a424000afb0800000000000000
+      internalID: -4638707331474202098
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bulletproof_vest_64_equipped_11
+      name: bulletproof_vest_64_equiped_11
       rect:
         serializedVersion: 2
         x: 704
@@ -478,16 +481,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 909aad17b37895647bc69141bb9fcddc
-      internalID: -180420874
+      spriteID: 2c0ffbae40dc2d6f0800000000000000
+      internalID: -661240774268030782
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bulletproof_vest_64_equipped_12
+      name: bulletproof_vest_64_equiped_12
       rect:
         serializedVersion: 2
         x: 768
@@ -500,16 +503,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: bcb424362860636489ea66bef1340a4c
-      internalID: 1713879714
+      spriteID: f01113ebdf27a2fd0800000000000000
+      internalID: -2365952220086595313
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bulletproof_vest_64_equipped_13
+      name: bulletproof_vest_64_equiped_13
       rect:
         serializedVersion: 2
         x: 832
@@ -522,16 +525,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: d35b07274de97704e90e1a0e54e39005
-      internalID: 521117006
+      spriteID: a9d02ab8293d3f380800000000000000
+      internalID: -8938568209038963302
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bulletproof_vest_64_equipped_14
+      name: bulletproof_vest_64_equiped_14
       rect:
         serializedVersion: 2
         x: 896
@@ -544,16 +547,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 978d94de5c56cca4cb036544a5282ba6
-      internalID: 2048027382
+      spriteID: 4dd02d427d6fc63a0800000000000000
+      internalID: -6670685544146399788
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bulletproof_vest_64_equipped_15
+      name: bulletproof_vest_64_equiped_15
       rect:
         serializedVersion: 2
         x: 960
@@ -566,16 +569,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 2e3a2065a82c1d04c81460cd96e646c7
-      internalID: 1889556453
+      spriteID: 19943ffa3989bba30800000000000000
+      internalID: 4232144034924284305
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bulletproof_vest_64_equipped_16
+      name: bulletproof_vest_64_equiped_16
       rect:
         serializedVersion: 2
         x: 1024
@@ -588,16 +591,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 2b15f5f4e5644fd40ba0217567883a02
-      internalID: 247422226
+      spriteID: 6f4fe3971838aacb0800000000000000
+      internalID: -4851921056430099210
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bulletproof_vest_64_equipped_17
+      name: bulletproof_vest_64_equiped_17
       rect:
         serializedVersion: 2
         x: 1088
@@ -610,16 +613,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: eade0f9836e81314bbacd09bc24751f5
-      internalID: 1957795246
+      spriteID: e915476ad1c5f5e90800000000000000
+      internalID: -7034802810512977506
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bulletproof_vest_64_equipped_18
+      name: bulletproof_vest_64_equiped_18
       rect:
         serializedVersion: 2
         x: 1152
@@ -632,16 +635,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 4f9b7b39693e4924ea80013425c1d526
-      internalID: -836277050
+      spriteID: e9d6abfb0c6e404e0800000000000000
+      internalID: -2016233017630364258
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bulletproof_vest_64_equipped_19
+      name: bulletproof_vest_64_equiped_19
       rect:
         serializedVersion: 2
         x: 1216
@@ -654,16 +657,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: cc5d3b113370a834f90b7fe5f102f18a
-      internalID: -308573805
+      spriteID: f0a4c8a01d3ca06d0800000000000000
+      internalID: -3023388897233319409
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bulletproof_vest_64_equipped_20
+      name: bulletproof_vest_64_equiped_20
       rect:
         serializedVersion: 2
         x: 1280
@@ -676,16 +679,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 2a0cd2d87e232d44dbab3ea86e035859
-      internalID: 655979474
+      spriteID: cd736eb2d53882fc0800000000000000
+      internalID: -3519418672598337572
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bulletproof_vest_64_equipped_21
+      name: bulletproof_vest_64_equiped_21
       rect:
         serializedVersion: 2
         x: 1344
@@ -698,16 +701,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: ce3c11839d7e249438ba4a43c59d6c33
-      internalID: -348830682
+      spriteID: d550e7b4fa18224f0800000000000000
+      internalID: -854978389361162915
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bulletproof_vest_64_equipped_22
+      name: bulletproof_vest_64_equiped_22
       rect:
         serializedVersion: 2
         x: 1408
@@ -720,16 +723,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: b839cb0fe7d5e4e4e98af435f2013415
-      internalID: -1679345048
+      spriteID: bce03018395848eb0800000000000000
+      internalID: -4718499641006289205
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bulletproof_vest_64_equipped_23
+      name: bulletproof_vest_64_equiped_23
       rect:
         serializedVersion: 2
         x: 1472
@@ -742,16 +745,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 81aef5ab27fb4024ba256143ed47fb40
-      internalID: -1618072053
+      spriteID: 3a1e0b37caa6fceb0800000000000000
+      internalID: -4697418597416246877
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bulletproof_vest_64_equipped_24
+      name: bulletproof_vest_64_equiped_24
       rect:
         serializedVersion: 2
         x: 1536
@@ -764,16 +767,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 4b75c0fed9faa8d4ea3d0931087b476b
-      internalID: -820367409
+      spriteID: 2ec10b543ab050dd0800000000000000
+      internalID: -2520595620567180062
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bulletproof_vest_64_equipped_25
+      name: bulletproof_vest_64_equiped_25
       rect:
         serializedVersion: 2
         x: 1600
@@ -786,16 +789,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 8c7796c764d440741bfb7d3333734567
-      internalID: 1778636360
+      spriteID: 270a0b7c0658eb040800000000000000
+      internalID: 4665312914716008562
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bulletproof_vest_64_equipped_26
+      name: bulletproof_vest_64_equiped_26
       rect:
         serializedVersion: 2
         x: 1664
@@ -808,16 +811,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: f256c04d30e65da4b83c497253deb758
-      internalID: 851587162
+      spriteID: b57028c07bec81600800000000000000
+      internalID: 439328249252808539
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bulletproof_vest_64_equipped_27
+      name: bulletproof_vest_64_equiped_27
       rect:
         serializedVersion: 2
         x: 1728
@@ -830,10 +833,32 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: ac4d648622742094c8f098303b792825
-      internalID: -607188017
+      spriteID: 16245fce1d56133d0800000000000000
+      internalID: -3228687505549868447
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bulletproof_vest_64_equiped_28
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5b8e4008189207b70800000000000000
+      internalID: 8894654900232054965
       vertices: []
       indices: 
       edges: []
@@ -842,7 +867,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: e74c949f4ea8d6d428b430ddf37b58f2
+    spriteID: 0f7458bb78e77c7489c88f33500fd6c2
     internalID: 0
     vertices: []
     indices: 
@@ -852,34 +877,35 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      bulletproof_vest_64_equipped_0: 2089071446
-      bulletproof_vest_64_equipped_1: 2041467575
-      bulletproof_vest_64_equipped_10: -778123370
-      bulletproof_vest_64_equipped_11: -180420874
-      bulletproof_vest_64_equipped_12: 1713879714
-      bulletproof_vest_64_equipped_13: 521117006
-      bulletproof_vest_64_equipped_14: 2048027382
-      bulletproof_vest_64_equipped_15: 1889556453
-      bulletproof_vest_64_equipped_16: 247422226
-      bulletproof_vest_64_equipped_17: 1957795246
-      bulletproof_vest_64_equipped_18: -836277050
-      bulletproof_vest_64_equipped_19: -308573805
-      bulletproof_vest_64_equipped_2: 710856133
-      bulletproof_vest_64_equipped_20: 655979474
-      bulletproof_vest_64_equipped_21: -348830682
-      bulletproof_vest_64_equipped_22: -1679345048
-      bulletproof_vest_64_equipped_23: -1618072053
-      bulletproof_vest_64_equipped_24: -820367409
-      bulletproof_vest_64_equipped_25: 1778636360
-      bulletproof_vest_64_equipped_26: 851587162
-      bulletproof_vest_64_equipped_27: -607188017
-      bulletproof_vest_64_equipped_3: 1287068387
-      bulletproof_vest_64_equipped_4: 666490915
-      bulletproof_vest_64_equipped_5: -457481466
-      bulletproof_vest_64_equipped_6: 1915850027
-      bulletproof_vest_64_equipped_7: -105825086
-      bulletproof_vest_64_equipped_8: -1820360624
-      bulletproof_vest_64_equipped_9: -684171158
+      bulletproof_vest_64_equiped_0: 1328615623177531638
+      bulletproof_vest_64_equiped_1: -7464453918543413256
+      bulletproof_vest_64_equiped_10: -4638707331474202098
+      bulletproof_vest_64_equiped_11: -661240774268030782
+      bulletproof_vest_64_equiped_12: -2365952220086595313
+      bulletproof_vest_64_equiped_13: -8938568209038963302
+      bulletproof_vest_64_equiped_14: -6670685544146399788
+      bulletproof_vest_64_equiped_15: 4232144034924284305
+      bulletproof_vest_64_equiped_16: -4851921056430099210
+      bulletproof_vest_64_equiped_17: -7034802810512977506
+      bulletproof_vest_64_equiped_18: -2016233017630364258
+      bulletproof_vest_64_equiped_19: -3023388897233319409
+      bulletproof_vest_64_equiped_2: 1131365048259963954
+      bulletproof_vest_64_equiped_20: -3519418672598337572
+      bulletproof_vest_64_equiped_21: -854978389361162915
+      bulletproof_vest_64_equiped_22: -4718499641006289205
+      bulletproof_vest_64_equiped_23: -4697418597416246877
+      bulletproof_vest_64_equiped_24: -2520595620567180062
+      bulletproof_vest_64_equiped_25: 4665312914716008562
+      bulletproof_vest_64_equiped_26: 439328249252808539
+      bulletproof_vest_64_equiped_27: -3228687505549868447
+      bulletproof_vest_64_equiped_28: 8894654900232054965
+      bulletproof_vest_64_equiped_3: 4646152434193497960
+      bulletproof_vest_64_equiped_4: 2706647928618496714
+      bulletproof_vest_64_equiped_5: -8779696642823114500
+      bulletproof_vest_64_equiped_6: -1940002492735716284
+      bulletproof_vest_64_equiped_7: -8835640191571599233
+      bulletproof_vest_64_equiped_8: -7921421662697222306
+      bulletproof_vest_64_equiped_9: -3637698021010062600
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

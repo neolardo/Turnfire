@@ -41,6 +41,7 @@ MonoBehaviour:
   - {fileID: 7863815401495196118, guid: 8b698ac80af6cea48885ae3e994b920d, type: 3}
   - {fileID: -767885606336956895, guid: 8b698ac80af6cea48885ae3e994b920d, type: 3}
   - {fileID: 6753667789389263138, guid: 8b698ac80af6cea48885ae3e994b920d, type: 3}
+  - {fileID: -4656345694725524309, guid: 8b698ac80af6cea48885ae3e994b920d, type: 3}
   HeadSpriteStrip:
   - {fileID: -1931561145233838765, guid: 3aac90748b907274aacf2e06f3a47026, type: 3}
   - {fileID: 6086273294368231059, guid: 3aac90748b907274aacf2e06f3a47026, type: 3}
@@ -70,6 +71,7 @@ MonoBehaviour:
   - {fileID: 9181256246679092512, guid: 3aac90748b907274aacf2e06f3a47026, type: 3}
   - {fileID: 6989363009849603206, guid: 3aac90748b907274aacf2e06f3a47026, type: 3}
   - {fileID: 4259350642005658900, guid: 3aac90748b907274aacf2e06f3a47026, type: 3}
+  - {fileID: 1429079058565582924, guid: 3aac90748b907274aacf2e06f3a47026, type: 3}
   ClothesSpriteStrip:
   - {fileID: -982450463847897286, guid: cf38859373d548143a0394612124d2d3, type: 3}
   - {fileID: -5750134530259733930, guid: cf38859373d548143a0394612124d2d3, type: 3}
@@ -99,6 +101,7 @@ MonoBehaviour:
   - {fileID: 1178229440860532761, guid: cf38859373d548143a0394612124d2d3, type: 3}
   - {fileID: 59943080054366097, guid: cf38859373d548143a0394612124d2d3, type: 3}
   - {fileID: 5232944548743328964, guid: cf38859373d548143a0394612124d2d3, type: 3}
+  - {fileID: -9190856087053314893, guid: cf38859373d548143a0394612124d2d3, type: 3}
   OverItemBodySpriteStrip:
   - {fileID: 0}
   - {fileID: 0}
@@ -128,6 +131,7 @@ MonoBehaviour:
   - {fileID: 277553052, guid: f00c155fa13c3e9468d48d5d71540cca, type: 3}
   - {fileID: -586122433, guid: f00c155fa13c3e9468d48d5d71540cca, type: 3}
   - {fileID: 697302904, guid: f00c155fa13c3e9468d48d5d71540cca, type: 3}
+  - {fileID: 0}
   OverItemClothesSpriteStrip:
   - {fileID: 0}
   - {fileID: 0}
@@ -157,9 +161,7 @@ MonoBehaviour:
   - {fileID: 1154029495, guid: 34f02bf18c1753d4f9257c605c2c95cc, type: 3}
   - {fileID: 34562744, guid: 34f02bf18c1753d4f9257c605c2c95cc, type: 3}
   - {fileID: 1873962252, guid: 34f02bf18c1753d4f9257c605c2c95cc, type: 3}
-  HurtFlashColor: {r: 1, g: 0, b: 0, a: 1}
-  HealFlashColor: {r: 0, g: 1, b: 0, a: 1}
-  ItemEquipFlashColor: {r: 1, g: 1, b: 1, a: 1}
+  - {fileID: 0}
   InAirSFX: {fileID: 11400000, guid: d230d235833e97b4ea72e3867bedc065, type: 2}
   PrepareToJumpSFX: {fileID: 11400000, guid: c4faad8b134467a4eab7174020e523ec, type: 2}
   LandSFX: {fileID: 11400000, guid: 2558f50bf2497904b95bc1fe45a1935f, type: 2}

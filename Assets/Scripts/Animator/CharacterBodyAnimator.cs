@@ -126,9 +126,10 @@ public class CharacterBodyAnimator : MonoBehaviour
         _equippedArmorSpriteRenderers.Remove(armor);
     }
 
-    public void PlayBlockAnimation(ArmorDefinition armor)
+    public void PlayGuardAnimation(ArmorDefinition armor)
     {
         _flashAnimator.Flash(new[] { _equippedArmorSpriteRenderers[armor] }, _animatorDefinition.ItemFlashColor, _animatorDefinition.ItemFlashInSeconds, _animatorDefinition.ItemFlashOutSeconds);
+        PlayAnimation(CharacterAnimationState.Guard);
     }
 
     public void PlayHurtAnimation()
@@ -315,6 +316,8 @@ public class CharacterBodyAnimator : MonoBehaviour
                 return _animatorDefinition.FlyAnimationFrameDuration;
             case CharacterAnimationState.Hurt:
                 return _animatorDefinition.HurtAnimationFrameDuration;
+            case CharacterAnimationState.Guard:
+                return _animatorDefinition.GuardActionAnimationFrameDuration;
             case CharacterAnimationState.Death:
                 return _animatorDefinition.DeathAnimationFrameDuration;
             case CharacterAnimationState.BackFromLand:
@@ -355,6 +358,7 @@ public class CharacterBodyAnimator : MonoBehaviour
             //    return _animatorDefinition.MeleeAttackAnimationFrameDuration;
             //case CharacterAnimationState.MeleeAttackLow:
             //    return _animatorDefinition.MeleeAttackAnimationFrameDuration;
+            //TODO: guard
             default:
                 return null;
         }

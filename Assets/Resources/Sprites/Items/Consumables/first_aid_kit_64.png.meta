@@ -142,10 +142,10 @@ TextureImporter:
       name: first_aid_kit_64_0
       rect:
         serializedVersion: 2
-        x: 17
-        y: 16
-        width: 29
-        height: 32
+        x: 21
+        y: 19
+        width: 22
+        height: 24
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

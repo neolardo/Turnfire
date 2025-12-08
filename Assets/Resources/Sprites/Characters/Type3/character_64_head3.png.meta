@@ -86,6 +86,9 @@ TextureImporter:
   - first:
       213: -2681504356129431526
     second: character_64_head3_27
+  - first:
+      213: 1939263564566153084
+    second: character_64_head3_28
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -835,11 +838,33 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: character_64_head3_28
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c77c2d3ffe5a9ea10800000000000000
+      internalID: 1939263564566153084
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: c98e0af452988e0458c26ec4740bfac9
+    spriteID: 558d6b0f4d982a34faeef258553cdcf9
     internalID: 0
     vertices: []
     indices: 
@@ -870,6 +895,7 @@ TextureImporter:
       character_64_head3_25: 181419520934553221
       character_64_head3_26: 4084503733271429977
       character_64_head3_27: -2681504356129431526
+      character_64_head3_28: 1939263564566153084
       character_64_head3_3: 8654077984437509284
       character_64_head3_4: 8229263924731102416
       character_64_head3_5: 7736949087128801756

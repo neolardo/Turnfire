@@ -98,9 +98,10 @@ public class CharacterAnimator : MonoBehaviour
         _bodyAnimator.PlayUnequipArmorAnimation(armor);
     }
 
-    public void PlayBlockAnimation(ArmorDefinition armor)
+    public void PlayGuardAnimation(ArmorDefinition armor)
     {
-        _bodyAnimator.PlayBlockAnimation(armor);
+        _itemRenderer.HideItem();
+        _bodyAnimator.PlayGuardAnimation(armor);
     }
 
     public void PlayHurtAnimation()

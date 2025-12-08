@@ -27,6 +27,7 @@ public static class CharacterAnimationStripParser
         { CharacterAnimationState.MeleeAttackMiddle,  new[] { 13, 14, 15, 16, 17 }},
         { CharacterAnimationState.MeleeAttackLow,  new[] { 18, 19, 20, 21, 22}},
         { CharacterAnimationState.MeleeAttackHigh,  new[] { 23, 24, 25, 26, 27 }},
+        { CharacterAnimationState.Guard,  new[] { 28 }},
 
     };
 

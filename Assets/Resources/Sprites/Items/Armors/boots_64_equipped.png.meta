@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 45af07e801ae3944d8b87b2a39eb924c
+guid: 9625ef0884db84e4a92137b5ba4b9e77
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -167,6 +167,12 @@ TextureImporter:
   - first:
       213: -299133619351614240
     second: boots_64_equiped_54
+  - first:
+      213: 6960259613568365496
+    second: boots_64_equiped_55
+  - first:
+      213: 6782433134442900511
+    second: boots_64_equiped_56
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -301,7 +307,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: boots_64_equipped_0
+      name: boots_64_equiped_0
       rect:
         serializedVersion: 2
         x: 0
@@ -314,16 +320,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 780a80997644a294e84232e4013a99ff
-      internalID: 322979978
+      spriteID: a1fbadd1474f5b1e0800000000000000
+      internalID: -2182569664836878566
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boots_64_equipped_1
+      name: boots_64_equiped_1
       rect:
         serializedVersion: 2
         x: 64
@@ -336,16 +342,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 3a762da3210016b488a8ff383053b4d3
-      internalID: 675665542
+      spriteID: a796d7b0b78124bb0800000000000000
+      internalID: -4953369723401311878
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boots_64_equipped_2
+      name: boots_64_equiped_2
       rect:
         serializedVersion: 2
         x: 128
@@ -358,16 +364,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 68ae0b1633f7ae94a8293612b6334828
-      internalID: 174780508
+      spriteID: 1eb2ea576abff9990800000000000000
+      internalID: -7376900972252091423
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boots_64_equipped_3
+      name: boots_64_equiped_3
       rect:
         serializedVersion: 2
         x: 192
@@ -380,16 +386,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 138c7e4360ddbe445a73b053789da47a
-      internalID: 566276949
+      spriteID: c1fa7779eebea2ee0800000000000000
+      internalID: -1284955333684908260
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boots_64_equipped_4
+      name: boots_64_equiped_4
       rect:
         serializedVersion: 2
         x: 256
@@ -402,16 +408,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 4b927a6687043f140b92fbec68413a51
-      internalID: -1070405910
+      spriteID: 8b9fa5a1e9a29d110800000000000000
+      internalID: 1286106027126356408
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boots_64_equipped_5
+      name: boots_64_equiped_5
       rect:
         serializedVersion: 2
         x: 320
@@ -424,16 +430,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: faec919f429a90247b73fd862122f824
-      internalID: -1188519506
+      spriteID: 6823ce63317931940800000000000000
+      internalID: 5265718498107863686
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boots_64_equipped_6
+      name: boots_64_equiped_6
       rect:
         serializedVersion: 2
         x: 384
@@ -446,16 +452,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 2fb158b19da4a7c43a6843004a1f207f
-      internalID: -258160928
+      spriteID: 495a56dfd0a6cb490800000000000000
+      internalID: -7729186252156197484
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boots_64_equipped_7
+      name: boots_64_equiped_7
       rect:
         serializedVersion: 2
         x: 448
@@ -468,16 +474,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 66397282014b4f14688f8b217a9ac036
-      internalID: 1455734919
+      spriteID: f651fc2d2e36ee990800000000000000
+      internalID: -7354831315598895761
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boots_64_equipped_8
+      name: boots_64_equiped_8
       rect:
         serializedVersion: 2
         x: 512
@@ -490,16 +496,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 277dd154ae336064086c74b4c19e0cf2
-      internalID: -1683534404
+      spriteID: b088de4e33623ff30800000000000000
+      internalID: 4608068848056109067
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boots_64_equipped_9
+      name: boots_64_equiped_9
       rect:
         serializedVersion: 2
         x: 576
@@ -512,16 +518,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 22fa70876bf5c294c9addae0eb658e9c
-      internalID: -346540354
+      spriteID: 0a7108d904a2bf8b0800000000000000
+      internalID: -5117450094567745632
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boots_64_equipped_10
+      name: boots_64_equiped_10
       rect:
         serializedVersion: 2
         x: 640
@@ -534,16 +540,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 75a6916cc34bbb14093b030d8dc92001
-      internalID: -798237721
+      spriteID: 6c553ccc509a0fee0800000000000000
+      internalID: -1229296855896861242
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boots_64_equipped_11
+      name: boots_64_equiped_11
       rect:
         serializedVersion: 2
         x: 704
@@ -556,16 +562,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 9fc749e422138ac479d58e34efe56907
-      internalID: 1349012258
+      spriteID: 617e7fe5014edc9e0800000000000000
+      internalID: -1599371533682743530
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boots_64_equipped_12
+      name: boots_64_equiped_12
       rect:
         serializedVersion: 2
         x: 768
@@ -578,16 +584,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: c59b5ed4f239e3641841f4c9cbf9c427
-      internalID: -1404621870
+      spriteID: f6b54463bd2a398d0800000000000000
+      internalID: -2840747877548663953
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boots_64_equipped_13
+      name: boots_64_equiped_13
       rect:
         serializedVersion: 2
         x: 832
@@ -600,16 +606,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: f5916e6193f0ed64fbaaa8fa67067a14
-      internalID: -1946036273
+      spriteID: 385fc6ea68c8a89b0800000000000000
+      internalID: -5077091119826930301
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boots_64_equipped_14
+      name: boots_64_equiped_14
       rect:
         serializedVersion: 2
         x: 896
@@ -622,16 +628,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 32bd47073449c7441bd29c5783458ae5
-      internalID: -602611591
+      spriteID: eb9314d50fe6d71e0800000000000000
+      internalID: -2198479064451171906
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boots_64_equipped_15
+      name: boots_64_equiped_15
       rect:
         serializedVersion: 2
         x: 960
@@ -644,16 +650,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: d83eceb67d49f8d458af6c35bb46d497
-      internalID: -1247628612
+      spriteID: 0c618a4c9af95d420800000000000000
+      internalID: 2654203106902415040
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boots_64_equipped_16
+      name: boots_64_equiped_16
       rect:
         serializedVersion: 2
         x: 1024
@@ -666,16 +672,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: e41d3a3321d46b64da94ee262972b368
-      internalID: -2108747785
+      spriteID: a54f7c5f6a70fdeb0800000000000000
+      internalID: -4693023873027279782
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boots_64_equipped_17
+      name: boots_64_equiped_17
       rect:
         serializedVersion: 2
         x: 1088
@@ -688,16 +694,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 0e2c231a50269e24c9f6b5b669897e67
-      internalID: 1488764431
+      spriteID: 873c8f1c6bfffedf0800000000000000
+      internalID: -148619102276500616
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boots_64_equipped_18
+      name: boots_64_equiped_18
       rect:
         serializedVersion: 2
         x: 1152
@@ -710,16 +716,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 67368701fed4b664abde05e09864649e
-      internalID: -1234065486
+      spriteID: 2e5eba334fe004b50800000000000000
+      internalID: 6575271897962636770
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boots_64_equipped_19
+      name: boots_64_equiped_19
       rect:
         serializedVersion: 2
         x: 1216
@@ -732,16 +738,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 59e43e57c43547c489dc3ffa536bdc7b
-      internalID: -2090549608
+      spriteID: b9c56411eff6fb470800000000000000
+      internalID: 8412565765953576091
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boots_64_equipped_20
+      name: boots_64_equiped_20
       rect:
         serializedVersion: 2
         x: 1280
@@ -754,16 +760,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: a903b82db7c2bf14c8b32ffa5500f0cf
-      internalID: 229006352
+      spriteID: 9ac5312c9342f3370800000000000000
+      internalID: 8304396068382268585
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boots_64_equipped_21
+      name: boots_64_equiped_21
       rect:
         serializedVersion: 2
         x: 1344
@@ -776,16 +782,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 3b8fddfb33c32334ca7e44aba2534683
-      internalID: -270288462
+      spriteID: 6466b304cc4c84bc0800000000000000
+      internalID: -3798569904157006266
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boots_64_equipped_22
+      name: boots_64_equiped_22
       rect:
         serializedVersion: 2
         x: 1408
@@ -798,16 +804,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: ff301fb04ce43d6438ea2fe69cffc32d
-      internalID: -1048323231
+      spriteID: af7b5dd059b36cf70800000000000000
+      internalID: 9207111999573833722
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boots_64_equipped_23
+      name: boots_64_equiped_23
       rect:
         serializedVersion: 2
         x: 1472
@@ -820,16 +826,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: b61e810a50bb96347ac0a96e42d72cd0
-      internalID: -841662683
+      spriteID: b8f4bac634790cc10800000000000000
+      internalID: 2071822144432197515
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boots_64_equipped_24
+      name: boots_64_equiped_24
       rect:
         serializedVersion: 2
         x: 1536
@@ -842,16 +848,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 28d6a7c6758a1244a80f4b530a8b08b4
-      internalID: 862688295
+      spriteID: 046f48674acf40cb0800000000000000
+      internalID: -4898512711378995648
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boots_64_equipped_25
+      name: boots_64_equiped_25
       rect:
         serializedVersion: 2
         x: 1600
@@ -864,16 +870,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 90f921575f14c34439dfd7d741230a88
-      internalID: -223706653
+      spriteID: 8c688fdb1a9a72bb0800000000000000
+      internalID: -4960809952383301944
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boots_64_equipped_26
+      name: boots_64_equiped_26
       rect:
         serializedVersion: 2
         x: 1664
@@ -886,16 +892,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 2a9d54048906a2046bf26680a02b6b2c
-      internalID: -1926754538
+      spriteID: a972ed53999f0b6d0800000000000000
+      internalID: -2976604917262833766
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boots_64_equipped_27
+      name: boots_64_equiped_27
       rect:
         serializedVersion: 2
         x: 1728
@@ -908,10 +914,32 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: e15043eb72c505c4aad41238b317a791
-      internalID: 1832956640
+      spriteID: 03fa14eeb94f07330800000000000000
+      internalID: 3706731443880308528
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boots_64_equiped_28
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 417c272885a41a8f0800000000000000
+      internalID: -531061537046870252
       vertices: []
       indices: 
       edges: []
@@ -920,7 +948,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 83b58f397d5208f4ab2c193b0ac14631
+    spriteID: a6d06e5ea9670fb4aad8aa2b0fa6817f
     internalID: 0
     vertices: []
     indices: 
@@ -930,34 +958,35 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      boots_64_equipped_0: 322979978
-      boots_64_equipped_1: 675665542
-      boots_64_equipped_10: -798237721
-      boots_64_equipped_11: 1349012258
-      boots_64_equipped_12: -1404621870
-      boots_64_equipped_13: -1946036273
-      boots_64_equipped_14: -602611591
-      boots_64_equipped_15: -1247628612
-      boots_64_equipped_16: -2108747785
-      boots_64_equipped_17: 1488764431
-      boots_64_equipped_18: -1234065486
-      boots_64_equipped_19: -2090549608
-      boots_64_equipped_2: 174780508
-      boots_64_equipped_20: 229006352
-      boots_64_equipped_21: -270288462
-      boots_64_equipped_22: -1048323231
-      boots_64_equipped_23: -841662683
-      boots_64_equipped_24: 862688295
-      boots_64_equipped_25: -223706653
-      boots_64_equipped_26: -1926754538
-      boots_64_equipped_27: 1832956640
-      boots_64_equipped_3: 566276949
-      boots_64_equipped_4: -1070405910
-      boots_64_equipped_5: -1188519506
-      boots_64_equipped_6: -258160928
-      boots_64_equipped_7: 1455734919
-      boots_64_equipped_8: -1683534404
-      boots_64_equipped_9: -346540354
+      boots_64_equiped_0: -2182569664836878566
+      boots_64_equiped_1: -4953369723401311878
+      boots_64_equiped_10: -1229296855896861242
+      boots_64_equiped_11: -1599371533682743530
+      boots_64_equiped_12: -2840747877548663953
+      boots_64_equiped_13: -5077091119826930301
+      boots_64_equiped_14: -2198479064451171906
+      boots_64_equiped_15: 2654203106902415040
+      boots_64_equiped_16: -4693023873027279782
+      boots_64_equiped_17: -148619102276500616
+      boots_64_equiped_18: 6575271897962636770
+      boots_64_equiped_19: 8412565765953576091
+      boots_64_equiped_2: -7376900972252091423
+      boots_64_equiped_20: 8304396068382268585
+      boots_64_equiped_21: -3798569904157006266
+      boots_64_equiped_22: 9207111999573833722
+      boots_64_equiped_23: 2071822144432197515
+      boots_64_equiped_24: -4898512711378995648
+      boots_64_equiped_25: -4960809952383301944
+      boots_64_equiped_26: -2976604917262833766
+      boots_64_equiped_27: 3706731443880308528
+      boots_64_equiped_28: -531061537046870252
+      boots_64_equiped_3: -1284955333684908260
+      boots_64_equiped_4: 1286106027126356408
+      boots_64_equiped_5: 5265718498107863686
+      boots_64_equiped_6: -7729186252156197484
+      boots_64_equiped_7: -7354831315598895761
+      boots_64_equiped_8: 4608068848056109067
+      boots_64_equiped_9: -5117450094567745632
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

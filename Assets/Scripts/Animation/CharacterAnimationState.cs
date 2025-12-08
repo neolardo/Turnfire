@@ -22,5 +22,8 @@ public enum CharacterAnimationState
     Land = 8,
 
     Hurt = 9,
-    Death = 10,
+    Guard = 10,
+
+    Death = 11,
+
 }

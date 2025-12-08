@@ -101,6 +101,9 @@ TextureImporter:
   - first:
       213: -339650480116054084
     second: character_64_clothes2_32
+  - first:
+      213: 3679270520216007033
+    second: character_64_clothes2_33
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -850,11 +853,33 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: character_64_clothes2_28
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 049b0f05d36365d40800000000000000
+      internalID: 5572701225896425792
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 6dc17026b1f9972449cbe0480471ed09
+    spriteID: 33e22b0da1652994dbe17db192a7caba
     internalID: 0
     vertices: []
     indices: 
@@ -885,6 +910,7 @@ TextureImporter:
       character_64_clothes2_25: -8822164360982053906
       character_64_clothes2_26: -4615905072190413055
       character_64_clothes2_27: 2972935846882175652
+      character_64_clothes2_28: 5572701225896425792
       character_64_clothes2_3: 2636782017401150342
       character_64_clothes2_4: 2982182131867299621
       character_64_clothes2_5: 3356001396198894630
