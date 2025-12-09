@@ -34,7 +34,7 @@ public class ProtectiveArmorBehavior : ArmorBehavior
 
     public override IEnumerator SimulateUsage(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone)
     {
-        onDone?.Invoke(ItemBehaviorSimulationResult.ArmorBoost(_definition.MaxDurability.CalculateValue()));
+        onDone?.Invoke(ItemBehaviorSimulationResult.ArmorBoost(_definition.MaxDurability.AvarageValue));
         yield return null;
     }
 

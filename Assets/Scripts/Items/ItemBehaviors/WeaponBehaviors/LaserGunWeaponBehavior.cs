@@ -126,7 +126,7 @@ public class LaserGunWeaponBehavior : WeaponBehavior
 
     public override IEnumerator SimulateUsage(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone)
     {
-        float damage = _definition.Damage.CalculateValue();
+        float damage = _definition.Damage.AvarageValue;
         float damageToAllies = 0;
         float damageToEnemies = 0;
         CalculateLaserPath(context.Owner, context.Origin, context.AimVector, out var hitCharacters);

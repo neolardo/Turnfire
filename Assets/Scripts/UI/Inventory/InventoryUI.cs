@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -136,7 +137,7 @@ public class InventoryUI : MonoBehaviour
             for (int i = 0; i < _sliders.Count && i < rangedStats.Count; i++)
             {
                 _sliders[i].SetText(rangedStats[i].Group.DisplayName);
-                _sliders[i].SetSliderValue(rangedStats[i].NormalizedValue);
+                _sliders[i].SetSliderValue(rangedStats[i].NormalizedDislayValue);
                 _sliders[i].gameObject.SetActive(true);
             }
         }

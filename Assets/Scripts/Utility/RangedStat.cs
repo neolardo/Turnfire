@@ -8,6 +8,7 @@ public abstract class RangedStat
     [SerializeField] protected bool _isRandomized;
     [SerializeField][Range(0f, 1f)] protected float _randomness;
     public float NormalizedValue => _normalizedValue;
+    public abstract float NormalizedDislayValue { get; }
     public abstract RangedStatGroupDefinition Group { get; }
 }
 
@@ -56,6 +57,8 @@ public class RangedStatInt : RangedStat<int>
             return Mathf.RoundToInt(Mathf.Lerp(_group.Minimum, _group.Maximum, lerpValue));
         }
     }
+
+    public override float NormalizedDislayValue => AvarageValue / (float)_group.Maximum;
 
     public override int CalculateValue()
     {
@@ -109,6 +112,8 @@ public class RangedStatFloat : RangedStat<float>
             return Mathf.Lerp(_group.Minimum, _group.Maximum, lerpValue);
         }
     }
+    public override float NormalizedDislayValue => AvarageValue / _group.Maximum;
+
     public override float CalculateValue()
     {
         if (_isRandomized)

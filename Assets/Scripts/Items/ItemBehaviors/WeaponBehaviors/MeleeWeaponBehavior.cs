@@ -83,7 +83,7 @@ public class MeleeWeaponBehavior : WeaponBehavior
         yield return new WaitForFixedUpdate();
         yield return new WaitForFixedUpdate();
 
-        float damage = _definition.Damage.CalculateValue();
+        float damage = _definition.Damage.AvarageValue;
         float allyDamage = 0;
         float enemyDamage = 0;
 

@@ -18,7 +18,7 @@ public class FirstAidKitConsumableBehavior : ConsumableBehavior
 
     public override IEnumerator SimulateUsage(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone)
     {
-        onDone?.Invoke(ItemBehaviorSimulationResult.Healing(_definition.HealAmount.CalculateValue()));
+        onDone?.Invoke(ItemBehaviorSimulationResult.Healing(_definition.HealAmount.AvarageValue));
         yield return null;
     }
 }
