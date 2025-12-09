@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Grenade
   m_EditorClassIdentifier: 
   Sprite: {fileID: 21300000, guid: a50212cd8fcd50847adb388d438fe251, type: 3}
-  Name: Grenade
+  Name: grenade
   Description: Throws a grenade that explodes on the 4th contact.
   InitialQuantity: 3
   MaximumQuantity: 9
@@ -27,6 +27,7 @@ MonoBehaviour:
   ItemActionSFX: {fileID: 11400000, guid: b9e46c54c7c274f408255becd8ef6ad2, type: 2}
   HideItemDuringUsage: 1
   UseInstantlyWhenSelected: 0
+  InitialVisualRotationDegrees: 0
   FireStrength:
     _normalizedValue: 0.3
     _isRandomized: 0

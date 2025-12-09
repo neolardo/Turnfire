@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BulletproofVestArmorDefinition
   m_EditorClassIdentifier: 
   Sprite: {fileID: 21300000, guid: 93cc639b3746be240a595aec74bb6448, type: 3}
-  Name: Bulletproof Vest
+  Name: bulletproof vest
   Description: Helps you dodge the next attack.
   InitialQuantity: 1
   MaximumQuantity: 1

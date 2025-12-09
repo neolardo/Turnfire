@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: FirstAidKitDefinition
   m_EditorClassIdentifier: 
   Sprite: {fileID: 21300000, guid: b2a71e30bba0c904db6c65c50294c9af, type: 3}
-  Name: First Aid Kit
+  Name: first aid kit
   Description: Heals your wounds.
   InitialQuantity: 1
   MaximumQuantity: 1

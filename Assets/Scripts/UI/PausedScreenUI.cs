@@ -4,37 +4,48 @@ using UnityEngine.EventSystems;
 public class PausedScreenUI : MonoBehaviour
 {
     [SerializeField] private TextButtonUI _resumeButton;
+    [SerializeField] private TextButtonUI _showControlsButton;
     [SerializeField] private TextButtonUI _restartButton;
     [SerializeField] private TextButtonUI _exitButton;
-    private LocalGameplayInput _inputManager;
+    [SerializeField] private ControlsPanelUI controlsPanel;
+    private LocalGameplayInput _localInput;
 
 
     private void Awake()
     {
         _resumeButton.ButtonPressed += OnResumeButtonPressed;
+        _showControlsButton.ButtonPressed += OnShowControlsButtonPressed;
         _restartButton.ButtonPressed += OnRestartButtonPressed;
         _exitButton.ButtonPressed += OnExitButtonPressed;
-        _inputManager = FindFirstObjectByType<LocalGameplayInput>();
+        _localInput = FindFirstObjectByType<LocalGameplayInput>();
     }
 
     private void OnEnable()
     {
-        _inputManager.PausedScreenConfirmPerformed += _resumeButton.PressIfHoveredOrSelected;
-        _inputManager.PausedScreenConfirmPerformed += _restartButton.PressIfHoveredOrSelected;
-        _inputManager.PausedScreenConfirmPerformed += _exitButton.PressIfHoveredOrSelected;
+        _localInput.PausedScreenConfirmPerformed += _resumeButton.PressIfHoveredOrSelected;
+        _localInput.PausedScreenConfirmPerformed += _showControlsButton.PressIfHoveredOrSelected;
+        _localInput.PausedScreenConfirmPerformed += _restartButton.PressIfHoveredOrSelected;
+        _localInput.PausedScreenConfirmPerformed += _exitButton.PressIfHoveredOrSelected;
         EventSystem.current.SetSelectedGameObject(_resumeButton.gameObject);
     }
 
     private void OnDisable()
     {
-        _inputManager.PausedScreenConfirmPerformed -= _resumeButton.PressIfHoveredOrSelected;
-        _inputManager.PausedScreenConfirmPerformed -= _restartButton.PressIfHoveredOrSelected;
-        _inputManager.PausedScreenConfirmPerformed -= _exitButton.PressIfHoveredOrSelected;
+        _localInput.PausedScreenConfirmPerformed -= _resumeButton.PressIfHoveredOrSelected;
+        _localInput.PausedScreenConfirmPerformed -= _showControlsButton.PressIfHoveredOrSelected;
+        _localInput.PausedScreenConfirmPerformed -= _restartButton.PressIfHoveredOrSelected;
+        _localInput.PausedScreenConfirmPerformed -= _exitButton.PressIfHoveredOrSelected;
     }
 
     private void OnResumeButtonPressed()
     {
-        _inputManager.TogglePauseResumeGameplay();
+        _localInput.TogglePauseResumeGameplay();
+    }
+
+    private void OnShowControlsButtonPressed()
+    {
+        controlsPanel.gameObject.SetActive(true);
+        gameObject.SetActive(false);
     }
 
     private void OnRestartButtonPressed()

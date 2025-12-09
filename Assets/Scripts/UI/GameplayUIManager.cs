@@ -135,7 +135,6 @@ public class GameplayUIManager : MonoBehaviour
 
     #endregion
 
-
     #region Aim Circles
 
     public void ShowAimCircles(Vector2 initialPosition)

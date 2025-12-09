@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BootsArmorDefinition
   m_EditorClassIdentifier: 
   Sprite: {fileID: 21300000, guid: 5d52e0c4d408ead42833916a7420a06b, type: 3}
-  Name: Boots
+  Name: boots
   Description: Makes you jump higher.
   InitialQuantity: 1
   MaximumQuantity: 1

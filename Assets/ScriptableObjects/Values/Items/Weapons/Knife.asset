@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Knife
   m_EditorClassIdentifier: 
   Sprite: {fileID: 21300000, guid: d0701ca5d56bff3448d2d9567533b9d5, type: 3}
-  Name: Knife
+  Name: knife
   Description: Stabs in close combat.
   InitialQuantity: 1
   MaximumQuantity: 1

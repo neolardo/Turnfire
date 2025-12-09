@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Gun
   m_EditorClassIdentifier: 
   Sprite: {fileID: 21300000, guid: 13ca46f010bc08a4eb2dc9b5d24b0e37, type: 3}
-  Name: Gun
+  Name: gun
   Description: Fires a bullet.
   InitialQuantity: 4
   MaximumQuantity: 12
@@ -27,6 +27,7 @@ MonoBehaviour:
   ItemActionSFX: {fileID: 11400000, guid: fc1ce75043e549540ba172f23ddbb33f, type: 2}
   HideItemDuringUsage: 1
   UseInstantlyWhenSelected: 0
+  InitialVisualRotationDegrees: 0
   FireStrength:
     _normalizedValue: 0.9
     _isRandomized: 0
