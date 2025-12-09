@@ -214,9 +214,65 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 507271837729723928, guid: 99a6147da1bea464aa87c364a8907dde, type: 3}
+      propertyPath: _offsetPixels.x
+      value: 22
+      objectReference: {fileID: 0}
     - target: {fileID: 1639643266573831732, guid: 99a6147da1bea464aa87c364a8907dde, type: 3}
       propertyPath: m_Name
       value: GameplayCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 2210365305171123996, guid: 99a6147da1bea464aa87c364a8907dde, type: 3}
+      propertyPath: _cellSizeInPixels.x
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 2288103063826236025, guid: 99a6147da1bea464aa87c364a8907dde, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.47
+      objectReference: {fileID: 0}
+    - target: {fileID: 2288103063826236025, guid: 99a6147da1bea464aa87c364a8907dde, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2288103063826236025, guid: 99a6147da1bea464aa87c364a8907dde, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2345507377387465976, guid: 99a6147da1bea464aa87c364a8907dde, type: 3}
+      propertyPath: _offsetPixels.x
+      value: 22
+      objectReference: {fileID: 0}
+    - target: {fileID: 3791142310712281783, guid: 99a6147da1bea464aa87c364a8907dde, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.47
+      objectReference: {fileID: 0}
+    - target: {fileID: 3791142310712281783, guid: 99a6147da1bea464aa87c364a8907dde, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3791142310712281783, guid: 99a6147da1bea464aa87c364a8907dde, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4180497908938312755, guid: 99a6147da1bea464aa87c364a8907dde, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4421395748709549598, guid: 99a6147da1bea464aa87c364a8907dde, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.47
+      objectReference: {fileID: 0}
+    - target: {fileID: 4421395748709549598, guid: 99a6147da1bea464aa87c364a8907dde, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4421395748709549598, guid: 99a6147da1bea464aa87c364a8907dde, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4855928161167677919, guid: 99a6147da1bea464aa87c364a8907dde, type: 3}
+      propertyPath: _offsetPixels.x
+      value: 22
       objectReference: {fileID: 0}
     - target: {fileID: 8048818827910493415, guid: 99a6147da1bea464aa87c364a8907dde, type: 3}
       propertyPath: m_Pivot.x

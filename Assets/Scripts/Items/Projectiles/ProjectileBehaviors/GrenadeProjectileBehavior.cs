@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -55,12 +56,12 @@ public class GrenadeProjectileBehavior : BallisticProjectileBehavior
         }
     }
 
-    public override WeaponBehaviorSimulationResult SimulateProjectileBehavior(Vector2 start, Vector2 aimVector, DestructibleTerrainManager terrain, Character owner, IEnumerable<Character> others)
+    public override IEnumerable SimulateProjectileBehavior(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone)
     {
-        Vector2 velocity = aimVector;
-        Vector2 pos = start;
+        Vector2 velocity = context.AimVector;
+        Vector2 pos = context.Origin;
 
-        if (SafeObjectPlacer.TryFindSafePosition(start, aimVector.normalized, LayerMaskHelper.GetCombinedLayerMask(Constants.HitboxCollisionLayers), _definition.ColliderRadius, out var safePosition))
+        if (SafeObjectPlacer.TryFindSafePosition(context.Origin, context.AimVector.normalized, LayerMaskHelper.GetCombinedLayerMask(Constants.HitboxCollisionLayers), _definition.ColliderRadius, out var safePosition))
         {
             pos = safePosition;
         }
@@ -79,14 +80,14 @@ public class GrenadeProjectileBehavior : BallisticProjectileBehavior
             {
                 var cornerPos = pos + cornerPoint;
                 
-                if (terrain.OverlapPoint(cornerPos)) // terrain contact
+                if (context.Terrain.OverlapPoint(cornerPos)) // terrain contact
                 {
-                    normal = terrain.GetNearestNormalAtPoint(cornerPos);
+                    normal = context.Terrain.GetNearestNormalAtPoint(cornerPos);
                     contacted = true;
                 }
                 else
                 {
-                    foreach(var c in others)
+                    foreach(var c in context.OtherCharacters)
                     {
                         if (c.OverlapPoint(cornerPos)) // character contact
                         {
@@ -102,7 +103,8 @@ public class GrenadeProjectileBehavior : BallisticProjectileBehavior
                     velocity = PhysicsMaterial2DHelpers.ApplyMaterialBounce(velocity, normal, _definition.GrenadePhysicsMaterial);
                     if (contactCount >= _definition.ExplosionContactThreshold)
                     {
-                        return SimulateExplosion(pos, owner);
+                        onDone?.Invoke(SimulateExplosion(pos, context.Owner));
+                        yield break;
                     }
                     break;
                 }
@@ -113,13 +115,13 @@ public class GrenadeProjectileBehavior : BallisticProjectileBehavior
                 break;
             }
 
-            if (!terrain.IsPointInsideBounds(pos))
+            if (!context.Terrain.IsPointInsideBounds(pos))
             {
                 break;
             }
         }
 
-        return SimulateExplosion(pos, owner);
+        onDone?.Invoke(SimulateExplosion(pos, context.Owner));
     }
 
 

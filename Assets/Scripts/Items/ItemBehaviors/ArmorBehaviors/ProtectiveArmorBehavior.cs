@@ -1,3 +1,7 @@
+using System;
+using System.Collections;
+using System.Numerics;
+
 public class ProtectiveArmorBehavior : ArmorBehavior
 {
     private ProtectiveArmorDefinition _definition;
@@ -26,6 +30,12 @@ public class ProtectiveArmorBehavior : ArmorBehavior
     {
         base.OnArmorWornOut();
         _owner.ArmorManager.BlockedWithArmor -= OnBlockedWithArmor;
+    }
+
+    public override IEnumerator SimulateUsage(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone)
+    {
+        onDone?.Invoke(ItemBehaviorSimulationResult.ArmorBoost(_definition.MaxDurability.CalculateValue()));
+        yield return null;
     }
 
 }

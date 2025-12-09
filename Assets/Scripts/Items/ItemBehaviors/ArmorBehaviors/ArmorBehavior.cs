@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 
 public abstract class ArmorBehavior : IItemBehavior
 {
@@ -18,9 +19,8 @@ public abstract class ArmorBehavior : IItemBehavior
     }
 
     public void InitializePreview(ItemUsageContext context, ItemPreviewRendererManager rendererManager)
-    {
-        //TODO
-    }
+    {}
+
     public virtual bool CanUseItem(ItemUsageContext context)
     {
         return context.Owner.ArmorManager.CanEquip(_definition);
@@ -50,5 +50,7 @@ public abstract class ArmorBehavior : IItemBehavior
             OnArmorWornOut();
         }
     }
+
+    public abstract IEnumerator SimulateUsage(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone);
 
 }

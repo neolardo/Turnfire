@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class BallisticProjectileBehavior : UnityDriven, IProjectileBehavior
 {
@@ -125,10 +123,10 @@ public class BallisticProjectileBehavior : UnityDriven, IProjectileBehavior
 
     #region Simulation
 
-    public virtual WeaponBehaviorSimulationResult SimulateProjectileBehavior(Vector2 start, Vector2 aimVector, DestructibleTerrainManager terrain, Character owner, IEnumerable<Character> others)
+    public virtual IEnumerable SimulateProjectileBehavior(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone)
     {
-        Vector2 velocity = aimVector;
-        Vector2 pos = start;
+        Vector2 velocity = context.AimVector;
+        Vector2 pos = context.Origin;
         const float dt = Constants.ParabolicPathSimulationDeltaForProjectiles;
 
         for (float t = 0; t < Constants.MaxParabolicPathSimulationTime; t += Constants.ParabolicPathSimulationDeltaForProjectiles)
@@ -136,34 +134,38 @@ public class BallisticProjectileBehavior : UnityDriven, IProjectileBehavior
             pos += velocity * dt;
             velocity += Physics2D.gravity * dt;
 
-            if (!terrain.IsPointInsideBounds(pos))
+            if (!context.Terrain.IsPointInsideBounds(pos))
             {
-                return SimulateExplosion(pos, owner);
+                onDone?.Invoke(SimulateExplosion(pos, context.Owner));
+                yield break;
             }
 
             foreach (var cornerPoint in _colliderCornerPoints)
             {
                 var cornerPos = pos + cornerPoint;
 
-                if (terrain.OverlapPoint(cornerPos))
+                if (context.Terrain.OverlapPoint(cornerPos))
                 {
-                    return SimulateExplosion(pos, owner);
+                    onDone?.Invoke(SimulateExplosion(pos, context.Owner));
+                    yield break;
                 }
 
-                foreach (var c in others)
+                foreach (var c in context.OtherCharacters)
                 {
                     if (c.OverlapPoint(cornerPos))
                     {
-                        return SimulateExplosion(pos, owner);
+                        onDone?.Invoke(SimulateExplosion(pos, context.Owner));
+                        yield break;
                     }
                 }
             }
         }
 
-        return SimulateExplosion(pos, owner);
+        onDone?.Invoke(SimulateExplosion(pos, context.Owner));
+        yield break;
     }
 
-    protected WeaponBehaviorSimulationResult SimulateExplosion(Vector2 position, Character owner)
+    protected ItemBehaviorSimulationResult SimulateExplosion(Vector2 position, Character owner)
     {
         float radius = _definition.ExplosionDefinition.Radius.AvarageValue;
         float damage = _definition.Damage.AvarageValue;
@@ -189,7 +191,7 @@ public class BallisticProjectileBehavior : UnityDriven, IProjectileBehavior
                 }
             }
         }
-        return new WeaponBehaviorSimulationResult(position, enemyDamage, allyDamage);
+        return ItemBehaviorSimulationResult.Damage(position, enemyDamage, allyDamage);
     } 
 
     #endregion

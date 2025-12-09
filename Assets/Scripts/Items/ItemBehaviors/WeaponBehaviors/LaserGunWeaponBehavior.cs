@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,7 @@ public class LaserGunWeaponBehavior : WeaponBehavior
     public LaserGunWeaponBehavior(LaserGunWeaponDefinition definition) : base(CoroutineRunner.Instance)
     {
         _definition = definition;
+        IsAimingNormalized = true;
         _raycastHitArray = new RaycastHit2D[Constants.RaycastHitColliderNumMax];
     }
 
@@ -122,11 +124,33 @@ public class LaserGunWeaponBehavior : WeaponBehavior
         rendererManager.TrajectoryRenderer.SetTrajectoryMultipler(1);
     }
 
-    public override WeaponBehaviorSimulationResult SimulateWeaponBehavior(Vector2 start, Vector2 aimVector, DestructibleTerrainManager terrain, Character owner, IEnumerable<Character> others)
+    public override IEnumerator SimulateUsage(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone)
     {
-        //TODO
-        return WeaponBehaviorSimulationResult.Zero;
+        float damage = _definition.Damage.CalculateValue();
+        float damageToAllies = 0;
+        float damageToEnemies = 0;
+        CalculateLaserPath(context.Owner, context.Origin, context.AimVector, out var hitCharacters);
+        Vector2 closestDamagingPosition = hitCharacters.Count == 0 ? context.Origin : hitCharacters.First().transform.position;
+        float minDist = Vector2.Distance(closestDamagingPosition, context.Origin);
+        foreach (var c in hitCharacters)
+        {
+            if (c.Team == context.Owner.Team)
+            {
+                damageToAllies += damage;
+            }
+            else
+            {
+                damageToEnemies += damage;
+            }
+            var dist = Vector2.Distance(context.Origin, c.transform.position);
+            if (dist < minDist)
+            {
+                closestDamagingPosition = c.transform.position;
+                minDist = dist;
+            }
+        }
+        onDone?.Invoke(ItemBehaviorSimulationResult.Damage(closestDamagingPosition, damageToEnemies, damageToAllies));
+        yield return null;
     }
-
 
 }

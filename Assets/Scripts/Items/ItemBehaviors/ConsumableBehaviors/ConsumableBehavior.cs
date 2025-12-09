@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 
 public abstract class ConsumableBehavior : IItemBehavior
 {
@@ -12,9 +13,7 @@ public abstract class ConsumableBehavior : IItemBehavior
     }
 
     public virtual void InitializePreview(ItemUsageContext context, ItemPreviewRendererManager rendererManager)
-    {
-        //TODO
-    }
+    { }
 
     public abstract void Use(ItemUsageContext context);
 
@@ -23,4 +22,6 @@ public abstract class ConsumableBehavior : IItemBehavior
         IsInUse = false;
         ItemUsageFinished?.Invoke();
     }
+
+    public abstract IEnumerator SimulateUsage(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone);
 }

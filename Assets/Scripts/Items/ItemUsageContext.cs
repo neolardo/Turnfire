@@ -14,7 +14,7 @@ public readonly struct ItemUsageContext
         AimVector = aimVector;
         Owner = owner;
         ProjectilePool = projectilePool;
-        LaserRenderer = laserRenderer; //TODO
+        LaserRenderer = laserRenderer;
     }
     public ItemUsageContext(Character owner)
     {

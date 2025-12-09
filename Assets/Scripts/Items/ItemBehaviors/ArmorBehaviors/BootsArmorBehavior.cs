@@ -1,3 +1,6 @@
+using System;
+using System.Collections;
+
 public class BootsArmorBehavior : ArmorBehavior
 {
     public BootsArmorDefinition _definition;
@@ -25,4 +28,11 @@ public class BootsArmorBehavior : ArmorBehavior
         _owner.RemoveJumpBoost();
         _owner.Jumped -= OnOwnerJumped;
     }
+
+    public override IEnumerator SimulateUsage(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone)
+    {
+        onDone?.Invoke(ItemBehaviorSimulationResult.MobilityBoost(_definition.AdditionalJumpRange.CalculateValue()));
+        yield return null;
+    }
+
 }

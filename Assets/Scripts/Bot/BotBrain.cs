@@ -200,20 +200,29 @@ public class BotBrain : UnityDriven
         for (float angle = -30; angle < 210f; angle += Constants.AimAngleSimulationStep) // only check valid shoot angles
         {
             Vector2 direction = angle.AngleDegreesToVector();
-            for (float strength = 0; strength <= 1f; strength += Constants.AimStrengthSimulationStep)
+            for (float strength = Constants.AimStrengthSimulationStep; strength <= 1f; strength += Constants.AimStrengthSimulationStep)
             {
                 Vector2 aimVector = direction * strength;
 
-                var result = weaponBehavior.SimulateWeaponBehavior(start, aimVector, context.Terrain, context.Self, others);
-                var minDistFromClosestEnemy = context.Enemies.Min(c => Vector2.Distance(c.transform.position, result.DamageCenter));
+                var simulationContext = new ItemBehaviorSimulationContext(context.Self, others, start, aimVector, context.Terrain);
+                var simulationResult = ItemBehaviorSimulationResult.None;
 
-                float score = DamageUtility(result.TotalDamageDealtToEnemies) * _tuning.DamageDealtToEnemiesWeight;
-                score += DamageUtility(result.TotalDamageDealtToAllies) * _tuning.DamageDealtToAlliesWeight;
+                yield return weaponBehavior.SimulateUsage(simulationContext, (result) => simulationResult = result);
+
+                var minDistFromClosestEnemy = context.Enemies.Min(c => Vector2.Distance(c.transform.position, simulationResult.DamageCenter));
+
+                float score = DamageUtility(simulationResult.TotalDamageDealtToEnemies) * _tuning.DamageDealtToEnemiesWeight;
+                score += DamageUtility(simulationResult.TotalDamageDealtToAllies) * _tuning.DamageDealtToAlliesWeight;
                 score += DamageCenterDistanceUtility(minDistFromClosestEnemy) * _tuning.DamageCenterDistanceFromClosestEnemyWeight;
                 if (score > bestScore)
                 {
                     bestScore = score;
                     bestShot = aimVector;
+                }
+
+                if(weaponBehavior.IsAimingNormalized)
+                {
+                    break;
                 }
             }
             yield return null;

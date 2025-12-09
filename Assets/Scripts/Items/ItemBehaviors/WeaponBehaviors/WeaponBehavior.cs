@@ -1,10 +1,11 @@
 using System;
-using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 
 public abstract class WeaponBehavior : UnityDriven, IItemBehavior
 {
     public bool IsInUse => _isAttacking;
+    public bool IsAimingNormalized { get; protected set; }
 
     protected bool _isAttacking;
 
@@ -23,10 +24,10 @@ public abstract class WeaponBehavior : UnityDriven, IItemBehavior
 
     public abstract void Use(ItemUsageContext context);
 
-    public abstract WeaponBehaviorSimulationResult SimulateWeaponBehavior(Vector2 start, Vector2 aimVector, DestructibleTerrainManager terrain, Character owner, IEnumerable<Character> others);
-
     public bool CanUseItem(ItemUsageContext context)
     {
         return true;
     }
+
+    public abstract IEnumerator SimulateUsage(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone);
 }

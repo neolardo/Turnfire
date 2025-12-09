@@ -152,7 +152,6 @@ public class Character : MonoBehaviour
     public void AddJumpBoost(float jumpBoost)
     {
         _jumpBoost = jumpBoost;
-        //TODO: recalculate jump graph
     }
 
     public void RemoveJumpBoost()

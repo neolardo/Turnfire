@@ -1,6 +1,5 @@
 using System;
-using System.Collections.Generic;
-using UnityEngine;
+using System.Collections;
 public interface IProjectileBehavior
 {
     public event Action<ExplosionInfo> Exploded;
@@ -8,5 +7,5 @@ public interface IProjectileBehavior
     public void OnContact(HitboxContactContext context);
     public void SetProjectile(Projectile projectile);
     public void ForceExplode();
-    public WeaponBehaviorSimulationResult SimulateProjectileBehavior(Vector2 start, Vector2 aimVector, DestructibleTerrainManager destructibleTerrain, Character owner, IEnumerable<Character> others);
+    public IEnumerable SimulateProjectileBehavior(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone);
 }

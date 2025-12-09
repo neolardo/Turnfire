@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: ExplosionRadiusRangedStatGroup
   m_EditorClassIdentifier: 
   DisplayName: Radius
-  Minimum: 0.3
+  Minimum: 0.2
   Maximum: 2.5

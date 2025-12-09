@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mime;
 using UnityEngine;
 
 public class BulletProjectileBehavior : BallisticProjectileBehavior
@@ -47,18 +49,19 @@ public class BulletProjectileBehavior : BallisticProjectileBehavior
         Explode(new HitboxContactContext(hit.point, hit.collider));
     }
 
-    public override WeaponBehaviorSimulationResult SimulateProjectileBehavior(Vector2 start, Vector2 aimVector, DestructibleTerrainManager terrain, Character owner, IEnumerable<Character> others)
+    public override IEnumerable SimulateProjectileBehavior(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone)
     {
-        var numHits = Physics2D.RaycastNonAlloc(start, aimVector, _raycastHitArray, Constants.ProjectileRaycastDistance, LayerMaskHelper.GetCombinedLayerMask(Constants.HitboxCollisionLayers));
-        var closestHit = _raycastHitArray.Take(numHits).Where(hit => hit.collider != owner.Collider).OrderBy(hit => hit.distance).FirstOrDefault();
+        var numHits = Physics2D.RaycastNonAlloc(context.Origin, context.AimVector, _raycastHitArray, Constants.ProjectileRaycastDistance, LayerMaskHelper.GetCombinedLayerMask(Constants.HitboxCollisionLayers));
+        var closestHit = _raycastHitArray.Take(numHits).Where(hit => hit.collider != context.Owner.Collider).OrderBy(hit => hit.distance).FirstOrDefault();
         
         if (closestHit.collider == null)
         {
-            return WeaponBehaviorSimulationResult.Zero;
+            onDone?.Invoke(ItemBehaviorSimulationResult.None);
         }
         else
         {
-            return SimulateExplosion(closestHit.point, owner);
+            onDone?.Invoke(SimulateExplosion(closestHit.point, context.Owner));
         }
+        yield return null;
     }
 }

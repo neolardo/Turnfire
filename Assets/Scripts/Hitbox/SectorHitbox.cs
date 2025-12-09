@@ -14,7 +14,6 @@ public class SectorHitbox : MonoBehaviour
 
     public event Action<HitboxContactContext> Contacted;
 
-
     private void Awake()
     {
         _overlapColliders = new Collider2D[Constants.OverlapHitColliderNumMax];
@@ -40,6 +39,11 @@ public class SectorHitbox : MonoBehaviour
     private IEnumerator CheckOverlapAfterFixedStep()
     {
         yield return new WaitForFixedUpdate();
+        CheckOverlap();
+    }
+
+    private void CheckOverlap()
+    {
         var filter = new ContactFilter2D();
         filter.SetLayerMask(LayerMaskHelper.GetLayerMask(Constants.CharacterLayer));
         int count = Physics2D.OverlapCollider(_collider, filter, _overlapColliders);
@@ -83,5 +87,6 @@ public class SectorHitbox : MonoBehaviour
     {
         transform.rotation = Quaternion.AngleAxis(aimVector.ToAngleDegrees(), Vector3.forward);
     }
+
 
 }

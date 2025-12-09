@@ -1,3 +1,6 @@
+using System;
+using System.Collections;
+
 public class FirstAidKitConsumableBehavior : ConsumableBehavior
 {
     FirstAidKitConsumableDefinition _definition;
@@ -10,7 +13,12 @@ public class FirstAidKitConsumableBehavior : ConsumableBehavior
     {
         IsInUse = true;
         context.Owner.Heal(_definition.HealAmount.CalculateValue());
-        //TODO: wait for animation
         InvokeItemUsageFinished();
+    }
+
+    public override IEnumerator SimulateUsage(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone)
+    {
+        onDone?.Invoke(ItemBehaviorSimulationResult.Healing(_definition.HealAmount.CalculateValue()));
+        yield return null;
     }
 }
