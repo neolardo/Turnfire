@@ -1,10 +1,19 @@
 fileFormatVersion: 2
-guid: 7989d5c1077f1a74db451bc80d6213bf
+guid: fc853d609a476484facd108bf4516981
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4818668578765790380
-    second: Map0_2teams_0
+      213: 8542848735096110637
+    second: Map2_3teams_0
+  - first:
+      213: -4121599573937821622
+    second: Map2_3teams_1
+  - first:
+      213: 456367363556925893
+    second: Map2_3teams_2
+  - first:
+      213: 3896582969819750625
+    second: Map2_3teams_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +109,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Map0_2teams_0
+      name: Map2_3teams_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 60
-        height: 32
+        height: 17
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +124,74 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 45324504576a02db0800000000000000
-      internalID: -4818668578765790380
+      spriteID: d2e7c41a9ab4e8670800000000000000
+      internalID: 8542848735096110637
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Map2_3teams_1
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 16
+        width: 13
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a48e80156032dc6c0800000000000000
+      internalID: -4121599573937821622
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Map2_3teams_2
+      rect:
+        serializedVersion: 2
+        x: 19
+        y: 24
+        width: 9
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c164eff2b7555600800000000000000
+      internalID: 456367363556925893
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Map2_3teams_3
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 16
+        width: 21
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e061f9e091731630800000000000000
+      internalID: 3896582969819750625
       vertices: []
       indices: 
       edges: []
@@ -135,7 +210,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Map0_2teams_0: -4818668578765790380
+      Map2_3teams_0: 8542848735096110637
+      Map2_3teams_1: -4121599573937821622
+      Map2_3teams_2: 456367363556925893
+      Map2_3teams_3: 3896582969819750625
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
