@@ -12,6 +12,7 @@ public static class Constants
 
     //jump
     public const float DefaultJumpStrength = 7;
+    public const float MaxJumpStrength = 10;
 
     // raycast & overlap check
     public const int RaycastHitColliderNumMax = 7;

@@ -1,4 +1,5 @@
 using System;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -190,6 +191,7 @@ public class LocalGameplayInput : LocalInputBase, IGameplayInputSource
             initialPos = Mouse.current.position.ReadValue();
             _mouseAimRadius = (AimCircleUI.OuterRadiusPercent - AimCircleUI.InnerRadiusPercent) * Screen.width;
         }
+        Debug.Log(initialPos);
         AimStarted?.Invoke(initialPos);
         Cursor.visible = false;
     }

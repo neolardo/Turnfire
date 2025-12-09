@@ -10,9 +10,10 @@ public class JumpGraph : UnityDriven
 
     private readonly int _pixelResolution;
     private readonly int _pixelsPerUnit;
-    private readonly float _jumpStrength;
+    private readonly float _globalJumpStrengthMaximum;
     private readonly float _characterWidth;
     private readonly float _characterHeight;
+    private float _currentJumpStrengthMaximum;
 
     private readonly Vector2[] CharacterColliderCornerPoints = new Vector2[6];
     private float GridPointHalfDistance =>  (_pixelResolution / 2f) / _pixelsPerUnit;
@@ -24,17 +25,19 @@ public class JumpGraph : UnityDriven
     private bool _isReady;
     public bool IsReady => _isReady;
 
+
     // path calculation
     private readonly Queue<int> _pointQueue = new Queue<int>();
     private readonly HashSet<int> _visitedHashSet = new HashSet<int>();
     private readonly Dictionary<int, int> _parentDict = new Dictionary<int, int>(); // childId -> parentId
     private readonly Dictionary<int, JumpLink> _parentLinkDict = new Dictionary<int, JumpLink>();
 
-    public JumpGraph(MonoBehaviour coroutineManager, int pixelResolution, int pixelsPerUnit, float jumpStrength, float characterWidth, float characterHeight) : base(coroutineManager)
+    public JumpGraph(MonoBehaviour coroutineManager, int pixelResolution, int pixelsPerUnit, float globalJumpStrengthMaximum, float characterWidth, float characterHeight) : base(coroutineManager)
     {
         _pixelResolution = pixelResolution;
         _pixelsPerUnit = pixelsPerUnit;
-        _jumpStrength = jumpStrength;
+        _globalJumpStrengthMaximum = globalJumpStrengthMaximum;
+        _currentJumpStrengthMaximum = globalJumpStrengthMaximum;
         _characterWidth = characterWidth;
         _characterHeight = characterHeight;
         CacheCharacterColliderCornerPoints();
@@ -103,7 +106,7 @@ public class JumpGraph : UnityDriven
 
                 for (float strength = 0; strength <= 1f; strength += Constants.AimStrengthSimulationStep)
                 {
-                    Vector2 jumpVector = direction * strength;
+                    Vector2 jumpVector = direction * strength * _globalJumpStrengthMaximum;
                     var destination = SimulateJumpAndCalculateDestination(startP.WorldPos, jumpVector, terrain);
                     foreach (var endP in endPoints) 
                     {
@@ -132,7 +135,7 @@ public class JumpGraph : UnityDriven
     private Vector2 SimulateJumpAndCalculateDestination(Vector2 start, Vector2 jumpVector, DestructibleTerrainManager terrain)
     {
         Vector2 pos = start;
-        var velocity = jumpVector * _jumpStrength;
+        var velocity = jumpVector;
         const float dt = Constants.ParabolicPathSimulationDeltaForMovement;
         for (float t = 0; t < Constants.MaxParabolicPathSimulationTime; t += Constants.ParabolicPathSimulationDeltaForMovement)
         {
@@ -239,6 +242,16 @@ public class JumpGraph : UnityDriven
 
     #region Path Search
 
+    public void SetJumpStrength(float jumpStrength)
+    {
+        _currentJumpStrengthMaximum = jumpStrength;
+    }
+
+    private bool IsJumpPossible(JumpLink link)
+    {
+        return link.IsPossible(_currentJumpStrengthMaximum);
+    }
+
     public bool TryCalculateJumpDistanceBetween(StandingPoint start, StandingPoint end, out int numJumps)
     {
         var path = FindShortestJumpPath(start, end);
@@ -248,7 +261,7 @@ public class JumpGraph : UnityDriven
 
     public IEnumerable<StandingPoint> GetAllLinkedStandingPointsFromPoint(StandingPoint startPoint)
     {
-        return _adjency[startPoint.Id].Values.Select(link => _points[link.ToId]);
+        return _adjency[startPoint.Id].Values.Where(link => IsJumpPossible(link)).Select(link => _points[link.ToId]);
     }
 
     public IEnumerable<StandingPoint> GetAllReachableStandingPointsFromPoint(StandingPoint startPoint) //BFS
@@ -282,7 +295,7 @@ public class JumpGraph : UnityDriven
                 if (visited.Contains(nextId))
                     continue;
 
-                if (!_points[nextId].IsValid)
+                if (!_points[nextId].IsValid || !IsJumpPossible(kvp.Value))
                     continue;
 
                 visited.Add(nextId);
@@ -321,6 +334,9 @@ public class JumpGraph : UnityDriven
                 int nextId = kvp.Key;
                 JumpLink link = kvp.Value;
 
+                if (!IsJumpPossible(link))
+                    continue;
+
                 if (_visitedHashSet.Contains(nextId))
                     continue;
 
@@ -358,8 +374,6 @@ public class JumpGraph : UnityDriven
         return path;
     }
 
-
-
     #endregion
 
     #region Validation and Correction
@@ -394,7 +408,7 @@ public class JumpGraph : UnityDriven
 
             Vector2 V = (to - from - 0.5f * g * t * t) / t;
 
-            if (V.magnitude <= _jumpStrength)
+            if (V.magnitude <= _currentJumpStrengthMaximum)
             {
                 bestT = t;
                 bestV = V;
@@ -404,7 +418,7 @@ public class JumpGraph : UnityDriven
 
         if (bestT > 0f)
         {
-            jumpVector = bestV / _jumpStrength;
+            jumpVector = bestV / _currentJumpStrengthMaximum;
         }
 
         return jumpVector;

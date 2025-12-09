@@ -28,6 +28,7 @@ public class BotManager : MonoBehaviour
     private IEnumerator GetContextAndThink(CharacterActionStateType action)
     {
         _currentContext = _contextProvider.CreateContext(_team, action);
+        _currentContext.JumpGraph.SetJumpStrength(_currentContext.Self.JumpStrength);
         yield return new WaitUntil(() => _currentContext.JumpGraph.IsReady);
         _brain.BeginThinking(_currentContext);
     }

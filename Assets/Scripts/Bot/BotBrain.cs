@@ -178,7 +178,7 @@ public class BotBrain : UnityDriven
             if (!_tuning.OnlyShootIfCanDealDamage || bestDamageScore > 0)
             {
                 var aimVector = ApplyAimRandomness(bestShootVector);
-                onDone?.Invoke(BotGoal.Shoot(aimVector, preferredWeapon));
+                onDone?.Invoke(BotGoal.Attack(aimVector, preferredWeapon));
             }
             else
             {

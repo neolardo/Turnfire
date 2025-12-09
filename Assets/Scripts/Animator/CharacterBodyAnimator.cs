@@ -80,7 +80,7 @@ public class CharacterBodyAnimator : MonoBehaviour
         aimVector = aimVector.normalized;
         var nextAnimation = CharacterAnimationState.Idle;
         float preDelay = _animatorDefinition.ItemUsageDelay;
-        if (selectedItem.Definition.ItemType == ItemType.Weapon && (selectedItem.Definition as WeaponDefinition).IsRanged == false)
+        if (selectedItem.Definition.ItemType == ItemType.Weapon && !(selectedItem.Definition as WeaponDefinition).IsRanged)
         {
             if (aimVector.y > Constants.UpwardAimThresholdY)
             {

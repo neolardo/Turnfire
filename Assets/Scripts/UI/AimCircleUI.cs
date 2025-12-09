@@ -37,8 +37,9 @@ public class AimCircleUI : MonoBehaviour
         }
         else
         {
-            _circleCenter = localPoint;
+            _circleCenter = localPoint;//TODO: fix
         }
+        Debug.Log(_circleCenter);
 
         _innerCircle.anchoredPosition = _circleCenter;
         _outerCircle.anchoredPosition = _circleCenter;
