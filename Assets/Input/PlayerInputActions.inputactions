@@ -493,34 +493,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "ToggleCheckbox",
-                    "type": "Button",
-                    "id": "5da05a9b-70f0-4199-8b0e-cd14e017dd92",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "NavigateDown",
-                    "type": "Button",
-                    "id": "02f4a367-468d-4685-af97-8ccb5afef7f1",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "NavigateUp",
-                    "type": "Button",
-                    "id": "2b744f54-6c17-4954-bc92-1038be620178",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "NavigateRight",
+                    "name": "IncrementValue",
                     "type": "Button",
                     "id": "8f693e94-aba3-4cb9-b75f-5e86ca1160f8",
                     "expectedControlType": "",
@@ -529,7 +502,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "NavigateLeft",
+                    "name": "DecrementValue",
                     "type": "Button",
                     "id": "86f97e93-a005-4a40-9480-2db62ddaef70",
                     "expectedControlType": "",
@@ -585,78 +558,12 @@
                 },
                 {
                     "name": "",
-                    "id": "59af9d09-a041-46b7-98a8-9bc058ec4ca6",
-                    "path": "<Gamepad>/buttonWest",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ToggleCheckbox",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "15748082-3289-417d-bf4d-f44752df755f",
-                    "path": "<Gamepad>/buttonNorth",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ToggleCheckbox",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "e5b7f503-a516-4876-9d12-17bd257e0459",
-                    "path": "<Gamepad>/dpad/down",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "NavigateDown",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "4785b8e7-f227-4f7b-a940-5005d1c9805f",
-                    "path": "<Gamepad>/dpad/up",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "NavigateUp",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "047bfe01-c36c-4656-a374-2e5021762f9f",
-                    "path": "<Gamepad>/dpad/right",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "NavigateRight",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "df275bf0-7126-4200-8c0b-effee17dc064",
                     "path": "<Gamepad>/rightShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "NavigateRight",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "6b1e16e5-64df-4a28-a6a0-f070a1395d35",
-                    "path": "<Gamepad>/dpad/left",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "NavigateLeft",
+                    "action": "IncrementValue",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -667,7 +574,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "NavigateLeft",
+                    "action": "DecrementValue",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

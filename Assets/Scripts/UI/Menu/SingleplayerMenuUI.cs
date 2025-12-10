@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class SingleplayerMenuUI : MonoBehaviour
 {
@@ -19,31 +20,22 @@ public class SingleplayerMenuUI : MonoBehaviour
         _confirmButton.ButtonPressed += OnConfirmPressed;
         _cancelButton.ButtonPressed += OnCancelPressed;
         _numBotsDisplay.ValueChanged += OnNumberOfBotsChanged;
-        //TODO: wire in controller input
     }
 
     private void OnEnable()
     {
-        _inputManager.MenuConfirmPerformed += _confirmButton.Press;
         _inputManager.MenuBackPerformed += _cancelButton.Press;
-        _inputManager.MenuToggleCheckboxPerformed += OnMenuToggleCheckboxPerformed;
     }
 
     private void OnDisable()
     {
-        _inputManager.MenuConfirmPerformed -= _confirmButton.Press;
         _inputManager.MenuBackPerformed -= _cancelButton.Press;
-        _inputManager.MenuToggleCheckboxPerformed -= OnMenuToggleCheckboxPerformed;
     }
 
     private void Start()
     {
         _numBotsDisplay.Initialize(Constants.SingleplayerMinBots, Constants.SingleplayerMaxBots, Constants.SingleplayerMinBots);
-    }
-
-    private void OnMenuToggleCheckboxPerformed()
-    {
-        _useTimerCheckbox.ToggleValue(true);
+        EventSystem.current.SetSelectedGameObject(_mapDisplay.gameObject);
     }
 
     public void OnConfirmPressed()

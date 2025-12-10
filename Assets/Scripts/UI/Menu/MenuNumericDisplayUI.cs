@@ -7,6 +7,7 @@ public class MenuNumericDisplayUI : MonoBehaviour
     [SerializeField] private MenuArrowButtonUI _upButton;
     [SerializeField] private MenuArrowButtonUI _downButton;
     [SerializeField] private TextMeshProUGUI _valueText;
+    [SerializeField] private HoverableSelectableContainerUI _containerUI;
     private LocalMenuInput _inputManager;
     private int _min;
     private int _max;
@@ -48,14 +49,29 @@ public class MenuNumericDisplayUI : MonoBehaviour
 
     private void OnEnable()
     {
-        _inputManager.MenuNavigateUpPerformed += _upButton.Press;
-        _inputManager.MenuNavigateDownPerformed += _downButton.Press;
+        _inputManager.MenuDecrementValuePerformed += OnDecrementValuePerformed;
+        _inputManager.MenuIncrementValuePerformed += OnIncrementValuePerformed;
     }
 
     private void OnDisable()
     {
-        _inputManager.MenuNavigateUpPerformed -= _upButton.Press;
-        _inputManager.MenuNavigateDownPerformed -= _downButton.Press;
+        _inputManager.MenuDecrementValuePerformed -= OnDecrementValuePerformed;
+        _inputManager.MenuIncrementValuePerformed -= OnIncrementValuePerformed;
+    }
+
+    private void OnDecrementValuePerformed()
+    {
+        if(_containerUI.IsSelected)
+        {
+            _downButton.Press();
+        }
+    }
+    private void OnIncrementValuePerformed()
+    {
+        if (_containerUI.IsSelected)
+        {
+            _upButton.Press();
+        }
     }
 
     private void IncrementValue()

@@ -2,7 +2,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MenuMapDisplayUI : MonoBehaviour
+public class MenuMapDisplayUI : HoverableSelectableContainerUI
 {
     [SerializeField] private MenuArrowButtonUI _rightButton;
     [SerializeField] private MenuArrowButtonUI _leftButton;
@@ -13,9 +13,10 @@ public class MenuMapDisplayUI : MonoBehaviour
     private int _teamCount;
     public MapDefinition SelectedMap => _maps[_mapIndex];
 
-    private void Awake()
+    protected override void Awake()
     {
-        if(_maps.Length == 0)
+        base.Awake();
+        if (_maps.Length == 0)
         {
             Debug.LogWarning($"No maps set for the {nameof(MenuMapDisplayUI)}.");
         }
@@ -25,21 +26,39 @@ public class MenuMapDisplayUI : MonoBehaviour
         _leftButton.ArrowPressed += DecrementMapIndex;
     }
 
-    private void OnEnable()
+    protected override void OnEnable()
     {
-        _inputManager.MenuNavigateRightPerformed += _rightButton.Press;
-        _inputManager.MenuNavigateLeftPerformed += _leftButton.Press;
+        base.OnEnable();
+        _inputManager.MenuDecrementValuePerformed += OnDecrementValuePerformed;
+        _inputManager.MenuIncrementValuePerformed += OnIncrementValuePerformed;
     }
 
-    private void OnDisable()
+    protected override void OnDisable()
     {
-        _inputManager.MenuNavigateRightPerformed -= _rightButton.Press;
-        _inputManager.MenuNavigateLeftPerformed -= _leftButton.Press;
+        base.OnDisable();
+        _inputManager.MenuDecrementValuePerformed -= OnDecrementValuePerformed;
+        _inputManager.MenuIncrementValuePerformed -= OnIncrementValuePerformed;
     }
 
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
         Refresh();
+    }
+
+    private void OnDecrementValuePerformed()
+    {
+        if (IsSelected)
+        {
+            _leftButton.Press();
+        }
+    }
+    private void OnIncrementValuePerformed()
+    {
+        if (IsSelected)
+        {
+            _rightButton.Press();
+        }
     }
 
     private void IncrementMapIndex()

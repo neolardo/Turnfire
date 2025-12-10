@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class MultiplayerMenuUI : MonoBehaviour
 {
@@ -22,26 +23,18 @@ public class MultiplayerMenuUI : MonoBehaviour
 
     private void OnEnable()
     {
-        _inputManager.MenuConfirmPerformed += _confirmButton.Press;
         _inputManager.MenuBackPerformed += _cancelButton.Press;
-        _inputManager.MenuToggleCheckboxPerformed += OnMenuToggleCheckboxPerformed;
     }
 
     private void OnDisable()
     {
-        _inputManager.MenuConfirmPerformed -= _confirmButton.Press;
         _inputManager.MenuBackPerformed -= _cancelButton.Press;
-        _inputManager.MenuToggleCheckboxPerformed -= OnMenuToggleCheckboxPerformed;
     }
 
     private void Start()
     {
         _numPlayersDisplay.Initialize(Constants.MultiplayerMinPlayers, Constants.MultiplayerMaxPlayers, Constants.MultiplayerMinPlayers);
-    }
-
-    private void OnMenuToggleCheckboxPerformed()
-    {
-        _useTimerCheckbox.ToggleValue(true);
+        EventSystem.current.SetSelectedGameObject(_mapDisplay.gameObject);
     }
 
     public void OnConfirmPressed()

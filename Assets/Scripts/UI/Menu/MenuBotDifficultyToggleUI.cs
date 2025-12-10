@@ -2,7 +2,7 @@ using System;
 using TMPro;
 using UnityEngine;
 
-public class MenuBotDifficultyToggleUI : MonoBehaviour
+public class MenuBotDifficultyToggleUI : HoverableSelectableContainerUI
 {
     [SerializeField] private MenuArrowButtonUI _leftButton;
     [SerializeField] private MenuArrowButtonUI _rightButton;
@@ -30,28 +30,47 @@ public class MenuBotDifficultyToggleUI : MonoBehaviour
         }
     }
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         _inputManager = FindFirstObjectByType<LocalMenuInput>();
         _leftButton.ArrowPressed += DecrementValue;
         _rightButton.ArrowPressed += IncrementValue;
     }
 
-    private void OnEnable()
+    protected override void OnEnable()
     {
-        _inputManager.MenuNavigateUpPerformed += _leftButton.Press;
-        _inputManager.MenuNavigateDownPerformed += _rightButton.Press;
+        base.OnEnable();
+        _inputManager.MenuDecrementValuePerformed += OnDecrementValuePerformed;
+        _inputManager.MenuIncrementValuePerformed += OnIncrementValuePerformed;
     }
 
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
         Refresh();
     }
 
-    private void OnDisable()
+    protected override void OnDisable()
     {
-        _inputManager.MenuNavigateUpPerformed -= _leftButton.Press;
-        _inputManager.MenuNavigateDownPerformed -= _rightButton.Press;
+        base.OnDisable();
+        _inputManager.MenuDecrementValuePerformed -= OnDecrementValuePerformed;
+        _inputManager.MenuIncrementValuePerformed -= OnIncrementValuePerformed;
+    }
+
+    private void OnDecrementValuePerformed()
+    {
+        if (IsSelected)
+        {
+            _leftButton.Press();
+        }
+    }
+    private void OnIncrementValuePerformed()
+    {
+        if (IsSelected)
+        {
+            _rightButton.Press();
+        }
     }
 
     private void IncrementValue()

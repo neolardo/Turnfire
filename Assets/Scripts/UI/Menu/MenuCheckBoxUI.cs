@@ -1,5 +1,4 @@
 using System;
-using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -17,6 +16,7 @@ public class MenuCheckBoxUI : MonoBehaviour,
     [SerializeField] private Sprite _checkedSprite;
     [SerializeField] private Sprite _hoveredSprite;
     [SerializeField] private bool _initialValue;
+    [SerializeField] private HoverableSelectableContainerUI _containerUI;
     private LocalMenuInput _inputManager;
     private Sprite _normalSprite;
     private Image _image;
@@ -44,16 +44,28 @@ public class MenuCheckBoxUI : MonoBehaviour,
     {
         UnHoverButton();
         _inputManager.MenuConfirmPerformed += OnMenuButtonConfirmPerformed;
+        _inputManager.MenuIncrementValuePerformed += OnDecrementOrIncrementValuePerformed;
+        _inputManager.MenuDecrementValuePerformed += OnDecrementOrIncrementValuePerformed;
     }
 
     private void OnDisable()
     {
         _inputManager.MenuConfirmPerformed -= OnMenuButtonConfirmPerformed;
+        _inputManager.MenuIncrementValuePerformed -= OnDecrementOrIncrementValuePerformed;
+        _inputManager.MenuDecrementValuePerformed -= OnDecrementOrIncrementValuePerformed;
     }
 
     private void OnMenuButtonConfirmPerformed()
     {
-        if (_hovered || EventSystem.current.currentSelectedGameObject == gameObject)
+        if (_containerUI.IsSelected || _hovered || EventSystem.current.currentSelectedGameObject == gameObject)
+        {
+            ToggleValue();
+        }
+    }
+
+    private void OnDecrementOrIncrementValuePerformed()
+    {
+        if (_containerUI.IsSelected)
         {
             ToggleValue();
         }
