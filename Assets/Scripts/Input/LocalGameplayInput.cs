@@ -1,5 +1,4 @@
 using System;
-using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -136,7 +135,7 @@ public class LocalGameplayInput : LocalInputBase, IGameplayInputSource
     private void HandleGamepadAiming(InputAction.CallbackContext ctx)
     {
         Cursor.visible = false;
-        _aimVector = GetGamepadStickValue(ctx);
+        _aimVector = -GetGamepadStickValue(ctx);
         if (!_isAiming)
         {
             AimStarted?.Invoke(DefaultAimStartPosition);

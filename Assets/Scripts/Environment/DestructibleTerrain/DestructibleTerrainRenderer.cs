@@ -6,6 +6,7 @@ public class DestructibleTerrainRenderer : MonoBehaviour
 {
     [SerializeField] private int _pixelsPerTile = 32;
     [SerializeField] private int _pixelsPerUnit = 64;
+    [SerializeField] private Vector2 _extraOffset = Vector2.zero;
 
     private SpriteRenderer _renderer;
     private int _width, _height;
@@ -14,6 +15,7 @@ public class DestructibleTerrainRenderer : MonoBehaviour
     public Vector2 Size => new Vector2(Texture.width / (float)_pixelsPerUnit, Texture.height / (float)_pixelsPerUnit);
     public Vector2 PixelSize => new Vector2(Texture.width, Texture.height);
     public Vector2 CenteredPivotOffset { get; private set; }
+
 
     private Vector2 _textureOffset;
 
@@ -47,8 +49,8 @@ public class DestructibleTerrainRenderer : MonoBehaviour
         Texture = BakeTilemapToTexture(tilemap);
         _width = Texture.width;
         _height = Texture.height;
-        CenteredPivotOffset = (tilemap.CellToWorld(tilemap.cellBounds.min) + tilemap.CellToWorld(tilemap.cellBounds.max)) / 2;
-        _textureOffset = tilemap.CellToWorld(tilemap.cellBounds.min);
+        CenteredPivotOffset = (Vector2)((tilemap.CellToWorld(tilemap.cellBounds.min) + tilemap.CellToWorld(tilemap.cellBounds.max)) / 2f) + _extraOffset;
+        _textureOffset = (Vector2)tilemap.CellToWorld(tilemap.cellBounds.min) + _extraOffset;
         _renderer.transform.position = _textureOffset;
         _renderer.sprite = Sprite.Create(Texture, new Rect(Vector2.zero, new Vector2(Texture.width, Texture.height)), Vector2.zero, _pixelsPerUnit, 0, SpriteMeshType.Tight);
         tilemapRenderer.enabled = false;

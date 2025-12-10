@@ -6,8 +6,8 @@ public class AimCircleUI : MonoBehaviour
     [SerializeField] private RectTransform _innerCircle;
     [SerializeField] private RectTransform _outerCircle;
 
-    public const float OuterRadiusPercent = 0.1f;
-    public const float InnerRadiusPercent = 0.04f;
+    public const float OuterRadiusPercent = 0.08f;
+    public const float InnerRadiusPercent = 0.03f;
     public static readonly Vector2 DefaultOffsetPercent = new Vector2(.15f, .8f);
 
     private Vector2 _circleCenter;
@@ -22,7 +22,7 @@ public class AimCircleUI : MonoBehaviour
 
     public void ShowCircles(Vector2 initialScreenPosition)
     {
-        Vector2 canvasSize = _rootCanvasRect.rect.size;
+        Vector2 canvasSize = _rootCanvasRect.sizeDelta;
         _outerCircle.sizeDelta = new Vector2(canvasSize.x * OuterRadiusPercent * 2f,
                                              canvasSize.x * OuterRadiusPercent * 2f);
         _innerCircle.sizeDelta = new Vector2(canvasSize.x * InnerRadiusPercent * 2f,
@@ -33,11 +33,11 @@ public class AimCircleUI : MonoBehaviour
         RectTransformUtility.ScreenPointToLocalPointInRectangle(_rootCanvasRect, initialScreenPosition, _camera, out localPoint);
         if (!isValid)
         {
-            _circleCenter = DefaultOffsetPercent * canvasSize.y;
+            _circleCenter = DefaultOffsetPercent * canvasSize - canvasSize/2f;
         }
         else
         {
-            _circleCenter = localPoint;//TODO: fix
+            _circleCenter = localPoint;
         }
 
         _innerCircle.anchoredPosition = _circleCenter;
