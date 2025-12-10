@@ -16,5 +16,5 @@ public interface IGameplayInputSource
 
     void ForceCloseInventory();
     void ForceCancelAiming();
-    void InputRequestedForAction(CharacterActionStateType action);
+    void RequestInputForAction(CharacterActionStateType action);
 }

@@ -188,6 +188,7 @@ public class DestructibleTerrainRenderer : MonoBehaviour
     public bool TryFindNearestStandingPoint(Vector2Int pixelCoordinates, int searchRadius, int standingPointId, out StandingPoint standingPoint)
     {
         standingPoint = default;
+        int nonCornerHalfWidth = (int)(StandingPoint.NonCornerPointNeighbourHalfWidth * _pixelsPerUnit); // soft threshold
 
         for (int r = 0; r <= searchRadius; r++)
         {
@@ -201,13 +202,7 @@ public class DestructibleTerrainRenderer : MonoBehaviour
                     int px = pixelCoordinates.x + dx;
                     int py = pixelCoordinates.y + dy;
 
-                    if (IsPixelOutOfBounds(px, py))
-                        continue;
-
-                    if (!IsSolidPixel(px, py))
-                        continue;
-
-                    if (!IsHorizontalEdgePixel(px, py))
+                    if (IsPixelOutOfBounds(px, py) || !IsSolidPixel(px, py) || !IsEdgePixel(px,py) || IsHorizontalCornerPixel(px, py))
                         continue;
 
                     var p = new Vector2Int(px, py);
@@ -215,7 +210,8 @@ public class DestructibleTerrainRenderer : MonoBehaviour
                     {
                         var localP = PixelCoordinatesToLocalPoint(p);
                         var worldP = LocalToWorld(localP);
-                        standingPoint = new StandingPoint(standingPointId, worldP, p, !IsHorizontalEdgePixel(p.x, p.y, (int)(StandingPoint.NonCornerPointNeighbourHalfWidth * _pixelsPerUnit)));
+                        var isCorner = IsHorizontalCornerPixel(p.x, p.y, nonCornerHalfWidth);
+                        standingPoint = new StandingPoint(standingPointId, worldP, p, isCorner);
                         return true;
                     }
                 }
@@ -258,10 +254,7 @@ public class DestructibleTerrainRenderer : MonoBehaviour
                     int px = origin.x + dx;
                     int py = origin.y + dy;
 
-                    if (IsPixelOutOfBounds(px, py))
-                        continue;
-
-                    if (!IsSolidPixel(px, py))
+                    if (IsPixelOutOfBounds(px, py) || !IsSolidPixel(px, py))
                         continue;
 
                     if (IsEdgePixel(px, py))
@@ -295,22 +288,25 @@ public class DestructibleTerrainRenderer : MonoBehaviour
         return false;
     }
 
-    private bool IsHorizontalEdgePixel(int x, int y, int minHalfWidth = 8)
+    private bool IsHorizontalCornerPixel(int x, int y, int minHalfWidth = 8)
     {
-        if(!IsEdgePixel(x, y))
-        { 
-            return false;
-        }
-
         for (int nx = 1; nx <= minHalfWidth; nx++)
         {
             if(!IsSolidPixel(x + nx, y) || !IsSolidPixel(x - nx, y))
             {
-                return false; 
+                return true; 
             }    
         }
 
-        return true;
+        return false;
+    }
+
+    public bool IsCornerPoint(Vector2Int pixelCoordinates)
+    {
+        int px = pixelCoordinates.x;
+        int py = pixelCoordinates.y;
+        int nonCornerHalfWidth = (int)(StandingPoint.NonCornerPointNeighbourHalfWidth * _pixelsPerUnit);
+        return IsHorizontalCornerPixel(px, py, nonCornerHalfWidth);
     }
 
     private Vector2 ComputeNormalAtPoint(Vector2Int point)

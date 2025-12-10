@@ -191,7 +191,6 @@ public class LocalGameplayInput : LocalInputBase, IGameplayInputSource
             initialPos = Mouse.current.position.ReadValue();
             _mouseAimRadius = (AimCircleUI.OuterRadiusPercent - AimCircleUI.InnerRadiusPercent) * Screen.width;
         }
-        Debug.Log(initialPos);
         AimStarted?.Invoke(initialPos);
         Cursor.visible = false;
     }
@@ -249,7 +248,7 @@ public class LocalGameplayInput : LocalInputBase, IGameplayInputSource
         ActionSkipped?.Invoke();
     }
 
-    public void InputRequestedForAction(CharacterActionStateType action) { } // local input is provided automatically
+    public void RequestInputForAction(CharacterActionStateType action) { } // local input is provided automatically
 
 
     public void Initialize(Team team) { } // no need to initialize

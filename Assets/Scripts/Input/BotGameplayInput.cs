@@ -16,7 +16,7 @@ public class BotGameplayInput : MonoBehaviour, IGameplayInputSource
 
     public event Action<CharacterActionStateType> InputRequested;
 
-    public void InputRequestedForAction(CharacterActionStateType action)
+    public void RequestInputForAction(CharacterActionStateType action)
     {
         InputRequested?.Invoke(action);
     }

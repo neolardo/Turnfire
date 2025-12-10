@@ -29,17 +29,16 @@ public class AimCircleUI : MonoBehaviour
                                              canvasSize.x * InnerRadiusPercent * 2f);
 
         Vector2 localPoint;
-        bool isValid = !initialScreenPosition.Approximately(LocalGameplayInput.DefaultAimStartPosition);
+        bool isValid = initialScreenPosition.x >= 0 && initialScreenPosition.y >= 0;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(_rootCanvasRect, initialScreenPosition, _camera, out localPoint);
         if (!isValid)
         {
-            _circleCenter = DefaultOffsetPercent * canvasSize.x;
+            _circleCenter = DefaultOffsetPercent * canvasSize.y;
         }
         else
         {
             _circleCenter = localPoint;//TODO: fix
         }
-        Debug.Log(_circleCenter);
 
         _innerCircle.anchoredPosition = _circleCenter;
         _outerCircle.anchoredPosition = _circleCenter;

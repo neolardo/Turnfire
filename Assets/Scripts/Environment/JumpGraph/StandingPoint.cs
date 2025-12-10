@@ -4,7 +4,7 @@ public readonly struct StandingPoint
 {
     public readonly int Id;
     public readonly Vector2 WorldPos;
-    public readonly Vector2Int PixelCoordinate;
+    public readonly Vector2Int PixelCoordinates;
     public readonly bool IsCornerPoint;
     public bool IsValid => Id >= 0;
 
@@ -17,13 +17,33 @@ public readonly struct StandingPoint
     {
         Id = id;
         WorldPos = worldPos;
-        PixelCoordinate = pixelCoordinate;
+        PixelCoordinates = pixelCoordinate;
         IsCornerPoint = isCornerPoint;
     }
 
     public static bool IsStandingNormal(Vector2 normal)
     {
         return normal.y >= StandingNormalYMin;
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (ReferenceEquals(this, obj)) return true;
+        if (obj is null) return false;
+        if (obj.GetType() != GetType()) return false;
+
+        var other = (StandingPoint)obj;
+        return other == this;
+    }
+
+    public override int GetHashCode()
+    {
+        unchecked
+        {
+            int hash = 17;
+            hash = hash * 23 + Id.GetHashCode();
+            return hash;
+        }
     }
 
     public static bool operator== (StandingPoint a, StandingPoint b)

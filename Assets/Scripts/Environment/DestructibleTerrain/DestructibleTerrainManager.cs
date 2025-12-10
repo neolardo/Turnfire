@@ -152,6 +152,11 @@ public class DestructibleTerrainManager : MonoBehaviour
         return _renderer.TryFindNearestStandingPoint(worldPos, searchRadius, standingPointId, out result);
     }
 
+    public bool IsCornerPoint(Vector2Int pixelCoordinates)
+    {
+        return _renderer.IsCornerPoint(pixelCoordinates);
+    }
+
     #endregion
 
 }

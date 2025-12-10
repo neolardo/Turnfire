@@ -4,23 +4,18 @@ using UnityEngine;
 
 public class BotTuningDefinition : ScriptableObject
 {
-    [Header("Movement")]
-    public float OffensivePositionPreference;
-    public float DefensivePositionPreference;
+    [Header("Personality")]
+    public float Offense;
+    public float Defense;
+    public float MobilityPreference;
     public float TravelDistanceSensitivity;
-    public float LowHealhThreshold;
+    public float LowHealthThreshold;
 
-    public float GeneralPackageSearchWeight;
-    public float RemainingAmmoLowPackageSearchWeight;
     public int RemainingAmmoLowThreshold;
-    public float OutOfAmmoPackageSearchWeight;
 
-    [Header("Attack")]
-    public float DamageDealtToEnemiesWeight;
-    public float DamageDealtToAlliesWeight;
-    public float DamageCenterDistanceFromClosestEnemyWeight;
-    public bool PreferHighestDamageDealingWeapon;
-    public bool OnlyShootIfCanDealDamage;
+    public float GeneralPackageGreed;
+    public float RemainingAmmoLowPackageGreed;
+    public float OutOfAmmoPackageGreed;
 
     [Header("Skills")]
     public float AimRandomnessBias;

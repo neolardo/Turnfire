@@ -31,7 +31,14 @@ public class BootsArmorBehavior : ArmorBehavior
 
     public override IEnumerator SimulateUsage(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone)
     {
-        onDone?.Invoke(ItemBehaviorSimulationResult.MobilityBoost(_definition.AdditionalJumpRange.AvarageValue));
+        if(context.Owner.ArmorManager.CanEquip(_definition))
+        {
+            onDone?.Invoke(ItemBehaviorSimulationResult.MobilityBoost(_definition.AdditionalJumpRange.AvarageValue));
+        }
+        else 
+        {
+            onDone?.Invoke(ItemBehaviorSimulationResult.None);
+        }
         yield return null;
     }
 

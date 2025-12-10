@@ -53,7 +53,7 @@ public class CharacterActionManager : UnityDriven
         StartCurrentCharacterActionState();
     }
 
-    private void ForceEndActions()
+    public void ForceEndActions()
     {
         _forceEndActions = true;
         CurrentCharacterActionState.ForceEndState();

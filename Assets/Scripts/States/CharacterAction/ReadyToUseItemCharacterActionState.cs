@@ -79,7 +79,7 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
         {
             OnSelectedItemChanged(selectedItem);
         }
-        _inputSource.InputRequestedForAction(State);
+        _inputSource.RequestInputForAction(State);
     }
 
     public void OnSelectedItemChanged(Item selectedItem)
@@ -89,7 +89,7 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
         {
             return;
         }
-        var context = new ItemUsageContext(_currentCharacter.transform.position, Vector2.zero, _currentCharacter, _laserRenderer, _projectilePool);
+        var context = new ItemUsageContext(_currentCharacter.ItemTransform.position, Vector2.zero, _currentCharacter, _laserRenderer, _projectilePool);
         selectedItem.Behavior.InitializePreview(context, _rendererManager);
     }
 
@@ -106,6 +106,6 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
     {
         _trajectoryRenderer.HideTrajectory();
         _uiManager.HideAimCircles();
-        _currentCharacter.UseSelectedItem(new ItemUsageContext(_currentCharacter.transform.position, aimVector, _currentCharacter, _laserRenderer, _projectilePool));
+        _currentCharacter.UseSelectedItem(new ItemUsageContext(_currentCharacter.ItemTransform.position, aimVector, _currentCharacter, _laserRenderer, _projectilePool));
     }
 }

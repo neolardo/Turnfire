@@ -12,18 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92c5571e745e871438928ce2cf6b180a, type: 3}
   m_Name: HardBotTuning
   m_EditorClassIdentifier: 
-  OffensivePositionPreference: 1
-  DefensivePositionPreference: 1
+  Offense: 1
+  Defense: 1
+  MobilityPreference: 1
   TravelDistanceSensitivity: 0
-  LowHealhThreshold: 0.4
-  GeneralPackageSearchWeight: 0.5
-  RemainingAmmoLowPackageSearchWeight: 1
+  LowHealthThreshold: 4
   RemainingAmmoLowThreshold: 4
-  OutOfAmmoPackageSearchWeight: 2
-  DamageDealtToEnemiesWeight: 1
-  DamageDealtToAlliesWeight: -1.5
-  DamageCenterDistanceFromClosestEnemyWeight: 0.5
-  PreferHighestDamageDealingWeapon: 1
-  OnlyShootIfCanDealDamage: 1
-  AimRandomnessBias: 0
-  DecisionRandomnessBias: 0.1
+  GeneralPackageGreed: 1
+  RemainingAmmoLowPackageGreed: 1
+  OutOfAmmoPackageGreed: 1
+  AimRandomnessBias: 0.01
+  DecisionRandomnessBias: 0.05

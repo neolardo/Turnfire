@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Numerics;
 
 public class ProtectiveArmorBehavior : ArmorBehavior
 {
@@ -34,7 +33,14 @@ public class ProtectiveArmorBehavior : ArmorBehavior
 
     public override IEnumerator SimulateUsage(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone)
     {
-        onDone?.Invoke(ItemBehaviorSimulationResult.ArmorBoost(_definition.MaxDurability.AvarageValue));
+        if (context.Owner.ArmorManager.CanEquip(_definition))
+        {
+            onDone?.Invoke(ItemBehaviorSimulationResult.ArmorBoost(_definition.MaxDurability.AvarageValue));
+        }
+        else
+        {
+            onDone?.Invoke(ItemBehaviorSimulationResult.None);
+        }
         yield return null;
     }
 

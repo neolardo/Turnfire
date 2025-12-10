@@ -11,6 +11,7 @@ public class AlternativelyDoCharacterActionsForAllTeamsTurnState : TurnState
     private Dictionary<Team, int> _numCharactersActedThisRoundPerTeamDict = new Dictionary<Team, int>(); 
     private int _maxCharactersToActPerRound;
     private int _teamIndex;
+    private bool _forceEndState;
     private Team CurrentTeam => _teams[_teamIndex];
 
 
@@ -33,6 +34,7 @@ public class AlternativelyDoCharacterActionsForAllTeamsTurnState : TurnState
 
     public override void StartState()
     {
+        _forceEndState = false;
         base.StartState();
         UpdateMaxCharactersToActPerRound();
         ResetCharactersActedDictionary();
@@ -40,10 +42,16 @@ public class AlternativelyDoCharacterActionsForAllTeamsTurnState : TurnState
         StartActionsWithCurrentTeam();
     }
 
+    public override void ForceEndState()
+    {
+        _forceEndState = true;
+        _characterActionManager.ForceEndActions();
+    }
+
     private void OnCharacterActionsFinished()
     {
         _numCharactersActedThisRoundPerTeamDict[CurrentTeam]++;
-        if (TrySwitchToNextTeam())
+        if (!_forceEndState && TrySwitchToNextTeam())
         {
             StartActionsWithCurrentTeam();
         }

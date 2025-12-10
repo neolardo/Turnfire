@@ -83,6 +83,7 @@ public class TurnManager : MonoBehaviour
 
     private void EndGame()
     {
+        CurrentTurnState.ForceEndState();
         if (_teams.Any(t => t.IsTeamAlive))
         {
             var winnerTeam = _teams.First(t => t.IsTeamAlive);

@@ -15,12 +15,14 @@ public class JumpGraph : UnityDriven
     private readonly float _characterHeight;
     private float _currentJumpStrengthMaximum;
 
-    private readonly Vector2[] CharacterColliderCornerPoints = new Vector2[6];
+    private readonly Vector2[] JumpStartCharacterColliderCornerPoints = new Vector2[6];
+    private readonly Vector2[] JumpEndCharacterColliderCornerPoints = new Vector2[6];
     private float GridPointHalfDistance =>  (_pixelResolution / 2f) / _pixelsPerUnit;
     private float JumpValidationDistance =>  _pixelResolution  / (float)_pixelsPerUnit;
 
     private const float ExplosionRadiusMultiplierForNewJumpLinks = 3;
     private const float CollisionCheckDelaySeconds = .1f;
+    private const float JumpEndVelocityYMax = .1f;
 
     private bool _isReady;
     public bool IsReady => _isReady;
@@ -45,12 +47,19 @@ public class JumpGraph : UnityDriven
 
     private void CacheCharacterColliderCornerPoints()
     {
-        CharacterColliderCornerPoints[0] = new Vector2(-_characterWidth / 2, 0);
-        CharacterColliderCornerPoints[1] = new Vector2(_characterWidth / 2, 0);
-        CharacterColliderCornerPoints[2] = new Vector2(-_characterWidth / 2, _characterHeight / 2);
-        CharacterColliderCornerPoints[3] = new Vector2(_characterWidth / 2, _characterHeight / 2);
-        CharacterColliderCornerPoints[4] = new Vector2(-_characterWidth / 2, _characterHeight);
-        CharacterColliderCornerPoints[5] = new Vector2(_characterWidth / 2, _characterHeight);
+        JumpStartCharacterColliderCornerPoints[0] = new Vector2(0, 0);
+        JumpStartCharacterColliderCornerPoints[1] = new Vector2(-_characterWidth / 2, _characterWidth/2);
+        JumpStartCharacterColliderCornerPoints[2] = new Vector2(_characterWidth / 2, _characterWidth / 2);
+        JumpStartCharacterColliderCornerPoints[3] = new Vector2(0, _characterHeight);
+        JumpStartCharacterColliderCornerPoints[4] = new Vector2(-_characterWidth / 2, _characterHeight - (_characterWidth / 2));
+        JumpStartCharacterColliderCornerPoints[5] = new Vector2(_characterWidth / 2,  _characterHeight - (_characterWidth / 2));
+
+        JumpEndCharacterColliderCornerPoints[0] = new Vector2(-_characterWidth / 2, 0);
+        JumpEndCharacterColliderCornerPoints[1] = new Vector2(_characterWidth / 2, 0);
+        JumpEndCharacterColliderCornerPoints[2] = new Vector2(-_characterWidth / 2, _characterHeight / 2);
+        JumpEndCharacterColliderCornerPoints[3] = new Vector2(_characterWidth / 2, _characterHeight / 2);
+        JumpEndCharacterColliderCornerPoints[4] = new Vector2(-_characterWidth / 2, _characterHeight);
+        JumpEndCharacterColliderCornerPoints[5] = new Vector2(_characterWidth / 2, _characterHeight);
     }
 
     #region Creation
@@ -147,7 +156,8 @@ public class JumpGraph : UnityDriven
 
             if (t >= CollisionCheckDelaySeconds)
             {
-                foreach (var colliderPoint in CharacterColliderCornerPoints)
+                var colliderPoints = velocity.y < JumpEndVelocityYMax ? JumpEndCharacterColliderCornerPoints : JumpStartCharacterColliderCornerPoints;
+                foreach (var colliderPoint in colliderPoints)
                 {
                     if (terrain.OverlapPoint(pos + colliderPoint))
                     {
@@ -226,6 +236,16 @@ public class JumpGraph : UnityDriven
                     possibleLinkedPoints.Add(p);
                 }
             }
+
+            for (int i = 0; i < possibleLinkedPoints.Count; i++)// update new corner points
+            {
+                var p = possibleLinkedPoints[i];
+                if (p.IsValid && !p.IsCornerPoint && terrain.IsCornerPoint(p.PixelCoordinates))
+                {
+                    _points[p.Id] = new StandingPoint(p.Id, p.WorldPos, p.PixelCoordinates, true);
+                    possibleLinkedPoints[i] = _points[p.Id];
+                }
+            } 
 
             _points.Add(newStandingPoint);
             _adjency.Add(new Dictionary<int, JumpLink>());

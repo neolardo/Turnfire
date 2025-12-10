@@ -40,7 +40,7 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
         _trajectoryRenderer.SetOrigin(currentCharacter.transform, currentCharacter.FeetOffset);
         _trajectoryRenderer.ToggleGravity(true);
         _trajectoryRenderer.SetTrajectoryMultipler(currentCharacter.JumpStrength);
-        _inputSource.InputRequestedForAction(State);
+        _inputSource.RequestInputForAction(State);
     }
 
     private void OnAimStarted(Vector2 initialPosition)

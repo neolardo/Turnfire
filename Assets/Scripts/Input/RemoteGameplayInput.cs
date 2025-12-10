@@ -23,7 +23,7 @@ public class RemoteGameplayInput : MonoBehaviour, IGameplayInputSource
         //TODO
     }
 
-    public void InputRequestedForAction(CharacterActionStateType action) 
+    public void RequestInputForAction(CharacterActionStateType action) 
     {
         //TODO
     }
