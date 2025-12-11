@@ -12,6 +12,8 @@ public class PixelUIScaler : ScreenSizeDependantUI
     private RectTransform _rectTransform;
     private RectTransform _parentCanvasRect;
 
+    public Vector2Int SizeInPixels => new Vector2Int(_widthInPixels, _heightInPixels);
+
     private bool _pivotSet;
 
 

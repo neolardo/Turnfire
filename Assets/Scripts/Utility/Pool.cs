@@ -11,6 +11,8 @@ public class Pool<T> : MonoBehaviour where T : Component
     private List<T> _available;
     private List<T> _inUse;
 
+    protected int TotalCount => _available.Count + _inUse.Count;
+
     protected virtual void Awake()
     {
         _available = new List<T>();

@@ -33,6 +33,13 @@ public class DropManager : MonoBehaviour
         {
             Debug.LogWarning("No packages available to drop.");
         }
+        foreach (var drop in _gameplaySettings.PossibleDrops)
+        {
+            if( drop is ArmorDefinition armorDef)
+            {
+                armorDef.InitializeAnimations(); //TODO: move
+            }
+        }
     }
 
     public void SpawnPackages()

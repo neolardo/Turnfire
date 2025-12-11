@@ -8,13 +8,13 @@ public interface IGameplayInputSource
     event Action<Vector2> ImpulseReleased;
     event Action AimCancelled;
     event Action ActionSkipped;
-    event Action SelectedItemUsed;
-    event Action<Item> ItemSwitched;
+    event Action<ItemUsageContext> SelectedItemUsed;
+    event Action<Item> SelectedItemSwitchRequested;
 
     bool IsAimingEnabled { get; set; }
     bool IsOpeningInventoryEnabled { get; set; }
 
     void ForceCloseInventory();
     void ForceCancelAiming();
-    void InputRequestedForAction(CharacterActionStateType action);
+    void RequestInputForAction(CharacterActionStateType action);
 }

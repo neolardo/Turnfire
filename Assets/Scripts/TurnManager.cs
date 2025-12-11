@@ -28,17 +28,18 @@ public class TurnManager : MonoBehaviour
         }
 
         var localInput = FindFirstObjectByType<LocalGameplayInput>();
-        var trajectoryRenderer = FindFirstObjectByType<TrajectoryRenderer>();
+        var trajectoryRenderer = FindFirstObjectByType<PixelTrajectoryRenderer>();
         var itemPreviewRendererManager = FindFirstObjectByType<ItemPreviewRendererManager>();
         var dropManager = FindFirstObjectByType<DropManager>();
         var cameraController = FindFirstObjectByType<CameraController>();
         var uiManager = FindFirstObjectByType<GameplayUIManager>();
-        var projectileManager = FindFirstObjectByType<ProjectilePool>();
-        var characterActionManager = new CharacterActionManager(this, trajectoryRenderer, itemPreviewRendererManager, cameraController, uiManager, projectileManager, _uiSounds);
+        var projectilePool = FindFirstObjectByType<ProjectilePool>();
+        var laserRenderer = FindFirstObjectByType<PixelLaserRenderer>();
+        var characterActionManager = new CharacterActionManager(this, trajectoryRenderer, itemPreviewRendererManager, cameraController, uiManager, laserRenderer, projectilePool, _uiSounds);
         _turnStates = new List<TurnState>
         {
             new AlternativelyDoCharacterActionsForAllTeamsTurnState(this, characterActionManager, _teams),
-            new DropItemsAndEffectsTurnState(this, dropManager),
+            new DropPackagesTurnState(this, dropManager),
             new FinishedTurnState(this),
         };
         foreach (var turnState in _turnStates)
@@ -95,6 +96,7 @@ public class TurnManager : MonoBehaviour
 
     private void EndGame()
     {
+        CurrentTurnState.ForceEndState();
         if (_teams.Any(t => t.IsTeamAlive))
         {
             var winnerTeam = _teams.First(t => t.IsTeamAlive);

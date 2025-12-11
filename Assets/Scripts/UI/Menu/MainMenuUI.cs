@@ -24,6 +24,7 @@ public class MainMenuUI : MonoBehaviour
 
     private void OnSingleplayerButtonPressed()
     {
+        _menuUIManager.SwitchPanel(MenuPanelType.SingleplayerMenu);
     }
 
     private void OnMultiplayerButtonPressed()

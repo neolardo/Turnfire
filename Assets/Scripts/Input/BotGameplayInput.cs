@@ -11,12 +11,12 @@ public class BotGameplayInput : MonoBehaviour, IGameplayInputSource
     public event Action<Vector2> ImpulseReleased;
     public event Action AimCancelled;
     public event Action ActionSkipped;
-    public event Action SelectedItemUsed;
-    public event Action<Item> ItemSwitched;
+    public event Action<ItemUsageContext> SelectedItemUsed;
+    public event Action<Item> SelectedItemSwitchRequested;
 
     public event Action<CharacterActionStateType> InputRequested;
 
-    public void InputRequestedForAction(CharacterActionStateType action)
+    public void RequestInputForAction(CharacterActionStateType action)
     {
         InputRequested?.Invoke(action);
     }
@@ -27,7 +27,7 @@ public class BotGameplayInput : MonoBehaviour, IGameplayInputSource
 
     public void AimAndRelease(Vector2 aimVector)
     {
-        AimStarted?.Invoke(aimVector);
+        AimStarted?.Invoke(new Vector2(-1, -1));
         AimChanged?.Invoke(aimVector);
         ImpulseReleased?.Invoke(aimVector);
     }
@@ -37,13 +37,13 @@ public class BotGameplayInput : MonoBehaviour, IGameplayInputSource
         ActionSkipped?.Invoke();
     }
 
-    public void SwitchSelectedItemTo(Item item)
+    public void SetSelectedItem(Item item)
     {
-        ItemSwitched?.Invoke(item);
+        SelectedItemSwitchRequested?.Invoke(item);
     }
 
-    public void UseSelectedItem()
+    public void UseSelectedItem(ItemUsageContext context)
     {
-        SelectedItemUsed?.Invoke();
+        SelectedItemUsed?.Invoke(context);
     }
 }

@@ -10,6 +10,7 @@ public class GameplayUIManager : MonoBehaviour
     [SerializeField] private TeamHealthbarUIManager _teamHealthbarUIManager;
     [SerializeField] private GameplayTimerUI _gameplayTimer;
     [SerializeField] private CountdownTimerUI _countdownTimer;
+    [SerializeField] private AimCircleUI _aimCircleUI;
     private GameStateManager _gameStateManager;
     private bool _useTimer;
 
@@ -39,10 +40,6 @@ public class GameplayUIManager : MonoBehaviour
         _inventoryUI.gameObject.SetActive(!_inventoryUI.gameObject.activeSelf);
     }
 
-    private void OnGameStateChanged(GameStateType gameState)
-    {
-        OnPause(gameState == GameStateType.Paused);
-    }
 
     private void OnPause(bool pause)
     {
@@ -65,6 +62,7 @@ public class GameplayUIManager : MonoBehaviour
         _inventoryUI.LoadCharacterData(character);
     }
 
+    #region Timers
 
     public void StartCountdown()
     {
@@ -73,10 +71,10 @@ public class GameplayUIManager : MonoBehaviour
 
     public void StartGameplayTimer()
     {
-        if(_useTimer)
+        if (_useTimer)
         {
             _gameplayTimer.StartTimer();
-            if(_gameStateManager.CurrentState != GameStateType.Playing)
+            if (_gameStateManager.CurrentState != GameStateType.Playing)
             {
                 _gameplayTimer.StopTimer();
             }
@@ -99,10 +97,14 @@ public class GameplayUIManager : MonoBehaviour
         }
     }
 
+    #endregion
+
+    #region Game States
+
     public void OnGameStarted(GameplaySceneSettings gameplaySettings)
     {
         _useTimer = gameplaySettings.UseTimer;
-        if(_useTimer)
+        if (_useTimer)
         {
             _gameplayTimer.gameObject.SetActive(true);
             StartGameplayTimer();
@@ -113,8 +115,8 @@ public class GameplayUIManager : MonoBehaviour
     public void OnGameOver(Team winnerTeam)
     {
         PauseGameplayTimer();
-        string gameOverText = string.Empty; 
-        if(winnerTeam == null)
+        string gameOverText = string.Empty;
+        if (winnerTeam == null)
         {
             gameOverText = "It's a tie!";
         }
@@ -125,5 +127,31 @@ public class GameplayUIManager : MonoBehaviour
         _gameOverScreenUI.SetGameOverText(gameOverText);
         _gameOverScreenUI.gameObject.SetActive(true);
     }
+
+    private void OnGameStateChanged(GameStateType gameState)
+    {
+        OnPause(gameState == GameStateType.Paused);
+    } 
+
+    #endregion
+
+    #region Aim Circles
+
+    public void ShowAimCircles(Vector2 initialPosition)
+    {
+        _aimCircleUI.ShowCircles(initialPosition);
+    }
+
+    public void UpdateAimCircles(Vector2 aimVector)
+    {
+        _aimCircleUI.UpdateCircles(aimVector);
+    }
+
+    public void HideAimCircles()
+    {
+        _aimCircleUI.HideCircles();
+    } 
+
+    #endregion
 
 }

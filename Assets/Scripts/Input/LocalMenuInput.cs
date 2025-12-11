@@ -5,11 +5,8 @@ public class LocalMenuInput : LocalInputBase
 {
     public event Action MenuConfirmPerformed;
     public event Action MenuBackPerformed;
-    public event Action MenuNavigateUpPerformed;
-    public event Action MenuNavigateDownPerformed;
-    public event Action MenuNavigateLeftPerformed;
-    public event Action MenuNavigateRightPerformed;
-    public event Action MenuToggleCheckboxPerformed;
+    public event Action MenuIncrementValuePerformed;
+    public event Action MenuDecrementValuePerformed;
 
     protected override void Awake()
     {
@@ -22,11 +19,8 @@ public class LocalMenuInput : LocalInputBase
         base.SubscribeToInputEvents();
         _inputActions.Menu.Back.performed += OnMenuBackPerformed;
         _inputActions.Menu.Confirm.performed += OnMenuConfirmPerformed;
-        _inputActions.Menu.NavigateUp.performed += OnMenuNavigateUpPerformed;
-        _inputActions.Menu.NavigateDown.performed += OnMenuNavigateDownPerformed;
-        _inputActions.Menu.NavigateRight.performed += OnMenuNavigateRightPerformed;
-        _inputActions.Menu.NavigateLeft.performed += OnMenuNavigateLeftPerformed;
-        _inputActions.Menu.ToggleCheckbox.performed += OnMenuToggleCheckboxPerformed;
+        _inputActions.Menu.IncrementValue.performed += OnMenuIncrementValuePerformed;
+        _inputActions.Menu.DecrementValue.performed += OnMenuDecrementValuePerformed;
     }
 
 
@@ -38,25 +32,13 @@ public class LocalMenuInput : LocalInputBase
     {
         MenuConfirmPerformed?.Invoke();
     }
-    private void OnMenuNavigateUpPerformed(InputAction.CallbackContext ctx)
+    private void OnMenuIncrementValuePerformed(InputAction.CallbackContext ctx)
     {
-        MenuNavigateUpPerformed?.Invoke();
+        MenuIncrementValuePerformed?.Invoke();
     }
-    private void OnMenuNavigateDownPerformed(InputAction.CallbackContext ctx)
+    private void OnMenuDecrementValuePerformed(InputAction.CallbackContext ctx)
     {
-        MenuNavigateDownPerformed?.Invoke();
-    }
-    private void OnMenuNavigateRightPerformed(InputAction.CallbackContext ctx)
-    {
-        MenuNavigateRightPerformed?.Invoke();
-    }
-    private void OnMenuNavigateLeftPerformed(InputAction.CallbackContext ctx)
-    {
-        MenuNavigateLeftPerformed?.Invoke();
-    }
-    private void OnMenuToggleCheckboxPerformed(InputAction.CallbackContext ctx)
-    {
-        MenuToggleCheckboxPerformed?.Invoke();
+        MenuDecrementValuePerformed?.Invoke();
     }
 
 }

@@ -15,10 +15,8 @@ public class TeamHealthbarUIManager : MonoBehaviour
         foreach (var team in teams)
         {
             var hb = Instantiate(_teamHealthbarPrefab, transform);
-            hb.SetTeamColor(team.TeamColor);
+            hb.SetTeam(team);
             hb.SetPosition(position++);
-            hb.SetTeamHealth(1);
-            team.TeamHealthChanged += hb.SetTeamHealth;
             _healthBars.Add(hb);
         }
     }

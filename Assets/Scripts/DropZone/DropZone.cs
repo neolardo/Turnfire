@@ -11,15 +11,15 @@ public class DropZone : MonoBehaviour
         _zoneCollider = GetComponent<BoxCollider2D>();
     }
 
-    public Package DropRandomPackage(CollectibleDefinition[] possibleCollectibles)
+    public Package DropRandomPackage(ItemDefinition[] possibleItems)
     {
-        if (possibleCollectibles.Length == 0)
+        if (possibleItems.Length == 0)
             return null;
 
-        var definition = possibleCollectibles[UnityEngine.Random.Range(0, possibleCollectibles.Length)];
+        var definition = possibleItems[UnityEngine.Random.Range(0, possibleItems.Length)];
         var spawnPos = GetRandomPointInZone();
         var package = Instantiate(_packagePrefab, spawnPos, Quaternion.identity);
-        package.SetCollectible(CollectibleFactory.CreateCollectible(definition));
+        package.SetCollectible(new Item(definition));
         package.gameObject.SetActive(true);
         return package;
     }

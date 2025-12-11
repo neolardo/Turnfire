@@ -145,6 +145,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ShowMap"",
+                    ""type"": ""Button"",
+                    ""id"": ""c6520571-ece6-4a11-9b6d-70074f27abeb"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -277,6 +286,28 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""SkipAction"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d0ab519a-cea7-420d-b1a5-ca8ced64bc5f"",
+                    ""path"": ""<Gamepad>/rightStickPress"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShowMap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""66a23ac6-fa24-41dd-ae75-c635053f0160"",
+                    ""path"": ""<Keyboard>/m"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShowMap"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -548,34 +579,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""ToggleCheckbox"",
-                    ""type"": ""Button"",
-                    ""id"": ""5da05a9b-70f0-4199-8b0e-cd14e017dd92"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""NavigateDown"",
-                    ""type"": ""Button"",
-                    ""id"": ""02f4a367-468d-4685-af97-8ccb5afef7f1"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""NavigateUp"",
-                    ""type"": ""Button"",
-                    ""id"": ""2b744f54-6c17-4954-bc92-1038be620178"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""NavigateRight"",
+                    ""name"": ""IncrementValue"",
                     ""type"": ""Button"",
                     ""id"": ""8f693e94-aba3-4cb9-b75f-5e86ca1160f8"",
                     ""expectedControlType"": """",
@@ -584,7 +588,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""NavigateLeft"",
+                    ""name"": ""DecrementValue"",
                     ""type"": ""Button"",
                     ""id"": ""86f97e93-a005-4a40-9480-2db62ddaef70"",
                     ""expectedControlType"": """",
@@ -640,78 +644,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""59af9d09-a041-46b7-98a8-9bc058ec4ca6"",
-                    ""path"": ""<Gamepad>/buttonWest"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""ToggleCheckbox"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""15748082-3289-417d-bf4d-f44752df755f"",
-                    ""path"": ""<Gamepad>/buttonNorth"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""ToggleCheckbox"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""e5b7f503-a516-4876-9d12-17bd257e0459"",
-                    ""path"": ""<Gamepad>/dpad/down"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""NavigateDown"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""4785b8e7-f227-4f7b-a940-5005d1c9805f"",
-                    ""path"": ""<Gamepad>/dpad/up"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""NavigateUp"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""047bfe01-c36c-4656-a374-2e5021762f9f"",
-                    ""path"": ""<Gamepad>/dpad/right"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""NavigateRight"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""df275bf0-7126-4200-8c0b-effee17dc064"",
                     ""path"": ""<Gamepad>/rightShoulder"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""NavigateRight"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""6b1e16e5-64df-4a28-a6a0-f070a1395d35"",
-                    ""path"": ""<Gamepad>/dpad/left"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""NavigateLeft"",
+                    ""action"": ""IncrementValue"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -722,7 +660,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""NavigateLeft"",
+                    ""action"": ""DecrementValue"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -963,6 +901,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Gameplay_ToggleInventory = m_Gameplay.FindAction("ToggleInventory", throwIfNotFound: true);
         m_Gameplay_PauseGameplay = m_Gameplay.FindAction("PauseGameplay", throwIfNotFound: true);
         m_Gameplay_SkipAction = m_Gameplay.FindAction("SkipAction", throwIfNotFound: true);
+        m_Gameplay_ShowMap = m_Gameplay.FindAction("ShowMap", throwIfNotFound: true);
         // PausedGamplay
         m_PausedGamplay = asset.FindActionMap("PausedGamplay", throwIfNotFound: true);
         m_PausedGamplay_ResumeGameplay = m_PausedGamplay.FindAction("ResumeGameplay", throwIfNotFound: true);
@@ -979,11 +918,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         m_Menu_Confirm = m_Menu.FindAction("Confirm", throwIfNotFound: true);
         m_Menu_Back = m_Menu.FindAction("Back", throwIfNotFound: true);
-        m_Menu_ToggleCheckbox = m_Menu.FindAction("ToggleCheckbox", throwIfNotFound: true);
-        m_Menu_NavigateDown = m_Menu.FindAction("NavigateDown", throwIfNotFound: true);
-        m_Menu_NavigateUp = m_Menu.FindAction("NavigateUp", throwIfNotFound: true);
-        m_Menu_NavigateRight = m_Menu.FindAction("NavigateRight", throwIfNotFound: true);
-        m_Menu_NavigateLeft = m_Menu.FindAction("NavigateLeft", throwIfNotFound: true);
+        m_Menu_IncrementValue = m_Menu.FindAction("IncrementValue", throwIfNotFound: true);
+        m_Menu_DecrementValue = m_Menu.FindAction("DecrementValue", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1082,6 +1018,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_ToggleInventory;
     private readonly InputAction m_Gameplay_PauseGameplay;
     private readonly InputAction m_Gameplay_SkipAction;
+    private readonly InputAction m_Gameplay_ShowMap;
     /// <summary>
     /// Provides access to input actions defined in input action map "Gameplay".
     /// </summary>
@@ -1117,6 +1054,10 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Gameplay/SkipAction".
         /// </summary>
         public InputAction @SkipAction => m_Wrapper.m_Gameplay_SkipAction;
+        /// <summary>
+        /// Provides access to the underlying input action "Gameplay/ShowMap".
+        /// </summary>
+        public InputAction @ShowMap => m_Wrapper.m_Gameplay_ShowMap;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1161,6 +1102,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @SkipAction.started += instance.OnSkipAction;
             @SkipAction.performed += instance.OnSkipAction;
             @SkipAction.canceled += instance.OnSkipAction;
+            @ShowMap.started += instance.OnShowMap;
+            @ShowMap.performed += instance.OnShowMap;
+            @ShowMap.canceled += instance.OnShowMap;
         }
 
         /// <summary>
@@ -1190,6 +1134,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @SkipAction.started -= instance.OnSkipAction;
             @SkipAction.performed -= instance.OnSkipAction;
             @SkipAction.canceled -= instance.OnSkipAction;
+            @ShowMap.started -= instance.OnShowMap;
+            @ShowMap.performed -= instance.OnShowMap;
+            @ShowMap.canceled -= instance.OnShowMap;
         }
 
         /// <summary>
@@ -1550,11 +1497,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private List<IMenuActions> m_MenuActionsCallbackInterfaces = new List<IMenuActions>();
     private readonly InputAction m_Menu_Confirm;
     private readonly InputAction m_Menu_Back;
-    private readonly InputAction m_Menu_ToggleCheckbox;
-    private readonly InputAction m_Menu_NavigateDown;
-    private readonly InputAction m_Menu_NavigateUp;
-    private readonly InputAction m_Menu_NavigateRight;
-    private readonly InputAction m_Menu_NavigateLeft;
+    private readonly InputAction m_Menu_IncrementValue;
+    private readonly InputAction m_Menu_DecrementValue;
     /// <summary>
     /// Provides access to input actions defined in input action map "Menu".
     /// </summary>
@@ -1575,25 +1519,13 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @Back => m_Wrapper.m_Menu_Back;
         /// <summary>
-        /// Provides access to the underlying input action "Menu/ToggleCheckbox".
+        /// Provides access to the underlying input action "Menu/IncrementValue".
         /// </summary>
-        public InputAction @ToggleCheckbox => m_Wrapper.m_Menu_ToggleCheckbox;
+        public InputAction @IncrementValue => m_Wrapper.m_Menu_IncrementValue;
         /// <summary>
-        /// Provides access to the underlying input action "Menu/NavigateDown".
+        /// Provides access to the underlying input action "Menu/DecrementValue".
         /// </summary>
-        public InputAction @NavigateDown => m_Wrapper.m_Menu_NavigateDown;
-        /// <summary>
-        /// Provides access to the underlying input action "Menu/NavigateUp".
-        /// </summary>
-        public InputAction @NavigateUp => m_Wrapper.m_Menu_NavigateUp;
-        /// <summary>
-        /// Provides access to the underlying input action "Menu/NavigateRight".
-        /// </summary>
-        public InputAction @NavigateRight => m_Wrapper.m_Menu_NavigateRight;
-        /// <summary>
-        /// Provides access to the underlying input action "Menu/NavigateLeft".
-        /// </summary>
-        public InputAction @NavigateLeft => m_Wrapper.m_Menu_NavigateLeft;
+        public InputAction @DecrementValue => m_Wrapper.m_Menu_DecrementValue;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1626,21 +1558,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Back.started += instance.OnBack;
             @Back.performed += instance.OnBack;
             @Back.canceled += instance.OnBack;
-            @ToggleCheckbox.started += instance.OnToggleCheckbox;
-            @ToggleCheckbox.performed += instance.OnToggleCheckbox;
-            @ToggleCheckbox.canceled += instance.OnToggleCheckbox;
-            @NavigateDown.started += instance.OnNavigateDown;
-            @NavigateDown.performed += instance.OnNavigateDown;
-            @NavigateDown.canceled += instance.OnNavigateDown;
-            @NavigateUp.started += instance.OnNavigateUp;
-            @NavigateUp.performed += instance.OnNavigateUp;
-            @NavigateUp.canceled += instance.OnNavigateUp;
-            @NavigateRight.started += instance.OnNavigateRight;
-            @NavigateRight.performed += instance.OnNavigateRight;
-            @NavigateRight.canceled += instance.OnNavigateRight;
-            @NavigateLeft.started += instance.OnNavigateLeft;
-            @NavigateLeft.performed += instance.OnNavigateLeft;
-            @NavigateLeft.canceled += instance.OnNavigateLeft;
+            @IncrementValue.started += instance.OnIncrementValue;
+            @IncrementValue.performed += instance.OnIncrementValue;
+            @IncrementValue.canceled += instance.OnIncrementValue;
+            @DecrementValue.started += instance.OnDecrementValue;
+            @DecrementValue.performed += instance.OnDecrementValue;
+            @DecrementValue.canceled += instance.OnDecrementValue;
         }
 
         /// <summary>
@@ -1658,21 +1581,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Back.started -= instance.OnBack;
             @Back.performed -= instance.OnBack;
             @Back.canceled -= instance.OnBack;
-            @ToggleCheckbox.started -= instance.OnToggleCheckbox;
-            @ToggleCheckbox.performed -= instance.OnToggleCheckbox;
-            @ToggleCheckbox.canceled -= instance.OnToggleCheckbox;
-            @NavigateDown.started -= instance.OnNavigateDown;
-            @NavigateDown.performed -= instance.OnNavigateDown;
-            @NavigateDown.canceled -= instance.OnNavigateDown;
-            @NavigateUp.started -= instance.OnNavigateUp;
-            @NavigateUp.performed -= instance.OnNavigateUp;
-            @NavigateUp.canceled -= instance.OnNavigateUp;
-            @NavigateRight.started -= instance.OnNavigateRight;
-            @NavigateRight.performed -= instance.OnNavigateRight;
-            @NavigateRight.canceled -= instance.OnNavigateRight;
-            @NavigateLeft.started -= instance.OnNavigateLeft;
-            @NavigateLeft.performed -= instance.OnNavigateLeft;
-            @NavigateLeft.canceled -= instance.OnNavigateLeft;
+            @IncrementValue.started -= instance.OnIncrementValue;
+            @IncrementValue.performed -= instance.OnIncrementValue;
+            @IncrementValue.canceled -= instance.OnIncrementValue;
+            @DecrementValue.started -= instance.OnDecrementValue;
+            @DecrementValue.performed -= instance.OnDecrementValue;
+            @DecrementValue.canceled -= instance.OnDecrementValue;
         }
 
         /// <summary>
@@ -1960,6 +1874,13 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnSkipAction(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ShowMap" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnShowMap(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "PausedGamplay" which allows adding and removing callbacks.
@@ -2049,40 +1970,19 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnBack(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "ToggleCheckbox" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "IncrementValue" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnToggleCheckbox(InputAction.CallbackContext context);
+        void OnIncrementValue(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "NavigateDown" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "DecrementValue" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnNavigateDown(InputAction.CallbackContext context);
-        /// <summary>
-        /// Method invoked when associated input action "NavigateUp" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnNavigateUp(InputAction.CallbackContext context);
-        /// <summary>
-        /// Method invoked when associated input action "NavigateRight" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnNavigateRight(InputAction.CallbackContext context);
-        /// <summary>
-        /// Method invoked when associated input action "NavigateLeft" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnNavigateLeft(InputAction.CallbackContext context);
+        void OnDecrementValue(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

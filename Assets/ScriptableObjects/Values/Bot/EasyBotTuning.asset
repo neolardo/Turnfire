@@ -12,18 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92c5571e745e871438928ce2cf6b180a, type: 3}
   m_Name: EasyBotTuning
   m_EditorClassIdentifier: 
-  OffensivePositionPreference: 1
-  DefensivePositionPreference: 0
+  Offense: 1
+  Defense: 0
+  MobilityPreference: 0
   TravelDistanceSensitivity: 1
-  LowHealhThreshold: 0
-  GeneralPackageSearchWeight: 0
-  RemainingAmmoLowPackageSearchWeight: 0
-  RemainingAmmoLowThreshold: 4
-  OutOfAmmoPackageSearchWeight: 2
-  DamageDealtToEnemiesWeight: 1
-  DamageDealtToAlliesWeight: 0
-  DamageCenterDistanceFromClosestEnemyWeight: 0.5
-  PreferHighestDamageDealingWeapon: 0
-  OnlyShootIfCanDealDamage: 0
+  LowHealthThreshold: 0
+  RemainingAmmoLowThreshold: 0
+  GeneralPackageGreed: 0
+  RemainingAmmoLowPackageGreed: 0
+  OutOfAmmoPackageGreed: 1
   AimRandomnessBias: 0.03
   DecisionRandomnessBias: 0.15

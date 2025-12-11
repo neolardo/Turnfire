@@ -11,8 +11,8 @@ public class RemoteGameplayInput : MonoBehaviour, IGameplayInputSource
     public event Action<Vector2> ImpulseReleased;
     public event Action AimCancelled;
     public event Action ActionSkipped;
-    public event Action SelectedItemUsed;
-    public event Action<Item> ItemSwitched;
+    public event Action<ItemUsageContext> SelectedItemUsed;
+    public event Action<Item> SelectedItemSwitchRequested;
 
     public void ForceCancelAiming() { }
 
@@ -23,7 +23,7 @@ public class RemoteGameplayInput : MonoBehaviour, IGameplayInputSource
         //TODO
     }
 
-    public void InputRequestedForAction(CharacterActionStateType action) 
+    public void RequestInputForAction(CharacterActionStateType action) 
     {
         //TODO
     }

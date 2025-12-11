@@ -7,7 +7,7 @@ public class WaterTilemapManager : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.CompareTag(Constants.CharacterTag) || other.CompareTag(Constants.PackageTag) || other.CompareTag(Constants.ProjectileTag))
+        if(other.CompareTag(Constants.CharacterTag) || other.CompareTag(Constants.PackageTag) || other.CompareTag(Constants.HitboxTag))
         {
             AudioManager.Instance.PlaySFXAt(_splashSFX, other.transform.position);
         }

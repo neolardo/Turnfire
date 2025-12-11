@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class MultiplayerMenuUI : MonoBehaviour
 {
@@ -22,38 +24,43 @@ public class MultiplayerMenuUI : MonoBehaviour
 
     private void OnEnable()
     {
-        _inputManager.MenuConfirmPerformed += _confirmButton.Press;
         _inputManager.MenuBackPerformed += _cancelButton.Press;
-        _inputManager.MenuToggleCheckboxPerformed += OnMenuToggleCheckboxPerformed;
     }
 
     private void OnDisable()
     {
-        _inputManager.MenuConfirmPerformed -= _confirmButton.Press;
         _inputManager.MenuBackPerformed -= _cancelButton.Press;
-        _inputManager.MenuToggleCheckboxPerformed -= OnMenuToggleCheckboxPerformed;
     }
 
     private void Start()
     {
         _numPlayersDisplay.Initialize(Constants.MultiplayerMinPlayers, Constants.MultiplayerMaxPlayers, Constants.MultiplayerMinPlayers);
-    }
-
-    private void OnMenuToggleCheckboxPerformed()
-    {
-        _useTimerCheckbox.ToggleValue(true);
+        EventSystem.current.SetSelectedGameObject(_mapDisplay.gameObject);
     }
 
     public void OnConfirmPressed()
     {
-        var settings = new GameplaySceneSettings()
-        {
-            SceneName = _mapDisplay.SelectedMap.SceneName,
-            NumTeams = _numPlayersDisplay.Value,
-            UseTimer = _useTimerCheckbox.Value
-        };
+        var settings = CreateGameplaySceneSettings();
         _menuUIManager.HideAllPanels();
         SceneLoader.Instance.LoadGameplayScene(settings);
+    }
+
+    private GameplaySceneSettings CreateGameplaySceneSettings()
+    {
+        //TODO: names from textbox
+        var players = new List<Player>();
+        for (int i = 0; i < _numPlayersDisplay.Value; i++)
+        {
+            players.Add(new Player($"{Constants.DefaultPlayerName}{i + 1}", PlayerType.Human));
+        }
+
+        return new GameplaySceneSettings()
+        {
+            SceneName = _mapDisplay.SelectedMap.SceneName,
+            UseTimer = _useTimerCheckbox.Value,
+            Players = players,
+            IsOnlineGame = false
+        };
     }
 
     public void OnCancelPressed()

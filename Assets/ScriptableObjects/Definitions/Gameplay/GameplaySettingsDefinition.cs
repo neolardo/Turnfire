@@ -13,5 +13,5 @@ public class GameplaySettingsDefinition : ScriptableObject
     [Header("Drops")]
     public int MinimumNumberOfDropsPerRound;
     public int MaximumNumberOfDropsPerRound;
-    public CollectibleDefinition[] PossibleDrops;
+    public ItemDefinition[] PossibleDrops;
 }

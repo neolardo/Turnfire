@@ -1,22 +1,21 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "CharacterDefinition", menuName = "Scriptable Objects/CharacterDefinition")]
 public class CharacterDefinition : ScriptableObject
 {
     [Header("Animations")]
-    public CharacterAnimationDefinition IdleAnimationDefinition;
-    public CharacterAnimationDefinition JumpAnimationDefinition;
-    public CharacterAnimationDefinition LandAnimationDefinition;
-    public CharacterAnimationDefinition PrepareToJumpAnimationDefinition;
-    public CharacterAnimationDefinition HurtAnimationDefinition;
-    public CharacterAnimationDefinition DeathAnimationDefinition;
-    public CharacterAnimationDefinition AimLowAnimationDefinition;
-    public CharacterAnimationDefinition AimMiddleAnimationDefinition;
-    public CharacterAnimationDefinition AimHighAnimationDefinition;
-    public CharacterAnimationDefinition BackFromLandAnimationDefinition;
+    public Sprite[] BodySpriteStrip;
+    public Sprite[] HeadSpriteStrip;
+    public Sprite[] ClothesSpriteStrip;
+    public Sprite[] OverItemBodySpriteStrip;
+    public Sprite[] OverItemClothesSpriteStrip;
 
-    [Header("SFXs")]
+    public Dictionary<CharacterAnimationState, CharacterAnimationFrame[]> Animations { get; private set; }
+
+    [Header("SFX")]
 
     public SFXDefiniton InAirSFX;
     public SFXDefiniton PrepareToJumpSFX;
@@ -29,6 +28,29 @@ public class CharacterDefinition : ScriptableObject
 
     [Header("Stats")]
     public int MaxHealth;
-    [Range(Constants.MinJumpStrength, Constants.MaxJumpStrength)] public float JumpStrength = Constants.MinJumpStrength;
+    public const float JumpStrength = Constants.DefaultJumpStrength;
     public List<ItemDefinition> InitialItems;
+
+
+    public void InitializeAnimations()
+    {
+        Animations = new Dictionary<CharacterAnimationState, CharacterAnimationFrame[]>();
+        var allStates = Enum.GetValues(typeof(CharacterAnimationState)).Cast<CharacterAnimationState>().ToList();
+        allStates.Remove(CharacterAnimationState.None);
+
+        foreach (var state in allStates)
+        {
+            var bodySprites = CharacterAnimationStripParser.ParseAnimation(BodySpriteStrip, state);
+            var headSprites = CharacterAnimationStripParser.ParseAnimation(HeadSpriteStrip, state);
+            var clothesSprites = CharacterAnimationStripParser.ParseAnimation(ClothesSpriteStrip, state);
+            var overItemBodySprites = CharacterAnimationStripParser.ParseAnimation(OverItemBodySpriteStrip, state);
+            var overItemClothesSprites = CharacterAnimationStripParser.ParseAnimation(OverItemClothesSpriteStrip, state);
+            int spriteCount = bodySprites.Length;
+            Animations[state] = new CharacterAnimationFrame[spriteCount];
+            for (int frame = 0; frame < spriteCount; frame++)
+            {
+                Animations[state][frame] = new CharacterAnimationFrame(bodySprites[frame], headSprites[frame], clothesSprites[frame], overItemBodySprites[frame], overItemClothesSprites[frame]);
+            }
+        }
+    }
 }

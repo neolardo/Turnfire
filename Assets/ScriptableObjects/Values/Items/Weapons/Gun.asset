@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6186be7f46ce734c9e3af4cdd093f2a, type: 3}
+  m_Name: Gun
+  m_EditorClassIdentifier: 
+  Sprite: {fileID: 21300000, guid: 13ca46f010bc08a4eb2dc9b5d24b0e37, type: 3}
+  Name: gun
+  Description: Fires a bullet.
+  InitialQuantity: 4
+  MaximumQuantity: 12
+  IsQuantityInfinite: 0
+  DropQuantityRange:
+    _normalizedValue: 0.281
+    _isRandomized: 1
+    _randomness: 0.164
+    _group: {fileID: 11400000, guid: 5a5b56af88cd285408e8a8c33dfc5e52, type: 2}
+  ItemActionAnimation: {fileID: 11400000, guid: 30bf26f4ae4271c4abe7e7ca554ae470, type: 2}
+  ItemActionSFX: {fileID: 11400000, guid: fc1ce75043e549540ba172f23ddbb33f, type: 2}
+  HideItemDuringUsage: 0
+  UseInstantlyWhenSelected: 0
+  InitialVisualRotationDegrees: 0
+  FireStrength:
+    _normalizedValue: 0.9
+    _isRandomized: 0
+    _randomness: 0
+    _group: {fileID: 11400000, guid: 22026dfb48c6fa8489243cadbd99e5af, type: 2}
+  ProjectileDefinition: {fileID: 11400000, guid: 4dd3c16a7b917964ea04128e5030a23a, type: 2}
+  UseGravityForPreview: 0

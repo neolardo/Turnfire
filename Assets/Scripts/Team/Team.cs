@@ -5,22 +5,25 @@ using UnityEngine;
 
 public class Team : MonoBehaviour
 {
+    [HideInInspector] public bool IsTeamAlive => _characters.Any(c => c.IsAlive);
     [SerializeField] private Color _teamColor;
-    public bool IsTeamAlive => _characters.Any(c => c.IsAlive);
-    public int NumAliveCharacters => _characters.Count(c => c.IsAlive);
-    public float NormalizedTeamHealth => _characters.Sum(c => c.NormalizedHealth) / _characters.Count;
-    public Color TeamColor => _teamColor;
-    public string TeamName { get; private set; }
 
     private List<Character> _characters;
+    public Color TeamColor => _teamColor;
     public Character CurrentCharacter => _characters[_characterIndex];
     private int _characterIndex;
-
-    public IGameplayInputSource InputSource { private set; get; }
+    public string TeamName { get; set; }
 
     public event Action<float> TeamHealthChanged;
     public event Action TeamLost;
+    public event Action<bool> TeamSelectedChanged;
+    private bool _isSelected;
 
+    public int NumAliveCharacters => _characters.Count(c => c.IsAlive);
+
+    public IGameplayInputSource InputSource => _inputSource;
+    
+    private IGameplayInputSource _inputSource;
 
     private void Awake()
     {
@@ -45,14 +48,32 @@ public class Team : MonoBehaviour
         _characterIndex = 0;
     }
 
+    public void SelectTeam()
+    {
+        if( !_isSelected) 
+        {
+            _isSelected = true;
+            TeamSelectedChanged?.Invoke(_isSelected);
+        }
+    }
+
+    public void DeselectTeam()
+    {
+        if (_isSelected)
+        {
+            _isSelected = false;
+            TeamSelectedChanged?.Invoke(_isSelected);
+        }
+    }
+
     public void InitializeInputSource(InputSourceType inputType)
     {
-        InputSource = GameplayInputSourceFactory.Create(inputType, gameObject);
+        _inputSource = GameplayInputSourceFactory.Create(inputType, gameObject);
     }
 
     private void OnAnyTeamCharacterHealthChanged()
     {
-        TeamHealthChanged?.Invoke(NormalizedTeamHealth);
+        TeamHealthChanged?.Invoke(_characters.Sum(c => c.NormalizedHealth) / _characters.Count);
     }
 
     public void SelectNextCharacter()

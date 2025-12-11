@@ -11,11 +11,11 @@ public static class Constants
     public const float ProjectileOffset = 1.1f;
 
     //jump
-    public const float MinJumpStrength = 7;
+    public const float DefaultJumpStrength = 7;
     public const float MaxJumpStrength = 10;
 
     // raycast & overlap check
-    public const int RaycastHitColliderNumMax = 5;
+    public const int RaycastHitColliderNumMax = 7;
     public const int OverlapHitColliderNumMax = 10;
     public const int ProjectileRaycastDistance = 30;
 
@@ -30,11 +30,11 @@ public static class Constants
     public const int DeadZoneLayer = 9;
     public const int DeadCharacterLayer = 11;
 
-    public static readonly int[] ProjectileCollisionLayers = new int[]{ CharacterLayer, GroundLayer, DeadZoneLayer };
+    public static readonly int[] HitboxCollisionLayers = new int[]{ CharacterLayer, GroundLayer, DeadZoneLayer };
 
     //tags 
     public const string CharacterTag = "Character";
-    public const string ProjectileTag = "Projectile";
+    public const string HitboxTag = "Hitbox";
     public const string PackageTag = "Package";
     public const string GroundTag = "Ground";
     public const string DeadZoneTag = "DeadZone";
@@ -49,6 +49,13 @@ public static class Constants
     // multiplayer
     public const int MultiplayerMinPlayers = 2;
     public const int MultiplayerMaxPlayers = 4;
+    public const string DefaultPlayerName = "Player";
+
+    // singleplayer 
+    public const int SingleplayerMinBots = 1;
+    public const int SingleplayerMaxBots = 3;
+    public const string DefaultBotName = "Bot";
+
 
     //scenes
     public const string MenuSceneName = "MenuScene";

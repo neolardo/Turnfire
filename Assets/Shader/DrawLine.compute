@@ -1,0 +1,98 @@
+// DrawLine.compute
+#pragma kernel CSMain
+
+RWTexture2D<float4> Result;
+
+StructuredBuffer<int> Points; // x,y,x,y,...
+int pointCount;
+int2 texSize;
+float4 lineColor; // RGBA
+int thickness;
+
+// fade-out flag (Unity can't reliably send bool to use int)
+int fadeOutEnabled;
+
+[numthreads(8, 8, 1)]
+void CSMain(uint3 dtid : SV_DispatchThreadID)
+{
+    int2 uv = int2(dtid.xy);
+    if (uv.x >= texSize.x || uv.y >= texSize.y)
+        return;
+
+    float2 p = float2(uv) + 0.5;
+
+    float4 outCol = float4(0, 0, 0, 0);
+
+    if (pointCount >= 2)
+    {
+        float minDist = 1e9;
+
+        // For fade-out calculation:
+        float pixelDistanceAlong = 0.0;
+        float closestSegStart = 0.0;
+        float closestSegEnd = 0.0;
+        float totalPathLength = 0.0;
+
+        // Precompute total path length
+        for (int i = 0; i < pointCount - 1; ++i)
+        {
+            int idx = i * 2;
+            float2 a = float2(Points[idx], Points[idx + 1]);
+            float2 b = float2(Points[idx + 2], Points[idx + 3]);
+            totalPathLength += length(b - a);
+        }
+
+        float accumulatedLength = 0.0;
+
+        // Iterate segments
+        for (int j = 0; j < pointCount - 1; ++j)
+        {
+            int idx0 = j * 2;
+            float2 a = float2(Points[idx0], Points[idx0 + 1]);
+            float2 b = float2(Points[idx0 + 2], Points[idx0 + 3]);
+
+            float segLength = length(b - a);
+
+            float2 ab = b - a;
+            float2 ap = p - a;
+            float abLen2 = dot(ab, ab);
+
+            float segT = 0.0;
+            if (abLen2 > 0.0)
+                segT = clamp(dot(ap, ab) / abLen2, 0.0, 1.0);
+
+            float2 proj = a + ab * segT;
+            float dist = length(p - proj);
+
+            // Keep closest segment
+            if (dist < minDist)
+            {
+                minDist = dist;
+
+                closestSegStart = accumulatedLength;
+                closestSegEnd = accumulatedLength + segLength;
+
+                pixelDistanceAlong = closestSegStart + segT * segLength;
+            }
+
+            accumulatedLength += segLength;
+        }
+
+        float h = thickness * 0.5;
+
+        if (round(minDist) <= h)
+        {
+            float alpha = lineColor.a;
+
+            if (fadeOutEnabled == 1 && totalPathLength > 0.0)
+            {
+                float t = pixelDistanceAlong / totalPathLength; // 0 to 1
+                alpha *= (1.0 - t); // fade to 0
+            }
+
+            outCol = float4(lineColor.rgb, alpha);
+        }
+    }
+
+    Result[uv] = outCol;
+}

@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d270b4c567e47d4185db602fe500178, type: 3}
+  m_Name: BulletproofVestArmorDefinition
+  m_EditorClassIdentifier: 
+  Sprite: {fileID: 21300000, guid: 93cc639b3746be240a595aec74bb6448, type: 3}
+  Name: bulletproof vest
+  Description: Helps you dodge the next attack.
+  InitialQuantity: 1
+  MaximumQuantity: 1
+  IsQuantityInfinite: 0
+  DropQuantityRange:
+    _normalizedValue: 0
+    _isRandomized: 0
+    _randomness: 0
+    _group: {fileID: 11400000, guid: aaaaf89e65985ec41be3df1534757652, type: 2}
+  ItemActionAnimation: {fileID: 0}
+  ItemActionSFX: {fileID: 0}
+  HideItemDuringUsage: 0
+  UseInstantlyWhenSelected: 1
+  MaxDurability:
+    _normalizedValue: 0
+    _isRandomized: 0
+    _randomness: 0
+    _group: {fileID: 11400000, guid: 605abe0e4a78f5c4ba2e65d2435bc7a2, type: 2}
+  EquippedSpriteStrip:
+  - {fileID: 1328615623177531638, guid: 4d73add2201816b47abf3ba323889629, type: 3}
+  - {fileID: -7464453918543413256, guid: 4d73add2201816b47abf3ba323889629, type: 3}
+  - {fileID: 1131365048259963954, guid: 4d73add2201816b47abf3ba323889629, type: 3}
+  - {fileID: 4646152434193497960, guid: 4d73add2201816b47abf3ba323889629, type: 3}
+  - {fileID: 2706647928618496714, guid: 4d73add2201816b47abf3ba323889629, type: 3}
+  - {fileID: -8779696642823114500, guid: 4d73add2201816b47abf3ba323889629, type: 3}
+  - {fileID: -1940002492735716284, guid: 4d73add2201816b47abf3ba323889629, type: 3}
+  - {fileID: -8835640191571599233, guid: 4d73add2201816b47abf3ba323889629, type: 3}
+  - {fileID: -7921421662697222306, guid: 4d73add2201816b47abf3ba323889629, type: 3}
+  - {fileID: -3637698021010062600, guid: 4d73add2201816b47abf3ba323889629, type: 3}
+  - {fileID: -4638707331474202098, guid: 4d73add2201816b47abf3ba323889629, type: 3}
+  - {fileID: -661240774268030782, guid: 4d73add2201816b47abf3ba323889629, type: 3}
+  - {fileID: -2365952220086595313, guid: 4d73add2201816b47abf3ba323889629, type: 3}
+  - {fileID: -8938568209038963302, guid: 4d73add2201816b47abf3ba323889629, type: 3}
+  - {fileID: -6670685544146399788, guid: 4d73add2201816b47abf3ba323889629, type: 3}
+  - {fileID: 4232144034924284305, guid: 4d73add2201816b47abf3ba323889629, type: 3}
+  - {fileID: -4851921056430099210, guid: 4d73add2201816b47abf3ba323889629, type: 3}
+  - {fileID: -7034802810512977506, guid: 4d73add2201816b47abf3ba323889629, type: 3}
+  - {fileID: -2016233017630364258, guid: 4d73add2201816b47abf3ba323889629, type: 3}
+  - {fileID: -3023388897233319409, guid: 4d73add2201816b47abf3ba323889629, type: 3}
+  - {fileID: -3519418672598337572, guid: 4d73add2201816b47abf3ba323889629, type: 3}
+  - {fileID: -854978389361162915, guid: 4d73add2201816b47abf3ba323889629, type: 3}
+  - {fileID: -4718499641006289205, guid: 4d73add2201816b47abf3ba323889629, type: 3}
+  - {fileID: -4697418597416246877, guid: 4d73add2201816b47abf3ba323889629, type: 3}
+  - {fileID: -2520595620567180062, guid: 4d73add2201816b47abf3ba323889629, type: 3}
+  - {fileID: 4665312914716008562, guid: 4d73add2201816b47abf3ba323889629, type: 3}
+  - {fileID: 439328249252808539, guid: 4d73add2201816b47abf3ba323889629, type: 3}
+  - {fileID: -3228687505549868447, guid: 4d73add2201816b47abf3ba323889629, type: 3}
+  - {fileID: 8894654900232054965, guid: 4d73add2201816b47abf3ba323889629, type: 3}

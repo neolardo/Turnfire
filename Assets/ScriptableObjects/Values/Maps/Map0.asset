@@ -15,8 +15,8 @@ MonoBehaviour:
   SceneName: Map0
   Minimaps:
   - NumTeams: 2
-    Sprite: {fileID: 21300000, guid: e2ccb3e77bd974b42a1af9ea6e75c610, type: 3}
+    Sprite: {fileID: 21300000, guid: 7989d5c1077f1a74db451bc80d6213bf, type: 3}
   - NumTeams: 3
-    Sprite: {fileID: 21300000, guid: d8a3117137c22d24898d7042330623ff, type: 3}
+    Sprite: {fileID: 21300000, guid: e770ea82f21aaf148a9b91f860873d93, type: 3}
   - NumTeams: 4
-    Sprite: {fileID: 21300000, guid: 3daabf32bad8c184ab463830995ad177, type: 3}
+    Sprite: {fileID: 21300000, guid: 8606fabfca3e6d442a44f7876d69675d, type: 3}

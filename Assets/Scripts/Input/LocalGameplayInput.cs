@@ -9,7 +9,6 @@ public class LocalGameplayInput : LocalInputBase, IGameplayInputSource
         new Keyframe(0, 0),
         new Keyframe(0.5f, 0.2f),
         new Keyframe(1, 1));
-    [SerializeField] private ItemPreviewRendererSettingsDefinition _previewSettings;
 
     private float _mouseAimRadius;
     private Vector2 _aimVector;
@@ -29,14 +28,15 @@ public class LocalGameplayInput : LocalInputBase, IGameplayInputSource
     public event Action<Vector2> ImpulseReleased;
     public event Action AimCancelled;
     public event Action ActionSkipped;
-    public event Action ItemUsed;
-    public event Action SelectedItemUsed; //TODO
-    public event Action<Item> ItemSwitched;  //TODO! implement
+    public event Action<ItemUsageContext> SelectedItemUsed;
+    public event Action<Item> SelectedItemSwitchRequested;  //TODO?
     //inventory
     public event Action ToggleInventoryPerformed;
     public event Action ToggleInventoryCreateDestroyPerformed;
     public event Action TogglePauseGameplayPerformed;
     public event Action SelectInventorySlotPerformed;
+    // map
+    public event Action<bool> ShowMapToggled;
     //pause
     public event Action PausedScreenConfirmPerformed;
     //game over
@@ -59,6 +59,8 @@ public class LocalGameplayInput : LocalInputBase, IGameplayInputSource
         _inputActions.Gameplay.SkipAction.started += OnSkipActionPerformed;
         _inputActions.Gameplay.ToggleInventory.started += OnToggleInventory;
         _inputActions.Gameplay.PauseGameplay.started += OnTogglePauseGameplay;
+        _inputActions.Gameplay.ShowMap.started += OnShowMapPerformed;
+        _inputActions.Gameplay.ShowMap.canceled += OnShowMapCancelled;
         _inputActions.PausedGamplay.ResumeGameplay.started += OnTogglePauseGameplay;
         _inputActions.PausedGamplay.Confirm.performed += OnPausedGameplayConfirmPressed;
         _inputActions.Inventory.ToggleInventory.started += OnToggleInventory;
@@ -85,7 +87,6 @@ public class LocalGameplayInput : LocalInputBase, IGameplayInputSource
     public void OnGameStarted()
     {
         IsPausingGameplayEnabled = true;
-        IsOpeningInventoryEnabled = true;
     }
 
     public void OnGameEnded()
@@ -100,6 +101,20 @@ public class LocalGameplayInput : LocalInputBase, IGameplayInputSource
     #endregion
 
     #region Gameplay
+
+    #region Show Map
+
+    private void OnShowMapPerformed(InputAction.CallbackContext ctx)
+    {
+        ShowMapToggled?.Invoke(true);
+    }
+
+    private void OnShowMapCancelled(InputAction.CallbackContext ctx)
+    {
+        ShowMapToggled?.Invoke(false);
+    }
+
+    #endregion
 
     private void OnAimPerformed(InputAction.CallbackContext ctx)
     {
@@ -119,7 +134,7 @@ public class LocalGameplayInput : LocalInputBase, IGameplayInputSource
     private void HandleGamepadAiming(InputAction.CallbackContext ctx)
     {
         Cursor.visible = false;
-        _aimVector = GetGamepadStickValue(ctx);
+        _aimVector = -GetGamepadStickValue(ctx);
         if (!_isAiming)
         {
             AimStarted?.Invoke(DefaultAimStartPosition);
@@ -172,7 +187,7 @@ public class LocalGameplayInput : LocalInputBase, IGameplayInputSource
         if (ctx.control.device is Mouse)
         {
             initialPos = Mouse.current.position.ReadValue();
-            _mouseAimRadius = (_previewSettings.AimCircleOuterRadiusPercent - _previewSettings.AimCircleInnerRadiusPercent) * Screen.width;
+            _mouseAimRadius = (AimCircleUI.OuterRadiusPercent - AimCircleUI.InnerRadiusPercent) * Screen.width;
         }
         AimStarted?.Invoke(initialPos);
         Cursor.visible = false;
@@ -231,10 +246,10 @@ public class LocalGameplayInput : LocalInputBase, IGameplayInputSource
         ActionSkipped?.Invoke();
     }
 
-    public void InputRequestedForAction(CharacterActionStateType action) { } // local input is provided automatically
-
-
-    public void Initialize(Team team) { } // no need to initialize
+    public void RequestInputForAction(CharacterActionStateType action)
+    {
+        // local input is provided automatically
+    }
 
 
     #endregion

@@ -19,12 +19,12 @@ public class BotController
                 Move(goal.Destination, context);
                 Debug.Log("Bot moved to destination");
                 break;
-            case BotGoalType.Shoot:
-                Shoot(goal.ShootVector, goal.PreferredItem);
-                Debug.Log("Bot shot");
+            case BotGoalType.Attack:
+                Attack(goal.AttackVector, goal.PreferredItem);
+                Debug.Log("Bot attacked");
                 break;
             case BotGoalType.UseItem:
-                UseItem(goal.PreferredItem);
+                UseItem(goal.PreferredItem, new ItemUsageContext(context.Self));
                 Debug.Log("Bot used item");
                 break;
             case BotGoalType.SkipAction:
@@ -41,10 +41,11 @@ public class BotController
         var feetPosition = context.Self.FeetPosition;
         var startPoint = context.JumpGraph.FindClosestStandingPoint(feetPosition);
         var jumpPath = context.JumpGraph.FindShortestJumpPath(startPoint, destinationPoint);
-        if (jumpPath == null)
+        if (jumpPath == null) // if not reachable jump with a random vector
         {
-            _input.SkipAction();
-            Debug.LogWarning("The planned jump path was invalid!");
+            var randomAimVector = UnityEngine.Random.insideUnitCircle * UnityEngine.Random.Range(0, 1);
+            randomAimVector = new Vector2 (randomAimVector.x, MathF.Abs(randomAimVector.y));
+            _input.AimAndRelease(randomAimVector);
         }
         else if (jumpPath.Count == 0) // already at the destination
         {
@@ -53,29 +54,29 @@ public class BotController
         else
         {
             var jumpLink = jumpPath.First();
-            if (context.JumpGraph.IsJumpPredictionValid(feetPosition, jumpLink, context.Terrain))
+            Vector2 jumpVector = jumpLink.JumpVector;
+            if (!context.JumpGraph.IsJumpPredictionValid(feetPosition, jumpLink, context.Terrain))
             {
-                _input.AimAndRelease(jumpLink.JumpVector);
+                jumpVector = context.JumpGraph.CalculateCorrectedJumpVectorToStandingPoint(feetPosition, startPoint);
             }
-            else
-            {
-                var jumpVector = context.JumpGraph.CalculateCorrectedJumpVectorToStandingPoint(feetPosition, startPoint);
-                _input.AimAndRelease(jumpVector);
-            }
+            _input.AimAndRelease(jumpVector / context.Self.JumpStrength);
         }
     }
 
 
-    private void Shoot(Vector2 aimVector, Item weapon)
+    private void Attack(Vector2 aimVector, Item weapon)
     {
-        _input.SwitchSelectedItemTo(weapon);
+        _input.SetSelectedItem(weapon);
         _input.AimAndRelease(aimVector);
     }
 
-    private void UseItem(Item item)
+    private void UseItem(Item item, ItemUsageContext context)
     {
-        _input.SwitchSelectedItemTo(item);
-        _input.UseSelectedItem();
+        _input.SetSelectedItem(item);
+        if(!item.Definition.UseInstantlyWhenSelected)
+        {
+            _input.UseSelectedItem(context);
+        }
     }
 
     private void SkipAction()

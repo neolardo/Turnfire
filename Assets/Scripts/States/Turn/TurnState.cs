@@ -21,5 +21,9 @@ public abstract class TurnState : StateBase
         UnsubscribeFromEvents();
         InvokeStateEndedEvent();
     }
+    public virtual void ForceEndState()
+    {
+        EndState();
+    }
 }
 

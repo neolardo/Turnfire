@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f6815f725b2c2a48b4c3cdff7f171dc, type: 3}
+  m_Name: BootsArmorDefinition
+  m_EditorClassIdentifier: 
+  Sprite: {fileID: 21300000, guid: 5d52e0c4d408ead42833916a7420a06b, type: 3}
+  Name: boots
+  Description: Makes you jump higher.
+  InitialQuantity: 1
+  MaximumQuantity: 1
+  IsQuantityInfinite: 0
+  DropQuantityRange:
+    _normalizedValue: 0
+    _isRandomized: 0
+    _randomness: 0
+    _group: {fileID: 11400000, guid: aaaaf89e65985ec41be3df1534757652, type: 2}
+  ItemActionAnimation: {fileID: 0}
+  ItemActionSFX: {fileID: 0}
+  HideItemDuringUsage: 0
+  UseInstantlyWhenSelected: 1
+  MaxDurability:
+    _normalizedValue: 0.5
+    _isRandomized: 0
+    _randomness: 0
+    _group: {fileID: 11400000, guid: 605abe0e4a78f5c4ba2e65d2435bc7a2, type: 2}
+  EquippedSpriteStrip:
+  - {fileID: -2182569664836878566, guid: 9625ef0884db84e4a92137b5ba4b9e77, type: 3}
+  - {fileID: -4953369723401311878, guid: 9625ef0884db84e4a92137b5ba4b9e77, type: 3}
+  - {fileID: -7376900972252091423, guid: 9625ef0884db84e4a92137b5ba4b9e77, type: 3}
+  - {fileID: -1284955333684908260, guid: 9625ef0884db84e4a92137b5ba4b9e77, type: 3}
+  - {fileID: 1286106027126356408, guid: 9625ef0884db84e4a92137b5ba4b9e77, type: 3}
+  - {fileID: 5265718498107863686, guid: 9625ef0884db84e4a92137b5ba4b9e77, type: 3}
+  - {fileID: -7729186252156197484, guid: 9625ef0884db84e4a92137b5ba4b9e77, type: 3}
+  - {fileID: -7354831315598895761, guid: 9625ef0884db84e4a92137b5ba4b9e77, type: 3}
+  - {fileID: 4608068848056109067, guid: 9625ef0884db84e4a92137b5ba4b9e77, type: 3}
+  - {fileID: -5117450094567745632, guid: 9625ef0884db84e4a92137b5ba4b9e77, type: 3}
+  - {fileID: -1229296855896861242, guid: 9625ef0884db84e4a92137b5ba4b9e77, type: 3}
+  - {fileID: -1599371533682743530, guid: 9625ef0884db84e4a92137b5ba4b9e77, type: 3}
+  - {fileID: -2840747877548663953, guid: 9625ef0884db84e4a92137b5ba4b9e77, type: 3}
+  - {fileID: -5077091119826930301, guid: 9625ef0884db84e4a92137b5ba4b9e77, type: 3}
+  - {fileID: -2198479064451171906, guid: 9625ef0884db84e4a92137b5ba4b9e77, type: 3}
+  - {fileID: 2654203106902415040, guid: 9625ef0884db84e4a92137b5ba4b9e77, type: 3}
+  - {fileID: -4693023873027279782, guid: 9625ef0884db84e4a92137b5ba4b9e77, type: 3}
+  - {fileID: -148619102276500616, guid: 9625ef0884db84e4a92137b5ba4b9e77, type: 3}
+  - {fileID: 6575271897962636770, guid: 9625ef0884db84e4a92137b5ba4b9e77, type: 3}
+  - {fileID: 8412565765953576091, guid: 9625ef0884db84e4a92137b5ba4b9e77, type: 3}
+  - {fileID: 8304396068382268585, guid: 9625ef0884db84e4a92137b5ba4b9e77, type: 3}
+  - {fileID: -3798569904157006266, guid: 9625ef0884db84e4a92137b5ba4b9e77, type: 3}
+  - {fileID: 9207111999573833722, guid: 9625ef0884db84e4a92137b5ba4b9e77, type: 3}
+  - {fileID: 2071822144432197515, guid: 9625ef0884db84e4a92137b5ba4b9e77, type: 3}
+  - {fileID: -4898512711378995648, guid: 9625ef0884db84e4a92137b5ba4b9e77, type: 3}
+  - {fileID: -4960809952383301944, guid: 9625ef0884db84e4a92137b5ba4b9e77, type: 3}
+  - {fileID: -2976604917262833766, guid: 9625ef0884db84e4a92137b5ba4b9e77, type: 3}
+  - {fileID: 3706731443880308528, guid: 9625ef0884db84e4a92137b5ba4b9e77, type: 3}
+  - {fileID: -531061537046870252, guid: 9625ef0884db84e4a92137b5ba4b9e77, type: 3}
+  AdditionalJumpRange:
+    _normalizedValue: 1
+    _isRandomized: 0
+    _randomness: 0
+    _group: {fileID: 11400000, guid: e049b940edb97c043bd5dbaf24c3f90d, type: 2}

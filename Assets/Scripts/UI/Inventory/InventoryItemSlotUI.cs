@@ -18,7 +18,7 @@ public class InventoryItemSlotUI : MonoBehaviour,
     [SerializeField] private Image _itemImage;
     [SerializeField] private Sprite _selectedSlotSprite;
     [SerializeField] private Sprite _deselectedSlotSprite;
-    [SerializeField] private TextMeshProUGUI _ammoText;
+    [SerializeField] private TextMeshProUGUI _quantityText;
     private LocalGameplayInput _inputManager;
     public Item Item => _item;
     private Item _item;
@@ -41,7 +41,7 @@ public class InventoryItemSlotUI : MonoBehaviour,
         _item = item;
         _itemImage.sprite = item.Definition.Sprite;
         _itemImage.gameObject.SetActive(true);
-        _ammoText.text = item.Ammo.ToString();
+        _quantityText.text = (item.Definition.IsQuantityInfinite || item.Definition.MaximumQuantity == 1) ? string.Empty : item.Quantity.ToString();
     }
 
     public void UnloadItem()
@@ -49,7 +49,7 @@ public class InventoryItemSlotUI : MonoBehaviour,
         _item = null;
         _itemImage.sprite = null;
         _itemImage.gameObject.SetActive(false);
-        _ammoText.text = string.Empty;
+        _quantityText.text = string.Empty;
     }
 
     public void OnSlotDeselected()

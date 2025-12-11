@@ -3,102 +3,76 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-
-[RequireComponent(typeof(Selectable))]
-public class MenuButtonUI : ScreenSizeDependantUI, 
-    IPointerEnterHandler,
-    IPointerExitHandler,
-    IPointerDownHandler,
-    IPointerUpHandler,
-    ISelectHandler,
-    IDeselectHandler
+public class MenuButtonUI : ScreenSizeDependantHoverableSelectableContainerUI
 {
-    [SerializeField] private PixelUIDefinition _uiDefinition;
-    [SerializeField] private UISoundsDefinition _uiSounds;
     [SerializeField] private Sprite _pressedSprite;
     [SerializeField] private Sprite _hoveredSprite;
     [SerializeField] private Sprite _disabledSprite;
     [SerializeField] private TextMeshProUGUI _text;
     [SerializeField] private Color _disabledTextColor;
-    [SerializeField] private bool _disabled;
     private LocalMenuInput _inputManager;
     private Sprite _normalSprite;
 
     private Image _image;
-    private bool _hovered;
 
     public event Action ButtonPressed;
 
-    private readonly Vector2 TextHoverOffsetPixels = new Vector2(0, 1);
-    private Vector2 _originalTextPosition;
-    private RectTransform _parentCanvasRect;
-
-
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+        _rectTransform = _text.rectTransform;
         _inputManager = FindFirstObjectByType<LocalMenuInput>();
-        var selectable = GetComponent<Selectable>();
-        selectable.transition = Selectable.Transition.None;
         _image = GetComponent<Image>();
         _normalSprite = _image.sprite;
-        var canvas = FindFirstObjectByType<Canvas>();
-        _parentCanvasRect = canvas.GetComponent<RectTransform>();
-        if (_disabled)
+       
+        if (!interactable)
         {
             _image.sprite = _disabledSprite;
             _text.color = _disabledTextColor;
-            selectable.interactable = false;
         }
     }
 
     protected override void OnEnable()
     {
         base.OnEnable();
-        UnHoverButton();
+        UnHover();
         _inputManager.MenuConfirmPerformed += OnMenuButtonConfirmPerformed;
     }
 
-    private void OnDisable()
+    protected override void OnDisable()
     {
+        base.OnDisable();
         _inputManager.MenuConfirmPerformed -= OnMenuButtonConfirmPerformed;
     }
 
     private void OnMenuButtonConfirmPerformed()
     {
-        if (_hovered || EventSystem.current.currentSelectedGameObject == gameObject)
+        if (_isHovered || EventSystem.current.currentSelectedGameObject == gameObject)
         {
             Press();
         }
     }
 
-    public void OnPointerEnter(PointerEventData eventData)
+    public override void OnPointerEnter(PointerEventData eventData)
     {
-        HoverButton();
+        Hover();
         EventSystem.current.SetSelectedGameObject(gameObject);
     }
 
-    public void OnPointerExit(PointerEventData eventData)
+    public override void OnPointerExit(PointerEventData eventData)
     {
-        UnHoverButton();
+        UnHover();
     }
 
-    public void OnPointerDown(PointerEventData eventData)
+    public override void OnPointerDown(PointerEventData eventData)
     {
+        base.OnPointerDown(eventData);
         SetPressedVisuals();
     }
-    public void OnPointerUp(PointerEventData eventData)
+    public override void OnPointerUp(PointerEventData eventData)
     {
+        base.OnPointerUp(eventData);
         InvokePressed();
-    }
-
-    public void OnSelect(BaseEventData eventData)
-    {
-        HoverButton();
-    }
-
-    public void OnDeselect(BaseEventData eventData)
-    {
-        UnHoverButton();
     }
 
     public void Press()
@@ -109,19 +83,19 @@ public class MenuButtonUI : ScreenSizeDependantUI,
 
     private void SetPressedVisuals()
     {
-        if (_disabled)
+        if (!interactable)
         {
             return; 
         }
 
         AudioManager.Instance.PlayUISound(_uiSounds.Confirm);
         _image.sprite = _pressedSprite;
-        _text.rectTransform.anchoredPosition = _originalTextPosition;
+        _rectTransform.anchoredPosition = _originalAnchoredPosition;
     }
 
     private void InvokePressed()
     {
-        if (_disabled)
+        if (!interactable)
         {
             return;
         }
@@ -129,42 +103,27 @@ public class MenuButtonUI : ScreenSizeDependantUI,
         ButtonPressed?.Invoke();
     }
 
-    private void HoverButton()
+    protected override void Hover()
     {
-        if (_disabled)
+        if (!interactable)
         {
             return;
         }
+        base.Hover();
 
-        AudioManager.Instance.PlayUISound(_uiSounds.Hover);
         _image.sprite = _hoveredSprite;
-        float scale = _parentCanvasRect.sizeDelta.y / _uiDefinition.TargetScreenHeightInPixels;
-        var offset = TextHoverOffsetPixels * scale;
-        _text.rectTransform.anchoredPosition = _originalTextPosition + offset;
-        _hovered = true;
     }
 
-    private void UnHoverButton()
+    protected override void UnHover()
     {
-        if (_disabled)
+        if (!interactable)
         {
             return;
         }
+        base.UnHover();
 
         _image.sprite = _normalSprite;
-        _hovered = false;
-        _text.rectTransform.anchoredPosition = _originalTextPosition;
     }
 
-    protected override void OneFrameAfterOnEnable()
-    {
-        _originalTextPosition = _text.rectTransform.anchoredPosition;
-    }
 
-    protected override void OneFrameAfterSizeChanged()
-    {
-        float scale = _parentCanvasRect.sizeDelta.y / _uiDefinition.TargetScreenHeightInPixels;
-        var offset = TextHoverOffsetPixels * scale;
-        _text.rectTransform.anchoredPosition = _hovered? _originalTextPosition + offset : _originalTextPosition;
-    }
 }

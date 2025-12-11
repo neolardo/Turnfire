@@ -28,7 +28,7 @@ public class DeadZone : MonoBehaviour
             var p = collision.GetComponent<Package>();
             p.Destroy();
         }
-        else if (collision.CompareTag(Constants.ProjectileTag))
+        else if (collision.CompareTag(Constants.HitboxTag))
         {
             var p = collision.GetComponent<Projectile>();
             p.ForceExplode();

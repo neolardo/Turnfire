@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 [RequireComponent(typeof(SpriteRenderer))]
 public class CharacterItemRenderer : MonoBehaviour
@@ -9,9 +8,23 @@ public class CharacterItemRenderer : MonoBehaviour
     private Item _currentItem;
 
     [SerializeField] private CharacterAnimatorDefinition _animatorDefinition;
-    [SerializeField] private Vector2 _highOffset;
-    [SerializeField] private Vector2 _middleOffset;
-    [SerializeField] private Vector2 _lowOffset;
+
+    [Header("Ranged Offsets")]
+    [SerializeField] private Vector2 _rangedHighOffset = new Vector2(0.12f, -0.0065f);
+    [SerializeField] private Vector2 _rangedMiddleOffset = new Vector2(0.12f, -0.055f);
+    [SerializeField] private Vector2 _rangedLowOffset = new Vector2(0.13f, -0.085f);
+    [Header("Melee Offsets")]
+    [SerializeField] private Vector2 _meleeHighOffset = new Vector2(0.12f, -0.0065f);
+    [SerializeField] private Vector2 _meleeMiddleOffset = new Vector2(0.12f, -0.055f);
+    [SerializeField] private Vector2 _meleeLowOffset = new Vector2(0.13f, -0.085f);
+
+    [SerializeField] private Vector2[] _highAttackOffsets;
+    [SerializeField] private Vector2[] _middleAttackOffsets;
+    [SerializeField] private Vector2[] _lowAttackOffsets;
+
+    private float _initialRotationDegrees;
+    private bool _isRangedWeapon;
+
 
     private void Awake()
     {
@@ -21,6 +34,12 @@ public class CharacterItemRenderer : MonoBehaviour
     public void ChangeItem(Item item)
     {
         _currentItem = item;
+        if (_currentItem.Definition.ItemType == ItemType.Weapon)
+        {
+            var weaponDef = item.Definition as WeaponDefinition;
+            _initialRotationDegrees = weaponDef.InitialVisualRotationDegrees;
+            _isRangedWeapon = weaponDef.IsRanged;
+        }
     }
 
     public void ShowItem()
@@ -29,6 +48,39 @@ public class CharacterItemRenderer : MonoBehaviour
         {
             _spriteRenderer.sprite = _currentItem.Definition.Sprite;
         }
+    }
+
+    public void StartMoveAlongAnimationThenHide(Vector2 aimVector)
+    {
+        aimVector = aimVector.normalized;
+        Vector2[] offsetArray = null;
+        if (aimVector.y > Constants.UpwardAimThresholdY)
+        {
+            offsetArray = _highAttackOffsets;
+        }
+        else if (aimVector.y >= Constants.DownwardAimThresholdY)
+        {
+            offsetArray = _middleAttackOffsets;
+        }
+        else
+        {
+            offsetArray = _lowAttackOffsets;
+        }
+        bool turnToLeft = aimVector.x < 0;
+        float offsetDegrees = turnToLeft ? -_initialRotationDegrees : _initialRotationDegrees;
+        transform.rotation = Quaternion.AngleAxis(aimVector.ToAngleDegrees() + offsetDegrees, Vector3.forward);
+        _spriteRenderer.flipY = turnToLeft;
+        StartCoroutine(MoveAlongAnimationThenHide(offsetArray));
+    }
+
+    private IEnumerator MoveAlongAnimationThenHide(Vector2[] offsets)
+    {
+        for (int i = 0; i < offsets.Length; i++)
+        {
+            transform.localPosition = new Vector2(_spriteRenderer.flipY ? -offsets[i].x : offsets[i].x, offsets[i].y);
+            yield return new WaitForSeconds(_animatorDefinition.MeleeAttackAnimationFrameDuration);
+        }
+        HideItem();
     }
 
     public void HideItemAfterDelay()
@@ -49,26 +101,29 @@ public class CharacterItemRenderer : MonoBehaviour
 
     public void ChangeAim(Vector2 aimVector)
     {
+        aimVector = aimVector.normalized;
         ChangeOrientation(aimVector);
-        transform.rotation = Quaternion.AngleAxis(Vector2.SignedAngle(Vector2.right, aimVector), Vector3.forward);
+        var turnToLeft = aimVector.x < 0;
+        float offsetDegrees = turnToLeft ? -_initialRotationDegrees : _initialRotationDegrees;
+        transform.rotation = Quaternion.AngleAxis(aimVector.ToAngleDegrees() + offsetDegrees, Vector3.forward);
     }
 
     private void ChangeOrientation(Vector2 aimVector)
     {
-        bool turnToRight = aimVector.x < 0;
+        bool turnToLeft = aimVector.x < 0;
         if (aimVector.y > Constants.UpwardAimThresholdY)
         {
-            transform.localPosition = _highOffset;
+            transform.localPosition = _isRangedWeapon? _rangedHighOffset : _meleeHighOffset;
         }
         else if (aimVector.y >= Constants.DownwardAimThresholdY)
         {
-            transform.localPosition = _middleOffset;
+            transform.localPosition = _isRangedWeapon? _rangedMiddleOffset : _meleeMiddleOffset;
         }
         else
         {
-            transform.localPosition = _lowOffset;
+            transform.localPosition = _isRangedWeapon? _rangedLowOffset : _meleeLowOffset;
         }
-        transform.localPosition = new Vector2(turnToRight ? -transform.localPosition.x : transform.localPosition.x, transform.localPosition.y);
-        _spriteRenderer.flipY = turnToRight;
+        transform.localPosition = new Vector2(turnToLeft ? -transform.localPosition.x : transform.localPosition.x, transform.localPosition.y);
+        _spriteRenderer.flipY = turnToLeft;
     }
 }

@@ -65,7 +65,7 @@ MonoBehaviour:
   _itemImage: {fileID: 379257396181618915}
   _selectedSlotSprite: {fileID: 21300000, guid: 20dfa2c2b8351a64389c0a14554606d5, type: 3}
   _deselectedSlotSprite: {fileID: 21300000, guid: 76005429bdaa10d4e84e9cdb0bed83b8, type: 3}
-  _ammoText: {fileID: 4131723823239219795}
+  _quantityText: {fileID: 4131723823239219795}
 --- !u!114 &1893249349487035522
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -136,7 +136,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 1893249349487035522}
 --- !u!1 &3148630205920123889
 GameObject:
   m_ObjectHideFlags: 0
@@ -224,7 +224,7 @@ GameObject:
   - component: {fileID: 8623693830751076770}
   - component: {fileID: 4131723823239219795}
   m_Layer: 5
-  m_Name: AmmoText
+  m_Name: QuantityText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

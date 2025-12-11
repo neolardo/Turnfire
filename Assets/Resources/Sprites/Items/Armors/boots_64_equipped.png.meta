@@ -1,0 +1,994 @@
+fileFormatVersion: 2
+guid: 9625ef0884db84e4a92137b5ba4b9e77
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -2182569664836878566
+    second: boots_64_equiped_0
+  - first:
+      213: -4953369723401311878
+    second: boots_64_equiped_1
+  - first:
+      213: -7376900972252091423
+    second: boots_64_equiped_2
+  - first:
+      213: -1284955333684908260
+    second: boots_64_equiped_3
+  - first:
+      213: 1286106027126356408
+    second: boots_64_equiped_4
+  - first:
+      213: 5265718498107863686
+    second: boots_64_equiped_5
+  - first:
+      213: -7729186252156197484
+    second: boots_64_equiped_6
+  - first:
+      213: -7354831315598895761
+    second: boots_64_equiped_7
+  - first:
+      213: 4608068848056109067
+    second: boots_64_equiped_8
+  - first:
+      213: -5117450094567745632
+    second: boots_64_equiped_9
+  - first:
+      213: -1229296855896861242
+    second: boots_64_equiped_10
+  - first:
+      213: -1599371533682743530
+    second: boots_64_equiped_11
+  - first:
+      213: -2840747877548663953
+    second: boots_64_equiped_12
+  - first:
+      213: -5077091119826930301
+    second: boots_64_equiped_13
+  - first:
+      213: -2198479064451171906
+    second: boots_64_equiped_14
+  - first:
+      213: 2654203106902415040
+    second: boots_64_equiped_15
+  - first:
+      213: -4693023873027279782
+    second: boots_64_equiped_16
+  - first:
+      213: -148619102276500616
+    second: boots_64_equiped_17
+  - first:
+      213: 6575271897962636770
+    second: boots_64_equiped_18
+  - first:
+      213: 8412565765953576091
+    second: boots_64_equiped_19
+  - first:
+      213: 8304396068382268585
+    second: boots_64_equiped_20
+  - first:
+      213: -3798569904157006266
+    second: boots_64_equiped_21
+  - first:
+      213: 9207111999573833722
+    second: boots_64_equiped_22
+  - first:
+      213: 2071822144432197515
+    second: boots_64_equiped_23
+  - first:
+      213: -4898512711378995648
+    second: boots_64_equiped_24
+  - first:
+      213: -4960809952383301944
+    second: boots_64_equiped_25
+  - first:
+      213: -2976604917262833766
+    second: boots_64_equiped_26
+  - first:
+      213: 3706731443880308528
+    second: boots_64_equiped_27
+  - first:
+      213: -531061537046870252
+    second: boots_64_equiped_28
+  - first:
+      213: 4960999641339431898
+    second: boots_64_equiped_29
+  - first:
+      213: 718491235809820679
+    second: boots_64_equiped_30
+  - first:
+      213: -5193013895833943672
+    second: boots_64_equiped_31
+  - first:
+      213: 5868506393911944002
+    second: boots_64_equiped_32
+  - first:
+      213: 543806327845758220
+    second: boots_64_equiped_33
+  - first:
+      213: 5832440426071015754
+    second: boots_64_equiped_34
+  - first:
+      213: -694453565161075069
+    second: boots_64_equiped_35
+  - first:
+      213: -410796166196304435
+    second: boots_64_equiped_36
+  - first:
+      213: -1047953636847379602
+    second: boots_64_equiped_37
+  - first:
+      213: -5458106557406309212
+    second: boots_64_equiped_38
+  - first:
+      213: -3489789366074412056
+    second: boots_64_equiped_39
+  - first:
+      213: -6419836428808884932
+    second: boots_64_equiped_40
+  - first:
+      213: 558154252152913912
+    second: boots_64_equiped_41
+  - first:
+      213: -4194901634167564309
+    second: boots_64_equiped_42
+  - first:
+      213: -4067653069032205053
+    second: boots_64_equiped_43
+  - first:
+      213: -7212467483867798020
+    second: boots_64_equiped_44
+  - first:
+      213: -1685028158463840374
+    second: boots_64_equiped_45
+  - first:
+      213: 5250498910639934323
+    second: boots_64_equiped_46
+  - first:
+      213: -7897958508924188560
+    second: boots_64_equiped_47
+  - first:
+      213: 6735020753779498978
+    second: boots_64_equiped_48
+  - first:
+      213: 7865843912274668906
+    second: boots_64_equiped_49
+  - first:
+      213: -5326254381829037286
+    second: boots_64_equiped_50
+  - first:
+      213: -3956397252469874154
+    second: boots_64_equiped_51
+  - first:
+      213: -529554970251622979
+    second: boots_64_equiped_52
+  - first:
+      213: -576889351243483430
+    second: boots_64_equiped_53
+  - first:
+      213: -299133619351614240
+    second: boots_64_equiped_54
+  - first:
+      213: 6960259613568365496
+    second: boots_64_equiped_55
+  - first:
+      213: 6782433134442900511
+    second: boots_64_equiped_56
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 64
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: boots_64_equiped_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a1fbadd1474f5b1e0800000000000000
+      internalID: -2182569664836878566
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boots_64_equiped_1
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a796d7b0b78124bb0800000000000000
+      internalID: -4953369723401311878
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boots_64_equiped_2
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1eb2ea576abff9990800000000000000
+      internalID: -7376900972252091423
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boots_64_equiped_3
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c1fa7779eebea2ee0800000000000000
+      internalID: -1284955333684908260
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boots_64_equiped_4
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8b9fa5a1e9a29d110800000000000000
+      internalID: 1286106027126356408
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boots_64_equiped_5
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6823ce63317931940800000000000000
+      internalID: 5265718498107863686
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boots_64_equiped_6
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 495a56dfd0a6cb490800000000000000
+      internalID: -7729186252156197484
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boots_64_equiped_7
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f651fc2d2e36ee990800000000000000
+      internalID: -7354831315598895761
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boots_64_equiped_8
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b088de4e33623ff30800000000000000
+      internalID: 4608068848056109067
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boots_64_equiped_9
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0a7108d904a2bf8b0800000000000000
+      internalID: -5117450094567745632
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boots_64_equiped_10
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c553ccc509a0fee0800000000000000
+      internalID: -1229296855896861242
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boots_64_equiped_11
+      rect:
+        serializedVersion: 2
+        x: 704
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 617e7fe5014edc9e0800000000000000
+      internalID: -1599371533682743530
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boots_64_equiped_12
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f6b54463bd2a398d0800000000000000
+      internalID: -2840747877548663953
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boots_64_equiped_13
+      rect:
+        serializedVersion: 2
+        x: 832
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 385fc6ea68c8a89b0800000000000000
+      internalID: -5077091119826930301
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boots_64_equiped_14
+      rect:
+        serializedVersion: 2
+        x: 896
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eb9314d50fe6d71e0800000000000000
+      internalID: -2198479064451171906
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boots_64_equiped_15
+      rect:
+        serializedVersion: 2
+        x: 960
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0c618a4c9af95d420800000000000000
+      internalID: 2654203106902415040
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boots_64_equiped_16
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a54f7c5f6a70fdeb0800000000000000
+      internalID: -4693023873027279782
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boots_64_equiped_17
+      rect:
+        serializedVersion: 2
+        x: 1088
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 873c8f1c6bfffedf0800000000000000
+      internalID: -148619102276500616
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boots_64_equiped_18
+      rect:
+        serializedVersion: 2
+        x: 1152
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e5eba334fe004b50800000000000000
+      internalID: 6575271897962636770
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boots_64_equiped_19
+      rect:
+        serializedVersion: 2
+        x: 1216
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b9c56411eff6fb470800000000000000
+      internalID: 8412565765953576091
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boots_64_equiped_20
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ac5312c9342f3370800000000000000
+      internalID: 8304396068382268585
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boots_64_equiped_21
+      rect:
+        serializedVersion: 2
+        x: 1344
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6466b304cc4c84bc0800000000000000
+      internalID: -3798569904157006266
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boots_64_equiped_22
+      rect:
+        serializedVersion: 2
+        x: 1408
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af7b5dd059b36cf70800000000000000
+      internalID: 9207111999573833722
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boots_64_equiped_23
+      rect:
+        serializedVersion: 2
+        x: 1472
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b8f4bac634790cc10800000000000000
+      internalID: 2071822144432197515
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boots_64_equiped_24
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 046f48674acf40cb0800000000000000
+      internalID: -4898512711378995648
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boots_64_equiped_25
+      rect:
+        serializedVersion: 2
+        x: 1600
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c688fdb1a9a72bb0800000000000000
+      internalID: -4960809952383301944
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boots_64_equiped_26
+      rect:
+        serializedVersion: 2
+        x: 1664
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a972ed53999f0b6d0800000000000000
+      internalID: -2976604917262833766
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boots_64_equiped_27
+      rect:
+        serializedVersion: 2
+        x: 1728
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 03fa14eeb94f07330800000000000000
+      internalID: 3706731443880308528
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boots_64_equiped_28
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 417c272885a41a8f0800000000000000
+      internalID: -531061537046870252
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: a6d06e5ea9670fb4aad8aa2b0fa6817f
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      boots_64_equiped_0: -2182569664836878566
+      boots_64_equiped_1: -4953369723401311878
+      boots_64_equiped_10: -1229296855896861242
+      boots_64_equiped_11: -1599371533682743530
+      boots_64_equiped_12: -2840747877548663953
+      boots_64_equiped_13: -5077091119826930301
+      boots_64_equiped_14: -2198479064451171906
+      boots_64_equiped_15: 2654203106902415040
+      boots_64_equiped_16: -4693023873027279782
+      boots_64_equiped_17: -148619102276500616
+      boots_64_equiped_18: 6575271897962636770
+      boots_64_equiped_19: 8412565765953576091
+      boots_64_equiped_2: -7376900972252091423
+      boots_64_equiped_20: 8304396068382268585
+      boots_64_equiped_21: -3798569904157006266
+      boots_64_equiped_22: 9207111999573833722
+      boots_64_equiped_23: 2071822144432197515
+      boots_64_equiped_24: -4898512711378995648
+      boots_64_equiped_25: -4960809952383301944
+      boots_64_equiped_26: -2976604917262833766
+      boots_64_equiped_27: 3706731443880308528
+      boots_64_equiped_28: -531061537046870252
+      boots_64_equiped_3: -1284955333684908260
+      boots_64_equiped_4: 1286106027126356408
+      boots_64_equiped_5: 5265718498107863686
+      boots_64_equiped_6: -7729186252156197484
+      boots_64_equiped_7: -7354831315598895761
+      boots_64_equiped_8: 4608068848056109067
+      boots_64_equiped_9: -5117450094567745632
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

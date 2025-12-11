@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4db3a51524a05dc43b82f655da2958d8, type: 3}
+  m_Name: Grenade
+  m_EditorClassIdentifier: 
+  Sprite: {fileID: 21300000, guid: a50212cd8fcd50847adb388d438fe251, type: 3}
+  Name: grenade
+  Description: Throws a grenade that explodes on the 4th contact.
+  InitialQuantity: 3
+  MaximumQuantity: 9
+  IsQuantityInfinite: 0
+  DropQuantityRange:
+    _normalizedValue: 0.195
+    _isRandomized: 1
+    _randomness: 0.17
+    _group: {fileID: 11400000, guid: 5a5b56af88cd285408e8a8c33dfc5e52, type: 2}
+  ItemActionAnimation: {fileID: 0}
+  ItemActionSFX: {fileID: 11400000, guid: b9e46c54c7c274f408255becd8ef6ad2, type: 2}
+  HideItemDuringUsage: 1
+  UseInstantlyWhenSelected: 0
+  InitialVisualRotationDegrees: 0
+  FireStrength:
+    _normalizedValue: 0.3
+    _isRandomized: 0
+    _randomness: 0
+    _group: {fileID: 11400000, guid: 22026dfb48c6fa8489243cadbd99e5af, type: 2}
+  ProjectileDefinition: {fileID: 11400000, guid: cc9edc2b038690f4bb2a89ff448f000d, type: 2}
+  UseGravityForPreview: 1
