@@ -84,6 +84,7 @@ public class PixelTrajectoryRenderer : MonoBehaviour
 
             if (totalDistance > _maxLength)
             {
+                count--;
                 break;
             }
 

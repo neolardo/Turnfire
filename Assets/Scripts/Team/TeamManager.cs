@@ -21,7 +21,7 @@ public class TeamManager : MonoBehaviour
 
     private void InitializeTeams()
     {
-        _teams = _possibleTeams.Take(SceneLoader.Instance.CurrentGameplaySceneSettings.NumTeams).ToList();
+        _teams = _possibleTeams.Take(SceneLoader.Instance.CurrentGameplaySceneSettings.Players.Count).ToList();
         for (int i = _teams.Count; i < _possibleTeams.Count; i++)
         {
             _possibleTeams[i].gameObject.SetActive(false);
@@ -33,24 +33,24 @@ public class TeamManager : MonoBehaviour
 
     private void CreateRandomizedTeamSetup()
     {
-        //TODO: local multiplayer
-        //TODO: remote players
         var botManagerFactory = FindFirstObjectByType<BotManagerFactory>();
-        var playerNames = SceneLoader.Instance.CurrentGameplaySceneSettings.PlayerNames;
-        int playerCount = 0;
-        int botCount = 0;
-        Team localTeam = _teams[Random.Range(0, _teams.Count)];
-        localTeam.InitializeInputSource(InputSourceType.Local);
-        localTeam.TeamName = playerNames[playerCount++]; //TODO: local player's name
-        foreach (var team in _teams)
+        var players = SceneLoader.Instance.CurrentGameplaySceneSettings.Players;
+        var teamIndexes = Enumerable.Range(0, _teams.Count).ToList();
+        foreach (var player in players)
         {
-            if (team == localTeam)
-                continue;
-
-            team.InitializeInputSource(InputSourceType.Bot);
-            team.TeamName = Constants.DefaultBotName + $"{botCount+1}";
-            botCount++;
-            botManagerFactory.CreateBotForTeam(team, SceneLoader.Instance.CurrentGameplaySceneSettings.BotDifficulty);
+            var teamIndex = teamIndexes[Random.Range(0, teamIndexes.Count)];
+            teamIndexes.Remove(teamIndex);
+            var team = _teams[teamIndex];
+            team.TeamName = player.Name;
+            if (player.Type == PlayerType.Human)
+            {
+                team.InitializeInputSource(InputSourceType.Local); //TODO: remote?
+            }
+            else if(player.Type == PlayerType.Bot)
+            {
+                team.InitializeInputSource(InputSourceType.Bot);
+                botManagerFactory.CreateBotForTeam(team, SceneLoader.Instance.CurrentGameplaySceneSettings.BotDifficulty);
+            }
         }
     }
 

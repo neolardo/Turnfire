@@ -41,17 +41,30 @@ public class SingleplayerMenuUI : MonoBehaviour
 
     public void OnConfirmPressed()
     {
-        var settings = new GameplaySceneSettings()
-        {
-            SceneName = _mapDisplay.SelectedMap.SceneName,
-            NumBots = _numBotsDisplay.Value,
-            NumTeams = _numBotsDisplay.Value + 1,
-            UseTimer = _useTimerCheckbox.Value,
-            BotDifficulty = _botDifficultyToggle.Value,
-            PlayerNames = new List<string>() { Constants.DefaultPlayerName }
-        }; 
+        var settings = CreateGameplaySceneSettings();
         _menuUIManager.HideAllPanels();
         SceneLoader.Instance.LoadGameplayScene(settings);
+    }
+
+    private GameplaySceneSettings CreateGameplaySceneSettings()
+    {
+        var players = new List<Player>
+        {
+            new Player(Constants.DefaultPlayerName, PlayerType.Human)
+        };
+        for (int i = 0; i < _numBotsDisplay.Value; i++)
+        {
+            players.Add(new Player($"{Constants.DefaultBotName}{i + 1}", PlayerType.Bot));
+        }
+
+        return new GameplaySceneSettings()
+        {
+            SceneName = _mapDisplay.SelectedMap.SceneName,
+            UseTimer = _useTimerCheckbox.Value,
+            BotDifficulty = _botDifficultyToggle.Value,
+            Players = players,
+            IsOnlineGame = false
+        };
     }
 
     private void OnNumberOfBotsChanged(int numBots)

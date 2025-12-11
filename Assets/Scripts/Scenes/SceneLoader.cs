@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -11,7 +13,7 @@ public class SceneLoader : MonoBehaviour
 
     private void Awake()
     {
-        CurrentGameplaySceneSettings = new GameplaySceneSettings() { NumTeams = 2, NumBots= 1,  SceneName = "Map0", UseTimer = false }; //TODO: remove
+        CurrentGameplaySceneSettings = new GameplaySceneSettings() { Players = new List<Player>{new Player("TestPlayer", PlayerType.Human), { new Player("Bot", PlayerType.Bot)} }, BotDifficulty= BotDifficulty.Easy,  SceneName = "Map0", UseTimer = false }; //TODO: remove
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);

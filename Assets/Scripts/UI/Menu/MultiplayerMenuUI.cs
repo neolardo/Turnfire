@@ -1,4 +1,3 @@
-using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -41,21 +40,27 @@ public class MultiplayerMenuUI : MonoBehaviour
 
     public void OnConfirmPressed()
     {
-        var playerNames = new List<string>(); //TODO: get names from menu textbox?
-        for (int i = 0; i < _numPlayersDisplay.Value; i++)
-        {
-            playerNames.Add(Constants.DefaultPlayerName + i + 1);
-        }
-
-        var settings = new GameplaySceneSettings()
-        {
-            SceneName = _mapDisplay.SelectedMap.SceneName,
-            NumTeams = _numPlayersDisplay.Value,
-            UseTimer = _useTimerCheckbox.Value,
-            PlayerNames = playerNames
-        };
+        var settings = CreateGameplaySceneSettings();
         _menuUIManager.HideAllPanels();
         SceneLoader.Instance.LoadGameplayScene(settings);
+    }
+
+    private GameplaySceneSettings CreateGameplaySceneSettings()
+    {
+        //TODO: names from textbox
+        var players = new List<Player>();
+        for (int i = 0; i < _numPlayersDisplay.Value; i++)
+        {
+            players.Add(new Player($"{Constants.DefaultPlayerName}{i + 1}", PlayerType.Human));
+        }
+
+        return new GameplaySceneSettings()
+        {
+            SceneName = _mapDisplay.SelectedMap.SceneName,
+            UseTimer = _useTimerCheckbox.Value,
+            Players = players,
+            IsOnlineGame = false
+        };
     }
 
     public void OnCancelPressed()

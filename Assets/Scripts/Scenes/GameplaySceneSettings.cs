@@ -5,9 +5,8 @@ using System.Collections.Generic;
 public class GameplaySceneSettings
 {
     public string SceneName;
-    public int NumTeams;
-    public int NumBots;
+    public List<Player> Players;
     public BotDifficulty BotDifficulty;
     public bool UseTimer;
-    public List<string> PlayerNames;
+    public bool IsOnlineGame;
 }
