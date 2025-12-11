@@ -283,6 +283,12 @@ public class JumpGraph : UnityDriven
         return path != null; 
     }
 
+    public StandingPoint GetRandomStandingPoint()
+    {   
+        var allValidPoints = _points.Where(p => p.IsValid).ToArray();
+        return allValidPoints[Random.Range(0, allValidPoints.Length)];
+    }
+
     public IEnumerable<StandingPoint> GetAllLinkedStandingPointsFromPoint(StandingPoint startPoint)
     {
         return _adjency[startPoint.Id].Values.Where(link => IsJumpPossible(link)).Select(link => _points[link.ToId]);

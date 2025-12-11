@@ -80,6 +80,11 @@ public class BotBrain : UnityDriven
             yield return null;
         }
 
+        if(!possiblePositions.Any())
+        {
+            bestPoint = context.JumpGraph.GetRandomStandingPoint();
+        }
+
         if (bestPoint == startPoint)
         {
             onDone?.Invoke(BotGoal.SkipAction());
@@ -94,9 +99,15 @@ public class BotBrain : UnityDriven
     {
         float score = 0;
 
+        var weaponsWithAmmo = context.Self.GetAllItems().Where(i => i.Definition.ItemType == ItemType.Weapon && !i.Definition.IsQuantityInfinite);
+        int remainingTotalAmmo = weaponsWithAmmo.Any() ? weaponsWithAmmo.Sum(w => w.Quantity): 0;
+
         // offense
-        var closestEnemyDistance = context.Enemies.Select(e => Vector2.Distance(targetPoint.WorldPos, e.transform.position)).DefaultIfEmpty(float.PositiveInfinity).Min();
-        score += OffensiveEnemyDistanceUtility(closestEnemyDistance) * _tuning.Offense;
+        if(remainingTotalAmmo > 0)
+        {
+            var closestEnemyDistance = context.Enemies.Select(e => Vector2.Distance(targetPoint.WorldPos, e.transform.position)).DefaultIfEmpty(float.PositiveInfinity).Min();
+            score += OffensiveEnemyDistanceUtility(closestEnemyDistance) * _tuning.Offense;
+        }
 
         // defense
         if (context.Self.NormalizedHealth < _tuning.LowHealthThreshold)
@@ -107,8 +118,6 @@ public class BotBrain : UnityDriven
 
         // package
         float bestPackageScore = 0;
-        var weapons = context.Self.GetAllItems().Where(i => i.Definition.ItemType == ItemType.Weapon);
-        int remainingTotalAmmo = weapons.Sum(i => i.Quantity);
         float packageGreed = _tuning.GeneralPackageGreed;
         if (remainingTotalAmmo == 0)
         {

@@ -41,10 +41,11 @@ public class BotController
         var feetPosition = context.Self.FeetPosition;
         var startPoint = context.JumpGraph.FindClosestStandingPoint(feetPosition);
         var jumpPath = context.JumpGraph.FindShortestJumpPath(startPoint, destinationPoint);
-        if (jumpPath == null)
+        if (jumpPath == null) // if not reachable jump with a random vector
         {
-            _input.SkipAction();
-            Debug.LogWarning("The planned jump path was invalid!");
+            var randomAimVector = UnityEngine.Random.insideUnitCircle * UnityEngine.Random.Range(0, 1);
+            randomAimVector = new Vector2 (randomAimVector.x, MathF.Abs(randomAimVector.y));
+            _input.AimAndRelease(randomAimVector);
         }
         else if (jumpPath.Count == 0) // already at the destination
         {
