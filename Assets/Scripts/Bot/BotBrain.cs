@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 public class BotBrain : UnityDriven
@@ -236,6 +237,7 @@ public class BotBrain : UnityDriven
                 float pureDamageScore = DamageUtility(simulationResult.TotalDamageDealtToEnemies) * _tuning.Offense;
                 pureDamageScore += -DamageUtility(simulationResult.TotalDamageDealtToAllies) * _tuning.Defense;
                 float distanceScore = DamageCenterDistanceUtility(minDistFromClosestEnemy) * _tuning.Offense;
+
                 if (pureDamageScore + distanceScore > bestScore)
                 {
                     bestScore = pureDamageScore + distanceScore;

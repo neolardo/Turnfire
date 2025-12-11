@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net.Mime;
 using UnityEngine;
 
 public class BulletProjectileBehavior : BallisticProjectileBehavior
@@ -49,7 +47,7 @@ public class BulletProjectileBehavior : BallisticProjectileBehavior
         Explode(new HitboxContactContext(hit.point, hit.collider));
     }
 
-    public override IEnumerable SimulateProjectileBehavior(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone)
+    public override IEnumerator SimulateProjectileBehavior(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone)
     {
         var numHits = Physics2D.RaycastNonAlloc(context.Origin, context.AimVector, _raycastHitArray, Constants.ProjectileRaycastDistance, LayerMaskHelper.GetCombinedLayerMask(Constants.HitboxCollisionLayers));
         var closestHit = _raycastHitArray.Take(numHits).Where(hit => hit.collider != context.Owner.Collider).OrderBy(hit => hit.distance).FirstOrDefault();

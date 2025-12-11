@@ -123,7 +123,7 @@ public class BallisticProjectileBehavior : UnityDriven, IProjectileBehavior
 
     #region Simulation
 
-    public virtual IEnumerable SimulateProjectileBehavior(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone)
+    public virtual IEnumerator SimulateProjectileBehavior(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone)
     {
         Vector2 velocity = context.AimVector;
         Vector2 pos = context.Origin;

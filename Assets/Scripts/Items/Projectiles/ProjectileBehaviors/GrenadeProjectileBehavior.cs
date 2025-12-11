@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GrenadeProjectileBehavior : BallisticProjectileBehavior
@@ -56,7 +55,7 @@ public class GrenadeProjectileBehavior : BallisticProjectileBehavior
         }
     }
 
-    public override IEnumerable SimulateProjectileBehavior(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone)
+    public override IEnumerator SimulateProjectileBehavior(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone)
     {
         Vector2 velocity = context.AimVector;
         Vector2 pos = context.Origin;
@@ -80,7 +79,7 @@ public class GrenadeProjectileBehavior : BallisticProjectileBehavior
             {
                 var cornerPos = pos + cornerPoint;
                 
-                if (context.Terrain.OverlapPoint(cornerPos)) // terrain contact
+                if (context.Terrain.OverlapPoint(cornerPos))
                 {
                     normal = context.Terrain.GetNearestNormalAtPoint(cornerPos);
                     contacted = true;
@@ -89,7 +88,7 @@ public class GrenadeProjectileBehavior : BallisticProjectileBehavior
                 {
                     foreach(var c in context.OtherCharacters)
                     {
-                        if (c.OverlapPoint(cornerPos)) // character contact
+                        if (c.OverlapPoint(cornerPos))
                         {
                             normal = c.NormalAtPoint(cornerPos);
                             contacted = true;
@@ -123,7 +122,5 @@ public class GrenadeProjectileBehavior : BallisticProjectileBehavior
 
         onDone?.Invoke(SimulateExplosion(pos, context.Owner));
     }
-
-
 
 }

@@ -125,10 +125,14 @@ public class JumpGraph : UnityDriven
                         var delta = endP.WorldPos - destination;
                         if (Mathf.Abs(delta.x) < GridPointHalfDistance && Mathf.Abs(delta.y) < GridPointHalfDistance)
                         {
-                            if (!_adjency[startP.Id].ContainsKey(endP.Id))
+                            if (!_adjency[startP.Id].ContainsKey(endP.Id)) 
                             {
                                 _adjency[startP.Id].Add(endP.Id, new JumpLink(startP.Id, endP.Id, jumpVector));
                                 linkCount++;
+                            }
+                            else if ( _adjency[startP.Id][endP.Id].JumpVector.y < jumpVector.y)// prefer vertical jumps
+                            {
+                                _adjency[startP.Id][endP.Id] = new JumpLink(startP.Id, endP.Id, jumpVector);
                             }
                             break;
                         }

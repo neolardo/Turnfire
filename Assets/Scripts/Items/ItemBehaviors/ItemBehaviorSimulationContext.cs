@@ -17,5 +17,13 @@ public readonly struct ItemBehaviorSimulationContext
         AimVector = aimVector;
         Terrain = terrain;
     }
+    public ItemBehaviorSimulationContext(ItemBehaviorSimulationContext context, float aimMultiplier)
+    {
+        Owner = context.Owner;
+        OtherCharacters = context.OtherCharacters;
+        Origin = context.Origin;
+        AimVector = context.AimVector * aimMultiplier;
+        Terrain = context.Terrain;
+    }
 
 }

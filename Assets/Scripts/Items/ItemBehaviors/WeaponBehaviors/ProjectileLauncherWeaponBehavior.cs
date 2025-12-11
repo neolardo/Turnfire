@@ -47,6 +47,10 @@ public class ProjectileLauncherWeaponBehavior : WeaponBehavior
 
     public override IEnumerator SimulateUsage(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone)
     {
-        yield return _projectileBehavior.SimulateProjectileBehavior(context, (result) => onDone?.Invoke(result));
+        var result = ItemBehaviorSimulationResult.None;
+        // apply fire strength
+        context = new ItemBehaviorSimulationContext(context, _definition.FireStrength.AvarageValue);
+        yield return _projectileBehavior.SimulateProjectileBehavior(context, (r) => result = r);
+        onDone?.Invoke(result);
     }
 }

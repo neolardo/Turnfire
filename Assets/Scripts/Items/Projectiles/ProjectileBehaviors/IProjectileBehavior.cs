@@ -7,5 +7,5 @@ public interface IProjectileBehavior
     public void OnContact(HitboxContactContext context);
     public void SetProjectile(Projectile projectile);
     public void ForceExplode();
-    public IEnumerable SimulateProjectileBehavior(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone);
+    public IEnumerator SimulateProjectileBehavior(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone);
 }
