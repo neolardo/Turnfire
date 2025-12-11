@@ -9,8 +9,9 @@ public class TeamHealthbarUI : MonoBehaviour
     [SerializeField] private PixelUIScaler _healthbarContainerPixelUI;
     [SerializeField] private PixelUIScaler _textPixelUI;
     [SerializeField] private TextMeshProUGUI _teamText;
+    [SerializeField] private Color _deadTeamTextColor;
     [SerializeField] private Color _selectedTeamTextColor;
-    [SerializeField] private float _selectedTeamTextColorFadeSeconds =1;
+    [SerializeField] private float _textColorFadeSeconds =.5f;
 
     private float _initialScale;
     private Color _originalTextColor;
@@ -28,19 +29,25 @@ public class TeamHealthbarUI : MonoBehaviour
         _healthbarInnerContentImage.color = team.TeamColor;
         _teamText.text = team.TeamName;
         team.TeamHealthChanged += SetTeamHealth;
-        team.TeamSelectedChanged += FadeText;
+        team.TeamLost += FadeTextOnTeamLost;
+        team.TeamSelectedChanged += FadeTextOnTeamSelectionChanged;
     }
 
-    private void FadeText(bool isTeamSelected)
+    private void FadeTextOnTeamLost()
+    {
+        StartCoroutine(FadeTextColor(_teamText.color, _deadTeamTextColor, _textColorFadeSeconds));
+    }
+
+    private void FadeTextOnTeamSelectionChanged(bool isTeamSelected)
     {
         StopAllCoroutines();
         if(isTeamSelected)
         {
-            StartCoroutine(FadeTextColor(_originalTextColor, _selectedTeamTextColor, _selectedTeamTextColorFadeSeconds));
+            StartCoroutine(FadeTextColor(_originalTextColor, _selectedTeamTextColor, _textColorFadeSeconds));
         }
         else
         {
-            StartCoroutine(FadeTextColor(_selectedTeamTextColor, _originalTextColor, _selectedTeamTextColorFadeSeconds));
+            StartCoroutine(FadeTextColor(_selectedTeamTextColor, _originalTextColor, _textColorFadeSeconds));
         }
     }
 

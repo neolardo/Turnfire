@@ -28,9 +28,8 @@ public class LocalGameplayInput : LocalInputBase, IGameplayInputSource
     public event Action<Vector2> ImpulseReleased;
     public event Action AimCancelled;
     public event Action ActionSkipped;
-    public event Action ItemUsed;
-    public event Action SelectedItemUsed; //TODO
-    public event Action<Item> ItemSwitched;  //TODO! implement
+    public event Action<ItemUsageContext> SelectedItemUsed;
+    public event Action<Item> SelectedItemSwitchRequested;  //TODO?
     //inventory
     public event Action ToggleInventoryPerformed;
     public event Action ToggleInventoryCreateDestroyPerformed;
@@ -247,10 +246,10 @@ public class LocalGameplayInput : LocalInputBase, IGameplayInputSource
         ActionSkipped?.Invoke();
     }
 
-    public void RequestInputForAction(CharacterActionStateType action) { } // local input is provided automatically
-
-
-    public void Initialize(Team team) { } // no need to initialize
+    public void RequestInputForAction(CharacterActionStateType action)
+    {
+        // local input is provided automatically
+    }
 
 
     #endregion

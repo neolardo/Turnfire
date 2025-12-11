@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: b2a71e30bba0c904db6c65c50294c9af
+guid: 6e08d684bb422f94d91db1beb629b9e5
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6813282286388622938
-    second: first_aid_kit_64_0
+      213: -3536970163160566385
+    second: first_aid_kit_ver2_64_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -139,13 +139,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: first_aid_kit_64_0
+      name: first_aid_kit_ver2_64_0
       rect:
         serializedVersion: 2
-        x: 21
-        y: 19
-        width: 22
-        height: 24
+        x: 20
+        y: 23
+        width: 24
+        height: 17
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -154,8 +154,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6a9485ddbdb5271a0800000000000000
-      internalID: -6813282286388622938
+      spriteID: f85b8a350682aeec0800000000000000
+      internalID: -3536970163160566385
       vertices: []
       indices: 
       edges: []
@@ -174,7 +174,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      first_aid_kit_64_0: -6813282286388622938
+      first_aid_kit_ver2_64_0: -3536970163160566385
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

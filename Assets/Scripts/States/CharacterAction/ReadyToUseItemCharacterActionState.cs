@@ -23,6 +23,8 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
     {
         _currentCharacter.SelectedItemChanged += OnSelectedItemChanged;
         _currentCharacter.SelectedItemUsed += EndState;
+        _inputSource.SelectedItemUsed += _currentCharacter.UseSelectedItem;
+        _inputSource.SelectedItemSwitchRequested += _currentCharacter.TrySelectItem;
         _inputSource.ImpulseReleased += OnImpulseReleased;
         _inputSource.AimStarted += OnAimStarted;
         _inputSource.AimChanged += OnAimChanged;
@@ -33,6 +35,8 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
     {
         _currentCharacter.SelectedItemChanged -= OnSelectedItemChanged;
         _currentCharacter.SelectedItemUsed -= EndState;
+        _inputSource.SelectedItemUsed -= _currentCharacter.UseSelectedItem;
+        _inputSource.SelectedItemSwitchRequested -= _currentCharacter.TrySelectItem;
         _inputSource.ImpulseReleased -= OnImpulseReleased;
         _inputSource.AimStarted -= OnAimStarted;
         _inputSource.AimChanged -= OnAimChanged;
@@ -75,10 +79,7 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
         _uiManager.ResumeGameplayTimer();
         _inputSource.IsOpeningInventoryEnabled = true;
         var selectedItem = _currentCharacter.GetSelectedItem();
-        if (selectedItem != null)
-        {
-            OnSelectedItemChanged(selectedItem);
-        }
+        OnSelectedItemChanged(selectedItem);
         _inputSource.RequestInputForAction(State);
     }
 

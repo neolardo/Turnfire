@@ -302,8 +302,9 @@ MonoBehaviour:
   _healthbarContainerPixelUI: {fileID: 8335592447710638301}
   _textPixelUI: {fileID: 6979429331759060890}
   _teamText: {fileID: 7689918586203465184}
+  _deadTeamTextColor: {r: 0.3660378, g: 0.3584408, b: 0.3584408, a: 0.5019608}
   _selectedTeamTextColor: {r: 1, g: 1, b: 1, a: 1}
-  _selectedTeamTextColorFadeSeconds: 0.5
+  _textColorFadeSeconds: 0.5
 --- !u!1 &5041271680292093027
 GameObject:
   m_ObjectHideFlags: 0

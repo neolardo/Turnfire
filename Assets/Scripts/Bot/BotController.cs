@@ -24,7 +24,7 @@ public class BotController
                 Debug.Log("Bot attacked");
                 break;
             case BotGoalType.UseItem:
-                UseItem(goal.PreferredItem);
+                UseItem(goal.PreferredItem, new ItemUsageContext(context.Self));
                 Debug.Log("Bot used item");
                 break;
             case BotGoalType.SkipAction:
@@ -66,14 +66,17 @@ public class BotController
 
     private void Attack(Vector2 aimVector, Item weapon)
     {
-        _input.SwitchSelectedItemTo(weapon);
+        _input.SetSelectedItem(weapon);
         _input.AimAndRelease(aimVector);
     }
 
-    private void UseItem(Item item)
+    private void UseItem(Item item, ItemUsageContext context)
     {
-        _input.SwitchSelectedItemTo(item);
-        _input.UseSelectedItem();
+        _input.SetSelectedItem(item);
+        if(!item.Definition.UseInstantlyWhenSelected)
+        {
+            _input.UseSelectedItem(context);
+        }
     }
 
     private void SkipAction()
