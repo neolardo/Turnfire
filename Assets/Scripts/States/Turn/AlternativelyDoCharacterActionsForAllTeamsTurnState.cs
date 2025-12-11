@@ -84,6 +84,10 @@ public class AlternativelyDoCharacterActionsForAllTeamsTurnState : TurnState
     private bool TrySwitchToNextTeam()
     {
         var startTeamIndex = _teamIndex;
+        if(_teamIndex >= 0)
+        {
+            CurrentTeam.DeselectTeam();
+        }
 
         do
         {
@@ -92,6 +96,7 @@ public class AlternativelyDoCharacterActionsForAllTeamsTurnState : TurnState
 
         if (_teamIndex != startTeamIndex)
         {
+            CurrentTeam.SelectTeam();
             Debug.Log("Switched to team: " + CurrentTeam.TeamName);
             return true;
         }

@@ -35,14 +35,20 @@ public class TeamManager : MonoBehaviour
     {
         //TODO: remote players
         var botManagerFactory = FindFirstObjectByType<BotManagerFactory>();
-        Team localTeam = _teams[0]; //TODO//_teams[Random.Range(0, _teams.Count)];
+        var playerNames = SceneLoader.Instance.CurrentGameplaySceneSettings.PlayerNames;
+        int playerCount = 0;
+        int botCount = 0;
+        Team localTeam = _teams[Random.Range(0, _teams.Count)];
         localTeam.InitializeInputSource(InputSourceType.Local);
+        localTeam.TeamName = playerNames[playerCount++]; //TODO: local player's name
         foreach(var team in _teams)
         {
             if (team == localTeam)
                 continue;
 
             team.InitializeInputSource(InputSourceType.Bot);
+            team.TeamName = Constants.DefaultBotName + $"{botCount+1}";
+            botCount++;
             botManagerFactory.CreateBotForTeam(team, SceneLoader.Instance.CurrentGameplaySceneSettings.BotDifficulty);
         }
     }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 [Serializable]
 public class GameplaySceneSettings
@@ -8,4 +9,5 @@ public class GameplaySceneSettings
     public int NumBots;
     public BotDifficulty BotDifficulty;
     public bool UseTimer;
+    public List<string> PlayerNames;
 }

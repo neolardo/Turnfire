@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -44,10 +45,11 @@ public class SingleplayerMenuUI : MonoBehaviour
         {
             SceneName = _mapDisplay.SelectedMap.SceneName,
             NumBots = _numBotsDisplay.Value,
-            NumTeams = _numBotsDisplay.Value+1,
+            NumTeams = _numBotsDisplay.Value + 1,
             UseTimer = _useTimerCheckbox.Value,
-            BotDifficulty = _botDifficultyToggle.Value
-        };
+            BotDifficulty = _botDifficultyToggle.Value,
+            PlayerNames = new List<string>() { Constants.DefaultPlayerName }
+        }; 
         _menuUIManager.HideAllPanels();
         SceneLoader.Instance.LoadGameplayScene(settings);
     }

@@ -1,3 +1,5 @@
+using NUnit.Framework;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -39,11 +41,18 @@ public class MultiplayerMenuUI : MonoBehaviour
 
     public void OnConfirmPressed()
     {
+        var playerNames = new List<string>(); //TODO: get names from menu textbox?
+        for (int i = 0; i < _numPlayersDisplay.Value; i++)
+        {
+            playerNames.Add(Constants.DefaultPlayerName + i + 1);
+        }
+
         var settings = new GameplaySceneSettings()
         {
             SceneName = _mapDisplay.SelectedMap.SceneName,
             NumTeams = _numPlayersDisplay.Value,
-            UseTimer = _useTimerCheckbox.Value
+            UseTimer = _useTimerCheckbox.Value,
+            PlayerNames = playerNames
         };
         _menuUIManager.HideAllPanels();
         SceneLoader.Instance.LoadGameplayScene(settings);

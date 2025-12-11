@@ -12,10 +12,12 @@ public class Team : MonoBehaviour
     public Color TeamColor => _teamColor;
     public Character CurrentCharacter => _characters[_characterIndex];
     private int _characterIndex;
-    public string TeamName { get; private set; }
+    public string TeamName { get; set; }
 
     public event Action<float> TeamHealthChanged;
     public event Action TeamLost;
+    public event Action<bool> TeamSelectedChanged;
+    private bool _isSelected;
 
     public int NumAliveCharacters => _characters.Count(c => c.IsAlive);
 
@@ -44,6 +46,24 @@ public class Team : MonoBehaviour
             character.SetTeam(this);
         }
         _characterIndex = 0;
+    }
+
+    public void SelectTeam()
+    {
+        if( !_isSelected) 
+        {
+            _isSelected = true;
+            TeamSelectedChanged?.Invoke(_isSelected);
+        }
+    }
+
+    public void DeselectTeam()
+    {
+        if (_isSelected)
+        {
+            _isSelected = false;
+            TeamSelectedChanged?.Invoke(_isSelected);
+        }
     }
 
     public void InitializeInputSource(InputSourceType inputType)

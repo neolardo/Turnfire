@@ -49,10 +49,13 @@ public static class Constants
     // multiplayer
     public const int MultiplayerMinPlayers = 2;
     public const int MultiplayerMaxPlayers = 4;
+    public const string DefaultPlayerName = "Player";
 
     // singleplayer 
     public const int SingleplayerMinBots = 1;
     public const int SingleplayerMaxBots = 3;
+    public const string DefaultBotName = "Bot";
+
 
     //scenes
     public const string MenuSceneName = "MenuScene";
