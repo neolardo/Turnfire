@@ -33,6 +33,7 @@ public class TeamManager : MonoBehaviour
 
     private void CreateRandomizedTeamSetup()
     {
+        //TODO: local multiplayer
         //TODO: remote players
         var botManagerFactory = FindFirstObjectByType<BotManagerFactory>();
         var playerNames = SceneLoader.Instance.CurrentGameplaySceneSettings.PlayerNames;
@@ -41,7 +42,7 @@ public class TeamManager : MonoBehaviour
         Team localTeam = _teams[Random.Range(0, _teams.Count)];
         localTeam.InitializeInputSource(InputSourceType.Local);
         localTeam.TeamName = playerNames[playerCount++]; //TODO: local player's name
-        foreach(var team in _teams)
+        foreach (var team in _teams)
         {
             if (team == localTeam)
                 continue;
