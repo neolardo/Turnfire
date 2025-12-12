@@ -7,7 +7,9 @@ public static class BotEvaluationStatistics
 {
     private static readonly Dictionary<Team, BotEvaluationData> _dataPerTeam = new Dictionary<Team, BotEvaluationData>();
     private static readonly Dictionary<Team, BotDifficulty> _difficultyPerTeam = new Dictionary<Team, BotDifficulty>();
-    private static string GetFilePath(BotEvaluationConfiguration config) => Path.Combine(Application.persistentDataPath, $"bot_evaluation_result_{SceneLoader.Instance.CurrentGameplaySceneSettings.SceneName}_{config}.csv");
+
+    private static string LogFolder = "D:\\Code\\CSharp\\Unity\\TurnfireBuilds\\Dev\\BotEvaluation\\EvaluationData";
+    private static string GetFilePath(BotEvaluationConfiguration config) => Path.Combine(LogFolder, $"bot_evaluation_result_{SceneLoader.Instance.CurrentGameplaySceneSettings.SceneName}_{config}.csv");
 
     public static int CurrentSimulationCount { get; private set; }
     private static int _requestedSimulationCount = 100;
@@ -22,6 +24,7 @@ public static class BotEvaluationStatistics
         _dataPerTeam[team] = new BotEvaluationData();
         _dataPerTeam[team].TeamName = team.TeamName;
         _difficultyPerTeam[team] = difficulty;
+        team.TeamName += $" {difficulty}";
     } 
 
     public static BotEvaluationData GetData(Team team)
@@ -39,12 +42,13 @@ public static class BotEvaluationStatistics
         _skippedTurnStreakCount++;
         if( _skippedTurnStreakCount >= SkippedTurnStreakLiveLockThreshold )
         {
-            ForceEndLiveLockedGame();
+            ForceEndLiveLockedRound();
         }
     }
 
-    private static void ForceEndLiveLockedGame()
+    private static void ForceEndLiveLockedRound()
     {
+        Debug.Log("Round force ended because of possible live lock");
         var turnManager = Object.FindFirstObjectByType<TurnManager>();
         turnManager.ForceEndGame();
     }

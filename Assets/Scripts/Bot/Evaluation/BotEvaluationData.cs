@@ -2,16 +2,16 @@ public class BotEvaluationData
 {
     public string TeamName; 
     public BotEvaluationRoundResult RoundResult; 
-    public float TotalDamageDealtToEnemies;
-    public float TotalDamageDealtToAllies;
-    public int TotalSuicideCount; 
-    public int TotalNonDamagingAttackCount; 
+    public float DamageDealtToEnemies;
+    public float DamageDealtToAllies;
+    public int SuicideCount; 
+    public int NonDamagingAttackCount; 
     public float RemainingNormalizedTeamHealth;
     public int TotalTurnCount; 
-    public int TotalSkippedMovementCount; 
-    public int TotalOpenedPackageCount;
-    public float TotalArmorsEquipped;
-    public float TotalConsumablesUsed;
+    public int SkippedMovementCount; 
+    public int OpenedPackageCount;
+    public float ArmorsEquippedCount;
+    public float ConsumablesUsedCount;
 
 
     public override string ToString()
@@ -19,16 +19,16 @@ public class BotEvaluationData
         return $"{System.DateTime.Now:yyyy-MM-dd HH:mm:ss}," +
             $"{TeamName}," +
             $"{RoundResult}," +
-            $"{TotalDamageDealtToEnemies}," +
-            $"{TotalDamageDealtToAllies}," +
-            $"{TotalSuicideCount}," +
-            $"{TotalNonDamagingAttackCount}," +
+            $"{DamageDealtToEnemies}," +
+            $"{DamageDealtToAllies}," +
+            $"{SuicideCount}," +
+            $"{NonDamagingAttackCount}," +
             $"{RemainingNormalizedTeamHealth}," +
             $"{TotalTurnCount}," +
-            $"{TotalSkippedMovementCount}," +
-            $"{TotalOpenedPackageCount},"+
-            $"{TotalArmorsEquipped},"+
-            $"{TotalConsumablesUsed}\n";
+            $"{SkippedMovementCount}," +
+            $"{OpenedPackageCount},"+
+            $"{ArmorsEquippedCount},"+
+            $"{ConsumablesUsedCount}\n";
     }
 
     public static string[] Headers => new[]
@@ -36,31 +36,31 @@ public class BotEvaluationData
         "Timestamp",
         nameof(TeamName),
         nameof(RoundResult),
-        nameof(TotalDamageDealtToEnemies), 
-        nameof(TotalDamageDealtToAllies), 
-        nameof(TotalSuicideCount),
-        nameof(TotalNonDamagingAttackCount),
+        nameof(DamageDealtToEnemies), 
+        nameof(DamageDealtToAllies), 
+        nameof(SuicideCount),
+        nameof(NonDamagingAttackCount),
         nameof(RemainingNormalizedTeamHealth),
         nameof(TotalTurnCount),
-        nameof(TotalSkippedMovementCount),
-        nameof(TotalOpenedPackageCount),
-        nameof(TotalArmorsEquipped),
-        nameof(TotalConsumablesUsed)
+        nameof(SkippedMovementCount),
+        nameof(OpenedPackageCount),
+        nameof(ArmorsEquippedCount),
+        nameof(ConsumablesUsedCount)
     };
 
     public void Clear()
     {
         TeamName = string.Empty;
         RoundResult = BotEvaluationRoundResult.None;
-        TotalDamageDealtToEnemies = 0;
-        TotalDamageDealtToAllies = 0;
-        TotalSuicideCount = 0;
-        TotalNonDamagingAttackCount = 0;
+        DamageDealtToEnemies = 0;
+        DamageDealtToAllies = 0;
+        SuicideCount = 0;
+        NonDamagingAttackCount = 0;
         RemainingNormalizedTeamHealth = 0;
         TotalTurnCount = 0;
-        TotalSkippedMovementCount = 0;
-        TotalOpenedPackageCount = 0;
-        TotalArmorsEquipped = 0;
-        TotalConsumablesUsed = 0;
+        SkippedMovementCount = 0;
+        OpenedPackageCount = 0;
+        ArmorsEquippedCount = 0;
+        ConsumablesUsedCount = 0;
     }
 }

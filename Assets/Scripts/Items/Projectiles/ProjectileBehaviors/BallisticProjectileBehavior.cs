@@ -140,11 +140,11 @@ public class BallisticProjectileBehavior : UnityDriven, IProjectileBehavior
                 enemyDamage += expInfo.Damage;
             }
         }
-        data.TotalDamageDealtToAllies += allyDamage;
-        data.TotalDamageDealtToEnemies += enemyDamage;
+        data.DamageDealtToAllies += allyDamage;
+        data.DamageDealtToEnemies += enemyDamage;
         if(!expInfo.ExplodedCharacters.Any())
         {
-            data.TotalNonDamagingAttackCount++;
+            data.NonDamagingAttackCount++;
         }
     }
 

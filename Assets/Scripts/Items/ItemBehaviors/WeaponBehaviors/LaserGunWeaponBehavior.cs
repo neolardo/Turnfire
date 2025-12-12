@@ -3,12 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 
 public class LaserGunWeaponBehavior : WeaponBehavior
 {
     private LaserGunWeaponDefinition _definition;
     private RaycastHit2D[] _raycastHitArray;
     private const float _visualStartOffset = .2f;
+    private const float _requiredSafeRadius = .3f;
 
     public LaserGunWeaponBehavior(LaserGunWeaponDefinition definition) : base(CoroutineRunner.Instance)
     {
@@ -44,11 +46,11 @@ public class LaserGunWeaponBehavior : WeaponBehavior
                 enemyDamage += damage;
             }
         }
-        data.TotalDamageDealtToAllies += allyDamage;
-        data.TotalDamageDealtToEnemies += enemyDamage;
+        data.DamageDealtToAllies += allyDamage;
+        data.DamageDealtToEnemies += enemyDamage;
         if (!hitCharacters.Any())
         {
-            data.TotalNonDamagingAttackCount++;
+            data.NonDamagingAttackCount++;
         }
     }
 
@@ -61,6 +63,10 @@ public class LaserGunWeaponBehavior : WeaponBehavior
         hitCharacters = new HashSet<Character>();
 
         origin += direction.normalized * _visualStartOffset;
+        if (SafeObjectPlacer.TryFindSafePosition(origin, direction, LayerMaskHelper.GetLayerMask(Constants.GroundLayer), _requiredSafeRadius, out var safePosition))
+        {
+            origin = safePosition;
+        }
 
         points.Add(origin);
 

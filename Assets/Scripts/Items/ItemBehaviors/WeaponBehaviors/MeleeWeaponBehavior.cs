@@ -46,7 +46,7 @@ public class MeleeWeaponBehavior : WeaponBehavior
         yield return new WaitForSeconds(WeaponUsageDuration);
         if(!_anyContacts)
         {
-            BotEvaluationStatistics.GetData(_lastOwner.Team).TotalNonDamagingAttackCount++;
+            BotEvaluationStatistics.GetData(_lastOwner.Team).NonDamagingAttackCount++;
         }
         _isAttacking = false;
         hitbox.gameObject.SetActive(false);
@@ -69,11 +69,11 @@ public class MeleeWeaponBehavior : WeaponBehavior
                 var data = BotEvaluationStatistics.GetData(_lastOwner.Team);
                 if (c.Team == _lastOwner.Team)
                 {
-                    data.TotalDamageDealtToAllies += damage;
+                    data.DamageDealtToAllies += damage;
                 }
                 else
                 {
-                    data.TotalDamageDealtToEnemies += damage;
+                    data.DamageDealtToEnemies += damage;
                 }
                 _anyContacts = true;
 

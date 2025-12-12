@@ -19,7 +19,7 @@ public class DeadZone : MonoBehaviour
             var c = collision.GetComponent<Character>();
             if(CharacterActionManager.CurrentCharacter == c)
             {
-                BotEvaluationStatistics.GetData(c.Team).TotalSuicideCount++;
+                BotEvaluationStatistics.GetData(c.Team).SuicideCount++;
             }     
             c.Kill();
         }

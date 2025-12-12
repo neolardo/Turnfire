@@ -32,7 +32,7 @@ public class Package : MonoBehaviour
             var character = collision.GetComponent<Character>();
             if (_collectible.TryCollect(character))
             {
-                BotEvaluationStatistics.GetData(character.Team).TotalOpenedPackageCount++;
+                BotEvaluationStatistics.GetData(character.Team).OpenedPackageCount++;
                 AudioManager.Instance.PlaySFXAt(collectSFX, transform.position);
                 Destroy();
             }

@@ -41,7 +41,7 @@ public class BotController
                 Debug.Log("Bot skipped action");
                 if (context.ActionState == CharacterActionStateType.ReadyToMove)
                 {
-                    BotEvaluationStatistics.GetData(context.Self.Team).TotalSkippedMovementCount++;
+                    BotEvaluationStatistics.GetData(context.Self.Team).SkippedMovementCount++;
                 }
                 SkipAction();
                 break;
