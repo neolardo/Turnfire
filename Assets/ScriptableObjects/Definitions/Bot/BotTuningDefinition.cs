@@ -9,6 +9,7 @@ public class BotTuningDefinition : ScriptableObject
     public float Defense;
     public float MobilityPreference;
     public float TravelDistanceSensitivity;
+    public float TravelDistanceWeight;
     public float LowHealthThreshold;
 
     public int RemainingAmmoLowThreshold;

@@ -10,7 +10,11 @@ public static class BotEvaluationStatistics
     private static string GetFilePath(BotEvaluationConfiguration config) => Path.Combine(Application.persistentDataPath, $"bot_evaluation_result_{SceneLoader.Instance.CurrentGameplaySceneSettings.SceneName}_{config}.csv");
 
     public static int CurrentSimulationCount { get; private set; }
-    private static int RequestedSimulationCount = 100;
+    private static int _requestedSimulationCount = 100;
+    
+
+    private static int _skippedTurnStreakCount;
+    private const int SkippedTurnStreakLiveLockThreshold = 25;
 
 
     public static void RegisterBot(Team team, BotDifficulty difficulty)
@@ -30,10 +34,31 @@ public static class BotEvaluationStatistics
         return _dataPerTeam.Values;
     }
 
+    public static void OnActionSkipped()
+    {
+        _skippedTurnStreakCount++;
+        if( _skippedTurnStreakCount >= SkippedTurnStreakLiveLockThreshold )
+        {
+            ForceEndLiveLockedGame();
+        }
+    }
+
+    private static void ForceEndLiveLockedGame()
+    {
+        var turnManager = Object.FindFirstObjectByType<TurnManager>();
+        turnManager.ForceEndGame();
+    }
+
+    public static void OnActionNotSkipped()
+    {
+        _skippedTurnStreakCount = 0;
+    }
+
     public static void Clear()
     {
         _dataPerTeam.Clear();
         _difficultyPerTeam.Clear();
+        _skippedTurnStreakCount = 0;
     }
 
     public static void Save()
@@ -51,7 +76,7 @@ public static class BotEvaluationStatistics
 
     public static void TryToRestartSimulation()
     {
-        if(CurrentSimulationCount <  RequestedSimulationCount)
+        if(CurrentSimulationCount <  _requestedSimulationCount)
         {
             Clear();
             SceneLoader.Instance.ReloadScene();

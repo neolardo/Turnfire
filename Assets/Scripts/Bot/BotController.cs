@@ -14,6 +14,15 @@ public class BotController
 
     public void Act(BotGoal goal, BotContext context)
     {
+        if(goal.GoalType == BotGoalType.SkipAction)
+        {
+            BotEvaluationStatistics.OnActionSkipped();
+        }
+        else
+        {
+            BotEvaluationStatistics.OnActionNotSkipped();
+        }
+
         switch (goal.GoalType)
         {
             case BotGoalType.Move:
@@ -30,7 +39,7 @@ public class BotController
                 break;
             case BotGoalType.SkipAction:
                 Debug.Log("Bot skipped action");
-                if(context.ActionState == CharacterActionStateType.ReadyToMove)
+                if (context.ActionState == CharacterActionStateType.ReadyToMove)
                 {
                     BotEvaluationStatistics.GetData(context.Self.Team).TotalSkippedMovementCount++;
                 }

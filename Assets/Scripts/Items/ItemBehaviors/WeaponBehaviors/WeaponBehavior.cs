@@ -9,6 +9,9 @@ public abstract class WeaponBehavior : UnityDriven, IItemBehavior
 
     protected bool _isAttacking;
 
+    // bot evaluation
+    public bool FastSimAvailable { get; protected set; }    
+
     protected WeaponBehavior(MonoBehaviour coroutineRunner) : base(coroutineRunner)
     {
     }
@@ -27,6 +30,11 @@ public abstract class WeaponBehavior : UnityDriven, IItemBehavior
     public bool CanUseItem(ItemUsageContext context)
     {
         return true;
+    }
+
+    public virtual ItemBehaviorSimulationResult SimulateUsageFast(ItemBehaviorSimulationContext context)
+    {
+        return ItemBehaviorSimulationResult.None;
     }
 
     public abstract IEnumerator SimulateUsage(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone);

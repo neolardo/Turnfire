@@ -82,15 +82,18 @@ public class BotBrain : UnityDriven
 
         if(!possiblePositions.Any())
         {
+            Debug.Log("Random point");
             bestPoint = context.JumpGraph.GetRandomStandingPoint();
         }
 
         if (bestPoint == startPoint)
         {
+            Debug.Log("Stay at position");
             onDone?.Invoke(BotGoal.SkipAction());
         }
         else
         {
+            Debug.Log("Go to destination");
             onDone?.Invoke(BotGoal.Move(bestPoint));
         }
         yield return null;
@@ -98,6 +101,17 @@ public class BotBrain : UnityDriven
 
     private float EvaluatePositionScore(StandingPoint startPoint, StandingPoint targetPoint, BotContext context)
     {
+        // debug helpers TODO: delete
+        Color travelColor = Color.blue;
+        Color offenseColor = Color.red;
+        Color packageColor = Color.green;
+        Color randomColor = Color.gray;
+        float scoreScaler = 0.33f;
+        float raySeconds = 40;
+        float lastScore = 0;
+        Vector2 lastPos = targetPoint.WorldPos;
+        Vector2 newPos = lastPos;
+
         float score = 0;
 
         var weaponsWithAmmo = context.Self.GetAllItems().Where(i => i.Definition.ItemType == ItemType.Weapon && !i.Definition.IsQuantityInfinite);
@@ -108,6 +122,11 @@ public class BotBrain : UnityDriven
         {
             var closestEnemyDistance = context.Enemies.Select(e => Vector2.Distance(targetPoint.WorldPos, e.transform.position)).DefaultIfEmpty(float.PositiveInfinity).Min();
             score += OffensiveEnemyDistanceUtility(closestEnemyDistance) * _tuning.Offense;
+
+            newPos = lastPos + Vector2.up * scoreScaler * (score - lastScore);
+            Debug.DrawLine(lastPos, newPos, offenseColor, raySeconds);
+            lastPos = newPos;
+            lastScore = score;
         }
 
         // defense
@@ -143,14 +162,31 @@ public class BotBrain : UnityDriven
         }
         score += bestPackageScore * packageGreed;
 
+        newPos = lastPos + Vector2.up * scoreScaler * (score - lastScore);
+        Debug.DrawLine(lastPos, newPos, packageColor, raySeconds);
+        lastPos = newPos;
+        lastScore = score;
+
         //travel distance
         if (context.JumpGraph.TryCalculateJumpDistanceBetween(startPoint, targetPoint, out int travelDistance))
         {
-            score += TravelDistanceUtility(travelDistance);
+            score += TravelDistanceUtility(travelDistance) * _tuning.TravelDistanceWeight;
+
+            newPos = lastPos + Vector2.up * scoreScaler * (score - lastScore);
+            Debug.DrawLine(lastPos, newPos, travelColor, raySeconds);
+            lastPos = newPos;
+            lastScore = score;
         }
 
         // decision randomness
         score += GetDecisionRandomnessBias();
+
+        newPos = lastPos + Vector2.up * scoreScaler * (score - lastScore);
+        Debug.DrawLine(lastPos, newPos, randomColor, raySeconds);
+        lastPos = newPos;
+        lastScore = score;
+
+
         return score;
     }
 
@@ -240,7 +276,14 @@ public class BotBrain : UnityDriven
                 var simulationContext = new ItemBehaviorSimulationContext(context.Self, others, start, aimVector, context.Terrain);
                 var simulationResult = ItemBehaviorSimulationResult.None;
 
-                yield return weaponBehavior.SimulateUsage(simulationContext, (result) => simulationResult = result);
+                if (weaponBehavior.FastSimAvailable)
+                {
+                    simulationResult = weaponBehavior.SimulateUsageFast(simulationContext);
+                }
+                else
+                { 
+                    yield return weaponBehavior.SimulateUsage(simulationContext, (result) => simulationResult = result);
+                }
 
                 var minDistFromClosestEnemy = context.Enemies.Select(c => Vector2.Distance(c.transform.position, simulationResult.DamageCenter)).DefaultIfEmpty(float.PositiveInfinity).Min();
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GrenadeProjectileBehavior : BallisticProjectileBehavior
@@ -55,6 +56,74 @@ public class GrenadeProjectileBehavior : BallisticProjectileBehavior
             Explode(context);
         }
     }
+
+    public override ItemBehaviorSimulationResult SimulateProjectileBehaviorFast(ItemBehaviorSimulationContext context)
+    {
+        Vector2 velocity = context.AimVector;
+        Vector2 pos = context.Origin;
+
+        if (SafeObjectPlacer.TryFindSafePosition(context.Origin, context.AimVector.normalized, LayerMaskHelper.GetCombinedLayerMask(Constants.HitboxCollisionLayers), _definition.ColliderRadius, out var safePosition))
+        {
+            pos = safePosition;
+        }
+
+        int contactCount = 0;
+        const float dt = Constants.ParabolicPathSimulationDeltaForProjectiles;
+
+        for (float t = 0; t < Constants.MaxParabolicPathSimulationTime; t += Constants.ParabolicPathSimulationDeltaForProjectiles)
+        {
+            pos += velocity * dt;
+            velocity += Physics2D.gravity * dt;
+
+            bool contacted = false;
+            Vector2 normal = default;
+            foreach (var cornerPoint in _colliderCornerPoints)
+            {
+                var cornerPos = pos + cornerPoint;
+
+                if (context.Terrain.OverlapPoint(cornerPos))
+                {
+                    normal = context.Terrain.GetNearestNormalAtPoint(cornerPos);
+                    contacted = true;
+                }
+                else
+                {
+                    foreach (var c in context.OtherCharacters)
+                    {
+                        if (c.OverlapPoint(cornerPos))
+                        {
+                            normal = c.NormalAtPoint(cornerPos);
+                            contacted = true;
+                            break;
+                        }
+                    }
+                }
+                if (contacted)
+                {
+                    contactCount++;
+                    velocity = PhysicsMaterial2DHelpers.ApplyMaterialBounce(velocity, normal, _definition.GrenadePhysicsMaterial);
+                    if (contactCount >= _definition.ExplosionContactThreshold)
+                    {
+                        return SimulateExplosion(pos, context.Owner);
+                    }
+                    break;
+                }
+            }
+
+            if (t > _definition.ExplosionDelaySeconds)
+            {
+                break;
+            }
+
+            if (!context.Terrain.IsPointInsideBounds(pos))
+            {
+                break;
+            }
+        }
+
+        return SimulateExplosion(pos, context.Owner);
+    }
+
 
     public override IEnumerator SimulateProjectileBehavior(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone)
     {

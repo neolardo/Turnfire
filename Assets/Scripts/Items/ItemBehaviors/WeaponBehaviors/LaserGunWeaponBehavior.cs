@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using UnityEngine;
 
@@ -16,6 +15,7 @@ public class LaserGunWeaponBehavior : WeaponBehavior
         _definition = definition;
         IsAimingNormalized = true;
         _raycastHitArray = new RaycastHit2D[Constants.RaycastHitColliderNumMax];
+        FastSimAvailable = true;
     }
 
     public override void Use(ItemUsageContext context)
@@ -149,6 +149,34 @@ public class LaserGunWeaponBehavior : WeaponBehavior
         rendererManager.TrajectoryRenderer.ToggleGravity(false);
         rendererManager.TrajectoryRenderer.SetOrigin(context.Owner.ItemTransform);
         rendererManager.TrajectoryRenderer.SetTrajectoryMultipler(1);
+    }
+
+    public override ItemBehaviorSimulationResult SimulateUsageFast(ItemBehaviorSimulationContext context)
+    {
+        float damage = _definition.Damage.AvarageValue;
+        float damageToAllies = 0;
+        float damageToEnemies = 0;
+        CalculateLaserPath(context.Owner, context.Origin, context.AimVector, out var hitCharacters);
+        Vector2 closestDamagingPosition = hitCharacters.Count == 0 ? context.Origin : hitCharacters.First().transform.position;
+        float minDist = Vector2.Distance(closestDamagingPosition, context.Origin);
+        foreach (var c in hitCharacters)
+        {
+            if (c.Team == context.Owner.Team)
+            {
+                damageToAllies += damage;
+            }
+            else
+            {
+                damageToEnemies += damage;
+            }
+            var dist = Vector2.Distance(context.Origin, c.transform.position);
+            if (dist < minDist)
+            {
+                closestDamagingPosition = c.transform.position;
+                minDist = dist;
+            }
+        }
+        return ItemBehaviorSimulationResult.Damage(closestDamagingPosition, damageToEnemies, damageToAllies);
     }
 
     public override IEnumerator SimulateUsage(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone)

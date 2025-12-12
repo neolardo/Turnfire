@@ -1,7 +1,7 @@
 public class BotEvaluationData
 {
     public string TeamName; 
-    public bool HasWon; 
+    public BotEvaluationRoundResult RoundResult; 
     public float TotalDamageDealtToEnemies;
     public float TotalDamageDealtToAllies;
     public int TotalSuicideCount; 
@@ -18,7 +18,7 @@ public class BotEvaluationData
     {
         return $"{System.DateTime.Now:yyyy-MM-dd HH:mm:ss}," +
             $"{TeamName}," +
-            $"{HasWon}," +
+            $"{RoundResult}," +
             $"{TotalDamageDealtToEnemies}," +
             $"{TotalDamageDealtToAllies}," +
             $"{TotalSuicideCount}," +
@@ -35,7 +35,7 @@ public class BotEvaluationData
     {
         "Timestamp",
         nameof(TeamName),
-        nameof(HasWon),
+        nameof(RoundResult),
         nameof(TotalDamageDealtToEnemies), 
         nameof(TotalDamageDealtToAllies), 
         nameof(TotalSuicideCount),
@@ -51,7 +51,7 @@ public class BotEvaluationData
     public void Clear()
     {
         TeamName = string.Empty;
-        HasWon = false;
+        RoundResult = BotEvaluationRoundResult.None;
         TotalDamageDealtToEnemies = 0;
         TotalDamageDealtToAllies = 0;
         TotalSuicideCount = 0;

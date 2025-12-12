@@ -48,6 +48,21 @@ public class BulletProjectileBehavior : BallisticProjectileBehavior
         Explode(new HitboxContactContext(hit.point, hit.collider));
     }
 
+    public override ItemBehaviorSimulationResult SimulateProjectileBehaviorFast(ItemBehaviorSimulationContext context)
+    {
+        var numHits = Physics2D.RaycastNonAlloc(context.Origin, context.AimVector, _raycastHitArray, Constants.ProjectileRaycastDistance, LayerMaskHelper.GetCombinedLayerMask(Constants.HitboxCollisionLayers));
+        var closestHit = _raycastHitArray.Take(numHits).Where(hit => hit.collider != context.Owner.Collider).OrderBy(hit => hit.distance).FirstOrDefault();
+
+        if (closestHit.collider == null)
+        {
+            return ItemBehaviorSimulationResult.None;
+        }
+        else
+        {
+            return SimulateExplosion(closestHit.point, context.Owner);
+        }
+    }
+
     public override IEnumerator SimulateProjectileBehavior(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone)
     {
         var numHits = Physics2D.RaycastNonAlloc(context.Origin, context.AimVector, _raycastHitArray, Constants.ProjectileRaycastDistance, LayerMaskHelper.GetCombinedLayerMask(Constants.HitboxCollisionLayers));

@@ -198,6 +198,44 @@ public class BallisticProjectileBehavior : UnityDriven, IProjectileBehavior
         yield break;
     }
 
+    public virtual ItemBehaviorSimulationResult SimulateProjectileBehaviorFast(ItemBehaviorSimulationContext context)
+    {
+        Vector2 velocity = context.AimVector;
+        Vector2 pos = context.Origin;
+        const float dt = Constants.ParabolicPathSimulationDeltaForProjectiles;
+
+        for (float t = 0; t < Constants.MaxParabolicPathSimulationTime; t += Constants.ParabolicPathSimulationDeltaForProjectiles)
+        {
+            pos += velocity * dt;
+            velocity += Physics2D.gravity * dt;
+
+            if (!context.Terrain.IsPointInsideBounds(pos))
+            {
+                return SimulateExplosion(pos, context.Owner);
+            }
+
+            foreach (var cornerPoint in _colliderCornerPoints)
+            {
+                var cornerPos = pos + cornerPoint;
+
+                if (context.Terrain.OverlapPoint(cornerPos))
+                {
+                    return SimulateExplosion(pos, context.Owner);
+                }
+
+                foreach (var c in context.OtherCharacters)
+                {
+                    if (c.OverlapPoint(cornerPos))
+                    {
+                        return SimulateExplosion(pos, context.Owner);
+                    }
+                }
+            }
+        }
+
+        return SimulateExplosion(pos, context.Owner);
+    }
+
     protected ItemBehaviorSimulationResult SimulateExplosion(Vector2 position, Character owner)
     {
         float radius = _definition.ExplosionDefinition.Radius.AvarageValue;

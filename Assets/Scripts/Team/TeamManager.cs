@@ -43,7 +43,9 @@ public class TeamManager : MonoBehaviour
 
         if(difficulties.Count < 2)
         {
-            Debug.LogError("Not enough bot difficulty set for evaluation!");
+            //Debug.LogError("Not enough bot difficulty set for evaluation!");
+            difficulties.Add(BotDifficulty.Easy);
+            difficulties.Add(BotDifficulty.Medium);
         }
         else if (difficulties.Count > 2)
         {

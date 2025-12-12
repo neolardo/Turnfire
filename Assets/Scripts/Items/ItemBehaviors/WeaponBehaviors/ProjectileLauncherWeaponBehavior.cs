@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Linq;
+using Unity.VisualScripting;
 
 public class ProjectileLauncherWeaponBehavior : WeaponBehavior
 {
@@ -12,6 +13,7 @@ public class ProjectileLauncherWeaponBehavior : WeaponBehavior
         _projectileBehavior = projectileBehavior;
         _projectileBehavior.Exploded += OnProjectileExploded;
         _definition = definition;
+        FastSimAvailable = true;
     }
 
     public override void Use(ItemUsageContext context)
@@ -43,6 +45,13 @@ public class ProjectileLauncherWeaponBehavior : WeaponBehavior
         rendererManager.TrajectoryRenderer.ToggleGravity(_definition.UseGravityForPreview);
         rendererManager.TrajectoryRenderer.SetOrigin(context.Owner.ItemTransform);
         rendererManager.TrajectoryRenderer.SetTrajectoryMultipler(_definition.FireStrength.CalculateValue());
+    }
+
+    public override ItemBehaviorSimulationResult SimulateUsageFast(ItemBehaviorSimulationContext context)
+    {
+        // apply fire strength
+        context = new ItemBehaviorSimulationContext(context, _definition.FireStrength.AvarageValue);
+        return _projectileBehavior.SimulateProjectileBehaviorFast(context);
     }
 
     public override IEnumerator SimulateUsage(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone)

@@ -16,6 +16,7 @@ MonoBehaviour:
   Defense: 0
   MobilityPreference: 0
   TravelDistanceSensitivity: 1
+  TravelDistanceWeight: 0.5
   LowHealthThreshold: 0
   RemainingAmmoLowThreshold: 0
   GeneralPackageGreed: 0
