@@ -77,7 +77,7 @@ public class BotBrain : UnityDriven
                 bestScore = score;
                 bestPoint = targetPoint;
             }
-            yield return null;
+            //yield return null;
         }
 
         if(!possiblePositions.Any())
@@ -93,6 +93,7 @@ public class BotBrain : UnityDriven
         {
             onDone?.Invoke(BotGoal.Move(bestPoint));
         }
+        yield return null;
     }
 
     private float EvaluatePositionScore(StandingPoint startPoint, StandingPoint targetPoint, BotContext context)
@@ -183,7 +184,7 @@ public class BotBrain : UnityDriven
                 bestScore = score;
                 bestGoal = goal;
             }
-            yield return null;
+            //yield return null;
         }
 
         onDone?.Invoke(bestGoal);       
@@ -259,7 +260,7 @@ public class BotBrain : UnityDriven
                     break;
                 }
             }
-            yield return null;
+            //yield return null;
         }
 
         onDone?.Invoke(bestShot, bestScore, bestPureDamageScore);

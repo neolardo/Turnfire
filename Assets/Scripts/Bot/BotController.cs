@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Net.Mime;
 using UnityEngine;
 
 public class BotController
@@ -29,6 +30,10 @@ public class BotController
                 break;
             case BotGoalType.SkipAction:
                 Debug.Log("Bot skipped action");
+                if(context.ActionState == CharacterActionStateType.ReadyToMove)
+                {
+                    BotEvaluationStatistics.GetData(context.Self.Team).TotalSkippedMovementCount++;
+                }
                 SkipAction();
                 break;
             default:

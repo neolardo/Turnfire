@@ -49,18 +49,18 @@ public class GameStateManager : MonoBehaviour
 
     private IEnumerator StartGameAfterCountdown()
     {
-        if (System.Environment.GetCommandLineArgs().Contains("-fastSim"))
+        if (System.Environment.GetCommandLineArgs().Contains("-normalSim"))
+        {
+            _countdownTimer.StartTimer();
+            yield return new WaitUntil(() => _countdownEnded);
+            yield return new WaitForSeconds(_gameplaySettings.DelaySecondsAfterCountdown);
+        }
+        else
         {
             Time.timeScale = 15f;
             Application.targetFrameRate = 20;
             QualitySettings.SetQualityLevel(0);
             yield return new WaitForSeconds(.5f);
-        }
-        else
-        {
-            _countdownTimer.StartTimer();
-            yield return new WaitUntil(() => _countdownEnded);
-            yield return new WaitForSeconds(_gameplaySettings.DelaySecondsAfterCountdown);
         }
         _countdownTimer.gameObject.SetActive(false);
         yield return new WaitUntil(()=> _turnManager.IsInitialized);

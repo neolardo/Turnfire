@@ -12,6 +12,7 @@ public class FirstAidKitConsumableBehavior : ConsumableBehavior
     public override void Use(ItemUsageContext context)
     {
         IsInUse = true;
+        BotEvaluationStatistics.GetData(context.Owner.Team).TotalConsumablesUsed++;
         context.Owner.Heal(_definition.HealAmount.CalculateValue());
         InvokeItemUsageFinished();
     }

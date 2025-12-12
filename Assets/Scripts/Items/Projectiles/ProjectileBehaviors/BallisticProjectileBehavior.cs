@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BallisticProjectileBehavior : UnityDriven, IProjectileBehavior
@@ -15,6 +17,9 @@ public class BallisticProjectileBehavior : UnityDriven, IProjectileBehavior
     // simulation
     protected readonly Vector2[] _colliderCornerPoints = new Vector2[4];
     private readonly Collider2D[] _overlapCheckColliders = new Collider2D[Constants.OverlapHitColliderNumMax];
+
+    // bot evaluation
+    protected Character _lastOwner;
 
     public BallisticProjectileBehavior(ProjectileDefinition definition) : base(CoroutineRunner.Instance)
     {
@@ -40,6 +45,7 @@ public class BallisticProjectileBehavior : UnityDriven, IProjectileBehavior
     public virtual void Launch(ProjectileLaunchContext context)
     {
         _exploded = false;
+        _lastOwner = context.OwnerCollider.GetComponent<Character>();
         var rb = _projectile.Rigidbody;
         PlaceProjectile(context);
         rb.AddForce(context.AimVector, ForceMode2D.Impulse);
@@ -113,8 +119,35 @@ public class BallisticProjectileBehavior : UnityDriven, IProjectileBehavior
         exp.Initialize(_definition.ExplosionDefinition);
         var explodedCharacters = exp.Explode(context.ContactPoint, damage);
         _exploded = true;
-        Exploded?.Invoke(new ExplosionInfo(damage, explodedCharacters, _projectile, exp));
+        var expInfo = new ExplosionInfo(damage, explodedCharacters, _projectile, exp);
+        AddExplosionStats(expInfo);
+        Exploded?.Invoke(expInfo);
     }
+
+    protected void AddExplosionStats(ExplosionInfo expInfo)
+    {
+        var data = BotEvaluationStatistics.GetData(_lastOwner.Team);
+        float allyDamage = 0;
+        float enemyDamage = 0;
+        foreach( var c in expInfo.ExplodedCharacters)
+        {
+            if(c.Team == _lastOwner.Team)
+            {
+                allyDamage += expInfo.Damage;
+            }
+            else
+            {
+                enemyDamage += expInfo.Damage;
+            }
+        }
+        data.TotalDamageDealtToAllies += allyDamage;
+        data.TotalDamageDealtToEnemies += enemyDamage;
+        if(!expInfo.ExplodedCharacters.Any())
+        {
+            data.TotalNonDamagingAttackCount++;
+        }
+    }
+
 
     public virtual void ForceExplode()
     {

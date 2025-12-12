@@ -80,7 +80,6 @@ public class JumpGraph : UnityDriven
     private IEnumerator CreateStandingPoints(DestructibleTerrainManager terrain)
     {
         Debug.Log($"Jump graph creation started");
-        const int iterationThreshold = 50000;
         int iteration = 0;
         var terrainPixelSize = terrain.PixelSize;
         for (int x = 0; x < terrainPixelSize.x; x += _pixelResolution)
@@ -93,12 +92,13 @@ public class JumpGraph : UnityDriven
                     _adjency.Add(new Dictionary<int, JumpLink>());
                 }
                 iteration++;
-                if (iteration % iterationThreshold == 0)
-                {
-                    yield return null;
-                }
+                //if (iteration % iterationThreshold == 0)
+                //{
+                //    yield return null;
+                //}
             }
         }
+        yield return null;
         Debug.Log($"Created {_points.Count} standing points");
     }
     private IEnumerator SimulateJumpsFromGivenPointsAndCreateJumpLinks(IEnumerable<StandingPoint> startPoints, IEnumerable<StandingPoint> endPoints, DestructibleTerrainManager terrain)

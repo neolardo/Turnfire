@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using UnityEngine;
 
@@ -21,8 +22,34 @@ public class LaserGunWeaponBehavior : WeaponBehavior
     {
         _isAttacking = true;
         var points = CalculateLaserPath(context.Owner, context.AimOrigin, context.AimVector, out var hitCharacters);
+        AddBotStats(context.Owner, hitCharacters);
         context.LaserRenderer.StartLaser(points.ToArray());
         StartCoroutine(FollowLaserAndDamageCharactersOnContact(context.Owner, hitCharacters, context.LaserRenderer));
+    }
+
+    private void AddBotStats(Character owner, IEnumerable<Character> hitCharacters)
+    {
+        var damage = _definition.Damage.CalculateValue();
+        var data = BotEvaluationStatistics.GetData(owner.Team);
+        float allyDamage = 0;
+        float enemyDamage = 0;
+        foreach (var c in hitCharacters)
+        {
+            if (c.Team == owner.Team)
+            {
+                allyDamage += damage;
+            }
+            else
+            {
+                enemyDamage += damage;
+            }
+        }
+        data.TotalDamageDealtToAllies += allyDamage;
+        data.TotalDamageDealtToEnemies += enemyDamage;
+        if (!hitCharacters.Any())
+        {
+            data.TotalNonDamagingAttackCount++;
+        }
     }
 
     private IEnumerable<Vector2> CalculateLaserPath(Character owner, Vector2 origin, Vector2 direction, out HashSet<Character> hitCharacters)

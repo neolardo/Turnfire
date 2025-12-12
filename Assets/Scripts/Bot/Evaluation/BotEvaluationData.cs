@@ -1,15 +1,18 @@
 public class BotEvaluationData
 {
     public string TeamName; 
-    public bool HasWon;
+    public bool HasWon; 
     public float TotalDamageDealtToEnemies;
     public float TotalDamageDealtToAllies;
     public int TotalSuicideCount; 
-    public int TotalNonDamagingProjectileCount; 
+    public int TotalNonDamagingAttackCount; 
     public float RemainingNormalizedTeamHealth;
     public int TotalTurnCount; 
-    public int TotalSkippedTurnCount; 
+    public int TotalSkippedMovementCount; 
     public int TotalOpenedPackageCount;
+    public float TotalArmorsEquipped;
+    public float TotalConsumablesUsed;
+
 
     public override string ToString()
     {
@@ -19,11 +22,13 @@ public class BotEvaluationData
             $"{TotalDamageDealtToEnemies}," +
             $"{TotalDamageDealtToAllies}," +
             $"{TotalSuicideCount}," +
-            $"{TotalNonDamagingProjectileCount}," +
+            $"{TotalNonDamagingAttackCount}," +
             $"{RemainingNormalizedTeamHealth}," +
             $"{TotalTurnCount}," +
-            $"{TotalSkippedTurnCount}," +
-            $"{TotalOpenedPackageCount}\n";
+            $"{TotalSkippedMovementCount}," +
+            $"{TotalOpenedPackageCount},"+
+            $"{TotalArmorsEquipped},"+
+            $"{TotalConsumablesUsed}\n";
     }
 
     public static string[] Headers => new[]
@@ -34,11 +39,13 @@ public class BotEvaluationData
         nameof(TotalDamageDealtToEnemies), 
         nameof(TotalDamageDealtToAllies), 
         nameof(TotalSuicideCount),
-        nameof(TotalNonDamagingProjectileCount),
+        nameof(TotalNonDamagingAttackCount),
         nameof(RemainingNormalizedTeamHealth),
         nameof(TotalTurnCount),
-        nameof(TotalSkippedTurnCount),
-        nameof(TotalOpenedPackageCount)
+        nameof(TotalSkippedMovementCount),
+        nameof(TotalOpenedPackageCount),
+        nameof(TotalArmorsEquipped),
+        nameof(TotalConsumablesUsed)
     };
 
     public void Clear()
@@ -48,10 +55,12 @@ public class BotEvaluationData
         TotalDamageDealtToEnemies = 0;
         TotalDamageDealtToAllies = 0;
         TotalSuicideCount = 0;
-        TotalNonDamagingProjectileCount = 0;
+        TotalNonDamagingAttackCount = 0;
         RemainingNormalizedTeamHealth = 0;
         TotalTurnCount = 0;
-        TotalSkippedTurnCount = 0;
+        TotalSkippedMovementCount = 0;
         TotalOpenedPackageCount = 0;
+        TotalArmorsEquipped = 0;
+        TotalConsumablesUsed = 0;
     }
 }

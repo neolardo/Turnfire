@@ -16,6 +16,7 @@ public class BulletProjectileBehavior : BallisticProjectileBehavior
 
     public override void Launch(ProjectileLaunchContext context)
     {
+        _lastOwner = context.OwnerCollider.GetComponent<Character>();
         _exploded = false;
         var rb = _projectile.Rigidbody;
         float angle = Mathf.Atan2(context.AimVector.y, context.AimVector.x) * Mathf.Rad2Deg;

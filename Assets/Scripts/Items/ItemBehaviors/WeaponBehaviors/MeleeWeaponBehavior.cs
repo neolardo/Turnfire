@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 
 public class MeleeWeaponBehavior : WeaponBehavior
@@ -11,6 +12,9 @@ public class MeleeWeaponBehavior : WeaponBehavior
     private bool _isSimulated;
     private List<Character> _contactedCharactersSimulationResult;
 
+    // bot evaluation
+    private Character _lastOwner;
+    private bool _anyContacts;
     public MeleeWeaponBehavior(MeleeWeaponDefinition definition) : base(CoroutineRunner.Instance)
     {
         _definition = definition;
@@ -20,6 +24,9 @@ public class MeleeWeaponBehavior : WeaponBehavior
 
     public override void Use(ItemUsageContext context)
     {
+        _lastOwner = context.Owner;
+        _anyContacts = false;
+
         _isAttacking = true;
         var hitbox = context.Owner.MeleeHitbox;
         InitializeHitbox(hitbox, context.AimVector);
@@ -37,6 +44,10 @@ public class MeleeWeaponBehavior : WeaponBehavior
     private IEnumerator WaitUntilWeaponUsageFinished(SectorHitbox hitbox)
     {
         yield return new WaitForSeconds(WeaponUsageDuration);
+        if(!_anyContacts)
+        {
+            BotEvaluationStatistics.GetData(_lastOwner.Team).TotalNonDamagingAttackCount++;
+        }
         _isAttacking = false;
         hitbox.gameObject.SetActive(false);
         hitbox.Contacted -= OnWeaponHitboxContacted;
@@ -54,7 +65,19 @@ public class MeleeWeaponBehavior : WeaponBehavior
             }
             else
             {
-                c.Damage(_definition.Damage.CalculateValue());
+                var damage = _definition.Damage.CalculateValue();
+                var data = BotEvaluationStatistics.GetData(_lastOwner.Team);
+                if (c.Team == _lastOwner.Team)
+                {
+                    data.TotalDamageDealtToAllies += damage;
+                }
+                else
+                {
+                    data.TotalDamageDealtToEnemies += damage;
+                }
+                _anyContacts = true;
+
+                c.Damage(damage);
             }
         }
     }
