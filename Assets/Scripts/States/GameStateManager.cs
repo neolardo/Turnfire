@@ -57,7 +57,7 @@ public class GameStateManager : MonoBehaviour
             if (System.Environment.GetCommandLineArgs().Contains($"-map{mapIndex}") && currentSceneName != $"Map{mapIndex}")
             {
                 settings.SceneName = $"Map{mapIndex}";
-                SceneLoader.Instance.ReloadScene();
+                SceneLoader.Instance.LoadGameplayScene(settings);
                 yield break;
             }
         }

@@ -104,6 +104,7 @@ public class BotBrain : UnityDriven
         // debug helpers TODO: delete
         Color travelColor = Color.blue;
         Color offenseColor = Color.red;
+        Color defenseColor = Color.yellow;
         Color packageColor = Color.green;
         Color randomColor = Color.gray;
         float scoreScaler = 0.33f;
@@ -134,6 +135,11 @@ public class BotBrain : UnityDriven
         {
             var avarageEnemyDistance = context.Enemies.Select(e => Vector2.Distance(targetPoint.WorldPos, e.transform.position)).DefaultIfEmpty(float.PositiveInfinity).Average();
             score += DefensiveEnemyDistanceUtility(avarageEnemyDistance) * _tuning.Defense;
+
+            newPos = lastPos + Vector2.up * scoreScaler * (score - lastScore);
+            Debug.DrawLine(lastPos, newPos, defenseColor, raySeconds);
+            lastPos = newPos;
+            lastScore = score;
         }
 
         // package
