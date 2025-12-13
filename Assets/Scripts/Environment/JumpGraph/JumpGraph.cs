@@ -205,6 +205,8 @@ public class JumpGraph : UnityDriven
                 explodedPoints.Add(p);
                 _points[i] = StandingPoint.InvalidPoint;
                 _adjency[p.Id].Clear();
+
+                Debug.DrawLine(p.WorldPos, p.WorldPos + Vector2.up/2f, Color.red, 40); // possible points
             }
         }
 
@@ -239,6 +241,7 @@ public class JumpGraph : UnityDriven
                 {
                     possibleLinkedPoints.Add(p);
                 }
+                Debug.DrawLine(p.WorldPos, p.WorldPos + Vector2.up/2f, Color.green, 40); // possible points
             }
 
             for (int i = 0; i < possibleLinkedPoints.Count; i++)// update new corner points

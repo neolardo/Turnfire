@@ -23,5 +23,7 @@ MonoBehaviour:
   RemainingAmmoLowPackageGreed: 0.5
   OutOfAmmoPackageGreed: 1
   AimRandomnessBias: 0.03
-  DecisionSoftboxTemperature: 0.7
+  PositionDecisionSoftboxTemperature: 0.7
+  ItemDecisionSoftboxTemperature: 0.25
+  AimDecisionSoftboxTemperature: 0.1
   DecisionJitterBias: 0.12

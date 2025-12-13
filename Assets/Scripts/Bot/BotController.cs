@@ -31,11 +31,11 @@ public class BotController
                 break;
             case BotGoalType.Attack:
                 Attack(goal.AttackVector, goal.PreferredItem);
-                Debug.Log("Bot attacked");
+                Debug.Log($"Bot attacked with {goal.PreferredItem.Definition.Name}");
                 break;
             case BotGoalType.UseItem:
                 UseItem(goal.PreferredItem, new ItemUsageContext(context.Self));
-                Debug.Log("Bot used item");
+                Debug.Log($"Bot used item: {goal.PreferredItem.Definition.Name}");
                 break;
             case BotGoalType.SkipAction:
                 Debug.Log("Bot skipped action");

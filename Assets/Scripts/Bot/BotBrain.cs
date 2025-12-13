@@ -2,51 +2,52 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Mime;
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEditor;
 using UnityEngine;
 
 public class BotBrain : UnityDriven
 {
     private BotTuningDefinition _tuning;
+    private Dictionary<Character, BotPositionMemory> _positionMemory;
 
     public event Action<BotGoal> GoalDecided;
 
-    // stationary point
-    private Dictionary<Character, StandingPoint> _lastStandingPointPerCharacter;
-    private Dictionary<Character,int> _numRecentStationaryTurnsPerCharacter;
-    private const float StationaryPointScoreDecrementWeight = .5f;
-
     // utility constants
-    private const float DamageUtilitySoftBoxTemperature = 0.06f;
-    private const float PackageJumpDistanceUtilityExponentBase = 0.8f;
+    private const float DamageUtilitySoftmaxTemperature = 0.06f;
+    private const float PackageJumpDistanceUtilityExponentBase = 0.65f;
     private const float DamageCenterDistanceUtilityExponentBase = 0.45f;
-    private const float OffensiveEnemyDistanceUtilityRiseDecayMidpoint = 0.8f;
-    private const float OffensiveEnemyDistanceUtilityRiseSteepness = -4f;
-    private const float OffensiveEnemyDistanceUtilityRiseFallMidpoint = 2f;
-    private const float OffensiveEnemyDistanceUtilityFallDecayMidpoint = 5f;
-    private const float OffensiveEnemyDistanceUtilityFallSteepness = 1.5f;
+
+    private const float OffensiveRangedEnemyDistanceUtilityRiseDecayMidpoint = 0.8f;
+    private const float OffensiveRangedEnemyDistanceUtilityRiseSteepness = -4f;
+    private const float OffensiveRangedEnemyDistanceUtilityRiseFallMidpoint = 2f;
+    private const float OffensiveRangedEnemyDistanceUtilityFallDecayMidpoint = 5f;
+    private const float OffensiveRangedEnemyDistanceUtilityFallSteepness = 1.5f;
+
+    private const float OffensiveMeleeEnemyDistanceUtilityDecayMidpoint = 1.2f;
+    private const float OffensiveMeleeEnemyDistanceUtilitySteepness = 3.4f;
+
     private const float DefensiveEnemyDistanceUtilityDecayMidpoint = 5f;
     private const float DefensiveEnemyDistanceUtilitySteepness = -1f;
+
     private const float MobilityUtilityDecayMidpoint = 1.5f;
     private const float MobilityUtilitySteepness = -2f;
+
     private const float HealingUtilityDecayMidpoint = 2f;
     private const float HealingUtilitySteepness = -0.7f;
+
     private const float ArmorUtilityDecayMidpoint = 1.7f;
     private const float ArmorUtilitySteepness = -1.1f;
-    private const float TravelDistanceUtilityDecayMidpointAtMinSensitivity = 10;
-    private const float TravelDistanceUtilityDecayMidpointAtMaxSensitivity = 2;
-    private const float TravelDistanceUtilitySteepnessAtMinSensitivity = 0.5f;
-    private const float TravelDistanceUtilitySteepnessAtMaxSensitivity = 2;
-    private float _travelDistanceUtilityDecayMidpoint;
-    private float _travelDistanceUtilitySteepness;
+
+    // position memory constants
+    private const int PositionMemorySize = 5;
+    private const float PositionMemoryPenaltyPerTurn = .5f;
+    private const float PositionMemoryStationaryPointDistance = 1.5f;
 
     public BotBrain(BotTuningDefinition tuning, MonoBehaviour coroutineManager) : base(coroutineManager)
     {
         _tuning = tuning;
-        _lastStandingPointPerCharacter = new Dictionary<Character, StandingPoint>();
-        _numRecentStationaryTurnsPerCharacter = new Dictionary<Character, int>();
-        CacheUtilityParameters();
+        _positionMemory = new Dictionary<Character, BotPositionMemory>();
     }
     
     public void BeginThinking(BotContext context)
@@ -72,13 +73,17 @@ public class BotBrain : UnityDriven
 
     private IEnumerator DecideGoalWhenReadyToMove(BotContext context, Action<BotGoal> onDone)
     {
+        InitializeBotMemory(context.Self);
+
         var startPoint = context.JumpGraph.FindClosestStandingPoint(context.Self.FeetPosition);
         var possiblePositions = context.JumpGraph.GetAllReachableStandingPointsFromPoint(startPoint);
+
         var scores = new List<float>();
 
         foreach (var targetPoint in possiblePositions)
         {
             scores.Add(EvaluatePositionScore(startPoint, targetPoint, context));
+            //Debug.DrawLine(targetPoint.WorldPos, targetPoint.WorldPos + Vector2.up/2f, Color.yellow, 40); // possible points
         }
 
         var pickedPoint = startPoint;
@@ -88,21 +93,11 @@ public class BotBrain : UnityDriven
         }
         else
         {
-            Debug.Log("Random point");
+            Debug.Log("No positions to pick from. Picked a random point.");
             pickedPoint = context.JumpGraph.GetRandomStandingPoint();
         }
 
-        //stationary point update
-        if (_lastStandingPointPerCharacter.ContainsKey(context.Self) && _lastStandingPointPerCharacter[context.Self] == pickedPoint)
-        {
-            _numRecentStationaryTurnsPerCharacter[context.Self]++;
-        }
-        else
-        {
-            _numRecentStationaryTurnsPerCharacter[context.Self] = 0;
-            _lastStandingPointPerCharacter[context.Self] = pickedPoint;
-        }
-
+        MemorizePoint(context.Self, pickedPoint);
         if (pickedPoint == startPoint)
         {
             Debug.Log("Stay at position");
@@ -116,11 +111,9 @@ public class BotBrain : UnityDriven
         yield return null;
     }
 
-
     private float EvaluatePositionScore(StandingPoint startPoint, StandingPoint targetPoint, BotContext context)
     {
         // debug helpers TODO: delete
-        Color travelColor = Color.blue;
         Color offenseColor = Color.red;
         Color defenseColor = Color.yellow;
         Color packageColor = Color.green;
@@ -134,17 +127,18 @@ public class BotBrain : UnityDriven
 
         float score = 0;
 
-        var weaponsWithAmmo = context.Self.GetAllItems().Where(i => i.Definition.ItemType == ItemType.Weapon && !i.Definition.IsQuantityInfinite);
-        int remainingTotalAmmo = weaponsWithAmmo.Any() ? weaponsWithAmmo.Sum(w => w.Quantity): 0;
+        var weapons = context.Self.GetAllItems().Where(i => i.Definition.ItemType == ItemType.Weapon);
+        var remainingTotalAmmo = weapons.Where(w => !w.Definition.IsQuantityInfinite).Select(w => w.Quantity).DefaultIfEmpty(0).Sum();
+        bool hasRangedWeapons = weapons.Any(w => (w.Definition as WeaponDefinition).IsRanged);
 
         // offense
-        if(remainingTotalAmmo > 0)
+        if(weapons.Any())
         {
             var closestEnemyDistance = context.Enemies.Select(e => Vector2.Distance(targetPoint.WorldPos, e.transform.position)).DefaultIfEmpty(float.PositiveInfinity).Min();
-            score += OffensiveEnemyDistanceUtility(closestEnemyDistance) * _tuning.Offense;
+            score += OffensiveEnemyDistanceUtility(closestEnemyDistance, hasRangedWeapons) * _tuning.Offense;
 
             newPos = lastPos + Vector2.up * scoreScaler * (score - lastScore);
-            Debug.DrawLine(lastPos, newPos, offenseColor, raySeconds);
+            //Debug.DrawLine(lastPos, newPos, offenseColor, raySeconds);
             lastPos = newPos;
             lastScore = score;
         }
@@ -156,7 +150,7 @@ public class BotBrain : UnityDriven
             score += DefensiveEnemyDistanceUtility(avarageEnemyDistance) * _tuning.Defense;
 
             newPos = lastPos + Vector2.up * scoreScaler * (score - lastScore);
-            Debug.DrawLine(lastPos, newPos, defenseColor, raySeconds);
+            //Debug.DrawLine(lastPos, newPos, defenseColor, raySeconds);
             lastPos = newPos;
             lastScore = score;
         }
@@ -188,37 +182,23 @@ public class BotBrain : UnityDriven
         score += bestPackageScore * packageGreed;
 
         newPos = lastPos + Vector2.up * scoreScaler * (score - lastScore);
-        Debug.DrawLine(lastPos, newPos, packageColor, raySeconds);
+        //Debug.DrawLine(lastPos, newPos, packageColor, raySeconds);
         lastPos = newPos;
         lastScore = score;
-
-        //travel distance
-        if (context.JumpGraph.TryCalculateJumpDistanceBetween(startPoint, targetPoint, out int travelDistance))
-        {
-            score += TravelDistanceUtility(travelDistance) * _tuning.TravelDistanceWeight;
-
-            newPos = lastPos + Vector2.up * scoreScaler * (score - lastScore);
-            Debug.DrawLine(lastPos, newPos, travelColor, raySeconds);
-            lastPos = newPos;
-            lastScore = score;
-        }
 
         // decision randomness
         score += GetDecisionRandomnessBias();
 
         newPos = lastPos + Vector2.up * scoreScaler * (score - lastScore);
-        Debug.DrawLine(lastPos, newPos, randomColor, raySeconds);
+        //Debug.DrawLine(lastPos, newPos, randomColor, raySeconds);
         lastPos = newPos;
         lastScore = score;
 
         // stationary points
-        if (_lastStandingPointPerCharacter.ContainsKey(context.Self) && targetPoint == _lastStandingPointPerCharacter[context.Self])
-        {
-            score -= _numRecentStationaryTurnsPerCharacter[context.Self] * StationaryPointScoreDecrementWeight;
-        }
+        score -= GetStationaryPenalty(context.Self, targetPoint);
 
         newPos = lastPos + Vector2.up * scoreScaler * (score - lastScore);
-        Debug.DrawLine(lastPos, newPos, stationaryColor, raySeconds);
+        //Debug.DrawLine(lastPos, newPos, stationaryColor, raySeconds);
         lastPos = newPos;
         lastScore = score;
 
@@ -231,6 +211,25 @@ public class BotBrain : UnityDriven
         return UnityEngine.Random.Range(-_tuning.DecisionJitterBias / 2f, _tuning.DecisionJitterBias / 2f);
     }
 
+    #region Bot Memory
+     private void InitializeBotMemory(Character character)
+    {
+        if (!_positionMemory.ContainsKey(character))
+        {
+            _positionMemory[character] = new BotPositionMemory(PositionMemoryPenaltyPerTurn, PositionMemorySize, PositionMemoryStationaryPointDistance);
+        }
+    }
+
+    private void MemorizePoint(Character character, StandingPoint point)
+    {
+        _positionMemory[character].Commit(point);
+    }
+    private float GetStationaryPenalty(Character character, StandingPoint point)
+    {
+        return _positionMemory[character].GetStationaryPenalty(point);
+    }
+
+    #endregion
 
     #endregion
 
@@ -238,11 +237,12 @@ public class BotBrain : UnityDriven
 
     private IEnumerator DecideGoalWhenReadyToUseItem(BotContext context, Action<BotGoal> onDone)
     {
-        var items = context.Self.GetAllItems().Where(i=> i.Behavior.CanUseItem(new ItemUsageContext(context.Self)));
+        var itemUsageContext = new ItemUsageContext(context.Self);
+        var useableItems = context.Self.GetAllItems().Where( i => i.Behavior.CanUseItem(new ItemUsageContext(context.Self)));
         var scores = new List<float>();
         var goals = new List<BotGoal>();
 
-        foreach (var item in items)
+        foreach (var item in useableItems)
         {
             float score = float.NegativeInfinity;
             BotGoal goal = BotGoal.SkipAction();
@@ -253,7 +253,7 @@ public class BotBrain : UnityDriven
         }
 
         var pickedGoal = BotGoal.SkipAction();
-        if(items.Any())
+        if(useableItems.Any())
         {
             pickedGoal = PickBySoftmax(goals, scores, _tuning.ItemDecisionSoftboxTemperature).item;
         }
@@ -278,7 +278,7 @@ public class BotBrain : UnityDriven
         {
             var result = ItemBehaviorSimulationResult.None;
             yield return item.Behavior.SimulateUsage(simulationContext, (r) => result = r);
-            score += HealingUtility(result.TotalHealingDone) * _tuning.Defense;
+            score = HealingUtility(result.TotalHealingDone) * _tuning.Defense;
             score += ArmorUtility(result.TotalArmorBoost) * _tuning.Defense;
             score += MobilityUtility(result.TotalMobilityBoost) * _tuning.MobilityPreference;
             onDone?.Invoke(score, BotGoal.UseItem(item));
@@ -288,8 +288,8 @@ public class BotBrain : UnityDriven
     public IEnumerator DecideAttackVector(Vector2 start, WeaponBehavior weaponBehavior, BotContext context, Action<Vector2, float> onDone)
     {
         var others = context.TeamMates.Concat(context.Enemies);
-        var scores = new List<float>();
-        var attackVectors = new List<Vector2>();
+        var bestScore = float.NegativeInfinity;
+        var bestAttackVector = Vector2.zero;
 
         for (float angle = -30; angle < 210f; angle += Constants.AimAngleSimulationStep) // only check valid shoot angles
         {
@@ -321,8 +321,12 @@ public class BotBrain : UnityDriven
                     score = DamageUtility(simulationResult.TotalDamageDealtToEnemies) * _tuning.Offense;
                     score -= DamageUtility(simulationResult.TotalDamageDealtToAllies) * _tuning.Defense;
                 }
-                scores.Add(score);
-                attackVectors.Add(aimVector);
+
+                if(score > bestScore)
+                {
+                    bestScore = score;
+                    bestAttackVector = aimVector;
+                }
 
                 if(weaponBehavior.IsAimingNormalized)
                 {
@@ -331,8 +335,7 @@ public class BotBrain : UnityDriven
             }
             //yield return null;
         }
-        var pick = PickBySoftmax(attackVectors, scores, _tuning.AimDecisionSoftboxTemperature);
-        onDone?.Invoke(pick.item, pick.score);
+        onDone?.Invoke(bestAttackVector, bestScore);
     }
 
     private Vector2 ApplyAimRandomness(Vector2 aimVector)
@@ -385,18 +388,25 @@ public class BotBrain : UnityDriven
 
     private float DamageUtility(float damage)
     {
-        return 1f - Mathf.Exp(-damage * DamageUtilitySoftBoxTemperature);
+        return 1f - Mathf.Exp(-damage * DamageUtilitySoftmaxTemperature);
     }
 
-    private float OffensiveEnemyDistanceUtility(float closestEnemyDistance)
+    private float OffensiveEnemyDistanceUtility(float closestEnemyDistance, bool isRangedDistance)
     {
-        if(closestEnemyDistance < OffensiveEnemyDistanceUtilityRiseFallMidpoint)
+        if (isRangedDistance)
         {
-            return MathHelpers.Sigmoid(closestEnemyDistance, OffensiveEnemyDistanceUtilityRiseDecayMidpoint, OffensiveEnemyDistanceUtilityRiseSteepness);
+            if (closestEnemyDistance < OffensiveRangedEnemyDistanceUtilityRiseFallMidpoint)
+            {
+                return MathHelpers.Sigmoid(closestEnemyDistance, OffensiveRangedEnemyDistanceUtilityRiseDecayMidpoint, OffensiveRangedEnemyDistanceUtilityRiseSteepness);
+            }
+            else
+            {
+                return MathHelpers.Sigmoid(closestEnemyDistance, OffensiveRangedEnemyDistanceUtilityFallDecayMidpoint, OffensiveRangedEnemyDistanceUtilityFallSteepness);
+            }
         }
-        else 
+        else
         {
-            return MathHelpers.Sigmoid(closestEnemyDistance, OffensiveEnemyDistanceUtilityFallDecayMidpoint, OffensiveEnemyDistanceUtilityFallSteepness);
+            return MathHelpers.Sigmoid(closestEnemyDistance, OffensiveMeleeEnemyDistanceUtilityDecayMidpoint, OffensiveMeleeEnemyDistanceUtilitySteepness);
         }
     }
 
@@ -427,16 +437,6 @@ public class BotBrain : UnityDriven
     private float PackageJumpDistanceUtility(int numJumps)
     {
         return Mathf.Pow(PackageJumpDistanceUtilityExponentBase, numJumps);
-    }
-    private float TravelDistanceUtility(int numJumps)
-    {
-        return MathHelpers.Sigmoid(numJumps, _travelDistanceUtilityDecayMidpoint, _travelDistanceUtilitySteepness);
-    }
-
-    private void CacheUtilityParameters()
-    {
-        _travelDistanceUtilityDecayMidpoint = Mathf.Lerp(TravelDistanceUtilityDecayMidpointAtMinSensitivity, TravelDistanceUtilityDecayMidpointAtMaxSensitivity, _tuning.TravelDistanceSensitivity);
-        _travelDistanceUtilitySteepness = Mathf.Lerp(TravelDistanceUtilitySteepnessAtMinSensitivity, TravelDistanceUtilitySteepnessAtMaxSensitivity, _tuning.TravelDistanceSensitivity);
     }
 
     #endregion

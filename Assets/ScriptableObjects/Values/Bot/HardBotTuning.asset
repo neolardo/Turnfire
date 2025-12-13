@@ -19,9 +19,10 @@ MonoBehaviour:
   TravelDistanceWeight: 0
   LowHealthThreshold: 4
   RemainingAmmoLowThreshold: 4
-  GeneralPackageGreed: 1
+  GeneralPackageGreed: 0.7
   RemainingAmmoLowPackageGreed: 1
-  OutOfAmmoPackageGreed: 1
+  OutOfAmmoPackageGreed: 1.3
   AimRandomnessBias: 0.01
-  DecisionSoftboxTemperature: 0.15
+  PositionDecisionSoftboxTemperature: 0.15
+  ItemDecisionSoftboxTemperature: 0.1
   DecisionJitterBias: 0.05

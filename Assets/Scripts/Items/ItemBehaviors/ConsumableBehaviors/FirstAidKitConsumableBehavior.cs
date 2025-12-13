@@ -13,6 +13,7 @@ public class FirstAidKitConsumableBehavior : ConsumableBehavior
     {
         IsInUse = true;
         BotEvaluationStatistics.GetData(context.Owner.Team).ConsumablesUsedCount++;
+        UnityEngine.Debug.Log($"First aid kit used");
         context.Owner.Heal(_definition.HealAmount.CalculateValue());
         InvokeItemUsageFinished();
     }

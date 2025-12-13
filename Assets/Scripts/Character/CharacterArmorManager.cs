@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 public class CharacterArmorManager
@@ -24,6 +25,7 @@ public class CharacterArmorManager
 
         if (armorList.Contains(armorDefinition))
         {
+            UnityEngine.Debug.LogWarning($"Tried to equip {armorDefinition} but could not becuase it's aleady equipped.");
             return false;
         }
 

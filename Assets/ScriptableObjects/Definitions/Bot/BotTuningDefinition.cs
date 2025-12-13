@@ -8,8 +8,6 @@ public class BotTuningDefinition : ScriptableObject
     public float Offense;
     public float Defense;
     public float MobilityPreference;
-    public float TravelDistanceSensitivity;
-    public float TravelDistanceWeight;
     public float LowHealthThreshold;
 
     public int RemainingAmmoLowThreshold;
@@ -22,7 +20,6 @@ public class BotTuningDefinition : ScriptableObject
     public float AimRandomnessBias; 
     public float PositionDecisionSoftboxTemperature;
     public float ItemDecisionSoftboxTemperature;
-    public float AimDecisionSoftboxTemperature;
 
     [Header("Noise")]
     public float DecisionJitterBias;
