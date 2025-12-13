@@ -19,8 +19,11 @@ public class BotTuningDefinition : ScriptableObject
     public float OutOfAmmoPackageGreed;
 
     [Header("Skills")]
-    public float AimRandomnessBias;
+    public float AimRandomnessBias; 
+    public float PositionDecisionSoftboxTemperature;
+    public float ItemDecisionSoftboxTemperature;
+    public float AimDecisionSoftboxTemperature;
 
     [Header("Noise")]
-    public float DecisionRandomnessBias;
+    public float DecisionJitterBias;
 }

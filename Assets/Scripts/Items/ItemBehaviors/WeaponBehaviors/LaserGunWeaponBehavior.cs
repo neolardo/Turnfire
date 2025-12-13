@@ -158,9 +158,9 @@ public class LaserGunWeaponBehavior : WeaponBehavior
 
     public override ItemBehaviorSimulationResult SimulateUsageFast(ItemBehaviorSimulationContext context)
     {
-        float damage = _definition.Damage.AvarageValue;
-        float damageToAllies = 0;
-        float damageToEnemies = 0;
+        int damage = _definition.Damage.AvarageValue;
+        int damageToAllies = 0;
+        int damageToEnemies = 0;
         CalculateLaserPath(context.Owner, context.Origin, context.AimVector, out var hitCharacters);
         Vector2 closestDamagingPosition = hitCharacters.Count == 0 ? context.Origin : hitCharacters.First().transform.position;
         float minDist = Vector2.Distance(closestDamagingPosition, context.Origin);
@@ -186,9 +186,9 @@ public class LaserGunWeaponBehavior : WeaponBehavior
 
     public override IEnumerator SimulateUsage(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone)
     {
-        float damage = _definition.Damage.AvarageValue;
-        float damageToAllies = 0;
-        float damageToEnemies = 0;
+        int damage = _definition.Damage.AvarageValue;
+        int damageToAllies = 0;
+        int damageToEnemies = 0;
         CalculateLaserPath(context.Owner, context.Origin, context.AimVector, out var hitCharacters);
         Vector2 closestDamagingPosition = hitCharacters.Count == 0 ? context.Origin : hitCharacters.First().transform.position;
         float minDist = Vector2.Distance(closestDamagingPosition, context.Origin);

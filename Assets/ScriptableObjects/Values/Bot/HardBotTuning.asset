@@ -12,14 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92c5571e745e871438928ce2cf6b180a, type: 3}
   m_Name: HardBotTuning
   m_EditorClassIdentifier: 
-  Offense: 1
+  Offense: 1.3
   Defense: 1
   MobilityPreference: 1
   TravelDistanceSensitivity: 0
+  TravelDistanceWeight: 0
   LowHealthThreshold: 4
   RemainingAmmoLowThreshold: 4
   GeneralPackageGreed: 1
   RemainingAmmoLowPackageGreed: 1
   OutOfAmmoPackageGreed: 1
   AimRandomnessBias: 0.01
-  DecisionRandomnessBias: 0.05
+  DecisionSoftboxTemperature: 0.15
+  DecisionJitterBias: 0.05

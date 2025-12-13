@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92c5571e745e871438928ce2cf6b180a, type: 3}
   m_Name: EasyBotTuning
   m_EditorClassIdentifier: 
-  Offense: 1
-  Defense: 0
+  Offense: 0.7
+  Defense: 0.1
   MobilityPreference: 0
   TravelDistanceSensitivity: 1
   TravelDistanceWeight: 0.5
@@ -22,5 +22,6 @@ MonoBehaviour:
   GeneralPackageGreed: 0
   RemainingAmmoLowPackageGreed: 0
   OutOfAmmoPackageGreed: 1
-  AimRandomnessBias: 0.03
-  DecisionRandomnessBias: 0.15
+  AimRandomnessBias: 0.06
+  DecisionSoftboxTemperature: 2
+  DecisionJitterBias: 0.18

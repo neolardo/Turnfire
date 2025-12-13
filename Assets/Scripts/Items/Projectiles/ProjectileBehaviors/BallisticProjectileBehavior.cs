@@ -239,9 +239,9 @@ public class BallisticProjectileBehavior : UnityDriven, IProjectileBehavior
     protected ItemBehaviorSimulationResult SimulateExplosion(Vector2 position, Character owner)
     {
         float radius = _definition.ExplosionDefinition.Radius.AvarageValue;
-        float damage = _definition.Damage.AvarageValue;
-        float allyDamage = 0;
-        float enemyDamage = 0;
+        int damage = _definition.Damage.AvarageValue;
+        int allyDamage = 0;
+        int enemyDamage = 0;
 
         var mask = LayerMaskHelper.GetLayerMask(Constants.CharacterLayer);
         var filter = new ContactFilter2D();

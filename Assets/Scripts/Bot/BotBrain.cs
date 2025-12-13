@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mime;
 using UnityEditor;
 using UnityEngine;
 
@@ -10,10 +12,15 @@ public class BotBrain : UnityDriven
 
     public event Action<BotGoal> GoalDecided;
 
+    // stationary point
+    private Dictionary<Character, StandingPoint> _lastStandingPointPerCharacter;
+    private Dictionary<Character,int> _numRecentStationaryTurnsPerCharacter;
+    private const float StationaryPointScoreDecrementWeight = .5f;
+
     // utility constants
     private const float DamageUtilitySoftBoxTemperature = 0.06f;
     private const float PackageJumpDistanceUtilityExponentBase = 0.8f;
-    private const float DamageCenterDistanceUtilityExponentBase = 0.55f;
+    private const float DamageCenterDistanceUtilityExponentBase = 0.45f;
     private const float OffensiveEnemyDistanceUtilityRiseDecayMidpoint = 0.8f;
     private const float OffensiveEnemyDistanceUtilityRiseSteepness = -4f;
     private const float OffensiveEnemyDistanceUtilityRiseFallMidpoint = 2f;
@@ -37,6 +44,8 @@ public class BotBrain : UnityDriven
     public BotBrain(BotTuningDefinition tuning, MonoBehaviour coroutineManager) : base(coroutineManager)
     {
         _tuning = tuning;
+        _lastStandingPointPerCharacter = new Dictionary<Character, StandingPoint>();
+        _numRecentStationaryTurnsPerCharacter = new Dictionary<Character, int>();
         CacheUtilityParameters();
     }
     
@@ -65,28 +74,36 @@ public class BotBrain : UnityDriven
     {
         var startPoint = context.JumpGraph.FindClosestStandingPoint(context.Self.FeetPosition);
         var possiblePositions = context.JumpGraph.GetAllReachableStandingPointsFromPoint(startPoint);
-
-        float bestScore = float.NegativeInfinity;
-        StandingPoint bestPoint = default;
+        var scores = new List<float>();
 
         foreach (var targetPoint in possiblePositions)
         {
-            float score = EvaluatePositionScore(startPoint, targetPoint, context);
-            if (score > bestScore)
-            {
-                bestScore = score;
-                bestPoint = targetPoint;
-            }
-            //yield return null;
+            scores.Add(EvaluatePositionScore(startPoint, targetPoint, context));
         }
 
-        if(!possiblePositions.Any())
+        var pickedPoint = startPoint;
+        if(possiblePositions.Any())
+        {
+            pickedPoint = PickBySoftmax(possiblePositions.ToList(), scores, _tuning.PositionDecisionSoftboxTemperature).item;
+        }
+        else
         {
             Debug.Log("Random point");
-            bestPoint = context.JumpGraph.GetRandomStandingPoint();
+            pickedPoint = context.JumpGraph.GetRandomStandingPoint();
         }
 
-        if (bestPoint == startPoint)
+        //stationary point update
+        if (_lastStandingPointPerCharacter.ContainsKey(context.Self) && _lastStandingPointPerCharacter[context.Self] == pickedPoint)
+        {
+            _numRecentStationaryTurnsPerCharacter[context.Self]++;
+        }
+        else
+        {
+            _numRecentStationaryTurnsPerCharacter[context.Self] = 0;
+            _lastStandingPointPerCharacter[context.Self] = pickedPoint;
+        }
+
+        if (pickedPoint == startPoint)
         {
             Debug.Log("Stay at position");
             onDone?.Invoke(BotGoal.SkipAction());
@@ -94,10 +111,11 @@ public class BotBrain : UnityDriven
         else
         {
             Debug.Log("Go to destination");
-            onDone?.Invoke(BotGoal.Move(bestPoint));
+            onDone?.Invoke(BotGoal.Move(pickedPoint));
         }
         yield return null;
     }
+
 
     private float EvaluatePositionScore(StandingPoint startPoint, StandingPoint targetPoint, BotContext context)
     {
@@ -107,6 +125,7 @@ public class BotBrain : UnityDriven
         Color defenseColor = Color.yellow;
         Color packageColor = Color.green;
         Color randomColor = Color.gray;
+        Color stationaryColor = Color.magenta;
         float scoreScaler = 0.33f;
         float raySeconds = 40;
         float lastScore = 0;
@@ -192,13 +211,24 @@ public class BotBrain : UnityDriven
         lastPos = newPos;
         lastScore = score;
 
+        // stationary points
+        if (_lastStandingPointPerCharacter.ContainsKey(context.Self) && targetPoint == _lastStandingPointPerCharacter[context.Self])
+        {
+            score -= _numRecentStationaryTurnsPerCharacter[context.Self] * StationaryPointScoreDecrementWeight;
+        }
+
+        newPos = lastPos + Vector2.up * scoreScaler * (score - lastScore);
+        Debug.DrawLine(lastPos, newPos, stationaryColor, raySeconds);
+        lastPos = newPos;
+        lastScore = score;
+
 
         return score;
     }
 
     private float GetDecisionRandomnessBias()
     {
-        return UnityEngine.Random.Range(-_tuning.DecisionRandomnessBias / 2f, _tuning.DecisionRandomnessBias / 2f);
+        return UnityEngine.Random.Range(-_tuning.DecisionJitterBias / 2f, _tuning.DecisionJitterBias / 2f);
     }
 
 
@@ -208,28 +238,27 @@ public class BotBrain : UnityDriven
 
     private IEnumerator DecideGoalWhenReadyToUseItem(BotContext context, Action<BotGoal> onDone)
     {
-        var startPoint = context.JumpGraph.FindClosestStandingPoint(context.Self.FeetPosition);
-        var possiblePositions = context.JumpGraph.GetAllReachableStandingPointsFromPoint(startPoint);
-
-        float bestScore = float.NegativeInfinity;
-        BotGoal bestGoal = BotGoal.SkipAction();
-
-        var items = context.Self.GetAllItems();
+        var items = context.Self.GetAllItems().Where(i=> i.Behavior.CanUseItem(new ItemUsageContext(context.Self)));
+        var scores = new List<float>();
+        var goals = new List<BotGoal>();
 
         foreach (var item in items)
         {
             float score = float.NegativeInfinity;
             BotGoal goal = BotGoal.SkipAction();
             yield return EvaluateItemScore(item, context, (s, g) => { score = s; goal = g; });
-            if (score > bestScore)
-            {
-                bestScore = score;
-                bestGoal = goal;
-            }
+            goals.Add(goal);
+            scores.Add(score);
             //yield return null;
         }
 
-        onDone?.Invoke(bestGoal);       
+        var pickedGoal = BotGoal.SkipAction();
+        if(items.Any())
+        {
+            pickedGoal = PickBySoftmax(goals, scores, _tuning.ItemDecisionSoftboxTemperature).item;
+        }
+
+        onDone?.Invoke(pickedGoal);       
     }
 
     private IEnumerator EvaluateItemScore(Item item, BotContext context, Action<float, BotGoal> onDone)
@@ -240,19 +269,10 @@ public class BotBrain : UnityDriven
         if (item.Definition.ItemType == ItemType.Weapon)
         {
             var weaponBehavior = item.Behavior as WeaponBehavior;
-            float pureDamageScore = float.NegativeInfinity;
             Vector2 attackVector = default;
-            yield return CalculateBestAttackVector(startPos, weaponBehavior, context, (vec, s, pds) => { score = s; attackVector = vec; pureDamageScore = pds; });
-            bool remainingAmmoLow = !item.Definition.IsQuantityInfinite && item.Quantity <= _tuning.RemainingAmmoLowThreshold && item.Definition.MaximumQuantity > _tuning.RemainingAmmoLowThreshold;
-            if (!remainingAmmoLow || pureDamageScore > 0) // if low on ammo only attack if can deal damage
-            {
-                attackVector = ApplyAimRandomness(attackVector);
-                onDone?.Invoke(score, BotGoal.Attack(attackVector, item));
-            }
-            else
-            {
-                onDone?.Invoke(0, BotGoal.SkipAction());
-            }
+            yield return DecideAttackVector(startPos, weaponBehavior, context, (vec, s) => { score = s; attackVector = vec; });
+            attackVector = ApplyAimRandomness(attackVector);
+            onDone?.Invoke(score, BotGoal.Attack(attackVector, item));
         }
         else
         {
@@ -265,19 +285,18 @@ public class BotBrain : UnityDriven
         }
     }
 
-    public IEnumerator CalculateBestAttackVector(Vector2 start, WeaponBehavior weaponBehavior, BotContext context, Action<Vector2, float, float> onDone)
+    public IEnumerator DecideAttackVector(Vector2 start, WeaponBehavior weaponBehavior, BotContext context, Action<Vector2, float> onDone)
     {
-        float bestScore = float.NegativeInfinity;
-        float bestPureDamageScore = float.NegativeInfinity;
-        Vector2 bestShot = default;
         var others = context.TeamMates.Concat(context.Enemies);
+        var scores = new List<float>();
+        var attackVectors = new List<Vector2>();
 
         for (float angle = -30; angle < 210f; angle += Constants.AimAngleSimulationStep) // only check valid shoot angles
         {
             Vector2 direction = angle.AngleDegreesToVector();
-            for (float strength = Constants.AimStrengthSimulationStep; strength <= 1f; strength += Constants.AimStrengthSimulationStep)
+            for (float magnitude = Constants.AimStrengthSimulationStep; magnitude <= 1f; magnitude += Constants.AimStrengthSimulationStep)
             {
-                Vector2 aimVector = direction * strength;
+                Vector2 aimVector = direction * magnitude;
 
                 var simulationContext = new ItemBehaviorSimulationContext(context.Self, others, start, aimVector, context.Terrain);
                 var simulationResult = ItemBehaviorSimulationResult.None;
@@ -290,19 +309,20 @@ public class BotBrain : UnityDriven
                 { 
                     yield return weaponBehavior.SimulateUsage(simulationContext, (result) => simulationResult = result);
                 }
-
-                var minDistFromClosestEnemy = context.Enemies.Select(c => Vector2.Distance(c.transform.position, simulationResult.DamageCenter)).DefaultIfEmpty(float.PositiveInfinity).Min();
-
-                float pureDamageScore = DamageUtility(simulationResult.TotalDamageDealtToEnemies) * _tuning.Offense;
-                pureDamageScore += -DamageUtility(simulationResult.TotalDamageDealtToAllies) * _tuning.Defense;
-                float distanceScore = DamageCenterDistanceUtility(minDistFromClosestEnemy) * _tuning.Offense;
-
-                if (pureDamageScore + distanceScore > bestScore)
+                float score = 0;
+                
+                if(Mathf.Approximately(simulationResult.TotalDamageDealtToEnemies, 0) && Mathf.Approximately(simulationResult.TotalDamageDealtToAllies, 0))
                 {
-                    bestScore = pureDamageScore + distanceScore;
-                    bestPureDamageScore = pureDamageScore;
-                    bestShot = aimVector;
+                    var minDistFromClosestEnemy = context.Enemies.Select(c => Vector2.Distance(c.transform.position, simulationResult.DamageCenter)).DefaultIfEmpty(float.PositiveInfinity).Min();
+                    score = DamageCenterDistanceUtility(minDistFromClosestEnemy) * _tuning.Offense;
                 }
+                else 
+                {
+                    score = DamageUtility(simulationResult.TotalDamageDealtToEnemies) * _tuning.Offense;
+                    score -= DamageUtility(simulationResult.TotalDamageDealtToAllies) * _tuning.Defense;
+                }
+                scores.Add(score);
+                attackVectors.Add(aimVector);
 
                 if(weaponBehavior.IsAimingNormalized)
                 {
@@ -311,8 +331,8 @@ public class BotBrain : UnityDriven
             }
             //yield return null;
         }
-
-        onDone?.Invoke(bestShot, bestScore, bestPureDamageScore);
+        var pick = PickBySoftmax(attackVectors, scores, _tuning.AimDecisionSoftboxTemperature);
+        onDone?.Invoke(pick.item, pick.score);
     }
 
     private Vector2 ApplyAimRandomness(Vector2 aimVector)
@@ -322,6 +342,41 @@ public class BotBrain : UnityDriven
         var newDirection = angle.AngleDegreesToVector();
         var newMagnitude = Mathf.Clamp01(aimVector.magnitude + UnityEngine.Random.Range(-_tuning.AimRandomnessBias / 2f, _tuning.AimRandomnessBias / 2f));
         return newDirection * newMagnitude;
+    }
+
+    #endregion
+
+    #region Softmax Pick
+
+    private (T item, float score) PickBySoftmax<T>(IList<T> items, IList<float> scores, float temperature)
+    {
+        float max = scores.Max();
+
+        float sum = 0f;
+        var weights = new float[scores.Count];
+        for (int i = 0; i < scores.Count; ++i)
+        {
+            float w = Mathf.Exp((scores[i] - max) / Mathf.Max(0.0001f, temperature)); // lower T -> more greedy, higher T -> more random
+            weights[i] = w;
+            sum += w;
+        }
+
+        if (sum <= 0f)
+        {
+            return (items[0], scores[0]);
+        }
+
+        float pick = UnityEngine.Random.value * sum;
+        float acc = 0f;
+        for (int i = 0; i < weights.Length; ++i)
+        {
+            acc += weights[i];
+            if (pick <= acc)
+            {
+                return (items[i], scores[i]);
+            }
+        }
+        return (items[items.Count - 1], scores[items.Count -1]);
     }
 
     #endregion
