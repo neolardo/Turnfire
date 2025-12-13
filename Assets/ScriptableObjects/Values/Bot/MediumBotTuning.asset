@@ -15,15 +15,12 @@ MonoBehaviour:
   Offense: 1
   Defense: 0.7
   MobilityPreference: 0.5
-  TravelDistanceSensitivity: 0.5
-  TravelDistanceWeight: 0.3
   LowHealthThreshold: 4
   RemainingAmmoLowThreshold: 4
   GeneralPackageGreed: 0
-  RemainingAmmoLowPackageGreed: 0.5
-  OutOfAmmoPackageGreed: 1
+  RemainingAmmoLowPackageGreed: 1
+  OutOfAmmoPackageGreed: 2
   AimRandomnessBias: 0.03
   PositionDecisionSoftboxTemperature: 0.7
   ItemDecisionSoftboxTemperature: 0.25
-  AimDecisionSoftboxTemperature: 0.1
   DecisionJitterBias: 0.12

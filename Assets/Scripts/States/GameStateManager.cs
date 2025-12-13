@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -51,12 +50,12 @@ public class GameStateManager : MonoBehaviour
     private IEnumerator StartGameAfterCountdown()
     {
         var settings = SceneLoader.Instance.CurrentGameplaySceneSettings;
-        var currentSceneName = settings.SceneName;
+        var currentSceneName = settings.Map.SceneName;
         for (var mapIndex = 0; mapIndex<= 2; mapIndex++)
         {
             if (System.Environment.GetCommandLineArgs().Contains($"-map{mapIndex}") && currentSceneName != $"Map{mapIndex}")
             {
-                settings.SceneName = $"Map{mapIndex}";
+                settings.Map = FindFirstObjectByType<MapLocator>().GetMap(mapIndex);
                 SceneLoader.Instance.LoadGameplayScene(settings);
                 yield break;
             }

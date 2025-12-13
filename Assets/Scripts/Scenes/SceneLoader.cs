@@ -14,7 +14,8 @@ public class SceneLoader : MonoBehaviour
     {
         //TODO: remove
         var players = new List<Player> { new Player("Bot1", PlayerType.Human), { new Player("Bot2", PlayerType.Bot) } };
-        CurrentGameplaySceneSettings = new GameplaySceneSettings() { Players = players, BotDifficulty = BotDifficulty.Easy,  SceneName = "Map0", UseTimer = false }; //TODO: remove
+        var map = FindFirstObjectByType<MapLocator>().Map0;
+        CurrentGameplaySceneSettings = new GameplaySceneSettings() { Players = players, BotDifficulty = BotDifficulty.Easy, Map = map, UseTimer = false }; //TODO: remove
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -52,7 +53,7 @@ public class SceneLoader : MonoBehaviour
     public void LoadGameplayScene(GameplaySceneSettings settings)
     {
         CurrentGameplaySceneSettings = settings;
-        StartCoroutine(LoadSceneCoroutine(CurrentGameplaySceneSettings.SceneName));
+        StartCoroutine(LoadSceneCoroutine(CurrentGameplaySceneSettings.Map.SceneName));
     }
 
     public void ReloadScene()
