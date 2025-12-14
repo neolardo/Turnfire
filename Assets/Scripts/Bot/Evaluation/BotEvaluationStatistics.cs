@@ -72,6 +72,11 @@ public static class BotEvaluationStatistics
         {
             var analyzed = team;
             var other = teams.Where(t=> t != analyzed).First();
+            if (_difficultyPerTeam[other] == _difficultyPerTeam[analyzed])
+            {
+                continue;
+            }
+
             var config = new BotEvaluationConfiguration(_difficultyPerTeam[analyzed], _difficultyPerTeam[other]);
             AppendToFile(config, _dataPerTeam[analyzed]);
         }

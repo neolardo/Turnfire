@@ -19,7 +19,6 @@ public class DropManager : MonoBehaviour
         _cameraController = FindFirstObjectByType<CameraController>();
         _currentPackages = new List<Package>();
         _dropZones = new List<DropZone>();
-        _currentMap = SceneLoader.Instance.CurrentGameplaySceneSettings.Map;
         for (int i = 0; i < transform.childCount; i++)
         {
             var dropZone = transform.GetChild(i).GetComponent<DropZone>();
@@ -29,6 +28,11 @@ public class DropManager : MonoBehaviour
         {
             Debug.LogWarning("No drop zones to drop from.");
         }
+       
+    }
+    private void Start()
+    {
+        _currentMap = SceneLoader.Instance.CurrentGameplaySceneSettings.Map;
         if (_currentMap.PossibleDrops.Length == 0)
         {
             Debug.LogWarning("No packages available to drop.");
