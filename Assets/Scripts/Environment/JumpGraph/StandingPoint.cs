@@ -8,7 +8,7 @@ public readonly struct StandingPoint
     public readonly bool IsCornerPoint;
     public bool IsValid => Id >= 0;
 
-    private const float StandingNormalYMin = 0.85f;
+    private const float StandingNormalYMin = 0.79f;
     public const float NonCornerPointNeighbourHalfWidth = .25f;
 
     public static readonly StandingPoint InvalidPoint = new StandingPoint(-1, Vector2.zero, Vector2Int.zero, false);

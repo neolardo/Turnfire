@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.Collections.LowLevel.Unsafe;
 using UnityEditor;
 using UnityEngine;
 
@@ -86,8 +85,10 @@ public class BotBrain : UnityDriven
             //Debug.DrawLine(targetPoint.WorldPos, targetPoint.WorldPos + Vector2.up/2f, Color.yellow, 40); // possible points
         }
 
+        Debug.Log($"Reachable points count: {possiblePositions.Count()}");
+
         var pickedPoint = startPoint;
-        if(possiblePositions.Any())
+        if(possiblePositions.Count() > 1)
         {
             pickedPoint = PickBySoftmax(possiblePositions.ToList(), scores, _tuning.PositionDecisionSoftboxTemperature).item;
         }
@@ -144,7 +145,7 @@ public class BotBrain : UnityDriven
         }
 
         // defense
-        if (context.Self.NormalizedHealth < _tuning.LowHealthThreshold)
+        if (context.Self.Health < _tuning.LowHealthThreshold)
         {
             var avarageEnemyDistance = context.Enemies.Select(e => Vector2.Distance(targetPoint.WorldPos, e.transform.position)).DefaultIfEmpty(float.PositiveInfinity).Average();
             score += DefensiveEnemyDistanceUtility(avarageEnemyDistance) * _tuning.Defense;

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class JumpGraphManager : MonoBehaviour
@@ -12,7 +11,7 @@ public class JumpGraphManager : MonoBehaviour
 
     private void Start()
     {
-        JumpGraph = new JumpGraph(this, PixelResolution, _pixelUI.PixelsPerUnit, Constants.MaxJumpStrength, _characterWidth, _characterHeight);
+        JumpGraph = new JumpGraph(this, PixelResolution, _pixelUI.PixelsPerUnit, Constants.MaxJumpStrength, Constants.DefaultJumpStrength, _characterWidth, _characterHeight);
         JumpGraph.InitiateGraphCreationFromTerrain(_terrain);
         _terrain.TerrainModifiedByExplosion += OnTerrainModifiedByExplosion;
     }
