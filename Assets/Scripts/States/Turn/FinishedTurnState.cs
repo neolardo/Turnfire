@@ -15,6 +15,7 @@ public class FinishedTurnState : TurnState
         {
             data.TotalTurnCount++;
         }
+        BotEvaluationStatistics.OnTurnFinished();
         EndState();
     }
 

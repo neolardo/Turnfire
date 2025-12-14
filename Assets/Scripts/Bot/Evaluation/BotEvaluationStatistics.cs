@@ -13,10 +13,9 @@ public static class BotEvaluationStatistics
 
     public static int CurrentSimulationCount { get; private set; }
     private static int _requestedSimulationCount = 100;
-    
 
-    private static int _skippedTurnStreakCount;
-    private const int SkippedTurnStreakLiveLockThreshold = 25;
+    private static int _turnCount;
+    private const int LiveLockTurnCountThreshold = 200;
 
 
     public static void RegisterBot(Team team, BotDifficulty difficulty)
@@ -37,10 +36,10 @@ public static class BotEvaluationStatistics
         return _dataPerTeam.Values;
     }
 
-    public static void OnActionSkipped()
+    public static void OnTurnFinished()
     {
-        _skippedTurnStreakCount++;
-        if( _skippedTurnStreakCount >= SkippedTurnStreakLiveLockThreshold )
+        _turnCount++;
+        if(_turnCount >= LiveLockTurnCountThreshold )
         {
             ForceEndLiveLockedRound();
         }
@@ -53,16 +52,11 @@ public static class BotEvaluationStatistics
         turnManager.ForceEndGame();
     }
 
-    public static void OnActionNotSkipped()
-    {
-        _skippedTurnStreakCount = 0;
-    }
-
     public static void Clear()
     {
         _dataPerTeam.Clear();
         _difficultyPerTeam.Clear();
-        _skippedTurnStreakCount = 0;
+        _turnCount = 0;
     }
 
     public static void Save()

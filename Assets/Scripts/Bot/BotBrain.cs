@@ -40,8 +40,8 @@ public class BotBrain : UnityDriven
 
     // position memory constants
     private const int PositionMemorySize = 5;
-    private const float PositionMemoryPenaltyPerTurn = .5f;
-    private const float PositionMemoryStationaryPointDistance = 1.5f;
+    private const float PositionMemoryPenaltyPerTurn = .3f;
+    private const float PositionMemoryStationaryPointDistance = 1f;
 
     public BotBrain(BotTuningDefinition tuning, MonoBehaviour coroutineManager) : base(coroutineManager)
     {

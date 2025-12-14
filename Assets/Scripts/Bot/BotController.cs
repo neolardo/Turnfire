@@ -13,15 +13,6 @@ public class BotController
 
     public void Act(BotGoal goal, BotContext context)
     {
-        if(goal.GoalType == BotGoalType.SkipAction)
-        {
-            BotEvaluationStatistics.OnActionSkipped();
-        }
-        else
-        {
-            BotEvaluationStatistics.OnActionNotSkipped();
-        }
-
         switch (goal.GoalType)
         {
             case BotGoalType.Move:
@@ -68,11 +59,11 @@ public class BotController
         {
             var jumpLink = jumpPath.First();
             Vector2 jumpVector = jumpLink.JumpVector;
-            if (!context.JumpGraph.IsJumpPredictionValid(feetPosition, jumpLink, context.Terrain))
-            {
-                Debug.Log($" sim{BotEvaluationStatistics.CurrentSimulationCount} - Bot tried to correct jump vector");
-                jumpVector = context.JumpGraph.CalculateCorrectedJumpVectorToStandingPoint(feetPosition, startPoint);
-            }
+            //if (!context.JumpGraph.IsJumpPredictionValid(feetPosition, jumpLink, context.Terrain)) //TODO: delete if not needed
+            //{
+            //    Debug.Log($" sim{BotEvaluationStatistics.CurrentSimulationCount} - Bot tried to correct jump vector");
+            //    jumpVector = context.JumpGraph.CalculateCorrectedJumpVectorToStandingPoint(feetPosition, startPoint);
+            //}
             _input.AimAndRelease(jumpVector / context.Self.JumpStrength);
         }
     }
