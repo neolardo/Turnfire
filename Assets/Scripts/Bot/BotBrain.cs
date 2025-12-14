@@ -139,7 +139,7 @@ public class BotBrain : UnityDriven
             score += OffensiveEnemyDistanceUtility(closestEnemyDistance, hasRangedWeapons) * _tuning.Offense;
 
             newPos = lastPos + Vector2.up * scoreScaler * (score - lastScore);
-            //Debug.DrawLine(lastPos, newPos, offenseColor, raySeconds);
+            Debug.DrawLine(lastPos, newPos, offenseColor, raySeconds);
             lastPos = newPos;
             lastScore = score;
         }
@@ -151,7 +151,7 @@ public class BotBrain : UnityDriven
             score += DefensiveEnemyDistanceUtility(avarageEnemyDistance) * _tuning.Defense;
 
             newPos = lastPos + Vector2.up * scoreScaler * (score - lastScore);
-            //Debug.DrawLine(lastPos, newPos, defenseColor, raySeconds);
+            Debug.DrawLine(lastPos, newPos, defenseColor, raySeconds);
             lastPos = newPos;
             lastScore = score;
         }
@@ -183,7 +183,7 @@ public class BotBrain : UnityDriven
         score += bestPackageScore * packageGreed;
 
         newPos = lastPos + Vector2.up * scoreScaler * (score - lastScore);
-        //Debug.DrawLine(lastPos, newPos, packageColor, raySeconds);
+        Debug.DrawLine(lastPos, newPos, packageColor, raySeconds);
         lastPos = newPos;
         lastScore = score;
 
@@ -191,7 +191,7 @@ public class BotBrain : UnityDriven
         score += GetDecisionRandomnessBias();
 
         newPos = lastPos + Vector2.up * scoreScaler * (score - lastScore);
-        //Debug.DrawLine(lastPos, newPos, randomColor, raySeconds);
+        Debug.DrawLine(lastPos, newPos, randomColor, raySeconds);
         lastPos = newPos;
         lastScore = score;
 
@@ -199,7 +199,7 @@ public class BotBrain : UnityDriven
         score -= GetStationaryPenalty(context.Self, targetPoint);
 
         newPos = lastPos + Vector2.up * scoreScaler * (score - lastScore);
-        //Debug.DrawLine(lastPos, newPos, stationaryColor, raySeconds);
+        Debug.DrawLine(lastPos, newPos, stationaryColor, raySeconds);
         lastPos = newPos;
         lastScore = score;
 

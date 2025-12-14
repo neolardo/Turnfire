@@ -38,5 +38,5 @@ MonoBehaviour:
     ItemDefinition: {fileID: 11400000, guid: 597ba13a37f49cf41aa1765a91f223db, type: 2}
   - Probability: 0.3
     ItemDefinition: {fileID: 11400000, guid: 0276c8487ff836a47a5b2849c6189187, type: 2}
-  - Probability: 1
+  - Probability: 0.2
     ItemDefinition: {fileID: 11400000, guid: 7aab2b42b18158f4fbba38adfb9eeffd, type: 2}

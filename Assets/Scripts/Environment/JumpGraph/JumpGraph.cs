@@ -28,7 +28,7 @@ public class JumpGraph : UnityDriven
     private const float ExplosionRadiusOffsetForNewJumpLinks = 3;
     private const float TwoPointsExplosionRadiusThreshold = 1f;
     private const float ThreePointsExplosionRadiusThreshold = 1.5f;
-    private const float NewSearchPointAngularDistanceDegrees = 30f;
+    private const float NewSearchPointAngularDistanceDegrees = 25f;
 
     private bool _isReady;
     public bool IsReady => _isReady;
@@ -275,8 +275,6 @@ public class JumpGraph : UnityDriven
             searchPoints.Add(explosionCenter + Vector2.down * explosionRadius);
             searchPoints.Add(explosionCenter + leftVector);
             searchPoints.Add(explosionCenter + rightVector);
-            Debug.DrawLine(explosionCenter, explosionCenter+ leftVector, Color.yellow, 50);
-            Debug.DrawLine(explosionCenter, explosionCenter+ rightVector, Color.yellow, 50);
         }
         else if (explosionRadius >= TwoPointsExplosionRadiusThreshold)
         {
@@ -284,8 +282,6 @@ public class JumpGraph : UnityDriven
             var rightVector = (Vector2.down.ToAngleDegrees() + NewSearchPointAngularDistanceDegrees / 2f).AngleDegreesToVector() * explosionRadius;
             searchPoints.Add(explosionCenter + leftVector);
             searchPoints.Add(explosionCenter + rightVector);
-            Debug.DrawLine(explosionCenter, explosionCenter + leftVector, Color.yellow, 50);
-            Debug.DrawLine(explosionCenter, explosionCenter + rightVector, Color.yellow, 50);
         }
         else
         {
@@ -308,7 +304,6 @@ public class JumpGraph : UnityDriven
         {
             _points.Add(newStandingPoint);
             _adjency.Add(new Dictionary<int, JumpLink>());
-            Debug.DrawLine(newStandingPoint.WorldPos, newStandingPoint.WorldPos + Vector2.up / 2f, Color.green, 50);
 
             yield return SimulateJumpsFromGivenPointsAndCreateJumpLinks(possibleLinkedPoints, new StandingPoint[] { newStandingPoint }, terrain);
             yield return SimulateJumpsFromGivenPointsAndCreateJumpLinks(new StandingPoint[] { newStandingPoint }, _points, terrain);

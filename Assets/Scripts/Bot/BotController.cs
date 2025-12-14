@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Net.Mime;
 using UnityEngine;
 
 public class BotController
@@ -71,6 +70,7 @@ public class BotController
             Vector2 jumpVector = jumpLink.JumpVector;
             if (!context.JumpGraph.IsJumpPredictionValid(feetPosition, jumpLink, context.Terrain))
             {
+                Debug.Log($" sim{BotEvaluationStatistics.CurrentSimulationCount} - Bot tried to correct jump vector");
                 jumpVector = context.JumpGraph.CalculateCorrectedJumpVectorToStandingPoint(feetPosition, startPoint);
             }
             _input.AimAndRelease(jumpVector / context.Self.JumpStrength);
