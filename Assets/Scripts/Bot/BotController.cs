@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using UnityEngine;
 
 public class BotController
@@ -16,11 +15,11 @@ public class BotController
         switch (goal.GoalType)
         {
             case BotGoalType.Move:
-                Move(goal.Destination, context);
+                Move(goal.AimVector);
                 Debug.Log("Bot moved to destination");
                 break;
             case BotGoalType.Attack:
-                Attack(goal.AttackVector, goal.PreferredItem);
+                Attack(goal.AimVector, goal.PreferredItem);
                 Debug.Log($"Bot attacked with {goal.PreferredItem.Definition.Name}");
                 break;
             case BotGoalType.UseItem:
@@ -40,34 +39,10 @@ public class BotController
         }
     }
 
-    private void Move(StandingPoint destinationPoint, BotContext context)
+    private void Move(Vector2 jumpVector)
     {
-        var feetPosition = context.Self.FeetPosition;
-        var startPoint = context.JumpGraph.FindClosestStandingPoint(feetPosition);
-        var jumpPath = context.JumpGraph.FindShortestJumpPath(startPoint, destinationPoint);
-        if (jumpPath == null) // if not reachable jump with a random vector
-        {
-            var randomAimVector = UnityEngine.Random.insideUnitCircle * UnityEngine.Random.Range(0, 1);
-            randomAimVector = new Vector2 (randomAimVector.x, MathF.Abs(randomAimVector.y));
-            _input.AimAndRelease(randomAimVector);
-        }
-        else if (jumpPath.Count == 0) // already at the destination
-        {
-            _input.SkipAction();
-        }
-        else
-        {
-            var jumpLink = jumpPath.First();
-            Vector2 jumpVector = jumpLink.JumpVector;
-            //if (!context.JumpGraph.IsJumpPredictionValid(feetPosition, jumpLink, context.Terrain)) //TODO: delete if not needed
-            //{
-            //    Debug.Log($" sim{BotEvaluationStatistics.CurrentSimulationCount} - Bot tried to correct jump vector");
-            //    jumpVector = context.JumpGraph.CalculateCorrectedJumpVectorToStandingPoint(feetPosition, startPoint);
-            //}
-            _input.AimAndRelease(jumpVector / context.Self.JumpStrength);
-        }
+        _input.AimAndRelease(jumpVector);
     }
-
 
     private void Attack(Vector2 aimVector, Item weapon)
     {
@@ -83,7 +58,6 @@ public class BotController
             _input.UseSelectedItem(context);
         }
     }
-
     private void SkipAction()
     {
         _input.SkipAction();

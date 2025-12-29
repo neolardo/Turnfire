@@ -1,7 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Mime;
+using TMPro.EditorUtilities;
 using UnityEditor;
 using UnityEngine;
 
@@ -48,12 +51,12 @@ public class BotBrain : UnityDriven
         _tuning = tuning;
         _positionMemory = new Dictionary<Character, BotPositionMemory>();
     }
-    
+
     public void BeginThinking(BotContext context)
     {
         StartCoroutine(DecideGoal(context));
     }
-    
+
     private IEnumerator DecideGoal(BotContext context)
     {
         BotGoal goal = default;
@@ -75,44 +78,48 @@ public class BotBrain : UnityDriven
         InitializeBotMemory(context.Self);
 
         var startPoint = context.JumpGraph.FindClosestStandingPoint(context.Self.FeetPosition);
-        var possiblePositions = context.JumpGraph.GetAllReachableStandingPointsFromPoint(startPoint);
+        var possibleTargetPoints = context.JumpGraph.GetAllReachableStandingPointsFromPoint(startPoint).ToList();
 
         var scores = new List<float>();
 
-        foreach (var targetPoint in possiblePositions)
+        foreach (var targetPoint in possibleTargetPoints)
         {
-            scores.Add(EvaluatePositionScore(startPoint, targetPoint, context));
-            //Debug.DrawLine(targetPoint.WorldPos, targetPoint.WorldPos + Vector2.up/2f, Color.yellow, 40); // possible points
+            var score = EvaluatePositionScore(targetPoint, context);
+            scores.Add(score);
         }
 
-        Debug.Log($"Reachable points count: {possiblePositions.Count()}");
-
-        var pickedPoint = startPoint;
-        if(possiblePositions.Count() > 1)
+        Debug.Log($"Reachable points count: {possibleTargetPoints.Count}");
+        var pickedPoint = possibleTargetPoints.Count == 0 ? StandingPoint.InvalidPoint : PickBySoftmax(possibleTargetPoints, scores, _tuning.PositionDecisionSoftboxTemperature).item;
+        if (pickedPoint == StandingPoint.InvalidPoint)
         {
-            pickedPoint = PickBySoftmax(possiblePositions.ToList(), scores, _tuning.PositionDecisionSoftboxTemperature).item;
+            Debug.Log("No positions to pick from. Picked a random jump vector.");
+            onDone?.Invoke(BotGoal.Move(GetRandomJumpVector()));
         }
-        else
+        else if (pickedPoint == startPoint)
         {
-            Debug.Log("No positions to pick from. Picked a random point.");
-            pickedPoint = context.JumpGraph.GetRandomStandingPoint();
-        }
-
-        MemorizePoint(context.Self, pickedPoint);
-        if (pickedPoint == startPoint)
-        {
-            Debug.Log("Stay at position");
+            MemorizePoint(context.Self, pickedPoint);
+            Debug.Log("Already at the destination.");
             onDone?.Invoke(BotGoal.SkipAction());
         }
         else
         {
-            Debug.Log("Go to destination");
-            onDone?.Invoke(BotGoal.Move(pickedPoint));
+            MemorizePoint(context.Self, pickedPoint);
+            var jumpStrength = context.Self.JumpStrength;
+            var firstJumpInPath = context.JumpGraph.FindShortestJumpPath(startPoint, pickedPoint).First();
+            var correctedJumpVector = context.JumpGraph.CorrectJumpVector(context.Self.FeetPosition, firstJumpInPath, context.Terrain);
+            onDone?.Invoke(BotGoal.Move(correctedJumpVector / jumpStrength));
+            Debug.Log("Moved to the destination.");
         }
         yield return null;
     }
 
-    private float EvaluatePositionScore(StandingPoint startPoint, StandingPoint targetPoint, BotContext context)
+    private static Vector2 GetRandomJumpVector()
+    {
+        var randVec = UnityEngine.Random.insideUnitCircle * UnityEngine.Random.Range(0, 1);
+        return new Vector2(randVec.x, MathF.Abs(randVec.y));
+    }
+
+    private float EvaluatePositionScore(StandingPoint targetPoint, BotContext context)
     {
         // debug helpers TODO: delete
         Color offenseColor = Color.red;
@@ -133,7 +140,7 @@ public class BotBrain : UnityDriven
         bool hasRangedWeapons = weapons.Any(w => (w.Definition as WeaponDefinition).IsRanged);
 
         // offense
-        if(weapons.Any())
+        if (weapons.Any())
         {
             var closestEnemyDistance = context.Enemies.Select(e => Vector2.Distance(targetPoint.WorldPos, e.transform.position)).DefaultIfEmpty(float.PositiveInfinity).Min();
             score += OffensiveEnemyDistanceUtility(closestEnemyDistance, hasRangedWeapons) * _tuning.Offense;
@@ -212,8 +219,9 @@ public class BotBrain : UnityDriven
         return UnityEngine.Random.Range(-_tuning.DecisionJitterBias / 2f, _tuning.DecisionJitterBias / 2f);
     }
 
-    #region Bot Memory
-     private void InitializeBotMemory(Character character)
+    #region Bot Position Memory
+
+    private void InitializeBotMemory(Character character)
     {
         if (!_positionMemory.ContainsKey(character))
         {
@@ -225,10 +233,12 @@ public class BotBrain : UnityDriven
     {
         _positionMemory[character].Commit(point);
     }
+
     private float GetStationaryPenalty(Character character, StandingPoint point)
     {
         return _positionMemory[character].GetStationaryPenalty(point);
     }
+
 
     #endregion
 
@@ -240,23 +250,27 @@ public class BotBrain : UnityDriven
     {
         var itemUsageContext = new ItemUsageContext(context.Self);
         var useableItems = context.Self.GetAllItems().Where( i => i.Behavior.CanUseItem(new ItemUsageContext(context.Self)));
-        var scores = new List<float>();
-        var goals = new List<BotGoal>();
+        float bestScore = float.NegativeInfinity;
+        BotGoal bestGoal = BotGoal.SkipAction();
+
 
         foreach (var item in useableItems)
         {
             float score = float.NegativeInfinity;
             BotGoal goal = BotGoal.SkipAction();
             yield return EvaluateItemScore(item, context, (s, g) => { score = s; goal = g; });
-            goals.Add(goal);
-            scores.Add(score);
+            if (score > bestScore)
+            { 
+                bestGoal = goal;
+                bestScore = score;
+            }
             //yield return null;
         }
 
         var pickedGoal = BotGoal.SkipAction();
         if(useableItems.Any())
         {
-            pickedGoal = PickBySoftmax(goals, scores, _tuning.ItemDecisionSoftboxTemperature).item;
+            pickedGoal = bestGoal;//PickBySoftmax(goals, scores, _tuning.ItemDecisionSoftboxTemperature).item;
         }
 
         onDone?.Invoke(pickedGoal);       

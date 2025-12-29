@@ -16,13 +16,10 @@ public class JumpGraph : UnityDriven
     private readonly float _characterHeight;
     private float _currentJumpStrengthMaximum;
 
-    private readonly Vector2[] JumpStartCharacterColliderCornerPoints = new Vector2[6];
-    private readonly Vector2[] JumpEndCharacterColliderCornerPoints = new Vector2[6];
+    private readonly Vector2[] CharacterColliderCornerPoints = new Vector2[6];
     private float GridPointHalfDistance =>  (_pixelResolution / 2f) / _pixelsPerUnit;
-    private float JumpValidationDistance =>  _pixelResolution  / (float)_pixelsPerUnit;
 
     private const float CollisionCheckDelaySeconds = .1f;
-    private const float JumpEndVelocityYMax = .1f;
 
     // explosion and new points
     private const float ExplosionRadiusOffsetForNewJumpLinks = 3;
@@ -54,19 +51,12 @@ public class JumpGraph : UnityDriven
 
     private void CacheCharacterColliderCornerPoints()
     {
-        JumpStartCharacterColliderCornerPoints[0] = new Vector2(0, 0);
-        JumpStartCharacterColliderCornerPoints[1] = new Vector2(-_characterWidth / 2, _characterWidth/2);
-        JumpStartCharacterColliderCornerPoints[2] = new Vector2(_characterWidth / 2, _characterWidth / 2);
-        JumpStartCharacterColliderCornerPoints[3] = new Vector2(0, _characterHeight);
-        JumpStartCharacterColliderCornerPoints[4] = new Vector2(-_characterWidth / 2, _characterHeight - (_characterWidth / 2));
-        JumpStartCharacterColliderCornerPoints[5] = new Vector2(_characterWidth / 2,  _characterHeight - (_characterWidth / 2));
-
-        JumpEndCharacterColliderCornerPoints[0] = new Vector2(-_characterWidth / 2, 0);
-        JumpEndCharacterColliderCornerPoints[1] = new Vector2(_characterWidth / 2, 0);
-        JumpEndCharacterColliderCornerPoints[2] = new Vector2(-_characterWidth / 2, _characterHeight / 2);
-        JumpEndCharacterColliderCornerPoints[3] = new Vector2(_characterWidth / 2, _characterHeight / 2);
-        JumpEndCharacterColliderCornerPoints[4] = new Vector2(-_characterWidth / 2, _characterHeight);
-        JumpEndCharacterColliderCornerPoints[5] = new Vector2(_characterWidth / 2, _characterHeight);
+        CharacterColliderCornerPoints[0] = new Vector2(-_characterWidth / 2, 0);
+        CharacterColliderCornerPoints[1] = new Vector2(_characterWidth / 2, 0);
+        CharacterColliderCornerPoints[2] = new Vector2(-_characterWidth / 2, _characterHeight / 2);
+        CharacterColliderCornerPoints[3] = new Vector2(_characterWidth / 2, _characterHeight / 2);
+        CharacterColliderCornerPoints[4] = new Vector2(-_characterWidth / 2, _characterHeight);
+        CharacterColliderCornerPoints[5] = new Vector2(_characterWidth / 2, _characterHeight);
     }
 
     #region Creation
@@ -108,6 +98,8 @@ public class JumpGraph : UnityDriven
         yield return null;
         Debug.Log($"Created {_points.Count} standing points");
     }
+
+
     private IEnumerator SimulateJumpsFromGivenPointsAndCreateJumpLinks(IEnumerable<StandingPoint> startPoints, IEnumerable<StandingPoint> endPoints, DestructibleTerrainManager terrain)
     {
         int linkCount = 0;
@@ -158,55 +150,48 @@ public class JumpGraph : UnityDriven
         Debug.Log($"Jump graph updated with: {linkCount} links");
     }
 
+    #endregion
+
+    #region Jump Simulation
+
     private Vector2 SimulateJumpAndCalculateDestination(Vector2 start, Vector2 jumpVector, DestructibleTerrainManager terrain)
     {
         Vector2 pos = start;
         var velocity = jumpVector;
         const float dt = Constants.ParabolicPathSimulationDeltaForMovement;
-        for (float t = 0; t < Constants.MaxParabolicPathSimulationTime; t += Constants.ParabolicPathSimulationDeltaForMovement)
+        bool collided = false;
+        for (float t = 0; t < Constants.MaxParabolicPathSimulationTime && !collided; t += Constants.ParabolicPathSimulationDeltaForMovement)
         {
             pos += velocity * dt;
             velocity += Physics2D.gravity * dt;
 
             if (!terrain.IsPointInsideBounds(pos))
-                return pos;
+            {
+                collided = true;
+                break;
+            };
 
             if (t >= CollisionCheckDelaySeconds)
             {
-                var colliderPoints = velocity.y < JumpEndVelocityYMax ? JumpEndCharacterColliderCornerPoints : JumpStartCharacterColliderCornerPoints;
-                foreach (var colliderPoint in colliderPoints)
+                foreach (var colliderPoint in CharacterColliderCornerPoints)
                 {
                     if (terrain.OverlapPoint(pos + colliderPoint))
                     {
-                        return SimulateFallDown(pos, terrain);
+                        collided = true;
+                        break;
                     }
                 }
             }
 
         }
-        return pos;
+        return IsLandingVectorValid(velocity) ? pos : start;
     }
 
-    private Vector2 SimulateFallDown(Vector2 start, DestructibleTerrainManager terrain)
+    private bool IsLandingVectorValid(Vector2 landingVector)
     {
-        Vector2 pos = start;
-        Vector2 velocity = Vector2.zero;
-
-        const float dt = Constants.ParabolicPathSimulationDeltaForMovement;
-
-        for (float t = 0; t < Constants.MaxParabolicPathSimulationTime; t += dt)
-        {
-            velocity += Physics2D.gravity * dt;
-            pos += velocity * dt;
-
-            if (!terrain.IsPointInsideBounds(pos) || terrain.OverlapPoint(pos))
-            {
-                return pos;
-            }
-        }
-
-        return pos;
+        return landingVector.y < 0 && Mathf.Abs(landingVector.y) > Mathf.Abs(landingVector.x);
     }
+
 
     #endregion
 
@@ -345,17 +330,6 @@ public class JumpGraph : UnityDriven
         return path != null; 
     }
 
-    public StandingPoint GetRandomStandingPoint()
-    {   
-        var allValidPoints = _points.Where(p => p.IsValid).ToArray();
-        return allValidPoints[Random.Range(0, allValidPoints.Length)];
-    }
-
-    public IEnumerable<StandingPoint> GetAllLinkedStandingPointsFromPoint(StandingPoint startPoint)
-    {
-        return _adjency[startPoint.Id].Values.Where(link => IsJumpPossible(link)).Select(link => _points[link.ToId]);
-    }
-
     public IEnumerable<StandingPoint> GetAllReachableStandingPointsFromPoint(StandingPoint startPoint) //BFS
     {
         var reachable = new List<StandingPoint>();
@@ -474,53 +448,58 @@ public class JumpGraph : UnityDriven
 
     #endregion
 
-    #region Validation and Correction
+    #region Correction
 
-    public bool IsJumpPredictionValid(Vector2 start, JumpLink jumpLink, DestructibleTerrainManager terrain)
+    public Vector2 CorrectJumpVector(Vector2 start, JumpLink jumpLink, DestructibleTerrainManager terrain)
     {
-        var destination = SimulateJumpAndCalculateDestination(start, jumpLink.JumpVector, terrain);
-        var startDelta = start - _points[jumpLink.FromId].WorldPos;
-        var predictedEnd = _points[jumpLink.ToId].WorldPos + startDelta;
-        return Vector2.Distance(predictedEnd, destination) < JumpValidationDistance;
+        var end = SimulateJumpAndCalculateDestination(start, jumpLink.JumpVector, terrain);
+        var endPointPos = _points[jumpLink.ToId].WorldPos;
+        var correctionOffset = endPointPos - end;
+        if(TryCorrectJumpVector(start, end, jumpLink.JumpVector, correctionOffset, out var correctedJumpVector))
+        {
+            return correctedJumpVector;
+        }
+        else
+        {
+            return jumpLink.JumpVector;
+        }
     }
 
-    public Vector2 CalculateCorrectedJumpVectorToStandingPoint(Vector2 start, StandingPoint standingPoint)
+    private bool TryCorrectJumpVector(Vector2 start, Vector2 end, Vector2 jumpVector, Vector2 correctionOffset, out Vector2 correctedJumpVector )
     {
-        return CalculateJumpVector(start, standingPoint.WorldPos);
-    }
-
-    private Vector2 CalculateJumpVector( Vector2 from, Vector2 to)
-    {
-        Vector2 jumpVector = (to - from).normalized;
         Vector2 g = Physics2D.gravity;
 
-        const int steps = 30;
-        const float minTime = 0.5f;
-        const float maxTime = 10f;
-        float bestT = -1f;
-        Vector2 bestV = Vector2.zero;
+        correctedJumpVector = jumpVector;
 
-        for (int i = 0; i < steps; i++)
+        // Solve for time using vertical motion
+        float a = 0.5f * g.y;
+        float b = jumpVector.y;
+        float c = start.y - end.y;
+
+        float discriminant = b * b - 4f * a * c;
+        if (discriminant < 0f)
+            return false;
+
+        float sqrt = Mathf.Sqrt(discriminant);
+
+        // looking for positive time
+        float t1 = (-b + sqrt) / (2f * a);
+        float t2 = (-b - sqrt) / (2f * a);
+        float t = Mathf.Max(t1, t2);
+
+        if (t <= 0f)
+            return false;
+
+        // correction
+        Vector2 deltaV = correctionOffset / t;
+        correctedJumpVector = jumpVector + deltaV;
+        if(correctedJumpVector.magnitude > _currentJumpStrengthMaximum)
         {
-            float t = Mathf.Lerp(minTime, maxTime, i / (float)(steps - 1));
-
-            Vector2 V = (to - from - 0.5f * g * t * t) / t;
-
-            if (V.magnitude <= _currentJumpStrengthMaximum)
-            {
-                bestT = t;
-                bestV = V;
-                break; // shortest-arc valid jump
-            }
+            correctedJumpVector = correctedJumpVector.normalized * _currentJumpStrengthMaximum;
         }
-
-        if (bestT > 0f)
-        {
-            jumpVector = bestV;
-        }
-
-        return jumpVector;
+        return true;
     }
+
 
     #endregion
 
