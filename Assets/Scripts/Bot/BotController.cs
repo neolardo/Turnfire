@@ -27,12 +27,8 @@ public class BotController
                 Debug.Log($"Bot used item: {goal.PreferredItem.Definition.Name}");
                 break;
             case BotGoalType.SkipAction:
-                Debug.Log("Bot skipped action");
-                if (context.ActionState == CharacterActionStateType.ReadyToMove)
-                {
-                    BotEvaluationStatistics.GetData(context.Self.Team).SkippedMovementCount++;
-                }
                 SkipAction();
+                Debug.Log("Bot skipped action");
                 break;
             default:
                 throw new Exception($"Invalid {nameof(BotGoalType)} when trying to act with a bot: {goal.GoalType}");

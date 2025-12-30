@@ -28,7 +28,6 @@ public class Item : ICollectible
             return;
         }
         Quantity--;
-        Debug.Log($"{Definition.Name}'s guantity become: {Quantity}");
         if (Quantity == 0)
         {
             CollectibleDestroyed?.Invoke(this);

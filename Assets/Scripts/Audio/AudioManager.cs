@@ -28,17 +28,17 @@ public class AudioManager : MonoBehaviour
 
     public void PlaySFXAt(SFXDefiniton sfx, Vector2 position)
     {
-        //SFXPool.PlayOnAny(sfx.GetRandomClip(), position);
+        SFXPool.PlayOnAny(sfx.GetRandomClip(), position);
     }
 
     public void PlaySFXAt(SFXDefiniton sfx, Transform transform)
     {
-        //SFXPool.PlayOnAny(sfx.GetRandomClip(), transform);
+        SFXPool.PlayOnAny(sfx.GetRandomClip(), transform);
     }
 
     public void PlayUISound(SFXDefiniton sfx)
     {
-        //_uiSource.clip = sfx.GetRandomClip();
-        //_uiSource.Play();
+        _uiSource.clip = sfx.GetRandomClip();
+        _uiSource.Play();
     }
 }

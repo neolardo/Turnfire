@@ -14,8 +14,6 @@ public class BotManagerFactory : MonoBehaviour
         var brain = CreateBrain(difficulty);
         var botManager = team.gameObject.AddComponent<BotManager>();
         botManager.Initialize(team, brain, input);
-        BotEvaluationStatistics.RegisterBot(team, difficulty);
-        BotEvaluationStatistics.GetData(team).TeamName = team.TeamName;
     }
 
     private BotBrain CreateBrain(BotDifficulty difficulty)

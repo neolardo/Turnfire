@@ -11,10 +11,6 @@ public class CharacterActionManager : UnityDriven
     private CameraController _cameraController;
     private GameplayUIManager _uiManager;
     private bool _forceEndActions;
-
-    // bot evaluation
-    public static Character CurrentCharacter;
-
     private CharacterActionState CurrentCharacterActionState => _characterActionStates[_characterActionIndex];
 
     public event Action CharacterActionsFinished;
@@ -42,7 +38,6 @@ public class CharacterActionManager : UnityDriven
     {
         _forceEndActions = false;
         _character = character;
-        CurrentCharacter = _character;
         _cameraController.SetCharacterTarget(_character);
         character.Team.InputSource.ForceCloseInventory();
         _uiManager.LoadCharacterData(_character);

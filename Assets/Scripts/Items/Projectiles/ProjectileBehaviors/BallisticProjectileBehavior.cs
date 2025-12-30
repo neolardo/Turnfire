@@ -1,7 +1,5 @@
 using System;
 using System.Collections;
-using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class BallisticProjectileBehavior : UnityDriven, IProjectileBehavior
@@ -17,9 +15,6 @@ public class BallisticProjectileBehavior : UnityDriven, IProjectileBehavior
     // simulation
     protected readonly Vector2[] _colliderCornerPoints = new Vector2[4];
     private readonly Collider2D[] _overlapCheckColliders = new Collider2D[Constants.OverlapHitColliderNumMax];
-
-    // bot evaluation
-    protected Character _lastOwner;
 
     public BallisticProjectileBehavior(ProjectileDefinition definition) : base(CoroutineRunner.Instance)
     {
@@ -45,7 +40,6 @@ public class BallisticProjectileBehavior : UnityDriven, IProjectileBehavior
     public virtual void Launch(ProjectileLaunchContext context)
     {
         _exploded = false;
-        _lastOwner = context.OwnerCollider.GetComponent<Character>();
         var rb = _projectile.Rigidbody;
         PlaceProjectile(context);
         rb.AddForce(context.AimVector, ForceMode2D.Impulse);
@@ -120,34 +114,8 @@ public class BallisticProjectileBehavior : UnityDriven, IProjectileBehavior
         var explodedCharacters = exp.Explode(context.ContactPoint, damage);
         _exploded = true;
         var expInfo = new ExplosionInfo(damage, explodedCharacters, _projectile, exp);
-        AddExplosionStats(expInfo);
         Exploded?.Invoke(expInfo);
     }
-
-    protected void AddExplosionStats(ExplosionInfo expInfo)
-    {
-        var data = BotEvaluationStatistics.GetData(_lastOwner.Team);
-        float allyDamage = 0;
-        float enemyDamage = 0;
-        foreach( var c in expInfo.ExplodedCharacters)
-        {
-            if(c.Team == _lastOwner.Team)
-            {
-                allyDamage += expInfo.Damage;
-            }
-            else
-            {
-                enemyDamage += expInfo.Damage;
-            }
-        }
-        data.DamageDealtToAllies += allyDamage;
-        data.DamageDealtToEnemies += enemyDamage;
-        if(!expInfo.ExplodedCharacters.Any())
-        {
-            data.NonDamagingAttackCount++;
-        }
-    }
-
 
     public virtual void ForceExplode()
     {
@@ -196,44 +164,6 @@ public class BallisticProjectileBehavior : UnityDriven, IProjectileBehavior
 
         onDone?.Invoke(SimulateExplosion(pos, context.Owner));
         yield break;
-    }
-
-    public virtual ItemBehaviorSimulationResult SimulateProjectileBehaviorFast(ItemBehaviorSimulationContext context)
-    {
-        Vector2 velocity = context.AimVector;
-        Vector2 pos = context.Origin;
-        const float dt = Constants.ParabolicPathSimulationDeltaForProjectiles;
-
-        for (float t = 0; t < Constants.MaxParabolicPathSimulationTime; t += Constants.ParabolicPathSimulationDeltaForProjectiles)
-        {
-            pos += velocity * dt;
-            velocity += Physics2D.gravity * dt;
-
-            if (!context.Terrain.IsPointInsideBounds(pos))
-            {
-                return SimulateExplosion(pos, context.Owner);
-            }
-
-            foreach (var cornerPoint in _colliderCornerPoints)
-            {
-                var cornerPos = pos + cornerPoint;
-
-                if (context.Terrain.OverlapPoint(cornerPos))
-                {
-                    return SimulateExplosion(pos, context.Owner);
-                }
-
-                foreach (var c in context.OtherCharacters)
-                {
-                    if (c.OverlapPoint(cornerPos))
-                    {
-                        return SimulateExplosion(pos, context.Owner);
-                    }
-                }
-            }
-        }
-
-        return SimulateExplosion(pos, context.Owner);
     }
 
     protected ItemBehaviorSimulationResult SimulateExplosion(Vector2 position, Character owner)

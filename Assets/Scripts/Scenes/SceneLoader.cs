@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -12,10 +11,9 @@ public class SceneLoader : MonoBehaviour
 
     private void Awake()
     {
-        //TODO: remove
-        var players = new List<Player> { new Player("Bot1", PlayerType.Human), { new Player("Bot2", PlayerType.Bot) } };
-        var map = FindFirstObjectByType<MapLocator>().Map0;
-        CurrentGameplaySceneSettings = new GameplaySceneSettings() { Players = players, BotDifficulty = BotDifficulty.Easy, Map = map, UseTimer = false }; //TODO: remove
+        //var players = new List<Player> { new Player("Bot1", PlayerType.Human), { new Player("Bot2", PlayerType.Bot) } };
+        //var map = FindFirstObjectByType<MapLocator>().Map0;
+        //CurrentGameplaySceneSettings = new GameplaySceneSettings() { Players = players, BotDifficulty = BotDifficulty.Easy, Map = map, UseTimer = false };
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -34,7 +32,6 @@ public class SceneLoader : MonoBehaviour
 
     private IEnumerator LoadSceneCoroutine(string sceneName)
     {
-        Debug.Log("Scene reload started");
         _loadingText.gameObject.SetActive(true);
         yield return null;
         AsyncOperation op = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);

@@ -8,7 +8,7 @@ public static class BotEvaluationStatistics
     private static readonly Dictionary<Team, BotEvaluationData> _dataPerTeam = new Dictionary<Team, BotEvaluationData>();
     private static readonly Dictionary<Team, BotDifficulty> _difficultyPerTeam = new Dictionary<Team, BotDifficulty>();
 
-    private static string LogFolder = "D:\\Code\\CSharp\\Unity\\TurnfireBuilds\\Dev\\BotEvaluation\\EvaluationData";
+    private static string LogFolder = null;
     private static string GetFilePath(BotEvaluationConfiguration config) => Path.Combine(LogFolder, $"bot_evaluation_{SceneLoader.Instance.CurrentGameplaySceneSettings.Map.SceneName}_{config}.csv");
 
     public static int CurrentSimulationCount { get; private set; }

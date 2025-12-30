@@ -25,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1051951332147902310}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 3.55, y: 2.93, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -47,4 +47,4 @@ MonoBehaviour:
   _pixelUI: {fileID: 11400000, guid: 93667ed427ce1234d954789779612623, type: 2}
   _terrain: {fileID: 0}
   _characterHeight: 1
-  _characterWidth: 0.5
+  _characterWidth: 0.6

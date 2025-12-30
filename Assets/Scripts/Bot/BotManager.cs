@@ -26,7 +26,6 @@ public class BotManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        //_brain.Dispose();
         _brain.GoalDecided -= OnGoalDecided;
         _input.InputRequested -= OnInputRequested;
         StopAllCoroutines();

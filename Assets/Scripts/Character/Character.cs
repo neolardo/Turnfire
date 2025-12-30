@@ -267,9 +267,7 @@ public class Character : MonoBehaviour
         }
         else
         {
-            var previousItemName = _selectedItem == null ? "null" : _selectedItem.Definition.Name;
-            var itemsContainsText = _items.Contains(item) ? "the desired item was in the character's items list" : "the desired item was NOT in the character's items list"; 
-            Debug.LogWarning($"Item selection failed for item: {item.Definition.Name}. Previously selected item was: {previousItemName}. {itemsContainsText}");
+            Debug.LogWarning($"Item selection failed for item: {item.Definition.Name}.");
         }
     }
 

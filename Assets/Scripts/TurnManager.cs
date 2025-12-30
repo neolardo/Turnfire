@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -104,19 +103,6 @@ public class TurnManager : MonoBehaviour
     {
         CurrentTurnState.ForceEndState();
         bool isTie = _teams.Count(team => team.IsTeamAlive) != 1;
-        foreach (var team in _teams)
-        {
-            var data = BotEvaluationStatistics.GetData(team);
-            data.RemainingNormalizedTeamHealth = team.NormalizedTeamHealth;
-            if (team.IsTeamAlive)
-            {
-                data.RoundResult = isTie ? BotEvaluationRoundResult.Tie : BotEvaluationRoundResult.Win;
-            }
-            else
-            {
-                data.RoundResult = BotEvaluationRoundResult.Lose;
-            }
-        }
         if(isTie)
         {
             GameEnded?.Invoke(null);
@@ -125,14 +111,6 @@ public class TurnManager : MonoBehaviour
         {
             GameEnded?.Invoke(_teams.First(t => t.IsTeamAlive));
         }
-        StartCoroutine(SaveAndTryRestartSimulation());
-    }
-
-    private IEnumerator SaveAndTryRestartSimulation()
-    {
-        yield return new WaitForSeconds(0.5f);
-        BotEvaluationStatistics.Save();
-        BotEvaluationStatistics.TryToRestartSimulation();
     }
 
 }

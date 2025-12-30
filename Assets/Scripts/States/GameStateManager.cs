@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Linq;
 using UnityEngine;
 
 public class GameStateManager : MonoBehaviour
@@ -49,32 +48,10 @@ public class GameStateManager : MonoBehaviour
 
     private IEnumerator StartGameAfterCountdown()
     {
-        var settings = SceneLoader.Instance.CurrentGameplaySceneSettings;
-        var currentSceneName = settings.Map.SceneName;
-        for (var mapIndex = 0; mapIndex<= 2; mapIndex++)
-        {
-            if (System.Environment.GetCommandLineArgs().Contains($"-map{mapIndex}") && currentSceneName != $"Map{mapIndex}")
-            {
-                settings.Map = FindFirstObjectByType<MapLocator>().GetMap(mapIndex);
-                SceneLoader.Instance.LoadGameplayScene(settings);
-                yield break;
-            }
-        }
+        _countdownTimer.StartTimer();
+        yield return new WaitUntil(() => _countdownEnded);
+        yield return new WaitForSeconds(_gameplaySettings.DelaySecondsAfterCountdown);
        
-       
-        if (System.Environment.GetCommandLineArgs().Contains("-normalSim"))
-        {
-            _countdownTimer.StartTimer();
-            yield return new WaitUntil(() => _countdownEnded);
-            yield return new WaitForSeconds(_gameplaySettings.DelaySecondsAfterCountdown);
-        }
-        else
-        {
-            Time.timeScale = 15f;
-            Application.targetFrameRate = 20;
-            QualitySettings.SetQualityLevel(0);
-            yield return new WaitForSeconds(.5f);
-        }
         _countdownTimer.gameObject.SetActive(false);
         yield return new WaitUntil(()=> _turnManager.IsInitialized);
         StartGame();

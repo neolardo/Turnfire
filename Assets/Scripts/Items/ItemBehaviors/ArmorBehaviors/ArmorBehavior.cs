@@ -30,7 +30,6 @@ public abstract class ArmorBehavior : IItemBehavior
     {
         IsInUse = true;
         _owner = context.Owner;
-        BotEvaluationStatistics.GetData(_owner.Team).ArmorsEquippedCount++;
     }
     protected virtual void OnArmorWornOut()
     {
