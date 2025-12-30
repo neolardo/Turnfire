@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mime;
 using UnityEditor;
 using UnityEngine;
 
@@ -65,6 +66,10 @@ public class BotBrain : UnityDriven
         {
             yield return DecideGoalWhenReadyToUseItem(context, g => goal = g);
         }
+        if(context.GameStateManager.CurrentState == GameStateType.Paused )
+        {
+            yield return new WaitUntil(() => context.GameStateManager.CurrentState != GameStateType.Paused);
+        }
         GoalDecided?.Invoke(goal);
     }
 
@@ -83,10 +88,9 @@ public class BotBrain : UnityDriven
         {
             var score = EvaluatePositionScore(targetPoint, context);
             scores.Add(score);
-            yield return null; //TODO: needed?
+            yield return null;
         }
 
-        Debug.Log($"Reachable points count: {possibleTargetPoints.Count}");
         var pickedPoint = possibleTargetPoints.Count == 0 ? StandingPoint.InvalidPoint : PickBySoftmax(possibleTargetPoints, scores, _tuning.PositionDecisionSoftboxTemperature).item;
         if (pickedPoint == StandingPoint.InvalidPoint)
         {

@@ -56,7 +56,6 @@ public static class Constants
     public const int SingleplayerMaxBots = 3;
     public const string DefaultBotName = "Bot";
 
-
     //scenes
     public const string MenuSceneName = "MenuScene";
 

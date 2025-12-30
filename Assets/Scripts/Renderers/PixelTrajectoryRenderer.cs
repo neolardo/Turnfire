@@ -1,3 +1,5 @@
+using NUnit.Framework;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -12,14 +14,14 @@ public class PixelTrajectoryRenderer : MonoBehaviour
     private float _trajectoryMultiplier;
     private Transform _origin;
     private bool _useGravity = true;
-    private Vector2[] _points;
+    private List<Vector2> _points;
     private Vector2 _originOffset;
 
 
     private void Awake()
     {
         _renderer = GetComponent<LineRendererCompute>();
-        _points = new Vector2[_maxSegments];
+        _points = new List<Vector2>();
     }
 
     public void SetTrajectoryMultipler(float multiplier)
@@ -70,7 +72,8 @@ public class PixelTrajectoryRenderer : MonoBehaviour
 
         Vector2 startPos = (Vector2)_origin.position + _originOffset;
         Vector2 lastPos = startPos;
-        _points[0] = startPos;
+        _points.Clear();
+        _points.Add(startPos);
 
         float elapsed = 0f;
         float totalDistance = 0f;
@@ -80,20 +83,23 @@ public class PixelTrajectoryRenderer : MonoBehaviour
         {
             elapsed += _stepTime;
             Vector2 newPos = startPos + aimVector * elapsed + 0.5f * gravity * (elapsed * elapsed);
-            totalDistance += Vector2.Distance(lastPos, newPos);
+
+            float segmentLength = Vector2.Distance(lastPos, newPos);
+            totalDistance += segmentLength;
 
             if (totalDistance > _maxLength)
             {
-                count--;
-                break;
+                float remaining = _maxLength - totalDistance;
+                newPos = Vector2.Lerp(lastPos, newPos, remaining / segmentLength);
             }
 
-            _points[count] = newPos;
+            _points.Add(newPos);
             lastPos = newPos;
+
             count++;
         }
 
-        _renderer.DrawLine(_points.Take(count).ToArray());
+        _renderer.DrawLine(_points);
     }
 
 

@@ -18,8 +18,7 @@ public abstract class ArmorBehavior : IItemBehavior
         _durability = _definition.MaxDurability.CalculateValue();
     }
 
-    public void InitializePreview(ItemUsageContext context, ItemPreviewRendererManager rendererManager)
-    {}
+    public void InitializePreview(ItemUsageContext context, ItemPreviewRendererManager rendererManager){}
 
     public virtual bool CanUseItem(ItemUsageContext context)
     {

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -63,7 +64,7 @@ public class LineRendererCompute : MonoBehaviour
         ReleaseRT();
     }
 
-    public void DrawLine(Vector2[] worldPoints)
+    public void DrawLine(IEnumerable<Vector2> worldPoints)
     {
         _points = worldPoints.Select(p => WorldToPixel(p)).ToArray();
         Dispatch();
