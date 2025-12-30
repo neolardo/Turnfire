@@ -25,6 +25,7 @@ public class CharacterDefinition : ScriptableObject
     public SFXDefiniton DeathSFX;
     public SFXDefiniton AimStartSFX;
     public SFXDefiniton AimCancelSFX;
+    public SFXDefiniton GuardSFX;
 
     [Header("Stats")]
     public int MaxHealth;

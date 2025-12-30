@@ -15,7 +15,6 @@ public class GrenadeProjectileBehavior : BallisticProjectileBehavior
 
     public override void Launch(ProjectileLaunchContext context)
     {
-        _lastOwner = context.OwnerCollider.GetComponent<Character>();
         _contactCount = 0;
         _exploded = false;
         var rb = _projectile.Rigidbody;

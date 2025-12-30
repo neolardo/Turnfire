@@ -30,10 +30,12 @@ public abstract class ArmorBehavior : IItemBehavior
     {
         IsInUse = true;
         _owner = context.Owner;
+        AudioManager.Instance.PlaySFXAt(_definition.EquipSFX, _owner.transform);
     }
     protected virtual void OnArmorWornOut()
     {
         ArmorWornOut?.Invoke(_definition);
+        AudioManager.Instance.PlaySFXAt(_definition.UnequipSFX, _owner.transform);
     }
 
     protected void OnItemUsageFinished()

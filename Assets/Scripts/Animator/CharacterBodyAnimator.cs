@@ -352,13 +352,8 @@ public class CharacterBodyAnimator : MonoBehaviour
                 return _characterDefinition.CancelJumpSFX;
             case CharacterAnimationState.PrepareToJump:
                 return _characterDefinition.PrepareToJumpSFX;
-            //case CharacterAnimationState.MeleeAttackHigh: //TODO
-            //    return _animatorDefinition.MeleeAttackAnimationFrameDuration;
-            //case CharacterAnimationState.MeleeAttackMiddle:
-            //    return _animatorDefinition.MeleeAttackAnimationFrameDuration;
-            //case CharacterAnimationState.MeleeAttackLow:
-            //    return _animatorDefinition.MeleeAttackAnimationFrameDuration;
-            //TODO: guard
+            case CharacterAnimationState.Guard:
+                return _characterDefinition.GuardSFX;
             default:
                 return null;
         }

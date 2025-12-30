@@ -12,6 +12,8 @@ public abstract class ArmorDefinition : ItemDefinition
 
     public Sprite[] EquippedSpriteStrip;
     public Dictionary<CharacterAnimationState, Sprite[]> Animations { get; private set; }
+    public SFXDefiniton EquipSFX;
+    public SFXDefiniton UnequipSFX;
 
     public override IEnumerable<RangedStat> GetRangedStats()
     {

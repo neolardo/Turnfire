@@ -24,7 +24,7 @@ MonoBehaviour:
     _randomness: 0
     _group: {fileID: 11400000, guid: aaaaf89e65985ec41be3df1534757652, type: 2}
   ItemActionAnimation: {fileID: 0}
-  ItemActionSFX: {fileID: 0}
+  ItemActionSFX: {fileID: 11400000, guid: 136479c9e0e66844d9e49b401303e32f, type: 2}
   HideItemDuringUsage: 0
   UseInstantlyWhenSelected: 0
   InitialVisualRotationDegrees: 235
@@ -43,3 +43,4 @@ MonoBehaviour:
     _isRandomized: 0
     _randomness: 0
     _group: {fileID: 11400000, guid: 6c3c29bc84587e04cb194e22bb5594d0, type: 2}
+  HitSFX: {fileID: 11400000, guid: b19c387f58397ca41acbaa243c80240f, type: 2}

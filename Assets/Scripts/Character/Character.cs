@@ -239,7 +239,7 @@ public class Character : MonoBehaviour
         SelectedItemUsed?.Invoke();
     }
 
-    public void TrySelectItem(Item item)
+    public bool TrySelectItem(Item item)
     {
         if ((item == null) || (_items.Contains(item) && item != _selectedItem))
         {
@@ -252,22 +252,25 @@ public class Character : MonoBehaviour
                     SelectedItemChanged?.Invoke(item);
                     UseSelectedItem(context);
                     // instantly used items should be deselected after usage
-                    TrySelectItem(null);
+                    return TrySelectItem(null);
                 }
                 else
                 {
                     Debug.LogWarning($"Item should be used instantly but was not able to use it: {item.Definition.Name}");
+                    return false;
                 }
             }
             else
             {
                 _selectedItem = item;
                 SelectedItemChanged?.Invoke(item);
+                return true;
             }
         }
         else
         {
             Debug.LogWarning($"Item selection failed for item: {item.Definition.Name}.");
+            return false;
         }
     }
 

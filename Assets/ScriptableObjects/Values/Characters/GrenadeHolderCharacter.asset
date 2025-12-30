@@ -170,6 +170,7 @@ MonoBehaviour:
   DeathSFX: {fileID: 11400000, guid: 11e71dc438cbd77479e5bd7b4272754a, type: 2}
   AimStartSFX: {fileID: 11400000, guid: a7bfba19c9cddd34e847d947523ef72a, type: 2}
   AimCancelSFX: {fileID: 11400000, guid: 54274b9904803fc4c8f9b3662815e897, type: 2}
+  GuardSFX: {fileID: 11400000, guid: 057ca4dfa8fe70a45bc985fe91ab0529, type: 2}
   MaxHealth: 10
   InitialItems:
   - {fileID: 11400000, guid: 0276c8487ff836a47a5b2849c6189187, type: 2}

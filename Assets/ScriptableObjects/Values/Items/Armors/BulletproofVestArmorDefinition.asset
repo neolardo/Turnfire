@@ -62,3 +62,5 @@ MonoBehaviour:
   - {fileID: 439328249252808539, guid: 4d73add2201816b47abf3ba323889629, type: 3}
   - {fileID: -3228687505549868447, guid: 4d73add2201816b47abf3ba323889629, type: 3}
   - {fileID: 8894654900232054965, guid: 4d73add2201816b47abf3ba323889629, type: 3}
+  EquipSFX: {fileID: 11400000, guid: 18e0c234888b13c45a6963084e464f91, type: 2}
+  UnequipSFX: {fileID: 11400000, guid: fd9fc613c77d2d544be58b80ab2ef4a1, type: 2}

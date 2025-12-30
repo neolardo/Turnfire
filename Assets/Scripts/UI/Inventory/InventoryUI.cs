@@ -151,18 +151,28 @@ public class InventoryUI : MonoBehaviour
     {
         if (slot != null && slot.Item != null)
         {
+            var selectionSucceeded = _currentCharacter.TrySelectItem(slot.Item);
             if (playUISound)
             {
-                AudioManager.Instance.PlayUISound(_uiSounds.Confirm);
+                if (selectionSucceeded)
+                {
+                    AudioManager.Instance.PlayUISound(_uiSounds.Confirm);
+                }
+                else
+                {
+                    AudioManager.Instance.PlayUISound(_uiSounds.CannotUseItem);
+                }
             }
-            _selectedSlot?.OnSlotDeselected();
-            _selectedSlot = slot;
-            _selectedSlot.OnSlotSelected();
-            _currentCharacter.TrySelectItem(slot.Item);
-            LoadItemInfo(slot.Item.Definition);
-            if(slot.Item.Definition.UseInstantlyWhenSelected)
+            if (selectionSucceeded)
             {
-                ForceClose();
+                _selectedSlot?.OnSlotDeselected();
+                _selectedSlot = slot;
+                _selectedSlot.OnSlotSelected();
+                LoadItemInfo(slot.Item.Definition);
+                if (slot.Item.Definition.UseInstantlyWhenSelected)
+                {
+                    ForceClose();
+                }
             }
         }
     }

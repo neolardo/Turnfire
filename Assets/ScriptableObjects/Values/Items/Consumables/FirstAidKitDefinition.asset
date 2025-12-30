@@ -24,7 +24,7 @@ MonoBehaviour:
     _randomness: 0.4
     _group: {fileID: 11400000, guid: c06273d9496dc0840947119ef9b0a92f, type: 2}
   ItemActionAnimation: {fileID: 0}
-  ItemActionSFX: {fileID: 0}
+  ItemActionSFX: {fileID: 11400000, guid: bb6ae45c5d619564883e42a7b1be8119, type: 2}
   HideItemDuringUsage: 0
   UseInstantlyWhenSelected: 1
   HealAmount:

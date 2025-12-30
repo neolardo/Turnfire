@@ -11,4 +11,5 @@ public class UISoundsDefinition : ScriptableObject
     public SFXDefiniton InventoryOff;
     public SFXDefiniton TimeIsUp;
     public SFXDefiniton SkipAction;
+    public SFXDefiniton CannotUseItem;
 }

@@ -56,6 +56,7 @@ public class MeleeWeaponBehavior : WeaponBehavior
             {
                 var damage = _definition.Damage.CalculateValue();
                 c.Damage(damage);
+                AudioManager.Instance.PlaySFXAt(_definition.HitSFX, c.transform.position);
             }
         }
     }

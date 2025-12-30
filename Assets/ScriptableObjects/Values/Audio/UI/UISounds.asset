@@ -20,3 +20,4 @@ MonoBehaviour:
   InventoryOff: {fileID: 11400000, guid: d453c6dc9f99f204e8a0706c53ca2445, type: 2}
   TimeIsUp: {fileID: 11400000, guid: 97d749e2af75c9946b8d6f76fd9fc0c5, type: 2}
   SkipAction: {fileID: 11400000, guid: bf6178d8ca2db834ea661eb24ac4bae9, type: 2}
+  CannotUseItem: {fileID: 11400000, guid: 020f2b4024b25f746803109e73f24e75, type: 2}
