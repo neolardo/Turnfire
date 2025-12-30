@@ -12,8 +12,6 @@ public class CharacterAnimatorDefinition : ScriptableObject
     public float GuardActionAnimationFrameDuration;
     public float MeleeAttackAnimationFrameDuration;
 
-    public float ItemUsageDelay;
-
     [Header("Flash Animations")]
     public Color HurtFlashColor = Color.red;
     public Color HealFlashColor = Color.green;

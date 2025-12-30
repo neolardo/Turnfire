@@ -83,14 +83,14 @@ public class CharacterItemRenderer : MonoBehaviour
         HideItem();
     }
 
-    public void HideItemAfterDelay()
+    public void HideItemAfterDelay(float delaySeconds)
     {
-        StartCoroutine(WaitForItemUsageDelayThenHideCoroutine());
+        StartCoroutine(WaitForItemUsageDelayThenHideCoroutine(delaySeconds));
     }
 
-    private IEnumerator WaitForItemUsageDelayThenHideCoroutine()
+    private IEnumerator WaitForItemUsageDelayThenHideCoroutine(float delaySeconds)
     {
-        yield return new WaitForSeconds(_animatorDefinition.ItemUsageDelay);
+        yield return new WaitForSeconds(delaySeconds);
         HideItem();
     }
 

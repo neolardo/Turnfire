@@ -25,6 +25,7 @@ MonoBehaviour:
     _group: {fileID: 11400000, guid: 5a5b56af88cd285408e8a8c33dfc5e52, type: 2}
   ItemActionAnimation: {fileID: 0}
   ItemActionSFX: {fileID: 11400000, guid: b9e46c54c7c274f408255becd8ef6ad2, type: 2}
+  ItemUsagePostDelay: 0.6
   HideItemDuringUsage: 1
   UseInstantlyWhenSelected: 0
   InitialVisualRotationDegrees: 0

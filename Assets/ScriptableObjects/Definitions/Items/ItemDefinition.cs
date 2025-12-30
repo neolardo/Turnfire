@@ -14,6 +14,7 @@ public abstract class ItemDefinition : ScriptableObject
     public RangedStatInt DropQuantityRange;
     public AnimationDefinition ItemActionAnimation;
     public SFXDefiniton ItemActionSFX;
+    public float ItemUsagePostDelay;
     public bool HideItemDuringUsage;
     public bool UseInstantlyWhenSelected;
 

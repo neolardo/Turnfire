@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-[RequireComponent(typeof(LineRendererCompute))]
+[RequireComponent(typeof(LineRendererFragment))]
 public class PixelTrajectoryRenderer : MonoBehaviour
 {
     [SerializeField] private int _maxSegments = 50;
     [SerializeField] private float _maxLength = 2.5f;
     [SerializeField] private float _stepTime = 0.05f;
 
-    private LineRendererCompute _renderer;
+    private LineRendererFragment _renderer;
     private float _trajectoryMultiplier;
     private Transform _origin;
     private bool _useGravity = true;
@@ -20,7 +20,7 @@ public class PixelTrajectoryRenderer : MonoBehaviour
 
     private void Awake()
     {
-        _renderer = GetComponent<LineRendererCompute>();
+        _renderer = GetComponent<LineRendererFragment>();
         _points = new List<Vector2>();
     }
 

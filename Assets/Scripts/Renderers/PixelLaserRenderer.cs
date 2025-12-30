@@ -1,14 +1,14 @@
 using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(LineRendererCompute))]
+[RequireComponent(typeof(LineRendererFragment))]
 public class PixelLaserRenderer : MonoBehaviour
 {
     [SerializeField] private float _updateRate = 0f;   // 0 = update every frame
     [SerializeField] private float _animationSpeed = 18f;
     [SerializeField] private float _animationPostDelay = .5f;
     [SerializeField] private Transform _laserHead;
-    private LineRendererCompute _renderer;
+    private LineRendererFragment _renderer;
     private Coroutine _runningAnimation;
     private CameraController _cameraController;
 
@@ -18,7 +18,7 @@ public class PixelLaserRenderer : MonoBehaviour
 
     private void Awake()
     {
-        _renderer = GetComponent<LineRendererCompute>();
+        _renderer = GetComponent<LineRendererFragment>();
         _cameraController = FindFirstObjectByType<CameraController>();
     }
 

@@ -8,8 +8,9 @@ public class LaserGunWeaponBehavior : WeaponBehavior
 {
     private LaserGunWeaponDefinition _definition;
     private RaycastHit2D[] _raycastHitArray;
-    private const float _visualStartOffset = .2f;
-    private const float _requiredSafeRadius = .3f;
+    private const float _visualStartDirectionalOffset = .01f;
+    private readonly Vector2 _visualStartGlobalOffset = new Vector2(0f, 0.05f);
+    private const float _requiredSafeRadius = .2f;
 
     public LaserGunWeaponBehavior(LaserGunWeaponDefinition definition) : base(CoroutineRunner.Instance)
     {
@@ -35,7 +36,7 @@ public class LaserGunWeaponBehavior : WeaponBehavior
         var points = new List<Vector2>();
         hitCharacters = new HashSet<Character>();
 
-        origin += direction.normalized * _visualStartOffset;
+        origin += direction.normalized * _visualStartDirectionalOffset + _visualStartGlobalOffset;
         if (SafeObjectPlacer.TryFindSafePosition(origin, direction, LayerMaskHelper.GetLayerMask(Constants.GroundLayer), _requiredSafeRadius, out var safePosition))
         {
             origin = safePosition;

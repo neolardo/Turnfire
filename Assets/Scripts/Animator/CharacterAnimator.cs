@@ -68,7 +68,7 @@ public class CharacterAnimator : MonoBehaviour
             }
             else
             {
-                _itemRenderer.HideItemAfterDelay();
+                _itemRenderer.HideItemAfterDelay(item.Definition.ItemUsagePostDelay);
             }
         }
         if (item.Definition.ItemActionAnimation != null)

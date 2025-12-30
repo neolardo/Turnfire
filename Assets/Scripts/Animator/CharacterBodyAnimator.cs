@@ -79,7 +79,7 @@ public class CharacterBodyAnimator : MonoBehaviour
     {
         aimVector = aimVector.normalized;
         var nextAnimation = CharacterAnimationState.Idle;
-        float preDelay = _animatorDefinition.ItemUsageDelay;
+        float delay = selectedItem.Definition.ItemUsagePostDelay;
         if (selectedItem.Definition.ItemType == ItemType.Weapon && !(selectedItem.Definition as WeaponDefinition).IsRanged)
         {
             if (aimVector.y > Constants.UpwardAimThresholdY)
@@ -94,9 +94,8 @@ public class CharacterBodyAnimator : MonoBehaviour
             {
                 nextAnimation = CharacterAnimationState.MeleeAttackLow;
             }
-            preDelay = 0;
         }
-        PlayAnimation(nextAnimation, CharacterAnimationState.Idle, preDelay);
+        PlayAnimation(nextAnimation, CharacterAnimationState.Idle, delay);
     }
 
     public void PlayDeathAnimation()
