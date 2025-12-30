@@ -44,7 +44,7 @@ public class AlternativelyDoCharacterActionsForAllTeamsTurnState : TurnState
 
     private void UpdateMaxCharactersToActPerRound()
     {
-        _maxCharactersToActPerRound = _teams.Where(t=> t.IsTeamAlive).Min(t => t.NumAliveCharacters);
+        _maxCharactersToActPerRound = _teams.Where(t=> t.IsTeamAlive).Select(t=> t.NumAliveCharacters).DefaultIfEmpty(1).Min();
     }
 
     public override void StartState()

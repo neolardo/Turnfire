@@ -15,7 +15,7 @@ public static class BotEvaluationStatistics
     private static int _requestedSimulationCount = 100;
 
     private static int _turnCount;
-    private const int LiveLockTurnCountThreshold = 200;
+    private const int LiveLockTurnCountThreshold = 100;
 
 
     public static void RegisterBot(Team team, BotDifficulty difficulty)
