@@ -16,6 +16,7 @@ public class BulletProjectileBehavior : BallisticProjectileBehavior
 
     public override void Launch(ProjectileLaunchContext context)
     {
+        _lastOwner = context.OwnerCollider.GetComponent<Character>();
         _exploded = false;
         var rb = _projectile.Rigidbody;
         float angle = Mathf.Atan2(context.AimVector.y, context.AimVector.x) * Mathf.Rad2Deg;
@@ -45,6 +46,21 @@ public class BulletProjectileBehavior : BallisticProjectileBehavior
             nextDist = (hit.point - nextPoint).magnitude;
         }
         Explode(new HitboxContactContext(hit.point, hit.collider));
+    }
+
+    public override ItemBehaviorSimulationResult SimulateProjectileBehaviorFast(ItemBehaviorSimulationContext context)
+    {
+        var numHits = Physics2D.RaycastNonAlloc(context.Origin, context.AimVector, _raycastHitArray, Constants.ProjectileRaycastDistance, LayerMaskHelper.GetCombinedLayerMask(Constants.HitboxCollisionLayers));
+        var closestHit = _raycastHitArray.Take(numHits).Where(hit => hit.collider != context.Owner.Collider).OrderBy(hit => hit.distance).FirstOrDefault();
+
+        if (closestHit.collider == null)
+        {
+            return ItemBehaviorSimulationResult.None;
+        }
+        else
+        {
+            return SimulateExplosion(closestHit.point, context.Owner);
+        }
     }
 
     public override IEnumerator SimulateProjectileBehavior(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone)

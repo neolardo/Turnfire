@@ -56,7 +56,7 @@ public class MultiplayerMenuUI : MonoBehaviour
 
         return new GameplaySceneSettings()
         {
-            SceneName = _mapDisplay.SelectedMap.SceneName,
+            Map = _mapDisplay.SelectedMap,
             UseTimer = _useTimerCheckbox.Value,
             Players = players,
             IsOnlineGame = false

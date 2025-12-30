@@ -16,12 +16,12 @@ MonoBehaviour:
   Name: first aid kit
   Description: Heals your wounds.
   InitialQuantity: 1
-  MaximumQuantity: 1
+  MaximumQuantity: 3
   IsQuantityInfinite: 0
   DropQuantityRange:
-    _normalizedValue: 0.5
+    _normalizedValue: 0.189
     _isRandomized: 1
-    _randomness: 1
+    _randomness: 0.4
     _group: {fileID: 11400000, guid: c06273d9496dc0840947119ef9b0a92f, type: 2}
   ItemActionAnimation: {fileID: 0}
   ItemActionSFX: {fileID: 0}

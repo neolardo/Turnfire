@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 public class Item : ICollectible
 {
@@ -12,7 +13,7 @@ public class Item : ICollectible
     {
         Definition = definition;
         Behavior = definition.CreateItemBehavior();
-        Quantity = initializeAsDrop ? definition.DropQuantityRange.CalculateValue() : definition.InitialQuantity;
+        Quantity = initializeAsDrop ? Mathf.Min(definition.DropQuantityRange.CalculateValue(), definition.MaximumQuantity) : definition.InitialQuantity;
         Behavior.ItemUsageFinished += OnItemUsageFinished;
     }
     private void OnItemUsageFinished()
@@ -26,11 +27,12 @@ public class Item : ICollectible
         {
             return;
         }
-
         Quantity--;
-        if(Quantity == 0)
+        Debug.Log($"{Definition.Name}'s guantity become: {Quantity}");
+        if (Quantity == 0)
         {
             CollectibleDestroyed?.Invoke(this);
+            Debug.Log($"{Definition.Name} destroyed");
         }
     }
 

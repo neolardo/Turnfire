@@ -16,6 +16,11 @@ public class StateBase : UnityDriven
         StateEnded?.Invoke();
     }
 
+    public virtual void OnDestroy()
+    {
+
+    }
+
     protected virtual void SubscribeToEvents()
     {
 

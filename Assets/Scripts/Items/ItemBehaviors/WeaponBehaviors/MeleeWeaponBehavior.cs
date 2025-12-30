@@ -11,6 +11,9 @@ public class MeleeWeaponBehavior : WeaponBehavior
     private bool _isSimulated;
     private List<Character> _contactedCharactersSimulationResult;
 
+    // bot evaluation
+    private Character _lastOwner;
+    private bool _anyContacts;
     public MeleeWeaponBehavior(MeleeWeaponDefinition definition) : base(CoroutineRunner.Instance)
     {
         _definition = definition;
@@ -20,6 +23,9 @@ public class MeleeWeaponBehavior : WeaponBehavior
 
     public override void Use(ItemUsageContext context)
     {
+        _lastOwner = context.Owner;
+        _anyContacts = false;
+
         _isAttacking = true;
         var hitbox = context.Owner.MeleeHitbox;
         InitializeHitbox(hitbox, context.AimVector);
@@ -37,6 +43,10 @@ public class MeleeWeaponBehavior : WeaponBehavior
     private IEnumerator WaitUntilWeaponUsageFinished(SectorHitbox hitbox)
     {
         yield return new WaitForSeconds(WeaponUsageDuration);
+        if(!_anyContacts)
+        {
+            BotEvaluationStatistics.GetData(_lastOwner.Team).NonDamagingAttackCount++;
+        }
         _isAttacking = false;
         hitbox.gameObject.SetActive(false);
         hitbox.Contacted -= OnWeaponHitboxContacted;
@@ -54,7 +64,19 @@ public class MeleeWeaponBehavior : WeaponBehavior
             }
             else
             {
-                c.Damage(_definition.Damage.CalculateValue());
+                var damage = _definition.Damage.CalculateValue();
+                var data = BotEvaluationStatistics.GetData(_lastOwner.Team);
+                if (c.Team == _lastOwner.Team)
+                {
+                    data.DamageDealtToAllies += damage;
+                }
+                else
+                {
+                    data.DamageDealtToEnemies += damage;
+                }
+                _anyContacts = true;
+
+                c.Damage(damage);
             }
         }
     }
@@ -83,9 +105,9 @@ public class MeleeWeaponBehavior : WeaponBehavior
         yield return new WaitForFixedUpdate();
         yield return new WaitForFixedUpdate();
 
-        float damage = _definition.Damage.AvarageValue;
-        float allyDamage = 0;
-        float enemyDamage = 0;
+        int damage = _definition.Damage.AvarageValue;
+        int allyDamage = 0;
+        int enemyDamage = 0;
 
         foreach (var c in _contactedCharactersSimulationResult)
         {

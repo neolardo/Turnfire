@@ -11,6 +11,11 @@ public class FinishedTurnState : TurnState
     public override void StartState()
     {
         base.StartState();
+        foreach (var data in BotEvaluationStatistics.GetAllData())
+        {
+            data.TotalTurnCount++;
+        }
+        BotEvaluationStatistics.OnTurnFinished();
         EndState();
     }
 

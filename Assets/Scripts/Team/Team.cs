@@ -9,21 +9,18 @@ public class Team : MonoBehaviour
     [SerializeField] private Color _teamColor;
 
     private List<Character> _characters;
-    public Color TeamColor => _teamColor;
-    public Character CurrentCharacter => _characters[_characterIndex];
+    private bool _isSelected;
     private int _characterIndex;
     public string TeamName { get; set; }
+    public IGameplayInputSource InputSource { get; private set; }
+    public Color TeamColor => _teamColor;
+    public Character CurrentCharacter => _characters[_characterIndex];
+    public float NormalizedTeamHealth => _characters.Sum(c => c.NormalizedHealth) / _characters.Count;
+    public int NumAliveCharacters => _characters.Count(c => c.IsAlive);
 
     public event Action<float> TeamHealthChanged;
     public event Action TeamLost;
     public event Action<bool> TeamSelectedChanged;
-    private bool _isSelected;
-
-    public int NumAliveCharacters => _characters.Count(c => c.IsAlive);
-
-    public IGameplayInputSource InputSource => _inputSource;
-    
-    private IGameplayInputSource _inputSource;
 
     private void Awake()
     {
@@ -68,12 +65,12 @@ public class Team : MonoBehaviour
 
     public void InitializeInputSource(InputSourceType inputType)
     {
-        _inputSource = GameplayInputSourceFactory.Create(inputType, gameObject);
+        InputSource = GameplayInputSourceFactory.Create(inputType, gameObject);
     }
 
     private void OnAnyTeamCharacterHealthChanged()
     {
-        TeamHealthChanged?.Invoke(_characters.Sum(c => c.NormalizedHealth) / _characters.Count);
+        TeamHealthChanged?.Invoke(NormalizedTeamHealth);
     }
 
     public void SelectNextCharacter()

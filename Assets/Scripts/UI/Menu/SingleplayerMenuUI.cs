@@ -59,7 +59,7 @@ public class SingleplayerMenuUI : MonoBehaviour
 
         return new GameplaySceneSettings()
         {
-            SceneName = _mapDisplay.SelectedMap.SceneName,
+            Map = _mapDisplay.SelectedMap,
             UseTimer = _useTimerCheckbox.Value,
             BotDifficulty = _botDifficultyToggle.Value,
             Players = players,

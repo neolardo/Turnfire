@@ -9,9 +9,4 @@ public class GameplaySettingsDefinition : ScriptableObject
     public int SecondsAvaiablePerPlayerTurn;
     public int GameplayTimerFirstThresholdSeconds;
     public int GameplayTimerSecondThresholdSeconds;
-
-    [Header("Drops")]
-    public int MinimumNumberOfDropsPerRound;
-    public int MaximumNumberOfDropsPerRound;
-    public ItemDefinition[] PossibleDrops;
 }

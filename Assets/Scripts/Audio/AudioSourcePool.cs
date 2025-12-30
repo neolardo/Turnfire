@@ -14,6 +14,8 @@ public class AudioSourcePool : Pool<AudioSource>
     }
     public void PlayOnAny(AudioClip clip, Vector2 position)
     {
+        return; //fastsim
+
         var source = Get();
         source.clip = clip;
         source.transform.position = position;
@@ -23,6 +25,8 @@ public class AudioSourcePool : Pool<AudioSource>
 
     public void PlayOnAny(AudioClip clip, Transform transform)
     {
+        return; // fastsim
+
         var source = Get();
         source.clip = clip;
         source.transform.SetParent(transform);

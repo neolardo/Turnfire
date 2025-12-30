@@ -8,4 +8,5 @@ public interface IProjectileBehavior
     public void SetProjectile(Projectile projectile);
     public void ForceExplode();
     public IEnumerator SimulateProjectileBehavior(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone);
+    public ItemBehaviorSimulationResult SimulateProjectileBehaviorFast(ItemBehaviorSimulationContext context);
 }

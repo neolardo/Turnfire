@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -13,7 +12,10 @@ public class SceneLoader : MonoBehaviour
 
     private void Awake()
     {
-        CurrentGameplaySceneSettings = new GameplaySceneSettings() { Players = new List<Player>{new Player("TestPlayer", PlayerType.Human), { new Player("Bot", PlayerType.Bot)} }, BotDifficulty= BotDifficulty.Easy,  SceneName = "Map0", UseTimer = false }; //TODO: remove
+        //TODO: remove
+        var players = new List<Player> { new Player("Bot1", PlayerType.Human), { new Player("Bot2", PlayerType.Bot) } };
+        var map = FindFirstObjectByType<MapLocator>().Map0;
+        CurrentGameplaySceneSettings = new GameplaySceneSettings() { Players = players, BotDifficulty = BotDifficulty.Easy, Map = map, UseTimer = false }; //TODO: remove
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -32,13 +34,15 @@ public class SceneLoader : MonoBehaviour
 
     private IEnumerator LoadSceneCoroutine(string sceneName)
     {
+        Debug.Log("Scene reload started");
         _loadingText.gameObject.SetActive(true);
         yield return null;
-        AsyncOperation op = SceneManager.LoadSceneAsync(sceneName);
+        AsyncOperation op = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
         while (!op.isDone)
         {
             yield return null;
         }
+        Debug.Log("Scene reload finished");
     }
 
     public void LoadMenuScene()
@@ -49,7 +53,7 @@ public class SceneLoader : MonoBehaviour
     public void LoadGameplayScene(GameplaySceneSettings settings)
     {
         CurrentGameplaySceneSettings = settings;
-        StartCoroutine(LoadSceneCoroutine(CurrentGameplaySceneSettings.SceneName));
+        StartCoroutine(LoadSceneCoroutine(CurrentGameplaySceneSettings.Map.SceneName));
     }
 
     public void ReloadScene()

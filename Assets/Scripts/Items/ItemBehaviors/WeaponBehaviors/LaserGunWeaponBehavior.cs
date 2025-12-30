@@ -9,20 +9,48 @@ public class LaserGunWeaponBehavior : WeaponBehavior
     private LaserGunWeaponDefinition _definition;
     private RaycastHit2D[] _raycastHitArray;
     private const float _visualStartOffset = .2f;
+    private const float _requiredSafeRadius = .3f;
 
     public LaserGunWeaponBehavior(LaserGunWeaponDefinition definition) : base(CoroutineRunner.Instance)
     {
         _definition = definition;
         IsAimingNormalized = true;
         _raycastHitArray = new RaycastHit2D[Constants.RaycastHitColliderNumMax];
+        FastSimAvailable = true;
     }
 
     public override void Use(ItemUsageContext context)
     {
         _isAttacking = true;
         var points = CalculateLaserPath(context.Owner, context.AimOrigin, context.AimVector, out var hitCharacters);
+        AddBotStats(context.Owner, hitCharacters);
         context.LaserRenderer.StartLaser(points.ToArray());
         StartCoroutine(FollowLaserAndDamageCharactersOnContact(context.Owner, hitCharacters, context.LaserRenderer));
+    }
+
+    private void AddBotStats(Character owner, IEnumerable<Character> hitCharacters)
+    {
+        var damage = _definition.Damage.CalculateValue();
+        var data = BotEvaluationStatistics.GetData(owner.Team);
+        float allyDamage = 0;
+        float enemyDamage = 0;
+        foreach (var c in hitCharacters)
+        {
+            if (c.Team == owner.Team)
+            {
+                allyDamage += damage;
+            }
+            else
+            {
+                enemyDamage += damage;
+            }
+        }
+        data.DamageDealtToAllies += allyDamage;
+        data.DamageDealtToEnemies += enemyDamage;
+        if (!hitCharacters.Any())
+        {
+            data.NonDamagingAttackCount++;
+        }
     }
 
     private IEnumerable<Vector2> CalculateLaserPath(Character owner, Vector2 origin, Vector2 direction, out HashSet<Character> hitCharacters)
@@ -34,6 +62,10 @@ public class LaserGunWeaponBehavior : WeaponBehavior
         hitCharacters = new HashSet<Character>();
 
         origin += direction.normalized * _visualStartOffset;
+        if (SafeObjectPlacer.TryFindSafePosition(origin, direction, LayerMaskHelper.GetLayerMask(Constants.GroundLayer), _requiredSafeRadius, out var safePosition))
+        {
+            origin = safePosition;
+        }
 
         points.Add(origin);
 
@@ -124,11 +156,39 @@ public class LaserGunWeaponBehavior : WeaponBehavior
         rendererManager.TrajectoryRenderer.SetTrajectoryMultipler(1);
     }
 
+    public override ItemBehaviorSimulationResult SimulateUsageFast(ItemBehaviorSimulationContext context)
+    {
+        int damage = _definition.Damage.AvarageValue;
+        int damageToAllies = 0;
+        int damageToEnemies = 0;
+        CalculateLaserPath(context.Owner, context.Origin, context.AimVector, out var hitCharacters);
+        Vector2 closestDamagingPosition = hitCharacters.Count == 0 ? context.Origin : hitCharacters.First().transform.position;
+        float minDist = Vector2.Distance(closestDamagingPosition, context.Origin);
+        foreach (var c in hitCharacters)
+        {
+            if (c.Team == context.Owner.Team)
+            {
+                damageToAllies += damage;
+            }
+            else
+            {
+                damageToEnemies += damage;
+            }
+            var dist = Vector2.Distance(context.Origin, c.transform.position);
+            if (dist < minDist)
+            {
+                closestDamagingPosition = c.transform.position;
+                minDist = dist;
+            }
+        }
+        return ItemBehaviorSimulationResult.Damage(closestDamagingPosition, damageToEnemies, damageToAllies);
+    }
+
     public override IEnumerator SimulateUsage(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone)
     {
-        float damage = _definition.Damage.AvarageValue;
-        float damageToAllies = 0;
-        float damageToEnemies = 0;
+        int damage = _definition.Damage.AvarageValue;
+        int damageToAllies = 0;
+        int damageToEnemies = 0;
         CalculateLaserPath(context.Owner, context.Origin, context.AimVector, out var hitCharacters);
         Vector2 closestDamagingPosition = hitCharacters.Count == 0 ? context.Origin : hitCharacters.First().transform.position;
         float minDist = Vector2.Distance(closestDamagingPosition, context.Origin);

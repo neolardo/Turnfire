@@ -20,6 +20,7 @@ public class DestructibleTerrainRenderer : MonoBehaviour
 
     private const float OverlapCheckAngleStep = 45;
     private const int MaxSearchRadiusForNormalCalculation = 4;
+    private const int CornerCheckDepth = 3;
 
     private readonly Vector2Int[] NormalNeighbors = {
         new Vector2Int(-1,  0),
@@ -291,6 +292,7 @@ public class DestructibleTerrainRenderer : MonoBehaviour
 
     private bool IsHorizontalCornerPixel(int x, int y, int minHalfWidth = 8)
     {
+        y -= CornerCheckDepth;
         for (int nx = 1; nx <= minHalfWidth; nx++)
         {
             if(!IsSolidPixel(x + nx, y) || !IsSolidPixel(x - nx, y))

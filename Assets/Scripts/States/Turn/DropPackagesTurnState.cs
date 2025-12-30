@@ -25,7 +25,7 @@ public class DropPackagesTurnState : TurnState
     public override void StartState()
     {
         base.StartState();
-        _dropManager.SpawnPackages();
+        _dropManager.TrySpawnPackages();
     }
 
 }

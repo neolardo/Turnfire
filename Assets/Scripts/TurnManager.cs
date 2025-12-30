@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -10,7 +11,9 @@ public class TurnManager : MonoBehaviour
     private List<TurnState> _turnStates;
     private int _turnStateIndex;
     private TurnState CurrentTurnState => _turnStates[_turnStateIndex];
-    private bool IsGameOver => _teams.Count(t => t.IsTeamAlive) <= 1;
+    private bool IsGameOver => _teams.Count(t => t.IsTeamAlive) <= 1 || _isGameOverForced;
+    private bool _isGameOverForced;
+    public bool IsInitialized { get; private set; }
 
     public event Action<GameplaySceneSettings> GameStarted;
     public event Action<Team> GameEnded;
@@ -46,11 +49,21 @@ public class TurnManager : MonoBehaviour
         GameStarted += (_) => localInput.OnGameStarted();
         GameEnded += (_) => localInput.OnGameEnded();
         uiManager.CreateTeamHealthbars(_teams);
+        IsInitialized = true;
+    }
+
+    private void OnDestroy()
+    {
+        foreach(var turnState in _turnStates)
+        {
+            turnState.OnDestroy();
+        }
     }
 
     public void StartGame(GameplaySceneSettings gameplaySettings)
     {
         GameStarted?.Invoke(gameplaySettings);
+        Debug.Log("Game started");
         StartTurnState();
     }
 
@@ -81,18 +94,45 @@ public class TurnManager : MonoBehaviour
         }
     }
 
+    public void ForceEndGame()
+    {
+        _isGameOverForced = true;
+        EndGame();
+    }
+
     private void EndGame()
     {
         CurrentTurnState.ForceEndState();
-        if (_teams.Any(t => t.IsTeamAlive))
+        bool isTie = _teams.Count(team => team.IsTeamAlive) != 1;
+        foreach (var team in _teams)
         {
-            var winnerTeam = _teams.First(t => t.IsTeamAlive);
-            GameEnded?.Invoke(winnerTeam);
+            var data = BotEvaluationStatistics.GetData(team);
+            data.RemainingNormalizedTeamHealth = team.NormalizedTeamHealth;
+            if (team.IsTeamAlive)
+            {
+                data.RoundResult = isTie ? BotEvaluationRoundResult.Tie : BotEvaluationRoundResult.Win;
+            }
+            else
+            {
+                data.RoundResult = BotEvaluationRoundResult.Lose;
+            }
         }
-        else
+        if(isTie)
         {
             GameEnded?.Invoke(null);
         }
+        else
+        {
+            GameEnded?.Invoke(_teams.First(t => t.IsTeamAlive));
+        }
+        StartCoroutine(SaveAndTryRestartSimulation());
+    }
+
+    private IEnumerator SaveAndTryRestartSimulation()
+    {
+        yield return new WaitForSeconds(0.5f);
+        BotEvaluationStatistics.Save();
+        BotEvaluationStatistics.TryToRestartSimulation();
     }
 
 }

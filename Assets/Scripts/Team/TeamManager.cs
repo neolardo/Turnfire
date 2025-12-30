@@ -26,9 +26,35 @@ public class TeamManager : MonoBehaviour
         {
             _possibleTeams[i].gameObject.SetActive(false);
         }
+        
+        var difficulties = new List<BotDifficulty>();
+        if(System.Environment.GetCommandLineArgs().Contains("-easy"))
+        {
+            difficulties.Add(BotDifficulty.Easy);
+        }
+        if (System.Environment.GetCommandLineArgs().Contains("-medium"))
+        {
+            difficulties.Add(BotDifficulty.Medium);
+        }
+        if (System.Environment.GetCommandLineArgs().Contains("-hard"))
+        {
+            difficulties.Add(BotDifficulty.Hard);
+        }
 
-        //CreateRandomizedBotEvaluationTeamSetup(BotDifficulty.Easy, BotDifficulty.Medium);
-        CreateRandomizedTeamSetup();
+        if(difficulties.Count < 2)
+        {
+            //Debug.LogError("Not enough bot difficulty set for evaluation!");
+            difficulties.Add(BotDifficulty.Easy);
+            difficulties.Add(BotDifficulty.Medium);
+        }
+        else if (difficulties.Count > 2)
+        {
+            Debug.LogWarning("Too much bot difficulty set for evaluation.");
+        }
+
+        CreateRandomizedBotEvaluationTeamSetup(difficulties[0], difficulties[1]);
+        Debug.Log($"{difficulties[0]} vs {difficulties[1]} bot setup created");
+        //CreateRandomizedTeamSetup();
     }
 
     private void CreateRandomizedTeamSetup()

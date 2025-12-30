@@ -13,13 +13,14 @@ MonoBehaviour:
   m_Name: MediumBotTuning
   m_EditorClassIdentifier: 
   Offense: 1
-  Defense: 0.5
-  MobilityPreference: 1
-  TravelDistanceSensitivity: 0.5
+  Defense: 0.7
+  MobilityPreference: 0.5
   LowHealthThreshold: 4
   RemainingAmmoLowThreshold: 4
   GeneralPackageGreed: 0
-  RemainingAmmoLowPackageGreed: 0.5
-  OutOfAmmoPackageGreed: 1
-  AimRandomnessBias: 0.02
-  DecisionRandomnessBias: 0.1
+  RemainingAmmoLowPackageGreed: 1
+  OutOfAmmoPackageGreed: 2
+  AimRandomnessBias: 0.03
+  PositionDecisionSoftboxTemperature: 0.7
+  ItemDecisionSoftboxTemperature: 0.25
+  DecisionJitterBias: 0.12
