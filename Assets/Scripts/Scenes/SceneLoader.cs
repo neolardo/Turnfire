@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -11,9 +12,11 @@ public class SceneLoader : MonoBehaviour
 
     private void Awake()
     {
-        //var players = new List<Player> { new Player("Bot1", PlayerType.Human), { new Player("Bot2", PlayerType.Bot) } };
-        //var map = FindFirstObjectByType<MapLocator>().Map0;
-        //CurrentGameplaySceneSettings = new GameplaySceneSettings() { Players = players, BotDifficulty = BotDifficulty.Easy, Map = map, UseTimer = false };
+        //TODO: delete before release
+        var players = new List<Player> { new Player(0, "Player1", PlayerType.Human), { new Player(1, "Player2", PlayerType.Human) } };
+        var map = FindFirstObjectByType<MapLocator>().Map0;
+        CurrentGameplaySceneSettings = new GameplaySceneSettings() { Players = players, Map = map, UseTimer = false, IsOnlineGame = true};
+        
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);

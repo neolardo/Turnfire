@@ -50,11 +50,12 @@ public class SingleplayerMenuUI : MonoBehaviour
     {
         var players = new List<Player>
         {
-            new Player(Constants.DefaultPlayerName, PlayerType.Human)
+            new Player(0, Constants.DefaultPlayerName, PlayerType.Human)
         };
-        for (int i = 0; i < _numBotsDisplay.Value; i++)
+        for (int botId = 0; botId < _numBotsDisplay.Value; botId++)
         {
-            players.Add(new Player($"{Constants.DefaultBotName}{i + 1}", PlayerType.Bot));
+            int playerId = botId + 1; //TODO: create team setup here instead of at the start
+            players.Add(new Player(playerId, $"{Constants.DefaultBotName}{botId+1}", PlayerType.Bot));
         }
 
         return new GameplaySceneSettings()

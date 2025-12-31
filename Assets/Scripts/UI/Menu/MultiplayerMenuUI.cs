@@ -47,11 +47,12 @@ public class MultiplayerMenuUI : MonoBehaviour
 
     private GameplaySceneSettings CreateGameplaySceneSettings()
     {
-        //TODO: names from textbox
+        //TODO: names from textbox? needed?
         var players = new List<Player>();
-        for (int i = 0; i < _numPlayersDisplay.Value; i++)
+        for (int teamId = 0; teamId < _numPlayersDisplay.Value; teamId++)
         {
-            players.Add(new Player($"{Constants.DefaultPlayerName}{i + 1}", PlayerType.Human));
+            //TODO: create team setup here instead of at the start
+            players.Add(new Player(teamId,$"{Constants.DefaultPlayerName}{teamId + 1}", PlayerType.Human));
         }
 
         return new GameplaySceneSettings()
