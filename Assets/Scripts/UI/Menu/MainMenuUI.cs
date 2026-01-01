@@ -29,7 +29,7 @@ public class MainMenuUI : MonoBehaviour
 
     private void OnMultiplayerButtonPressed()
     {
-        _menuUIManager.SwitchPanel(MenuPanelType.MultiplayerMenu);
+        _menuUIManager.SwitchPanel(MenuPanelType.OnlineOrOfflineMultiplayerMenu);
     }
 
     private void OnExitButtonPressed()

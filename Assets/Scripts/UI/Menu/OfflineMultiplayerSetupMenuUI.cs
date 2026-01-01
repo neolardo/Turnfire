@@ -1,16 +1,17 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class MultiplayerMenuUI : MonoBehaviour
+public class OfflineMultiplayerSetupMenuUI : MonoBehaviour
 {
     [SerializeField] private MenuButtonUI _confirmButton;
     [SerializeField] private MenuButtonUI _cancelButton;
     [SerializeField] private MenuNumericDisplayUI _numPlayersDisplay;
     [SerializeField] private MenuMapDisplayUI _mapDisplay;
     [SerializeField] private MenuCheckBoxUI _useTimerCheckbox;
-    private LocalMenuInput _inputManager;
 
+    private LocalMenuInput _inputManager;
     private MenuUIManager _menuUIManager;
 
     private void Awake()
@@ -32,6 +33,7 @@ public class MultiplayerMenuUI : MonoBehaviour
         _inputManager.MenuBackPerformed -= _cancelButton.Press;
     }
 
+
     private void Start()
     {
         _numPlayersDisplay.Initialize(Constants.MultiplayerMinPlayers, Constants.MultiplayerMaxPlayers, Constants.MultiplayerMinPlayers);
@@ -47,12 +49,14 @@ public class MultiplayerMenuUI : MonoBehaviour
 
     private GameplaySceneSettings CreateGameplaySceneSettings()
     {
-        //TODO: names from textbox? needed?
         var players = new List<Player>();
-        for (int teamId = 0; teamId < _numPlayersDisplay.Value; teamId++)
+        int numPlayers = _numPlayersDisplay.Value;
+        var teamIds = Enumerable.Range(0, numPlayers).ToList();
+        for (int playerId = 0; playerId < _numPlayersDisplay.Value; playerId++)
         {
-            //TODO: create team setup here instead of at the start
-            players.Add(new Player(teamId,$"{Constants.DefaultPlayerName}{teamId + 1}", PlayerType.Human));
+            int teamId = teamIds[Random.Range(0, teamIds.Count)];
+            teamIds.Remove(teamId);
+            players.Add(new Player(teamId, $"{Constants.DefaultPlayerName}{playerId + 1}", PlayerType.Human));
         }
 
         return new GameplaySceneSettings()
@@ -68,5 +72,4 @@ public class MultiplayerMenuUI : MonoBehaviour
     {
         _menuUIManager.SwitchToPreviousPanel();
     }
-
 }

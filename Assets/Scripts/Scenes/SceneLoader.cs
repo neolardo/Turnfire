@@ -13,9 +13,9 @@ public class SceneLoader : MonoBehaviour
     private void Awake()
     {
         //TODO: delete before release
-        var players = new List<Player> { new Player(0, "Player1", PlayerType.Human), { new Player(1, "Player2", PlayerType.Human) } };
-        var map = FindFirstObjectByType<MapLocator>().Map0;
-        CurrentGameplaySceneSettings = new GameplaySceneSettings() { Players = players, Map = map, UseTimer = false, IsOnlineGame = true};
+        //var players = new List<Player> { new Player(0, "Player1", PlayerType.Human), { new Player(1, "Player2", PlayerType.Human) } };
+        //var map = FindFirstObjectByType<MapLocator>().Map0;
+        //CurrentGameplaySceneSettings = new GameplaySceneSettings() { Players = players, Map = map, UseTimer = false, IsOnlineGame = true};
         
         if (Instance != null && Instance != this)
         {

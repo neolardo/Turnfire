@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -48,14 +49,19 @@ public class SingleplayerMenuUI : MonoBehaviour
 
     private GameplaySceneSettings CreateGameplaySceneSettings()
     {
+        int numPlayers = _numBotsDisplay.Value+1;
+        var teamIds = Enumerable.Range(0, numPlayers).ToList();
+        int teamId = teamIds[Random.Range(0, teamIds.Count)];
+        teamIds.Remove(teamId);
         var players = new List<Player>
         {
-            new Player(0, Constants.DefaultPlayerName, PlayerType.Human)
+            new Player(teamId, Constants.DefaultPlayerName, PlayerType.Human)
         };
         for (int botId = 0; botId < _numBotsDisplay.Value; botId++)
         {
-            int playerId = botId + 1; //TODO: create team setup here instead of at the start
-            players.Add(new Player(playerId, $"{Constants.DefaultBotName}{botId+1}", PlayerType.Bot));
+            teamId = teamIds[Random.Range(0, teamIds.Count)];
+            teamIds.Remove(teamId);
+            players.Add(new Player(teamId, $"{Constants.DefaultBotName}{botId+1}", PlayerType.Bot));
         }
 
         return new GameplaySceneSettings()

@@ -12,6 +12,7 @@ public class MenuButtonUI : ScreenSizeDependantHoverableSelectableContainerUI
     [SerializeField] private Color _disabledTextColor;
     private LocalMenuInput _inputManager;
     private Sprite _normalSprite;
+    private Color _normalTextColor;
 
     private Image _image;
 
@@ -24,7 +25,8 @@ public class MenuButtonUI : ScreenSizeDependantHoverableSelectableContainerUI
         _inputManager = FindFirstObjectByType<LocalMenuInput>();
         _image = GetComponent<Image>();
         _normalSprite = _image.sprite;
-       
+        _normalTextColor = _text.color;
+
         if (!interactable)
         {
             _image.sprite = _disabledSprite;
@@ -125,5 +127,24 @@ public class MenuButtonUI : ScreenSizeDependantHoverableSelectableContainerUI
         _image.sprite = _normalSprite;
     }
 
+    public void SetIsInteractable(bool interactable)
+    {
+        this.interactable = interactable;
+        if (!interactable)
+        {
+            _image.sprite = _disabledSprite;
+            _text.color = _disabledTextColor;
+        }
+        else
+        {
+            _image.sprite = _normalSprite;
+            _text.color = _normalTextColor;
+        }    
+    }
+
+    public void SetText(string text)
+    {
+        _text.text = text;
+    }
 
 }
