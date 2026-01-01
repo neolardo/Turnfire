@@ -1,5 +1,7 @@
 using UnityEditor;
 
+#if UNITY_EDITOR
+
 public static class SerializedPropertyExtensions
 {
     public static object GetSerializedValue(this SerializedProperty property)
@@ -23,3 +25,5 @@ public static class SerializedPropertyExtensions
         return obj;
     }
 }
+
+#endif

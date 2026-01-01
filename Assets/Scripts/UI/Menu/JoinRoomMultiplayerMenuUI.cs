@@ -8,12 +8,12 @@ public class JoinRoomMultiplayerMenuUI : MonoBehaviour
 {
     [SerializeField] private MenuButtonUI _joinButton;
     [SerializeField] private MenuButtonUI _backButton;
-    [SerializeField] private TextMeshProUGUI _joinCodeText;
-    [SerializeField] private TextMeshProUGUI _playerNameText;
+    [SerializeField] private TMP_InputField _joinCodeInputField;
+    [SerializeField] private TMP_InputField _playerNameInputField;
     [SerializeField] private TextMeshProUGUI _responseText;
     private LocalMenuInput _inputManager;
 
-    private bool _isJoined;
+    private bool _isJoinInitiated;
 
     private MenuUIManager _menuUIManager;
 
@@ -23,39 +23,55 @@ public class JoinRoomMultiplayerMenuUI : MonoBehaviour
         _inputManager = FindFirstObjectByType<LocalMenuInput>();
         _joinButton.ButtonPressed += OnJoinPressed;
         _backButton.ButtonPressed += OnCancelPressed;
+        NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
         NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
     }
 
     private void OnEnable()
     {
         InitializeUI();
-        _playerNameText.text = Constants.DefaultPlayerName;
+        _playerNameInputField.text = "";
         _inputManager.MenuBackPerformed += _backButton.Press;
     }
 
     private void InitializeUI()
     {
         _responseText.text = "";
-        _joinCodeText.text = "";
+        _joinCodeInputField.text = "";
         _backButton.SetText("cancel");
-        _isJoined = false;
+        _isJoinInitiated = false;
         _joinButton.SetIsInteractable(false);
     }
 
     private void OnDisable()
     {
         _inputManager.MenuBackPerformed -= _backButton.Press;
-        NetworkRoomManager.LeaveRoom();
+        RoomNetworkManager.LeaveRoom();
     }
 
     private void Start()
     {
-        EventSystem.current.SetSelectedGameObject(_joinButton.gameObject);
+        EventSystem.current.SetSelectedGameObject(_joinCodeInputField.gameObject);
     }
 
     private void OnDestroy()
     {
+        if (NetworkManager.Singleton == null)
+        {
+            return;
+        }
+        NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
         NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
+    }
+
+    public void OnInputFieldValueChanged(string value)
+    {
+        var joinCode = _joinCodeInputField.text;
+        var clientName = _playerNameInputField.text;
+        bool areFieldsValid = 
+            !string.IsNullOrWhiteSpace(joinCode) && joinCode.Length > 0 &&
+            !string.IsNullOrWhiteSpace(clientName) && clientName.Length > 0;
+        _joinButton.SetIsInteractable(areFieldsValid);
     }
 
     private void OnClientDisconnected(ulong clientId)
@@ -64,64 +80,77 @@ public class JoinRoomMultiplayerMenuUI : MonoBehaviour
         {
             Debug.Log("Host left the room.");
             LeaveRoom();
+            return;
+        }
+
+        if (clientId != NetworkManager.Singleton.LocalClientId)
+            return;
+
+        var reason = NetworkManager.Singleton.DisconnectReason;
+        if (reason == Constants.InvalidNameReasonValue)
+        {
+            _responseText.text = "Failed to join room.\nPlayer name was invalid.";
+        }
+        _isJoinInitiated = false;
+        _backButton.SetText("cancel");
+    }
+
+    private void OnClientConnected(ulong clientId)
+    {
+        if(clientId == NetworkManager.Singleton.LocalClientId)
+        {
+            _responseText.text = "Join successful.\nWaiting for the host to start the game.";
         }
     }
 
     public void OnJoinPressed()
     {
-        _ = TryJoinRoom(_joinCodeText.text, _playerNameText.text);
+        _ = TryJoinRoom(_joinCodeInputField.text, _playerNameInputField.text);
     }
 
     private async Task TryJoinRoom(string joinCode, string playerName)
     {
+        _isJoinInitiated = true;
+        _backButton.SetText("leave");
         _joinButton.SetIsInteractable(false);
         _responseText.text = "Joining room...\nPlease wait.";
-        var result = await NetworkRoomManager.TryJoinRoomAsync(joinCode, playerName);
-        if (result == NetworkRoomResult.Ok)
+        if (string.IsNullOrWhiteSpace(playerName))
         {
-            _responseText.text = "Join successful.\nWaiting for the host to start the game.";
-            _backButton.SetText("leave");
-            _isJoined = true;
+            playerName = Constants.DefaultPlayerName;
         }
-        else if (result == NetworkRoomResult.NetworkError)
+        var result = await RoomNetworkManager.TryJoinRoomAsync(joinCode, playerName);
+        if (result == RoomNetworkConnectionResult.Ok)
         {
-            _responseText.text = "Cannot join room.\nPlease check your internet connection and try again.";
+            DontDestroyOnLoad(NetworkManager.Singleton.gameObject);
+            // wait for connected callback
+        }
+        else if (result == RoomNetworkConnectionResult.NetworkError)
+        {
+            _responseText.text = "Failed to join room.\nPlease check your internet connection and try again.";
             _joinButton.SetIsInteractable(true);
         }
-        else if (result == NetworkRoomResult.PlayerNameInvalid)
+        else if (result == RoomNetworkConnectionResult.JoinCodeInvalid)
         {
-            if (string.IsNullOrWhiteSpace(playerName))
-            {
-                _responseText.text = "Cannot join room.\nPlease enter a player name.";
-            }
-            else
-            {
-                _responseText.text = "Cannot join room.\nThis player name already exists in the room.";
-            }
-            _joinButton.SetIsInteractable(true);
-        }
-        else if (result == NetworkRoomResult.JoinCodeInvalid)
-        {
-            _responseText.text = "Cannot join room.\nJoin code is invalid.";
+            _responseText.text = "Failed to join room.\nJoin code was invalid.";
             _joinButton.SetIsInteractable(true);
         }
     }
 
     public void OnCancelPressed()
     {
-        if (_isJoined)
+        if (_isJoinInitiated)
         {
             LeaveRoom();
         }
         else
-        { 
+        {
             _menuUIManager.SwitchToPreviousPanel();
         }
     }
 
     private void LeaveRoom()
     {
-        NetworkRoomManager.LeaveRoom();
+        RoomNetworkManager.LeaveRoom();
         InitializeUI();
     }
 }

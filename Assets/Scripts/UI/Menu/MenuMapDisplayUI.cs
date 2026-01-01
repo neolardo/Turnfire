@@ -75,13 +75,14 @@ public class MenuMapDisplayUI : HoverableSelectableContainerUI
 
     public void SetTeamCount(int teamCount)
     {
-        _teamCount = teamCount;
+        _teamCount = Mathf.Clamp(teamCount, 0, SelectedMap.Minimaps.Max(mm => mm.NumTeams));
         Refresh();
     }
 
     private void Refresh()
     {
-        _mapImage.sprite = _maps[_mapIndex].Minimaps.First(mm => mm.NumTeams == _teamCount).Sprite;
+        var minimap = SelectedMap.Minimaps.FirstOrDefault(mm => mm.NumTeams == _teamCount);
+        _mapImage.sprite = minimap.Sprite == null ? SelectedMap.Minimaps.First().Sprite : minimap.Sprite;
         _rightButton.SetIsActive(_mapIndex < _maps.Length-1);
         _leftButton.SetIsActive(_mapIndex > 0);
     }

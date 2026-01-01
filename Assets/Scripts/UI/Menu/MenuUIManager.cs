@@ -10,8 +10,8 @@ public class MenuUIManager : MonoBehaviour
     [SerializeField] private HostOrJoinMultiplayerMenuUI _hostOrJoinMultiplayerMenu;
     [SerializeField] private OfflineMultiplayerSetupMenuUI _offlineMultiplayerSetupMenu;
     [SerializeField] private OnlineMultiplayerSetupMenuUI _onlineMultiplayerSetupMenu;
-    [SerializeField] private JoinRoomMultiplayerMenuUI _joinMultiplayerMenu;
-    [SerializeField] private CreateRoomMultiplayerMenuUI _hostMultiplayerMenu;
+    [SerializeField] private JoinRoomMultiplayerMenuUI _joinRoomMultiplayerMenu;
+    [SerializeField] private CreateRoomMultiplayerMenuUI _createRoomMultiplayerMenu;
 
     private Stack<MenuPanelType> _previousPanels;
     private MenuPanelType _currentPanel;
@@ -51,8 +51,8 @@ public class MenuUIManager : MonoBehaviour
         _singleplayerMenu.gameObject.SetActive(false);
         _onlineOrOfflineMultiplayerMenu.gameObject.SetActive(false);
         _hostOrJoinMultiplayerMenu.gameObject.SetActive(false);
-        _hostMultiplayerMenu.gameObject.SetActive(false);
-        _joinMultiplayerMenu.gameObject.SetActive(false);
+        _createRoomMultiplayerMenu.gameObject.SetActive(false);
+        _joinRoomMultiplayerMenu.gameObject.SetActive(false);
         _offlineMultiplayerSetupMenu.gameObject.SetActive(false);
         _onlineMultiplayerSetupMenu.gameObject.SetActive(false);
     }
@@ -70,9 +70,9 @@ public class MenuUIManager : MonoBehaviour
             case MenuPanelType.OnlineOrOfflineMultiplayerMenu:
                 return _onlineOrOfflineMultiplayerMenu.gameObject;
             case MenuPanelType.CreateRoomMultiplayerMenu:
-                return _hostMultiplayerMenu.gameObject;
+                return _createRoomMultiplayerMenu.gameObject;
             case MenuPanelType.JoinRoomMultiplayerMenu:
-                return _joinMultiplayerMenu.gameObject;
+                return _joinRoomMultiplayerMenu.gameObject;
             case MenuPanelType.OnlineMultiplayerSetupMenu:
                 return _onlineMultiplayerSetupMenu.gameObject;
             case MenuPanelType.OfflineMultiplayerSetupMenu:
