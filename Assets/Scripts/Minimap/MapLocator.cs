@@ -1,11 +1,10 @@
 using UnityEngine;
 
-// helper for bot simulations
 public class MapLocator : MonoBehaviour
 {
-    public MapDefinition Map0;
-    public MapDefinition Map1;
-    public MapDefinition Map2;
+    [SerializeField] private MapDefinition Map0;
+    [SerializeField] private MapDefinition Map1;
+    [SerializeField] private MapDefinition Map2;
 
     public MapDefinition GetMap(int mapIndex)
     {
@@ -18,4 +17,18 @@ public class MapLocator : MonoBehaviour
                 throw new System.Exception("Invalid map index requested.");
         }
     }
+
+    public MapDefinition GetMap(string sceneName)
+    {
+        switch(sceneName.ToLower())
+        {
+            case "map0": return Map0;
+            case "map1": return Map1;
+            case "map2": return Map2;
+            default:
+                throw new System.Exception("Invalid map scecne name requested.");
+        }
+    }
+
+
 }

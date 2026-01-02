@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -11,14 +12,16 @@ public class SingleplayerMenuUI : MonoBehaviour
     [SerializeField] private MenuBotDifficultyToggleUI _botDifficultyToggle;
     [SerializeField] private MenuMapDisplayUI _mapDisplay;
     [SerializeField] private MenuCheckBoxUI _useTimerCheckbox;
-    private LocalMenuInput _inputManager;
 
+    private LocalMenuInput _inputManager;
     private MenuUIManager _menuUIManager;
+    private SceneLoaderFactory _sceneLoaderFactory;
 
     private void Awake()
     {
         _menuUIManager = FindFirstObjectByType<MenuUIManager>();
         _inputManager = FindFirstObjectByType<LocalMenuInput>();
+        _sceneLoaderFactory = FindFirstObjectByType<SceneLoaderFactory>();
         _confirmButton.ButtonPressed += OnConfirmPressed;
         _cancelButton.ButtonPressed += OnCancelPressed;
         _numBotsDisplay.ValueChanged += OnNumberOfBotsChanged;
@@ -44,6 +47,7 @@ public class SingleplayerMenuUI : MonoBehaviour
     {
         var settings = CreateGameplaySceneSettings();
         _menuUIManager.HideAllPanels();
+        _sceneLoaderFactory.TryCreateSceneLoader();
         SceneLoader.Instance.LoadGameplayScene(settings);
     }
 
@@ -51,7 +55,7 @@ public class SingleplayerMenuUI : MonoBehaviour
     {
         int numPlayers = _numBotsDisplay.Value+1;
         var teamIds = Enumerable.Range(0, numPlayers).ToList();
-        int teamId = teamIds[Random.Range(0, teamIds.Count)];
+        int teamId = teamIds[UnityEngine.Random.Range(0, teamIds.Count)];
         teamIds.Remove(teamId);
         var players = new List<Player>
         {
@@ -59,7 +63,7 @@ public class SingleplayerMenuUI : MonoBehaviour
         };
         for (int botId = 0; botId < _numBotsDisplay.Value; botId++)
         {
-            teamId = teamIds[Random.Range(0, teamIds.Count)];
+            teamId = teamIds[UnityEngine.Random.Range(0, teamIds.Count)];
             teamIds.Remove(teamId);
             players.Add(new Player(teamId, $"{Constants.DefaultBotName}{botId+1}", PlayerType.Bot));
         }

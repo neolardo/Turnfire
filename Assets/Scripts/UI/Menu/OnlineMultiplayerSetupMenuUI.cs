@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,15 +19,16 @@ public class OnlineMultiplayerSetupMenuUI : MonoBehaviour
 
     private LocalMenuInput _inputManager;
     private MenuUIManager _menuUIManager;
+    private SceneLoaderFactory _sceneLoaderFactory;
 
     private void Awake()
     {
         _menuUIManager = FindFirstObjectByType<MenuUIManager>();
         _inputManager = FindFirstObjectByType<LocalMenuInput>();
+        _sceneLoaderFactory = FindFirstObjectByType<SceneLoaderFactory>();
         _startButton.ButtonPressed += OnStartPressed;
         _cancelButton.ButtonPressed += OnCancelPressed;
-        NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
-        NetworkManager.Singleton.OnClientConnectedCallback += OnClientDisconnected;
+        NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
     }
 
     private void OnDestroy()
@@ -36,19 +38,26 @@ public class OnlineMultiplayerSetupMenuUI : MonoBehaviour
             return;
         }
 
-        NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
         NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
     }
 
     private void OnEnable()
     {
         _inputManager.MenuBackPerformed += _cancelButton.Press;
+        RoomNetworkSession.Instance.RegisteredPlayersChanged += RefreshJoinedPlayers;
+        StartCoroutine(OnOneFrameAfterOnEnable());
+    }
+
+    private IEnumerator OnOneFrameAfterOnEnable()
+    {
+        yield return null;
         RefreshJoinedPlayers();
     }
 
     private void OnDisable()
     {
         _inputManager.MenuBackPerformed -= _cancelButton.Press;
+        RoomNetworkSession.Instance.RegisteredPlayersChanged -= RefreshJoinedPlayers;
         RoomNetworkManager.LeaveRoom();
     }
 
@@ -60,14 +69,10 @@ public class OnlineMultiplayerSetupMenuUI : MonoBehaviour
 
     #region Client Connnect
 
-    private void OnClientConnected(ulong clientId)
-    {
-        RefreshJoinedPlayers();
-    }
-
     private void OnClientDisconnected(ulong clientId)
     {
-        RefreshJoinedPlayers();
+        Debug.Log($"{clientId} left the room");
+        Debug.Log(NetworkManager.Singleton.DisconnectReason);
         if (clientId == NetworkManager.ServerClientId)
         {
             LeaveRoomAndGoBack();
@@ -76,10 +81,10 @@ public class OnlineMultiplayerSetupMenuUI : MonoBehaviour
 
     private void RefreshJoinedPlayers()
     {
-        int numJoinedPlayers = RoomNetworkSession.Instance.NumPlayers - 1;
+        int numJoinedPlayers = RoomNetworkSession.Instance.NumPlayers;
         _numPlayersJoinedText.text = numJoinedPlayers.ToString();
-        _startButton.SetIsInteractable(numJoinedPlayers > 0);
-        _mapDisplay.SetTeamCount(numJoinedPlayers + 1);
+        _startButton.SetIsInteractable(numJoinedPlayers > 1);
+        _mapDisplay.SetTeamCount(numJoinedPlayers);
     }
 
 
@@ -95,7 +100,8 @@ public class OnlineMultiplayerSetupMenuUI : MonoBehaviour
     {
         var settings = CreateGameplaySceneSettings();
         _menuUIManager.HideAllPanels();
-        SceneLoader.Instance.LoadGameplayScene(settings);
+        _sceneLoaderFactory.TrySpawnNetworkSceneLoader();
+        NetworkSceneLoader.Instance.LoadGameplayScene(settings);
     }
 
     private GameplaySceneSettings CreateGameplaySceneSettings()
@@ -106,7 +112,7 @@ public class OnlineMultiplayerSetupMenuUI : MonoBehaviour
         var teamIds = Enumerable.Range(0, numPlayers).ToList();
         foreach(var clientId in clientIds) 
         {
-            int teamId = teamIds[Random.Range(0, teamIds.Count)];
+            int teamId = teamIds[UnityEngine.Random.Range(0, teamIds.Count)];
             teamIds.Remove(teamId);
             string playerName = RoomNetworkSession.Instance.GetPlayerName(clientId);
             players.Add(new Player(clientId, teamId, playerName, PlayerType.Human));

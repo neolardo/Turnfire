@@ -1,8 +1,10 @@
+using System;
 using System.Threading.Tasks;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class JoinRoomMultiplayerMenuUI : MonoBehaviour
 {
@@ -46,7 +48,7 @@ public class JoinRoomMultiplayerMenuUI : MonoBehaviour
     private void OnDisable()
     {
         _inputManager.MenuBackPerformed -= _backButton.Press;
-        RoomNetworkManager.LeaveRoom();
+        NetworkManager.Singleton.SceneManager.OnLoad -= OnSceneLoadStarted;
     }
 
     private void Start()
@@ -63,6 +65,10 @@ public class JoinRoomMultiplayerMenuUI : MonoBehaviour
         NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
         NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
     }
+    private void OnSceneLoadStarted(ulong clientId, string sceneName, LoadSceneMode loadSceneMode, AsyncOperation asyncOperation)
+    {
+        _menuUIManager.HideAllPanels();
+    }
 
     public void OnInputFieldValueChanged(string value)
     {
@@ -74,18 +80,31 @@ public class JoinRoomMultiplayerMenuUI : MonoBehaviour
         _joinButton.SetIsInteractable(areFieldsValid);
     }
 
+
+    private void OnClientConnected(ulong clientId)
+    {
+        if (clientId == NetworkManager.Singleton.LocalClientId)
+        {
+            NetworkManager.Singleton.SceneManager.OnLoad += OnSceneLoadStarted;
+            _responseText.text = "Join successful.\nWaiting for the host to start the game.";
+        }
+    }
+
+
     private void OnClientDisconnected(ulong clientId)
     {
-        if (clientId == NetworkManager.ServerClientId)
-        {
-            Debug.Log("Host left the room.");
-            LeaveRoom();
-            return;
-        }
+        //if (clientId == NetworkManager.ServerClientId)
+        //{
+        //    Debug.Log($"Host left the room. Host:{clientId}");
+        //    Debug.Log(NetworkManager.Singleton.DisconnectReason);
+        //    LeaveRoom();
+        //    return;
+        //} //TODO
 
         if (clientId != NetworkManager.Singleton.LocalClientId)
             return;
 
+        NetworkManager.Singleton.SceneManager.OnLoad -= OnSceneLoadStarted;
         var reason = NetworkManager.Singleton.DisconnectReason;
         if (reason == Constants.InvalidNameReasonValue)
         {
@@ -95,13 +114,6 @@ public class JoinRoomMultiplayerMenuUI : MonoBehaviour
         _backButton.SetText("cancel");
     }
 
-    private void OnClientConnected(ulong clientId)
-    {
-        if(clientId == NetworkManager.Singleton.LocalClientId)
-        {
-            _responseText.text = "Join successful.\nWaiting for the host to start the game.";
-        }
-    }
 
     public void OnJoinPressed()
     {

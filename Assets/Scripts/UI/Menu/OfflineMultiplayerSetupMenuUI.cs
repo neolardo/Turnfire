@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -13,11 +14,13 @@ public class OfflineMultiplayerSetupMenuUI : MonoBehaviour
 
     private LocalMenuInput _inputManager;
     private MenuUIManager _menuUIManager;
+    private SceneLoaderFactory _sceneLoaderFactory;
 
     private void Awake()
     {
         _menuUIManager = FindFirstObjectByType<MenuUIManager>();
         _inputManager = FindFirstObjectByType<LocalMenuInput>();
+        _sceneLoaderFactory = FindFirstObjectByType<SceneLoaderFactory>();
         _confirmButton.ButtonPressed += OnConfirmPressed;
         _cancelButton.ButtonPressed += OnCancelPressed;
         _numPlayersDisplay.ValueChanged += _mapDisplay.SetTeamCount;
@@ -40,10 +43,12 @@ public class OfflineMultiplayerSetupMenuUI : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(_mapDisplay.gameObject);
     }
 
+
     public void OnConfirmPressed()
     {
         var settings = CreateGameplaySceneSettings();
         _menuUIManager.HideAllPanels();
+        _sceneLoaderFactory.TryCreateSceneLoader();
         SceneLoader.Instance.LoadGameplayScene(settings);
     }
 
@@ -54,7 +59,7 @@ public class OfflineMultiplayerSetupMenuUI : MonoBehaviour
         var teamIds = Enumerable.Range(0, numPlayers).ToList();
         for (int playerId = 0; playerId < _numPlayersDisplay.Value; playerId++)
         {
-            int teamId = teamIds[Random.Range(0, teamIds.Count)];
+            int teamId = teamIds[UnityEngine.Random.Range(0, teamIds.Count)];
             teamIds.Remove(teamId);
             players.Add(new Player(teamId, $"{Constants.DefaultPlayerName}{playerId + 1}", PlayerType.Human));
         }

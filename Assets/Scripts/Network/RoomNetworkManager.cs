@@ -3,7 +3,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
-using Unity.Services.Authentication;
 using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using UnityEngine;
@@ -14,6 +13,7 @@ public static class RoomNetworkManager
     {
         if (NetworkManager.Singleton != null)
         {
+            Debug.Log($"{NetworkManager.Singleton.LocalClientId} left the room intentionally");
             NetworkManager.Singleton.Shutdown();
         }
     }
@@ -45,7 +45,7 @@ public static class RoomNetworkManager
             }
 
             Debug.Log("Host started");
-            return (RoomNetworkConnectionResult.Ok, joinCode);
+            return (RoomNetworkConnectionResult.Ok, joinCode.ToLower().Replace('l', 'L'));
         }
         catch (Exception ex)
         {
@@ -59,7 +59,7 @@ public static class RoomNetworkManager
         try
         {
             await UnityServicesBootstrap.InitializeAsync();
-            JoinAllocation joinAlloc = await RelayService.Instance.JoinAllocationAsync(joinCode);
+            JoinAllocation joinAlloc = await RelayService.Instance.JoinAllocationAsync(joinCode.ToUpper());
 
             var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
             var relayData = AllocationUtils.ToRelayServerData(joinAlloc, "dtls");
@@ -71,7 +71,7 @@ public static class RoomNetworkManager
             });
 
             NetworkManager.Singleton.NetworkConfig.ConnectionData = Encoding.UTF8.GetBytes(payload);
-            NetworkManager.Singleton.NetworkConfig.ConnectionApproval = false;
+            NetworkManager.Singleton.NetworkConfig.ConnectionApproval = true;
 
             if (!NetworkManager.Singleton.StartClient())
             {
@@ -96,6 +96,7 @@ public static class RoomNetworkManager
         }
         catch (Exception ex)
         {
+            Debug.LogException(ex);
             return RoomNetworkConnectionResult.NetworkError;
         }
     }

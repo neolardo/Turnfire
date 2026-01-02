@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Unity.Netcode;
@@ -13,19 +14,27 @@ public class RoomNetworkSession : NetworkBehaviour
 
     public int NumPlayers => _playerNames.Count;
 
+    public event Action RegisteredPlayersChanged;
+
     public override void OnNetworkSpawn()
     {
         if (IsServer)
         {
             Instance = this;
+            DontDestroyOnLoad(this);
+
+            NetworkManager.Singleton.ConnectionApprovalCallback += OnConnectionApproval;
+            NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
         }
-        NetworkManager.Singleton.ConnectionApprovalCallback += OnConnectionApproval;
-        NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
     }
 
     public override void OnDestroy()
     {
         base.OnDestroy();
+        if(NetworkManager.Singleton == null || !IsServer)
+        {
+            return;
+        }
         NetworkManager.Singleton.ConnectionApprovalCallback -= OnConnectionApproval;
         NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
     }
@@ -51,7 +60,9 @@ public class RoomNetworkSession : NetworkBehaviour
 
     private void OnClientDisconnected(ulong clientId)
     {
+        Debug.Log($"client {clientId} with name {_playerNames[clientId]} removed from room session");
         _playerNames.Remove(clientId);
+        RegisteredPlayersChanged?.Invoke();
     }
 
     private bool IsNameValid(string name)
@@ -70,10 +81,17 @@ public class RoomNetworkSession : NetworkBehaviour
 
     public bool TryRegisterPlayer(ulong clientId, string playerName)
     {
+        if(!IsServer)
+        {
+            return false;
+        }
+
         if (!IsNameValid(playerName))
             return false;
 
         _playerNames[clientId] = playerName;
+        RegisteredPlayersChanged?.Invoke();
+        Debug.Log($"client {clientId} registered as {playerName} to the room session");
         return true;
     }
 

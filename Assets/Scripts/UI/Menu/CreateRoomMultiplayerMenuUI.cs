@@ -23,7 +23,6 @@ public class CreateRoomMultiplayerMenuUI : MonoBehaviour
         _inputManager = FindFirstObjectByType<LocalMenuInput>();
         _hostButton.ButtonPressed += OnHostPressed;
         _cancelButton.ButtonPressed += OnCancelPressed;
-
         NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
     }
 
@@ -38,7 +37,6 @@ public class CreateRoomMultiplayerMenuUI : MonoBehaviour
     private void OnDisable()
     {
         _inputManager.MenuBackPerformed -= _cancelButton.Press;
-        RoomNetworkManager.LeaveRoom();
     }
 
     private void Start()
