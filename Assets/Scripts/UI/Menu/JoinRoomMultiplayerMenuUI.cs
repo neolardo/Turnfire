@@ -25,30 +25,45 @@ public class JoinRoomMultiplayerMenuUI : MonoBehaviour
         _inputManager = FindFirstObjectByType<LocalMenuInput>();
         _joinButton.ButtonPressed += OnJoinPressed;
         _backButton.ButtonPressed += OnCancelPressed;
-        NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
-        NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
     }
+
 
     private void OnEnable()
     {
         InitializeUI();
         _playerNameInputField.text = "";
+        _joinCodeInputField.text = "";
         _inputManager.MenuBackPerformed += _backButton.Press;
+        if (NetworkManager.Singleton != null)
+        {
+            NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+            NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
+        }
     }
 
     private void InitializeUI()
     {
         _responseText.text = "";
-        _joinCodeInputField.text = "";
         _backButton.SetText("cancel");
         _isJoinInitiated = false;
-        _joinButton.SetIsInteractable(false);
+        _playerNameInputField.interactable = true;
+        _joinCodeInputField.interactable = true;
+        RefreshJoinButtonIsInteractable();
     }
 
     private void OnDisable()
     {
         _inputManager.MenuBackPerformed -= _backButton.Press;
-        NetworkManager.Singleton.SceneManager.OnLoad -= OnSceneLoadStarted;
+        if(NetworkManager.Singleton != null)
+        {
+            if (NetworkManager.Singleton.SceneManager != null)
+            {
+                NetworkManager.Singleton.SceneManager.OnLoad -= OnSceneLoadStarted;
+            }
+
+            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+            NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
+        }
     }
 
     private void Start()
@@ -56,50 +71,38 @@ public class JoinRoomMultiplayerMenuUI : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(_joinCodeInputField.gameObject);
     }
 
-    private void OnDestroy()
-    {
-        if (NetworkManager.Singleton == null)
-        {
-            return;
-        }
-        NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
-        NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
-    }
     private void OnSceneLoadStarted(ulong clientId, string sceneName, LoadSceneMode loadSceneMode, AsyncOperation asyncOperation)
     {
         _menuUIManager.HideAllPanels();
     }
 
-    public void OnInputFieldValueChanged(string value)
+    public void OnInputFieldValueChanged(string _)
+    {
+        RefreshJoinButtonIsInteractable();
+    }
+
+    private void RefreshJoinButtonIsInteractable()
     {
         var joinCode = _joinCodeInputField.text;
         var clientName = _playerNameInputField.text;
-        bool areFieldsValid = 
+        bool areFieldsValid =
             !string.IsNullOrWhiteSpace(joinCode) && joinCode.Length > 0 &&
             !string.IsNullOrWhiteSpace(clientName) && clientName.Length > 0;
         _joinButton.SetIsInteractable(areFieldsValid);
     }
-
 
     private void OnClientConnected(ulong clientId)
     {
         if (clientId == NetworkManager.Singleton.LocalClientId)
         {
             NetworkManager.Singleton.SceneManager.OnLoad += OnSceneLoadStarted;
-            _responseText.text = "Join successful.\nWaiting for the host to start the game.";
+            _responseText.text = "Join successful.\nWaiting for the host to start.";
         }
     }
 
-
     private void OnClientDisconnected(ulong clientId)
     {
-        //if (clientId == NetworkManager.ServerClientId)
-        //{
-        //    Debug.Log($"Host left the room. Host:{clientId}");
-        //    Debug.Log(NetworkManager.Singleton.DisconnectReason);
-        //    LeaveRoom();
-        //    return;
-        //} //TODO
+        Debug.Log($"{clientId} left the room");
 
         if (clientId != NetworkManager.Singleton.LocalClientId)
             return;
@@ -110,7 +113,14 @@ public class JoinRoomMultiplayerMenuUI : MonoBehaviour
         {
             _responseText.text = "Failed to join room.\nPlayer name was invalid.";
         }
+        else
+        {
+            Debug.Log($"Host (most likely) left.");
+            Debug.Log(reason);
+            _responseText.text = "Host likely left the room.\nTry joining another room.";
+        }
         _isJoinInitiated = false;
+        EnableInputs();
         _backButton.SetText("cancel");
     }
 
@@ -122,30 +132,55 @@ public class JoinRoomMultiplayerMenuUI : MonoBehaviour
 
     private async Task TryJoinRoom(string joinCode, string playerName)
     {
-        _isJoinInitiated = true;
-        _backButton.SetText("leave");
+        try
+        {
+            _isJoinInitiated = true;
+            _backButton.SetText("leave");
+            DisableInputs();
+            _responseText.text = "Joining room...\nPlease wait.";
+            if (string.IsNullOrWhiteSpace(playerName))
+            {
+                playerName = Constants.DefaultPlayerName;
+            }
+            var result = await RoomNetworkManager.TryJoinRoomAsync(joinCode, playerName);
+            if (result == RoomNetworkConnectionResult.Ok)
+            {
+                DontDestroyOnLoad(NetworkManager.Singleton.gameObject);
+                // wait for connected callback
+            }
+            else
+            {
+                if (result == RoomNetworkConnectionResult.NetworkError)
+                {
+                    _responseText.text = "Failed to join room.\nPlease check your internet connection.";
+                }
+                else if (result == RoomNetworkConnectionResult.JoinCodeInvalid)
+                {
+                    _responseText.text = "Failed to join room.\nJoin code was invalid.";
+                }
+                _isJoinInitiated = false;
+                EnableInputs();
+                _backButton.SetText("cancel");
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogException(ex);
+        }
+    }
+
+    private void EnableInputs()
+    {
+        RefreshJoinButtonIsInteractable();
+        _playerNameInputField.interactable = true;
+        _joinCodeInputField.interactable = true;
+    }
+
+    private void DisableInputs()
+    {
         _joinButton.SetIsInteractable(false);
-        _responseText.text = "Joining room...\nPlease wait.";
-        if (string.IsNullOrWhiteSpace(playerName))
-        {
-            playerName = Constants.DefaultPlayerName;
-        }
-        var result = await RoomNetworkManager.TryJoinRoomAsync(joinCode, playerName);
-        if (result == RoomNetworkConnectionResult.Ok)
-        {
-            DontDestroyOnLoad(NetworkManager.Singleton.gameObject);
-            // wait for connected callback
-        }
-        else if (result == RoomNetworkConnectionResult.NetworkError)
-        {
-            _responseText.text = "Failed to join room.\nPlease check your internet connection and try again.";
-            _joinButton.SetIsInteractable(true);
-        }
-        else if (result == RoomNetworkConnectionResult.JoinCodeInvalid)
-        {
-            _responseText.text = "Failed to join room.\nJoin code was invalid.";
-            _joinButton.SetIsInteractable(true);
-        }
+        _playerNameInputField.interactable = false;
+        _joinCodeInputField.interactable = false;
     }
 
     public void OnCancelPressed()

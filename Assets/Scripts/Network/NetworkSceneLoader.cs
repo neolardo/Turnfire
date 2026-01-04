@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class NetworkSceneLoader : NetworkBehaviour
 {
+    private readonly HashSet<ulong> _readyClients = new();
     public static NetworkSceneLoader Instance { get; private set; }
     public GameplaySceneSettings CurrentGameplaySceneSettings
     {
@@ -22,6 +23,8 @@ public class NetworkSceneLoader : NetworkBehaviour
         }
     }
 
+    public bool AllClientsHaveSpawned { get; private set; }
+
     private NetworkVariable<NetworkGameplaySceneSettingsData> _networkSceneSettings = new (
                  new NetworkGameplaySceneSettingsData() { IsValid = false},
                  NetworkVariableReadPermission.Everyone,
@@ -31,7 +34,8 @@ public class NetworkSceneLoader : NetworkBehaviour
     private LoadingTextUI _loadingText;
     private MapLocator _mapLocator;
 
-    private void Awake()
+
+    public override void OnNetworkSpawn()
     {
         if (Instance != null && Instance != this)
         {
@@ -39,13 +43,47 @@ public class NetworkSceneLoader : NetworkBehaviour
             return;
         }
         Instance = this;
-        if (IsServer)
-        {
-            DontDestroyOnLoad(gameObject);
-        }
+
         _loadingText = FindFirstObjectByType<LoadingTextUI>(FindObjectsInactive.Include);
         NetworkManager.Singleton.SceneManager.OnLoad += OnSceneLoadStarted;
         NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += OnSceneLoadCompleted;
+        if (IsClient)
+        {
+            NotifyServerReadyServerRpc();
+        }
+        Debug.Log($"{nameof(NetworkSceneLoader)} spawned");
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void NotifyServerReadyServerRpc(RpcParams rpcParams = default)
+    {
+        ulong clientId = rpcParams.Receive.SenderClientId;
+
+        if (_readyClients.Add(clientId))
+        {
+            Debug.Log($"Client {clientId} ready ({_readyClients.Count}/{NetworkManager.ConnectedClients.Count})");
+        }
+
+        RefreshClientsHaveSpawned();
+    }
+
+    private void RefreshClientsHaveSpawned()
+    {
+        if(!IsServer)
+        {
+            return;
+        }
+
+        bool value = true;
+        foreach (var clientId in NetworkManager.ConnectedClientsIds)
+        {
+            if (!_readyClients.Contains(clientId))
+            {
+                value = false;
+                break;
+            }
+        }
+        AllClientsHaveSpawned = value;
     }
 
     private void OnSceneLoadStarted(ulong clientId, string sceneName, LoadSceneMode loadSceneMode, AsyncOperation asyncOperation)

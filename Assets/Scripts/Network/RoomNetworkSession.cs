@@ -18,18 +18,24 @@ public class RoomNetworkSession : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+
         if (IsServer)
         {
-            Instance = this;
-            DontDestroyOnLoad(this);
-
             NetworkManager.Singleton.ConnectionApprovalCallback += OnConnectionApproval;
             NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
         }
+        Debug.Log($"{nameof(RoomNetworkSession)} spawned");
     }
 
     public override void OnDestroy()
     {
+        Debug.Log($"{nameof(RoomNetworkSession)} destroyed");
         base.OnDestroy();
         if(NetworkManager.Singleton == null || !IsServer)
         {
@@ -60,7 +66,7 @@ public class RoomNetworkSession : NetworkBehaviour
 
     private void OnClientDisconnected(ulong clientId)
     {
-        Debug.Log($"client {clientId} with name {_playerNames[clientId]} removed from room session");
+        Debug.Log($"client {clientId} removed from room session");
         _playerNames.Remove(clientId);
         RegisteredPlayersChanged?.Invoke();
     }

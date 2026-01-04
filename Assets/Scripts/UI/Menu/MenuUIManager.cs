@@ -25,6 +25,7 @@ public class MenuUIManager : MonoBehaviour
 
     public void SwitchPanel(MenuPanelType panel, bool previous = false)
     {
+        Debug.Log($"Switched to panel: {panel}");
         if(_currentPanel != panel)
         {
             if(_currentPanel != MenuPanelType.None && !previous)

@@ -23,7 +23,6 @@ public class CreateRoomMultiplayerMenuUI : MonoBehaviour
         _inputManager = FindFirstObjectByType<LocalMenuInput>();
         _hostButton.ButtonPressed += OnHostPressed;
         _cancelButton.ButtonPressed += OnCancelPressed;
-        NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
     }
 
     private void OnEnable()
@@ -32,11 +31,19 @@ public class CreateRoomMultiplayerMenuUI : MonoBehaviour
         _hostInfoText.text = "";
         _hostNameInputField.text = "";
         _hostButton.SetIsInteractable(true);
+        if(NetworkManager.Singleton != null)
+        {
+            NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
+        }
     }
 
     private void OnDisable()
     {
         _inputManager.MenuBackPerformed -= _cancelButton.Press;
+        if (NetworkManager.Singleton != null)
+        {
+            NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
+        }
     }
 
     private void Start()
@@ -44,14 +51,6 @@ public class CreateRoomMultiplayerMenuUI : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(_hostNameInputField.gameObject);
     }
 
-    private void OnDestroy()
-    {
-        if(NetworkManager.Singleton == null)
-        {
-            return;
-        }
-        NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
-    }
     private void OnClientDisconnected(ulong clientId)
     {
         if (clientId != NetworkManager.Singleton.LocalClientId)
@@ -88,26 +87,33 @@ public class CreateRoomMultiplayerMenuUI : MonoBehaviour
 
     private async Task TryHostRoom(string playerName)
     {
-        if(string.IsNullOrWhiteSpace(playerName))
+        try
         {
-            playerName = Constants.DefaultPlayerName;
+            if (string.IsNullOrWhiteSpace(playerName))
+            {
+                playerName = Constants.DefaultPlayerName;
+            }
+            _hostButton.SetIsInteractable(false);
+            _hostInfoText.text = "Creating room...\nPlease wait.";
+            var (result, joinCode) = await RoomNetworkManager.TryHostRoomAsync(playerName);
+            if (result == RoomNetworkConnectionResult.Ok)
+            {
+                DontDestroyOnLoad(NetworkManager.Singleton.gameObject);
+                TrySpawnRoomSession();
+                RoomNetworkSession.Instance.TryRegisterPlayer(NetworkManager.Singleton.LocalClientId, playerName);
+                _hostInfoText.text = "";
+                _onlineMultiplayerSetup.SetHostInfo(playerName, joinCode);
+                _menuUIManager.SwitchPanel(MenuPanelType.OnlineMultiplayerSetupMenu);
+            }
+            else if (result == RoomNetworkConnectionResult.NetworkError)
+            {
+                _hostInfoText.text = "Failed to create room.\nPlease check your internet connection.";
+                _hostButton.SetIsInteractable(true);
+            }
         }
-        _hostButton.SetIsInteractable(false);
-        _hostInfoText.text = "Creating room...\nPlease wait.";
-        var (result, joinCode) = await RoomNetworkManager.TryHostRoomAsync(playerName);
-        if(result == RoomNetworkConnectionResult.Ok)
+        catch (Exception ex)
         {
-            DontDestroyOnLoad(NetworkManager.Singleton.gameObject);
-            TrySpawnRoomSession();
-            RoomNetworkSession.Instance.TryRegisterPlayer(NetworkManager.Singleton.LocalClientId, playerName);
-            _hostInfoText.text = "";
-            _onlineMultiplayerSetup.SetHostInfo(playerName, joinCode);
-            _menuUIManager.SwitchPanel(MenuPanelType.OnlineMultiplayerSetupMenu);
-        }
-        else if(result == RoomNetworkConnectionResult.NetworkError)
-        {
-            _hostInfoText.text = "Failed to create room.\nPlease check your internet connection and try again.";
-            _hostButton.SetIsInteractable(true);
+            Debug.LogException(ex);
         }
     }
   
