@@ -4,25 +4,20 @@ using UnityEngine;
 public class OfflineTimer : MonoBehaviour, ITimer
 {
     public float CurrentTime { get; private set; }
+    public bool IsRunning { get; private set;}
+
     protected float _initialTime;
-    protected bool _isRunning;
 
     public event Action TimerEnded;
-
-    private void Awake()
-    {
-        _isRunning = false;
-    }
 
     public void Initialize(float initialTime)
     {
         _initialTime = initialTime;
     }
 
-
     void Update()
     {
-        if (!_isRunning)
+        if (!IsRunning)
         {
             return;
         }
@@ -38,7 +33,7 @@ public class OfflineTimer : MonoBehaviour, ITimer
     private void OnTimerEnded()
     {
         CurrentTime = 0;
-        _isRunning = false;
+        IsRunning = false;
         TimerEnded?.Invoke();
     }
 
@@ -46,16 +41,16 @@ public class OfflineTimer : MonoBehaviour, ITimer
     public void Restart()
     {
         CurrentTime = _initialTime;
-        _isRunning = true;
+        IsRunning = true;
     }
 
     public void Pause()
     {
-        _isRunning = false;
+        IsRunning = false;
     }
 
     public void Resume()
     {
-        _isRunning = true;
+        IsRunning = true;
     }
 }

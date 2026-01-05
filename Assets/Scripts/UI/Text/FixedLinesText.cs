@@ -5,7 +5,7 @@ using UnityEngine;
 public class FixedLinesText : MonoBehaviour
 {
     [SerializeField] private int _lineCount = 3;
-    [SerializeField] private float _extraRelativeSpacing = .1f;
+    [SerializeField] private float _extraRelativeSpacing = .2f;
 
     private TextMeshProUGUI _tmp;
     private RectTransform _rect;

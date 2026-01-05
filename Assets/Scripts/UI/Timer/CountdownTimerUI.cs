@@ -1,13 +1,32 @@
+using System.Collections;
 using UnityEngine;
 
 public class CountdownTimerUI : TimerUI
 {
     [SerializeField] private GameplaySettingsDefinition _timerSettings;
 
-    protected override void Awake()
+    private void Start()
     {
         var endText = _timerText.text;
-        base.Awake();
-        Initialize(_timerSettings.CountdownSecondsBeforeStart, endText);
+        var timer = GameServices.CountdownTimer;
+        timer.Initialize(_timerSettings.CountdownSecondsBeforeStart);
+        Initialize(timer, endText);
+    }
+
+    protected override void OnTimerEnded()
+    {
+        base.OnTimerEnded();
+        StartCoroutine(HideAfterDelay());
+    }
+
+    private IEnumerator HideAfterDelay()
+    {
+        yield return new WaitForSeconds(_timerSettings.DelaySecondsAfterCountdown);
+        Hide();
+    }
+
+    private void Hide()
+    {
+        this.gameObject.SetActive(false);
     }
 }

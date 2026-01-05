@@ -8,7 +8,6 @@ public class OnlineGameStateManager : NetworkBehaviour, IGameStateManager
     [SerializeField] private GameplaySettingsDefinition _gameplaySettings;
     private bool _countdownEnded;
 
-
     private NetworkVariable<GameStateType> _state = new NetworkVariable<GameStateType>();
 
     public GameStateType CurrentState
@@ -33,7 +32,7 @@ public class OnlineGameStateManager : NetworkBehaviour, IGameStateManager
         }
     }
 
-    public event Action<GameStateType> StateChanged;
+    public event Action<GameStateType> StateChanged; //TODO: is server only action okay?
 
     private void Awake()
     {
@@ -63,11 +62,10 @@ public class OnlineGameStateManager : NetworkBehaviour, IGameStateManager
         GameServices.CountdownTimer.Restart();
         yield return new WaitUntil(() => _countdownEnded);
         yield return new WaitForSeconds(_gameplaySettings.DelaySecondsAfterCountdown);
-
-        //_countdownTimer.gameObject.SetActive(false); //TODO: move
         yield return new WaitUntil(() => GameServices.TurnStateManager.IsInitialized);
         StartGame();
     }
+
     private void StartGame()
     {
         CurrentState = GameStateType.Playing;

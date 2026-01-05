@@ -7,15 +7,21 @@ public class OnlineTimer : NetworkBehaviour, ITimer
     private NetworkVariable<double> _endServerTime = new(writePerm: NetworkVariableWritePermission.Server);
 
     private NetworkVariable<bool> _isRunning =  new(writePerm: NetworkVariableWritePermission.Server);
-
-    private float _initialTime;
-
     public float CurrentTime { get; private set; }
+    public bool IsRunning => _isRunning.Value;
 
     public event Action TimerEnded;
 
+    private float _initialTime;
+
+
     public void Initialize(float initialTime)
     {
+        if(!NetworkManager.Singleton.IsServer)
+        {
+            return;
+        }
+
         _initialTime = initialTime;
     }
 
@@ -25,7 +31,6 @@ public class OnlineTimer : NetworkBehaviour, ITimer
             return;
 
         double remaining = _endServerTime.Value - NetworkManager.Singleton.ServerTime.Time;
-
         CurrentTime = Mathf.Max(0f, (float)remaining);
 
         if (IsServer && remaining <= 0)
@@ -38,8 +43,16 @@ public class OnlineTimer : NetworkBehaviour, ITimer
     {
         _isRunning.Value = false;
         CurrentTime = 0f;
-        TimerEnded?.Invoke(); // server-side only
+        NotifyTimerEndedRpc();
     }
+
+
+    [Rpc(SendTo.Everyone)]
+    private void NotifyTimerEndedRpc()
+    {
+        TimerEnded?.Invoke();
+    }
+
 
     public void Restart()
     {
@@ -47,7 +60,6 @@ public class OnlineTimer : NetworkBehaviour, ITimer
             return;
 
         _endServerTime.Value = NetworkManager.Singleton.ServerTime.Time + _initialTime;
-
         _isRunning.Value = true;
     }
 
@@ -65,7 +77,6 @@ public class OnlineTimer : NetworkBehaviour, ITimer
             return;
 
         _endServerTime.Value = NetworkManager.Singleton.ServerTime.Time + CurrentTime;
-
         _isRunning.Value = true;
     }
 }
