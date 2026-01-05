@@ -11,23 +11,20 @@ public class GameplayUIManager : MonoBehaviour
     [SerializeField] private GameplayTimerUI _gameplayTimer;
     [SerializeField] private CountdownTimerUI _countdownTimer;
     [SerializeField] private AimCircleUI _aimCircleUI;
-    private GameStateManager _gameStateManager;
     private bool _useTimer;
-
-    public event Action GameplayTimerEnded;
 
     private void Awake()
     {
-        var turnManager = FindFirstObjectByType<TurnManager>();
-        turnManager.GameEnded += OnGameOver;
-        turnManager.GameStarted += OnGameStarted;
-        _gameStateManager = FindFirstObjectByType<GameStateManager>();
-        _gameStateManager.StateChanged += OnGameStateChanged;
         var inputManager = FindFirstObjectByType<LocalGameplayInput>();
         inputManager.ToggleInventoryPerformed += ToggleInventory;
-        _gameplayTimer.gameObject.SetActive(false);
-        _gameplayTimer.TimerEnded += () => GameplayTimerEnded?.Invoke();
+        _gameplayTimer.gameObject.SetActive(false); //TODO
         _countdownTimer.gameObject.SetActive(true);
+    }
+    private void Start()
+    {
+        GameServices.TurnStateManager.GameEnded += OnGameOver;
+        GameServices.TurnStateManager.GameStarted += OnGameStarted;
+        GameServices.GameStateManager.StateChanged += OnGameStateChanged;
     }
 
     public void CreateTeamHealthbars(IEnumerable<Team> teams)
@@ -73,7 +70,7 @@ public class GameplayUIManager : MonoBehaviour
     {
         if (_useTimer)
         {
-            _gameplayTimer.StartTimer();
+            _gameplayTimer.StartTimer(); //TODO
             if (_gameStateManager.CurrentState != GameStateType.Playing)
             {
                 _gameplayTimer.StopTimer();

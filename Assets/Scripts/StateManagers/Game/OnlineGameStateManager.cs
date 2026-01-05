@@ -1,80 +1,93 @@
 using System;
 using System.Collections;
+using Unity.Netcode;
 using UnityEngine;
 
-public class GameStateManager : MonoBehaviour
+public class OnlineGameStateManager : NetworkBehaviour, IGameStateManager
 {
     [SerializeField] private GameplaySettingsDefinition _gameplaySettings;
-    [SerializeField] private CountdownTimerUI _countdownTimer;
-    [SerializeField] private TurnManager _turnManager;
     private bool _countdownEnded;
 
 
-    private GameStateType _state;
+    private NetworkVariable<GameStateType> _state = new NetworkVariable<GameStateType>();
 
     public GameStateType CurrentState
     {
         get
         {
-            return _state;
+            return _state.Value;
         }
 
         private set
         {
-            if (_state != value)
+            if(!NetworkManager.Singleton.IsServer)
             {
-                _state = value;
-                StateChanged?.Invoke(_state);
+                return;
+            }
+
+            if (_state.Value != value)
+            {
+                _state.Value = value;
+                StateChanged?.Invoke(_state.Value);
             }
         }
     }
 
-    public event Action <GameStateType> StateChanged;
+    public event Action<GameStateType> StateChanged;
 
     private void Awake()
     {
         var inputManager = FindFirstObjectByType<LocalGameplayInput>();
-        var turnManager = FindFirstObjectByType<TurnManager>();
         inputManager.TogglePauseGameplayPerformed += OnTogglePauseResumeGameplay;
         inputManager.PrepareForGameStart();
-        _countdownTimer.TimerEnded += OnCountdownEnded;
-        turnManager.GameEnded += OnGameOver;
     }
 
     private void Start()
     {
+        if(!NetworkManager.Singleton.IsServer)
+        {
+            return;
+        }
+
+        GameServices.CountdownTimer.TimerEnded += OnCountdownEnded;
+        GameServices.TurnStateManager.GameEnded += OnGameOver;
         StartCoroutine(StartGameAfterCountdown());
+    }
+    private void OnCountdownEnded()
+    {
+        _countdownEnded = true;
     }
 
     private IEnumerator StartGameAfterCountdown()
     {
-        _countdownTimer.StartTimer();
+        GameServices.CountdownTimer.Restart();
         yield return new WaitUntil(() => _countdownEnded);
         yield return new WaitForSeconds(_gameplaySettings.DelaySecondsAfterCountdown);
-       
-        _countdownTimer.gameObject.SetActive(false);
-        yield return new WaitUntil(()=> _turnManager.IsInitialized);
+
+        //_countdownTimer.gameObject.SetActive(false); //TODO: move
+        yield return new WaitUntil(() => GameServices.TurnStateManager.IsInitialized);
         StartGame();
     }
     private void StartGame()
     {
         CurrentState = GameStateType.Playing;
-        _turnManager.StartGame(SceneLoader.Instance.CurrentGameplaySceneSettings);
+        GameServices.TurnStateManager.StartGame(SceneLoader.Instance.CurrentGameplaySceneSettings);
     }
 
-    public void OnCountdownEnded()
-    {
-        _countdownEnded = true;
-    }
 
     private void OnGameOver(Team winnerTeam)
     {
+        if(!IsServer)
+        {
+            return;
+        }
+
         CurrentState = GameStateType.GameOver;
     }
 
     private void OnTogglePauseResumeGameplay()
     {
-        if(CurrentState == GameStateType.Playing)
+        if (CurrentState == GameStateType.Playing)
         {
             CurrentState = GameStateType.Paused;
         }

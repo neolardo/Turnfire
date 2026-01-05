@@ -15,8 +15,7 @@ public class TeamManager : MonoBehaviour
         }
 
         InitializeTeams();
-        var turnManager = FindFirstObjectByType<TurnManager>();
-        turnManager.Initialize(_teams);
+        GameServices.TurnStateManager.Initialize(_teams);
     }
 
     private void InitializeTeams()
@@ -34,7 +33,7 @@ public class TeamManager : MonoBehaviour
         var botManagerFactory = FindFirstObjectByType<BotManagerFactory>();
         var players = SceneLoader.Instance.CurrentGameplaySceneSettings.Players;
         var teamIndexes = Enumerable.Range(0, _teams.Count).ToList();
-        foreach (var player in players)
+        foreach (var player in players) //TODO: update 
         {
             var teamIndex = teamIndexes[Random.Range(0, teamIndexes.Count)];
             teamIndexes.Remove(teamIndex);

@@ -17,8 +17,11 @@ public class ControlsPanelUI : MonoBehaviour
     private void Awake()
     {
         _localInput = FindFirstObjectByType<LocalGameplayInput>();
-        var gameStateManager = FindFirstObjectByType<GameStateManager>();
-        gameStateManager.StateChanged += OnGameStateChanged;
+    }
+
+    private void Start()
+    {
+        GameServices.GameStateManager.StateChanged += OnGameStateChanged;
     }
 
     private void OnGameStateChanged(GameStateType state)

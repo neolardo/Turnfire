@@ -48,8 +48,7 @@ public static class BotEvaluationStatistics
     private static void ForceEndLiveLockedRound()
     {
         Debug.Log("Round force ended because of possible live lock");
-        var turnManager = Object.FindFirstObjectByType<TurnManager>();
-        turnManager.ForceEndGame();
+        GameServices.TurnStateManager.ForceEndGame();
     }
 
     public static void Clear()

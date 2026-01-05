@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class TurnManager : MonoBehaviour
+public class OfflineTurnStateManager : MonoBehaviour, ITurnStateManager
 {
     [SerializeField] private UISoundsDefinition _uiSounds;
     private List<Team> _teams;

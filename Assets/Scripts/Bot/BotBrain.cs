@@ -66,9 +66,9 @@ public class BotBrain : UnityDriven
         {
             yield return DecideGoalWhenReadyToUseItem(context, g => goal = g);
         }
-        if(context.GameStateManager.CurrentState == GameStateType.Paused )
+        if(GameServices.GameStateManager.CurrentState == GameStateType.Paused )
         {
-            yield return new WaitUntil(() => context.GameStateManager.CurrentState != GameStateType.Paused);
+            yield return new WaitUntil(() => GameServices.GameStateManager.CurrentState != GameStateType.Paused);
         }
         GoalDecided?.Invoke(goal);
     }
