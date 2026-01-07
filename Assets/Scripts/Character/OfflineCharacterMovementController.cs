@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
 public class OfflineCharacterMovementController : MonoBehaviour, ICharacterMovementController
 {
     private Rigidbody2D _rb;

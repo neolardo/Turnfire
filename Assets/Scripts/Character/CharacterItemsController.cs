@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class OfflineCharacterItemsCController : MonoBehaviour, ICharacterItemsController
+public class CharacterItemsController
 {
-    private CharacterDefinition _characterDefinition;
+    private CharacterDefinition _definition;
     private List<Item> _items;
     public bool IsUsingSelectedItem => SelectedItem == null ? false : SelectedItem.Behavior.IsInUse;
     public Item SelectedItem { get; private set; }
@@ -14,18 +14,18 @@ public class OfflineCharacterItemsCController : MonoBehaviour, ICharacterItemsCo
     public event Action<Item> SelectedItemChanged;
     public event Action<Item, ItemUsageContext> SelectedItemUsed;
 
-    public void Initialize(CharacterDefinition characterDefinition)
+    public CharacterItemsController(CharacterDefinition characterDefinition)
     {
-        _characterDefinition = characterDefinition;
+        _definition = characterDefinition;
         _items = new List<Item>();
-        foreach (var itemDefinition in _characterDefinition.InitialItems)
+        foreach (var itemDefinition in _definition.InitialItems)
         {
             TryAddItem(new Item(itemDefinition, false));
         }
         SelectedItem = _items.FirstOrDefault();
     }
 
-    #region Movement
+    #region Jump Boost
 
     public void ApplyJumpBoost(float jumpBoost)
     {

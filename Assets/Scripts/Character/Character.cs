@@ -12,8 +12,8 @@ public class Character : MonoBehaviour, IConditionalEnumerable
 
     private CharacterModel _model;
     private CharacterView _view;
+    private CharacterItemsController _itemsController;
     private ICharacterMovementController _movementController;
-    private ICharacterItemsController _itemsController;
     public CharacterArmorManager ArmorManager { get; private set; }
     public SectorHitbox MeleeHitbox => _meleeHitbox;
     public Collider2D Collider => _movementController.Collider;
