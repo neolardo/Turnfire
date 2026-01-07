@@ -102,12 +102,12 @@ public class OnlineMultiplayerSetupMenuUI : MonoBehaviour
     private IEnumerator LoadSceneWhenAllClientsAreReady()
     {
         _sceneLoaderFactory.TrySpawnNetworkSceneLoader();
-        Debug.Log($"Waiting for all clients to spawn the {nameof(NetworkSceneLoader)}...");
-        yield return new WaitUntil(() => NetworkSceneLoader.Instance.AllClientsHaveSpawned);
+        Debug.Log($"Waiting for all clients to spawn the {nameof(OnlineSceneLoader)}...");
+        yield return new WaitUntil(() => OnlineSceneLoader.Instance.AllClientsHaveSpawned);
         Debug.Log($"All clients are ready, loading scene...");
         var settings = CreateGameplaySceneSettings();
-        _menuUIManager.HideAllPanels();
-        NetworkSceneLoader.Instance.LoadGameplayScene(settings);
+        _menuUIManager.HideAllPanelsAndShowLoadingText();
+        OnlineSceneLoader.Instance.LoadGameplayScene(settings);
     }
 
     private GameplaySceneSettings CreateGameplaySceneSettings()

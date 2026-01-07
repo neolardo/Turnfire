@@ -1,22 +1,22 @@
 public readonly struct Player
 {
     public readonly ulong ClientId;
-    public readonly int TeamId;
+    public readonly int TeamIndex;
     public readonly string Name;
     public readonly PlayerType Type;
 
-    public Player(ulong clientId, int teamId, string name, PlayerType type) // online
+    public Player(ulong clientId, int teamIndex, string name, PlayerType type) // online
     {
         ClientId = clientId;
-        TeamId = teamId;
+        TeamIndex = teamIndex;
         Name = name;
         Type = type;
     }
 
-    public Player(int teamId, string name, PlayerType type) // offline
+    public Player(int teamIndex, string name, PlayerType type) // offline
     {
         ClientId = 0;
-        TeamId = teamId;
+        TeamIndex = teamIndex;
         Name = name;
         Type = type;
     }

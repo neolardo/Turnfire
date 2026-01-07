@@ -20,7 +20,8 @@ public class TeamManager : MonoBehaviour
 
     private void InitializeTeams()
     {
-        _teams = _possibleTeams.Take(SceneLoader.Instance.CurrentGameplaySceneSettings.Players.Count).ToList();
+        int playerCount = GameplaySceneSettingsStorage.Current.Players.Count;
+        _teams = _possibleTeams.Take(playerCount).ToList();
         for (int i = _teams.Count; i < _possibleTeams.Count; i++)
         {
             _possibleTeams[i].gameObject.SetActive(false);
@@ -31,13 +32,11 @@ public class TeamManager : MonoBehaviour
     private void CreateRandomizedTeamSetup()
     {
         var botManagerFactory = FindFirstObjectByType<BotManagerFactory>();
-        var players = SceneLoader.Instance.CurrentGameplaySceneSettings.Players;
-        var teamIndexes = Enumerable.Range(0, _teams.Count).ToList();
-        foreach (var player in players) //TODO: update 
+        var gameplaySettings = GameplaySceneSettingsStorage.Current;
+        var players = gameplaySettings.Players;
+        foreach (var player in players) 
         {
-            var teamIndex = teamIndexes[Random.Range(0, teamIndexes.Count)];
-            teamIndexes.Remove(teamIndex);
-            var team = _teams[teamIndex];
+            var team = _teams[player.TeamIndex];
             team.TeamName = player.Name;
             if (player.Type == PlayerType.Human)
             {
@@ -46,7 +45,7 @@ public class TeamManager : MonoBehaviour
             else if(player.Type == PlayerType.Bot)
             {
                 team.InitializeInputSource(InputSourceType.Bot);
-                botManagerFactory.CreateBotForTeam(team, SceneLoader.Instance.CurrentGameplaySceneSettings.BotDifficulty);
+                botManagerFactory.CreateBotForTeam(team, gameplaySettings.BotDifficulty);
             }
         }
     }

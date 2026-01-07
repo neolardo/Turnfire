@@ -3,37 +3,15 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class NetworkSceneLoader : NetworkBehaviour
+public class OnlineSceneLoader : NetworkBehaviour, ISceneLoader
 {
     private readonly HashSet<ulong> _readyClients = new();
-    public static NetworkSceneLoader Instance { get; private set; }
-    public GameplaySceneSettings CurrentGameplaySceneSettings
-    {
-        get 
-        {
-            return _networkSceneSettings.Value.IsValid ? _networkSceneSettings.Value.ToSceneSettings(_mapLocator) : null;
-        }
-        set
-        {
-            if(!IsServer)
-            {
-                return;
-            }
-            _networkSceneSettings.Value = NetworkGameplaySceneSettingsData.ToNetworkData(value);
-        }
-    }
+    public static OnlineSceneLoader Instance { get; private set; }
+    public GameplaySceneSettings CurrentGameplaySceneSettings => GameplaySceneSettingsStorage.Current;
 
     public bool AllClientsHaveSpawned { get; private set; }
 
-    private NetworkVariable<NetworkGameplaySceneSettingsData> _networkSceneSettings = new (
-                 new NetworkGameplaySceneSettingsData() { IsValid = false},
-                 NetworkVariableReadPermission.Everyone,
-                 NetworkVariableWritePermission.Server
-            );
-
-    private LoadingTextUI _loadingText;
     private MapLocator _mapLocator;
-
 
     public override void OnNetworkSpawn()
     {
@@ -44,14 +22,12 @@ public class NetworkSceneLoader : NetworkBehaviour
         }
         Instance = this;
 
-        _loadingText = FindFirstObjectByType<LoadingTextUI>(FindObjectsInactive.Include);
-        NetworkManager.Singleton.SceneManager.OnLoad += OnSceneLoadStarted;
-        NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += OnSceneLoadCompleted;
+        _mapLocator = FindFirstObjectByType<MapLocator>();
         if (IsClient)
         {
             NotifyServerReadyServerRpc();
         }
-        Debug.Log($"{nameof(NetworkSceneLoader)} spawned");
+        Debug.Log($"{nameof(OnlineSceneLoader)} spawned");
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
@@ -86,29 +62,13 @@ public class NetworkSceneLoader : NetworkBehaviour
         AllClientsHaveSpawned = value;
     }
 
-    private void OnSceneLoadStarted(ulong clientId, string sceneName, LoadSceneMode loadSceneMode, AsyncOperation asyncOperation)
-    {
-        _loadingText.gameObject.SetActive(true);
-        Debug.Log($"Started loading scene: {sceneName}");
-    }
-
-    private void OnSceneLoadCompleted(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
-    {
-        _loadingText = FindFirstObjectByType<LoadingTextUI>(FindObjectsInactive.Include);
-        if(sceneName != Constants.MenuSceneName)
-        {
-            _mapLocator = FindFirstObjectByType<MapLocator>();
-        }
-        Debug.Log($"Finished loading scene: {sceneName}");
-    }
-
-
     public void LoadMenuScene()
     {
         if(!IsServer)
         {
             return;
         }
+        SaveGameplaySceneSettingsClientRpc(NetworkGameplaySceneSettingsData.ToNetworkData(null));
         NetworkManager.Singleton.SceneManager.LoadScene(Constants.MenuSceneName, LoadSceneMode.Single);
     }
 
@@ -118,8 +78,15 @@ public class NetworkSceneLoader : NetworkBehaviour
         {
             return;
         }
-        CurrentGameplaySceneSettings = settings;
+        SaveGameplaySceneSettingsClientRpc(NetworkGameplaySceneSettingsData.ToNetworkData(settings));
+        //TODO: ack?
         NetworkManager.Singleton.SceneManager.LoadScene(settings.Map.SceneName, LoadSceneMode.Single);
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
+    void SaveGameplaySceneSettingsClientRpc(NetworkGameplaySceneSettingsData networkSettings)
+    {
+        GameplaySceneSettingsStorage.Current = networkSettings.ToSceneSettings(_mapLocator);
     }
 
     public void ReloadScene()

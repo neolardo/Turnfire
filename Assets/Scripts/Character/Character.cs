@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class Character : MonoBehaviour
+public class Character : MonoBehaviour, IConditionalEnumerable
 {
 
     [SerializeField] private CharacterHealthbarRenderer _healthbarRenderer;
@@ -46,6 +46,8 @@ public class Character : MonoBehaviour
     public Vector2 FeetOffset => Vector2.down * Collider.bounds.extents.y;
 
     public float JumpStrength => _jumpBoost + CharacterDefinition.JumpStrength;
+
+    public bool EnumeratorCondition => IsAlive;
 
     public event Action<float, int> HealthChanged;
     public event Action Jumped;

@@ -32,7 +32,7 @@ public class DropManager : MonoBehaviour
     }
     private void Start()
     {
-        _currentMap = SceneLoader.Instance.CurrentGameplaySceneSettings.Map;
+        _currentMap = GameplaySceneSettingsStorage.Current.Map;
         if (_currentMap.PossibleDrops.Length == 0)
         {
             Debug.LogWarning("No packages available to drop.");

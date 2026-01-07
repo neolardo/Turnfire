@@ -8,7 +8,7 @@ public abstract class TurnState : StateBase
     {
     }
 
-    public virtual void StartState()
+    public virtual void StartState(TurnStateContext context)
     {
         Debug.Log(State.ToString() + " started");
         IsActive = true;

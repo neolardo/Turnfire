@@ -47,9 +47,9 @@ public class OfflineMultiplayerSetupMenuUI : MonoBehaviour
     public void OnConfirmPressed()
     {
         var settings = CreateGameplaySceneSettings();
-        _menuUIManager.HideAllPanels();
+        _menuUIManager.HideAllPanelsAndShowLoadingText();
         _sceneLoaderFactory.TryCreateSceneLoader();
-        SceneLoader.Instance.LoadGameplayScene(settings);
+        OfflineSceneLoader.Instance.LoadGameplayScene(settings);
     }
 
     private GameplaySceneSettings CreateGameplaySceneSettings()

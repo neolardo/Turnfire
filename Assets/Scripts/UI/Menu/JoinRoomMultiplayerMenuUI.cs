@@ -73,7 +73,7 @@ public class JoinRoomMultiplayerMenuUI : MonoBehaviour
 
     private void OnSceneLoadStarted(ulong clientId, string sceneName, LoadSceneMode loadSceneMode, AsyncOperation asyncOperation)
     {
-        _menuUIManager.HideAllPanels();
+        _menuUIManager.HideAllPanelsAndShowLoadingText();
     }
 
     public void OnInputFieldValueChanged(string _)

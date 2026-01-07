@@ -513,6 +513,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbbb22a912102e042a185d790610d00c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _gameplaySettings: {fileID: 11400000, guid: f6a671206be112945a4d9684f7c3a42b, type: 2}
   _gameplayPausedScreen: {fileID: 7433795745632519879}
   _inventoryUI: {fileID: 739108499352803836}
   _gameOverScreenUI: {fileID: 6016962164086459816}
@@ -520,6 +521,7 @@ MonoBehaviour:
   _gameplayTimer: {fileID: 5773056057311861634}
   _countdownTimer: {fileID: 2314909241052476053}
   _aimCircleUI: {fileID: 7233020806250955433}
+  _loadingText: {fileID: 2012724571219259342}
 --- !u!1 &1836984138200071585
 GameObject:
   m_ObjectHideFlags: 0
@@ -1809,7 +1811,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 13.65
+  m_fontSize: 15.85
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4464,6 +4466,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8793370627290507794, guid: 3cc658f17bceb7e4c807ab285dd8490c, type: 3}
   m_PrefabInstance: {fileID: 8037190477793787543}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2012724571219259342 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8387800913220571481, guid: 3cc658f17bceb7e4c807ab285dd8490c, type: 3}
+  m_PrefabInstance: {fileID: 8037190477793787543}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e53fa00471b84a4e8c38d50abf323f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &8587885288357353157
 PrefabInstance:
   m_ObjectHideFlags: 0

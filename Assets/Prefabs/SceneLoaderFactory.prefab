@@ -44,5 +44,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7f867f9a9ce7bd4885bfb9dd65574fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sceneLoaderPrefab: {fileID: 4632844748752445241, guid: a4ff985ce750de54cb405c422e861ab3, type: 3}
-  _networkSceneLoaderPrefab: {fileID: 2340165904196392950, guid: 09457fe8f5c4d0a4bb12e22a10fccc66, type: 3}
+  _onlineSceneLoaderPrefab: {fileID: 4632844748752445241, guid: a4ff985ce750de54cb405c422e861ab3, type: 3}
+  _offlineSceneLoaderPrefab: {fileID: 2340165904196392950, guid: 09457fe8f5c4d0a4bb12e22a10fccc66, type: 3}

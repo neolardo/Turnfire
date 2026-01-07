@@ -46,6 +46,13 @@ public class LocalGameplayInput : LocalInputBase, IGameplayInputSource
     {
         base.Awake();
         SwitchToInputActionMap(InputActionMapType.Gameplay);
+        PrepareForGameStart();
+    }
+
+    private void Start()
+    {
+        GameServices.TurnStateManager.GameStarted += OnGameStarted;
+        GameServices.TurnStateManager.GameEnded +=(_) => OnGameEnded();
     }
 
     protected override void SubscribeToInputEvents()
@@ -72,7 +79,7 @@ public class LocalGameplayInput : LocalInputBase, IGameplayInputSource
 
     #region Game States
 
-    public void PrepareForGameStart()
+    private void PrepareForGameStart()
     {
         DisableInputBeforeGameStart();
     }
@@ -316,7 +323,7 @@ public class LocalGameplayInput : LocalInputBase, IGameplayInputSource
             return;
         }
         SwitchToInputActionMap(targetActionMapType);
-        TogglePauseGameplayPerformed?.Invoke();
+        GameServices.GameStateManager.TogglePauseResumeGameplay(); //TODO: check online
     }
 
     private void OnPausedGameplayConfirmPressed(InputAction.CallbackContext ctx)

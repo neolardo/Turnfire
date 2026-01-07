@@ -34,6 +34,11 @@ public struct NetworkGameplaySceneSettingsData : INetworkSerializable
 
     public static NetworkGameplaySceneSettingsData ToNetworkData(GameplaySceneSettings settings)
     {
+        if(settings == null)
+        {
+            return new NetworkGameplaySceneSettingsData() { IsValid = false };
+        }
+
         var data = new NetworkGameplaySceneSettingsData
         {
             IsValid = true,
@@ -50,7 +55,7 @@ public struct NetworkGameplaySceneSettingsData : INetworkSerializable
             var np = new NetworkPlayerData
             {
                 ClientId = p.ClientId,
-                TeamId = p.TeamId,
+                TeamId = p.TeamIndex,
                 Name = p.Name,
                 Type = p.Type
             };
@@ -69,6 +74,11 @@ public struct NetworkGameplaySceneSettingsData : INetworkSerializable
 
     public GameplaySceneSettings ToSceneSettings(MapLocator mapLocator)
     {
+        if(!IsValid)
+        {
+            return null;
+        }
+
         var players = new List<Player>(this.PlayerCount);
 
         if (this.PlayerCount > 0) players.Add(this.Player0.ToPlayer());
@@ -85,8 +95,5 @@ public struct NetworkGameplaySceneSettingsData : INetworkSerializable
             IsOnlineGame = this.IsOnlineGame,
         };
     }
-
-  
-
 
 }

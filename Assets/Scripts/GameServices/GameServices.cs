@@ -7,18 +7,21 @@ public static class GameServices
     public static ITurnStateManager TurnStateManager { get; private set; }
     public static ITimer CountdownTimer { get; private set; }
     public static ITimer GameplayTimer { get; private set; }
+    public static ISceneLoader SceneLoader { get; private set; }
 
-    public static void InitializeOffline(OfflineGameStateManager gameStateManagerPrefab, OfflineTurnStateManager turnStateManagerPrefab, OfflineTimer timerPrefab)
+    public static void InitializeOffline(OfflineGameStateManager gameStateManagerPrefab, OfflineTurnStateManager turnStateManagerPrefab, OfflineTimer timerPrefab, OfflineSceneLoader sceneLoaderPrefab)
     {
         GameStateManager = GameObject.Instantiate(gameStateManagerPrefab);
         TurnStateManager = GameObject.Instantiate(turnStateManagerPrefab);
         CountdownTimer = GameObject.Instantiate(timerPrefab);
         GameplayTimer = GameObject.Instantiate(timerPrefab);
+        SceneLoader = OfflineSceneLoader.Instance == null ? GameObject.Instantiate(sceneLoaderPrefab) : OfflineSceneLoader.Instance;
+        ConnectServices();
     }
 
-    public static void InitializeOnline(OnlineGameStateManager gameStateManagerPrefab, OnlineTurnStateManager turnStateManagerPrefab, OnlineTimer timerPrefab)
+    public static void InitializeOnline(OnlineGameStateManager gameStateManagerPrefab, OnlineTurnStateManager turnStateManagerPrefab, OnlineTimer timerPrefab, OnlineSceneLoader sceneLoaderPrefab)
     {
-        if(!NetworkManager.Singleton.IsServer)
+        if (!NetworkManager.Singleton.IsServer)
         {
             return;
         }
@@ -38,5 +41,30 @@ public static class GameServices
         var gameplayTimer = GameObject.Instantiate(timerPrefab);
         gameplayTimer.GetComponent<NetworkObject>().Spawn();
         GameplayTimer = gameplayTimer;
+
+        var sceneLoader = OnlineSceneLoader.Instance == null ? GameObject.Instantiate(sceneLoaderPrefab) : OnlineSceneLoader.Instance;
+        sceneLoader.GetComponent<NetworkObject>().Spawn();
+        SceneLoader = sceneLoader;
+
+        ConnectServices();
+    }
+
+    private static void ConnectServices()
+    {
+        var useGameplayTimer = GameplaySceneSettingsStorage.Current.UseTimer;
+        GameplayTimer.CanRestart = () => (GameStateManager.CurrentState == GameStateType.Playing && useGameplayTimer);
+        GameplayTimer.CanResume = () => (GameStateManager.CurrentState == GameStateType.Playing && useGameplayTimer);
+        GameplayTimer.CanPause = () => useGameplayTimer;
+
+        if (useGameplayTimer)
+        {
+            GameStateManager.StateChanged += (state) =>
+            {
+                if (state == GameStateType.Paused)
+                    GameplayTimer.Pause();
+                else
+                    GameplayTimer.Resume();
+            };
+        }
     }
 }

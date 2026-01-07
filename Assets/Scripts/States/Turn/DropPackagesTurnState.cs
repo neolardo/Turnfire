@@ -1,9 +1,7 @@
-using UnityEngine;
-
 public class DropPackagesTurnState : TurnState
 {
     private DropManager _dropManager;
-    public DropPackagesTurnState(MonoBehaviour manager, DropManager dropManager) : base(manager)
+    public DropPackagesTurnState(DropManager dropManager) : base(CoroutineRunner.Instance)
     {
         _dropManager = dropManager;
     }
@@ -22,9 +20,9 @@ public class DropPackagesTurnState : TurnState
         _dropManager.AllPackagesLanded -= EndState;
     }
 
-    public override void StartState()
+    public override void StartState(TurnStateContext context)
     {
-        base.StartState();
+        base.StartState(context);
         _dropManager.TrySpawnPackages();
     }
 

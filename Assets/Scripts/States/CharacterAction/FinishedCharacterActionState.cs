@@ -1,8 +1,6 @@
-using UnityEngine;
-
 public class FinishedCharacterActionState : CharacterActionState
 {
-    public FinishedCharacterActionState(MonoBehaviour manager, UISoundsDefinition uiSounds) : base(manager, uiSounds)
+    public FinishedCharacterActionState(UISoundsDefinition uiSounds) : base(CoroutineRunner.Instance, uiSounds)
     {
     }
 

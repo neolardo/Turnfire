@@ -50,13 +50,13 @@ public class PausedScreenUI : MonoBehaviour
 
     private void OnRestartButtonPressed()
     {
-        SceneLoader.Instance.ReloadScene();
+        GameServices.SceneLoader.ReloadScene();
         gameObject.SetActive(false);
     }
 
     private void OnExitButtonPressed()
     {
-        SceneLoader.Instance.LoadMenuScene();
+        GameServices.SceneLoader.LoadMenuScene();
         gameObject.SetActive(false);
     }
 

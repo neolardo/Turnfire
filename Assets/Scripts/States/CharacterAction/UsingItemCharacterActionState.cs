@@ -1,9 +1,8 @@
 using System.Collections;
-using UnityEngine;
 
 public class UsingItemCharacterActionState : CharacterActionState
 {
-    public UsingItemCharacterActionState(MonoBehaviour manager, UISoundsDefinition uiSounds) : base(manager, uiSounds)
+    public UsingItemCharacterActionState(UISoundsDefinition uiSounds) : base(CoroutineRunner.Instance, uiSounds)
     {
     }
     public override CharacterActionStateType State => CharacterActionStateType.UsingItem;

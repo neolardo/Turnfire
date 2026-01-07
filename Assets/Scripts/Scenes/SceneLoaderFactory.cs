@@ -4,19 +4,19 @@ using UnityEngine;
 
 public class SceneLoaderFactory : MonoBehaviour
 {
-    [SerializeField] private SceneLoader _sceneLoaderPrefab;
-    [SerializeField] private NetworkSceneLoader _networkSceneLoaderPrefab;
+    [SerializeField] private OfflineSceneLoader _onlineSceneLoaderPrefab;
+    [SerializeField] private OnlineSceneLoader _offlineSceneLoaderPrefab;
 
-    public SceneLoader TryCreateSceneLoader()
+    public OfflineSceneLoader TryCreateSceneLoader()
     {
-        if (SceneLoader.Instance != null)
+        if (OfflineSceneLoader.Instance != null)
         {
-            return SceneLoader.Instance;
+            return OfflineSceneLoader.Instance;
         }
 
         try
         {
-            var sceneLoader = Instantiate(_sceneLoaderPrefab);
+            var sceneLoader = Instantiate(_onlineSceneLoaderPrefab);
             return sceneLoader;
         }
         catch (Exception ex)
@@ -26,16 +26,16 @@ public class SceneLoaderFactory : MonoBehaviour
         }
     }
 
-    public NetworkSceneLoader TrySpawnNetworkSceneLoader()
+    public OnlineSceneLoader TrySpawnNetworkSceneLoader()
     {
-        if (NetworkSceneLoader.Instance != null)
+        if (OnlineSceneLoader.Instance != null)
         {
-            return NetworkSceneLoader.Instance;
+            return OnlineSceneLoader.Instance;
         }
 
         try
         {
-            var networkSceneLoader = Instantiate(_networkSceneLoaderPrefab);
+            var networkSceneLoader = Instantiate(_offlineSceneLoaderPrefab);
             networkSceneLoader.GetComponent<NetworkObject>().Spawn();
             return networkSceneLoader;
         }

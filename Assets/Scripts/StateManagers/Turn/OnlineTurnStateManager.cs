@@ -1,33 +1,22 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
 public class OnlineTurnStateManager : NetworkBehaviour, ITurnStateManager
 {
     [SerializeField] private UISoundsDefinition _uiSounds;
-    private List<Team> _teams;
-    private List<TurnState> _turnStates;
-    private int _turnStateIndex;
-    private TurnState CurrentTurnState => _turnStates[_turnStateIndex];
-    private bool IsGameOver => _teams.Count(t => t.IsTeamAlive) <= 1 || _isGameOverForced;
-    private bool _isGameOverForced;
-    public bool IsInitialized { get; private set; }
 
-    public event Action<GameplaySceneSettings> GameStarted;
+    private TurnStateManagerLogic _logic;
+
+    private NetworkVariable<bool> _isInitialized = new NetworkVariable<bool>();
+    public bool IsInitialized => _isInitialized.Value;
+
+    public event Action GameStarted;
     public event Action<Team> GameEnded;
 
     public void Initialize(IEnumerable<Team> teams)
     {
-        _teams = new List<Team>(teams);
-
-        foreach (var team in _teams)
-        {
-            team.TeamLost += OnAnyTeamLost;
-        }
-
-        var localInput = FindFirstObjectByType<LocalGameplayInput>();
         var trajectoryRenderer = FindFirstObjectByType<PixelTrajectoryRenderer>();
         var itemPreviewRendererManager = FindFirstObjectByType<ItemPreviewRendererManager>();
         var dropManager = FindFirstObjectByType<DropManager>();
@@ -35,83 +24,68 @@ public class OnlineTurnStateManager : NetworkBehaviour, ITurnStateManager
         var uiManager = FindFirstObjectByType<GameplayUIManager>();
         var projectilePool = FindFirstObjectByType<ProjectilePool>();
         var laserRenderer = FindFirstObjectByType<PixelLaserRenderer>();
-        var characterActionManager = new CharacterActionManager(this, trajectoryRenderer, itemPreviewRendererManager, cameraController, uiManager, laserRenderer, projectilePool, _uiSounds);
-        _turnStates = new List<TurnState>
-        {
-            new AlternativelyDoCharacterActionsForAllTeamsTurnState(this, characterActionManager, _teams),
-            new DropPackagesTurnState(this, dropManager),
-            new FinishedTurnState(this),
-        };
-        foreach (var turnState in _turnStates)
-        {
-            turnState.StateEnded += OnTurnStateEnded;
-        }
-        GameStarted += (_) => localInput.OnGameStarted();
-        GameEnded += (_) => localInput.OnGameEnded();
-        uiManager.CreateTeamHealthbars(_teams);
-        IsInitialized = true;
+        var characterActionManager = new CharacterActionManager(trajectoryRenderer, itemPreviewRendererManager, cameraController, uiManager, laserRenderer, projectilePool, _uiSounds);
+
+        uiManager.CreateTeamHealthbars(teams);
+
+        var characterActionsState = new DoCharacterActionsWithTeamTurnState(characterActionManager);
+        var dropItemsState = new DropPackagesTurnState(dropManager);
+        var finishedState = new FinishedTurnState();
+
+        _logic = new TurnStateManagerLogic(teams, characterActionsState, dropItemsState, finishedState);
+        _logic.GameEnded += (team) => GameEnded?.Invoke(team);
+        _logic.TurnStateEnded += OnTurnStateEnded;
+        _isInitialized.Value = true;
     }
 
     public override void OnDestroy()
     {
-        base.OnDestroy();
-        foreach (var turnState in _turnStates)
+        _logic.Dispose();
+    }
+
+    public void StartGame()
+    { 
+        if (!IsServer)
         {
-            turnState.OnDestroy();
+            return;
         }
+        StartGameClientRpc();
     }
 
-    public void StartGame(GameplaySceneSettings gameplaySettings)
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
+    private void StartGameClientRpc()
     {
-        GameStarted?.Invoke(gameplaySettings);
+        GameStarted?.Invoke();
         Debug.Log("Game started");
-        StartTurnState();
-    }
-
-    private void StartTurnState()
-    {
-        CurrentTurnState.StartState();
-    }
-
-    private void ChangeTurnState()
-    {
-        _turnStateIndex = (_turnStateIndex + 1) % _turnStates.Count;
+        _logic.Start();
     }
 
     private void OnTurnStateEnded()
     {
-        if (!IsGameOver)
+        if(!IsServer)
         {
-            ChangeTurnState();
-            StartTurnState();
+            return;
+        }
+
+        if (!_logic.IsGameOver)
+        {
+            ResumeGameCientRpc();
         }
     }
 
-    private void OnAnyTeamLost()
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
+    private void ResumeGameCientRpc()
     {
-        if (IsGameOver)
-        {
-            EndGame();
-        }
+        _logic.Resume();
     }
 
     public void ForceEndGame()
     {
-        _isGameOverForced = true;
-        EndGame();
-    }
+        if(!IsServer)
+        {
+            return;
+        }
 
-    private void EndGame()
-    {
-        CurrentTurnState.ForceEndState();
-        bool isTie = _teams.Count(team => team.IsTeamAlive) != 1;
-        if (isTie)
-        {
-            GameEnded?.Invoke(null);
-        }
-        else
-        {
-            GameEnded?.Invoke(_teams.First(t => t.IsTeamAlive));
-        }
+        _logic.ForceEndGame();
     }
 }

@@ -15,24 +15,24 @@ public class CharacterActionManager : UnityDriven
 
     public event Action CharacterActionsFinished;
 
-    public CharacterActionManager(MonoBehaviour coroutineManager, PixelTrajectoryRenderer trajectoryRenderer, ItemPreviewRendererManager itemPreviewRendererManager, CameraController cameraController, GameplayUIManager uiManager, PixelLaserRenderer laserRenderer, ProjectilePool projectilePool,  UISoundsDefinition uiSounds) : base(coroutineManager)
+    public CharacterActionManager(PixelTrajectoryRenderer trajectoryRenderer, ItemPreviewRendererManager itemPreviewRendererManager, CameraController cameraController, GameplayUIManager uiManager, PixelLaserRenderer laserRenderer, ProjectilePool projectilePool,  UISoundsDefinition uiSounds) : base(CoroutineRunner.Instance)
     {
         _cameraController = cameraController;
         _uiManager = uiManager;
         _characterActionStates = new List<CharacterActionState>
         {
-            new ReadyToMoveCharacterActionState(trajectoryRenderer, uiManager, coroutineManager, uiSounds),
-            new MovingCharacterActionState(coroutineManager, uiSounds),
-            new ReadyToUseItemCharacterActionState(itemPreviewRendererManager,laserRenderer, projectilePool, trajectoryRenderer, uiManager, coroutineManager, uiSounds),
-            new UsingItemCharacterActionState(coroutineManager, uiSounds),
-            new FinishedCharacterActionState(coroutineManager, uiSounds),
+            new ReadyToMoveCharacterActionState(trajectoryRenderer, uiManager, uiSounds),
+            new MovingCharacterActionState( uiSounds),
+            new ReadyToUseItemCharacterActionState(itemPreviewRendererManager,laserRenderer, projectilePool, trajectoryRenderer, uiManager, uiSounds),
+            new UsingItemCharacterActionState(uiSounds),
+            new FinishedCharacterActionState(uiSounds),
         };
 
         foreach (var state in _characterActionStates)
         {
             state.StateEnded += OnCharacterActionStateEnded;
         }
-        _uiManager.GameplayTimerEnded += ForceEndActions;
+        GameServices.GameplayTimer.TimerEnded += ForceEndActions;
     }
     public void StartActionsWithCharacter(Character character)
     {
@@ -49,7 +49,7 @@ public class CharacterActionManager : UnityDriven
     {
         yield return null;
         yield return new WaitUntil(() => !_cameraController.IsBlending);
-        _uiManager.StartGameplayTimer();
+        GameServices.GameplayTimer.Restart();
         StartCurrentCharacterActionState();
     }
 
@@ -61,7 +61,7 @@ public class CharacterActionManager : UnityDriven
 
     private void EndActions()
     {
-        _uiManager.PauseGameplayTimer();
+        GameServices.GameplayTimer.Pause();
         CharacterActionsFinished?.Invoke();
     }
 

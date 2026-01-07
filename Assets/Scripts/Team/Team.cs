@@ -3,20 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Team : MonoBehaviour
+public class Team : MonoBehaviour, IConditionalEnumerable
 {
     [HideInInspector] public bool IsTeamAlive => _characters.Any(c => c.IsAlive);
     [SerializeField] private Color _teamColor;
 
     private List<Character> _characters;
+    private CyclicConditionalEnumerator<Character> _characterEnumerator;
     private bool _isSelected;
-    private int _characterIndex;
     public string TeamName { get; set; }
     public IGameplayInputSource InputSource { get; private set; }
     public Color TeamColor => _teamColor;
-    public Character CurrentCharacter => _characters[_characterIndex];
+    public Character CurrentCharacter => _characterEnumerator.Current;
     public float NormalizedTeamHealth => _characters.Sum(c => c.NormalizedHealth) / _characters.Count;
     public int NumAliveCharacters => _characters.Count(c => c.IsAlive);
+
+    public bool EnumeratorCondition => IsTeamAlive;
 
     public event Action<float> TeamHealthChanged;
     public event Action TeamLost;
@@ -29,20 +31,18 @@ public class Team : MonoBehaviour
         for (int i=0; i< transform.childCount; i++)
         {
             var child = transform.GetChild(i);
-            _characters.Add(child.GetComponent<Character>());
-        }
-        if(_characters.Count == 0)
-        {
-            Debug.LogWarning($"{TeamName} has 0 characters.");
-        }
-
-        foreach (Character character in _characters)
-        {
+            var character = child.GetComponent<Character>();
             character.Died += OnAnyTeamCharacterDied;
             character.HealthChanged += (_, _) => OnAnyTeamCharacterHealthChanged();
             character.SetTeam(this);
+            _characters.Add(character);
         }
-        _characterIndex = 0;
+        _characterEnumerator = new CyclicConditionalEnumerator<Character>(_characters);
+        _characterEnumerator.Reset();
+        if (_characters.Count == 0)
+        {
+            Debug.LogWarning($"{TeamName} has 0 characters.");
+        }
     }
 
     public void SelectTeam()
@@ -75,10 +75,7 @@ public class Team : MonoBehaviour
 
     public void SelectNextCharacter()
     {
-        do
-        {
-            _characterIndex = (_characterIndex + 1) % _characters.Count;
-        } while (!_characters[_characterIndex].IsAlive);
+        _characterEnumerator.MoveNext(out var _);
     }
 
     private void OnAnyTeamCharacterDied()

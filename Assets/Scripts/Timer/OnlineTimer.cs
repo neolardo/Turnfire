@@ -4,11 +4,19 @@ using UnityEngine;
 
 public class OnlineTimer : NetworkBehaviour, ITimer
 {
-    private NetworkVariable<double> _endServerTime = new(writePerm: NetworkVariableWritePermission.Server);
+    private NetworkVariable<double> _endServerTime = new();
 
-    private NetworkVariable<bool> _isRunning =  new(writePerm: NetworkVariableWritePermission.Server);
+    private NetworkVariable<bool> _isRunning =  new();
+
+    private NetworkVariable<bool> _isInitialized = new();
+
     public float CurrentTime { get; private set; }
     public bool IsRunning => _isRunning.Value;
+    public bool IsInitialized => _isInitialized.Value;
+
+    public Func<bool> CanRestart { get; set; }
+    public Func<bool> CanPause { get; set; }
+    public Func<bool> CanResume { get; set ; }
 
     public event Action TimerEnded;
 
@@ -23,6 +31,8 @@ public class OnlineTimer : NetworkBehaviour, ITimer
         }
 
         _initialTime = initialTime;
+        CurrentTime = initialTime;
+        _isInitialized.Value = true;
     }
 
     void Update()
@@ -43,37 +53,36 @@ public class OnlineTimer : NetworkBehaviour, ITimer
     {
         _isRunning.Value = false;
         CurrentTime = 0f;
-        NotifyTimerEndedRpc();
+        NotifyTimerEndedClientRpc();
     }
 
 
-    [Rpc(SendTo.Everyone)]
-    private void NotifyTimerEndedRpc()
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
+    private void NotifyTimerEndedClientRpc()
     {
         TimerEnded?.Invoke();
     }
 
-
-    public void Restart()
+    public virtual void Restart()
     {
-        if (!IsServer)
+        if (!IsServer || (CanRestart != null && !CanRestart()) )
             return;
 
         _endServerTime.Value = NetworkManager.Singleton.ServerTime.Time + _initialTime;
         _isRunning.Value = true;
     }
 
-    public void Pause()
+    public virtual void Pause()
     {
-        if (!IsServer)
+        if (!IsServer || (CanPause != null && !CanPause()) )
             return;
 
         _isRunning.Value = false;
     }
 
-    public void Resume()
+    public virtual void Resume()
     {
-        if (!IsServer)
+        if (!IsServer || (CanResume != null && !CanResume()) )
             return;
 
         _endServerTime.Value = NetworkManager.Singleton.ServerTime.Time + CurrentTime;

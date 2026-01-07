@@ -11,7 +11,7 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
     private GameplayUIManager _uiManager;
     private IGameplayInputSource _inputSource;
 
-    public ReadyToUseItemCharacterActionState(ItemPreviewRendererManager rendererManager, PixelLaserRenderer laserRenderer, ProjectilePool projectilePool, PixelTrajectoryRenderer trajectoryRenderer, GameplayUIManager uiManager, MonoBehaviour coroutineManager, UISoundsDefinition uiSounds) : base(coroutineManager, uiSounds)
+    public ReadyToUseItemCharacterActionState(ItemPreviewRendererManager rendererManager, PixelLaserRenderer laserRenderer, ProjectilePool projectilePool, PixelTrajectoryRenderer trajectoryRenderer, GameplayUIManager uiManager, UISoundsDefinition uiSounds) : base(CoroutineRunner.Instance, uiSounds)
     {
         _rendererManager = rendererManager;
         _projectilePool = projectilePool;
@@ -80,7 +80,7 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
             return;
         }
 
-        _uiManager.ResumeGameplayTimer();
+        GameServices.GameplayTimer.Resume();
         _inputSource.IsOpeningInventoryEnabled = true;
         var selectedItem = _currentCharacter.GetSelectedItem();
         OnSelectedItemChanged(selectedItem);
@@ -103,7 +103,7 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
         _inputSource.ForceCancelAiming();
         _inputSource.IsAimingEnabled = false;
         _inputSource.IsOpeningInventoryEnabled = false;
-        _uiManager.PauseGameplayTimer();
+        GameServices.GameplayTimer.Pause();
         base.EndState();
     }
 

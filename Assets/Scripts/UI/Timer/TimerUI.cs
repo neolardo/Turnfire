@@ -18,7 +18,7 @@ public abstract class TimerUI : MonoBehaviour
 
     protected virtual void OnTimerEnded()
     {
-        if (string.IsNullOrEmpty(_endText))
+        if (!string.IsNullOrEmpty(_endText))
         {
             _timerText.text = _endText;
         }

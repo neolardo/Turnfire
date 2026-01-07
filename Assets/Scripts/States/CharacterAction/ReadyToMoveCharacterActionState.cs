@@ -7,7 +7,7 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
     private GameplayUIManager _uiManager;
     private IGameplayInputSource _inputSource;
 
-    public ReadyToMoveCharacterActionState(PixelTrajectoryRenderer trajectoryRenderer, GameplayUIManager uiManager, MonoBehaviour manager, UISoundsDefinition uiSounds) : base(manager, uiSounds)
+    public ReadyToMoveCharacterActionState(PixelTrajectoryRenderer trajectoryRenderer, GameplayUIManager uiManager, UISoundsDefinition uiSounds) : base(CoroutineRunner.Instance, uiSounds)
     {
         _trajectoryRenderer = trajectoryRenderer;
         _uiManager = uiManager;
@@ -34,7 +34,7 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
     {
         _inputSource = currentCharacter.Team.InputSource;
         base.StartState(currentCharacter);
-        _uiManager.ResumeGameplayTimer();
+        GameServices.GameplayTimer.Resume();
         _inputSource.IsAimingEnabled = true;
         _trajectoryRenderer.SetOrigin(currentCharacter.transform, currentCharacter.FeetOffset);
         _trajectoryRenderer.ToggleGravity(true);
@@ -74,7 +74,7 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
     {
         _inputSource.ForceCancelAiming();
         _inputSource.IsAimingEnabled = false;
-        _uiManager.PauseGameplayTimer();
+        GameServices.GameplayTimer.Pause();
         base.EndState();
     }
 }

@@ -12,6 +12,7 @@ public class MenuUIManager : MonoBehaviour
     [SerializeField] private OnlineMultiplayerSetupMenuUI _onlineMultiplayerSetupMenu;
     [SerializeField] private JoinRoomMultiplayerMenuUI _joinRoomMultiplayerMenu;
     [SerializeField] private CreateRoomMultiplayerMenuUI _createRoomMultiplayerMenu;
+    [SerializeField] private LoadingTextUI _loadingText;
 
     private Stack<MenuPanelType> _previousPanels;
     private MenuPanelType _currentPanel;
@@ -56,6 +57,17 @@ public class MenuUIManager : MonoBehaviour
         _joinRoomMultiplayerMenu.gameObject.SetActive(false);
         _offlineMultiplayerSetupMenu.gameObject.SetActive(false);
         _onlineMultiplayerSetupMenu.gameObject.SetActive(false);
+    }
+
+    private void ShowLoadingText()
+    {
+        _loadingText.gameObject.SetActive(true);
+    }
+
+    public void HideAllPanelsAndShowLoadingText()
+    {
+        HideAllPanels();
+        ShowLoadingText();
     }
 
     private GameObject GetPanelGOFromType(MenuPanelType panel)

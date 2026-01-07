@@ -5,6 +5,10 @@ public class OfflineTimer : MonoBehaviour, ITimer
 {
     public float CurrentTime { get; private set; }
     public bool IsRunning { get; private set;}
+    public bool IsInitialized { get; private set; }
+    public Func<bool> CanRestart { get; set; }
+    public Func<bool> CanPause { get; set; }
+    public Func<bool> CanResume { get; set; }
 
     protected float _initialTime;
 
@@ -13,6 +17,8 @@ public class OfflineTimer : MonoBehaviour, ITimer
     public void Initialize(float initialTime)
     {
         _initialTime = initialTime;
+        CurrentTime = initialTime;
+        IsInitialized = true;
     }
 
     void Update()
@@ -40,17 +46,26 @@ public class OfflineTimer : MonoBehaviour, ITimer
 
     public void Restart()
     {
+        if (CanRestart != null && !CanRestart())
+            return;
+
         CurrentTime = _initialTime;
         IsRunning = true;
     }
 
     public void Pause()
     {
+        if (CanPause != null && !CanPause())
+            return;
+
         IsRunning = false;
     }
 
     public void Resume()
     {
+        if (CanResume != null && !CanResume())
+            return;
+
         IsRunning = true;
     }
 }

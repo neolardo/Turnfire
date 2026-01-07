@@ -1,9 +1,10 @@
-using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GameplayUIManager : MonoBehaviour
 {
+    [SerializeField] private GameplaySettingsDefinition _gameplaySettings;
     [SerializeField] private GameObject _gameplayPausedScreen;
     [SerializeField] private InventoryUI _inventoryUI;
     [SerializeField] private GameOverScreenUI _gameOverScreenUI;
@@ -11,13 +12,13 @@ public class GameplayUIManager : MonoBehaviour
     [SerializeField] private GameplayTimerUI _gameplayTimer;
     [SerializeField] private CountdownTimerUI _countdownTimer;
     [SerializeField] private AimCircleUI _aimCircleUI;
-    private bool _useTimer;
+    [SerializeField] private LoadingTextUI _loadingText;
 
     private void Awake()
     {
         var inputManager = FindFirstObjectByType<LocalGameplayInput>();
         inputManager.ToggleInventoryPerformed += ToggleInventory;
-        _gameplayTimer.gameObject.SetActive(false); //TODO
+        _gameplayTimer.gameObject.SetActive(false);
         _countdownTimer.gameObject.SetActive(true);
     }
     private void Start()
@@ -25,6 +26,7 @@ public class GameplayUIManager : MonoBehaviour
         GameServices.TurnStateManager.GameEnded += OnGameOver;
         GameServices.TurnStateManager.GameStarted += OnGameStarted;
         GameServices.GameStateManager.StateChanged += OnGameStateChanged;
+        GameServices.CountdownTimer.TimerEnded += OnCountdownTimerEnded;
     }
 
     public void CreateTeamHealthbars(IEnumerable<Team> teams)
@@ -37,21 +39,9 @@ public class GameplayUIManager : MonoBehaviour
         _inventoryUI.gameObject.SetActive(!_inventoryUI.gameObject.activeSelf);
     }
 
-
     private void OnPause(bool pause)
     {
         _gameplayPausedScreen.SetActive(pause);
-        if (_useTimer)
-        {
-            if (pause)
-            {
-                _gameplayTimer.StopTimer();
-            }
-            else
-            {
-                _gameplayTimer.ResumeTimer();
-            }
-        }
     }
 
     public void LoadCharacterData(Character character)
@@ -59,59 +49,36 @@ public class GameplayUIManager : MonoBehaviour
         _inventoryUI.LoadCharacterData(character);
     }
 
-    #region Timers
-
-    public void StartCountdown()
+    private void OnCountdownTimerEnded()
     {
-        _countdownTimer.StartTimer();
+        StartCoroutine(HideCountdownTimerAfterDelay());
     }
 
-    public void StartGameplayTimer()
+    private IEnumerator HideCountdownTimerAfterDelay()
     {
-        if (_useTimer)
-        {
-            _gameplayTimer.StartTimer(); //TODO
-            if (_gameStateManager.CurrentState != GameStateType.Playing)
-            {
-                _gameplayTimer.StopTimer();
-            }
-        }
+        yield return new WaitForSeconds(_gameplaySettings.DelaySecondsAfterCountdown);
+        _countdownTimer.gameObject.SetActive(false);
     }
 
-    public void PauseGameplayTimer()
+    public void ShowLoadingText()
     {
-        if (_useTimer)
-        {
-            _gameplayTimer.StopTimer();
-        }
+        _loadingText.gameObject.SetActive(true);
     }
 
-    public void ResumeGameplayTimer()
-    {
-        if (_useTimer && _gameStateManager.CurrentState == GameStateType.Playing)
-        {
-            _gameplayTimer.ResumeTimer();
-        }
-    }
-
-    #endregion
 
     #region Game States
 
-    public void OnGameStarted(GameplaySceneSettings gameplaySettings)
+    public void OnGameStarted()
     {
-        _useTimer = gameplaySettings.UseTimer;
-        if (_useTimer)
+        if (GameplaySceneSettingsStorage.Current.UseTimer)
         {
             _gameplayTimer.gameObject.SetActive(true);
-            StartGameplayTimer();
-            PauseGameplayTimer();
         }
     }
 
     public void OnGameOver(Team winnerTeam)
     {
-        PauseGameplayTimer();
+        GameServices.GameplayTimer.Pause();
         string gameOverText = string.Empty;
         if (winnerTeam == null)
         {
