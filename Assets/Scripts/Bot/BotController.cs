@@ -3,31 +3,29 @@ using UnityEngine;
 
 public class BotController
 {
-    private BotGameplayInput _input;
-
-    public BotController(BotGameplayInput input)
-    {
-        _input = input;
-    }
+    public event Action<Vector2> AimAndRelease; 
+    public event Action<Item> SwitchSelectedItem; 
+    public event Action<ItemUsageContext> UseSelectedItem;
+    public event Action SkipAction;
 
     public void Act(BotGoal goal, BotContext context)
     {
         switch (goal.GoalType)
         {
             case BotGoalType.Move:
-                Move(goal.AimVector);
+                ActMove(goal.AimVector);
                 Debug.Log("Bot moved to destination");
                 break;
             case BotGoalType.Attack:
-                Attack(goal.AimVector, goal.PreferredItem);
+                ActAttack(goal.AimVector, goal.PreferredItem);
                 Debug.Log($"Bot attacked with {goal.PreferredItem.Definition.Name}");
                 break;
             case BotGoalType.UseItem:
-                UseItem(goal.PreferredItem, new ItemUsageContext(context.Self));
+                ActUseItem(goal.PreferredItem, new ItemUsageContext(context.Self));
                 Debug.Log($"Bot used item: {goal.PreferredItem.Definition.Name}");
                 break;
             case BotGoalType.SkipAction:
-                SkipAction();
+                ActSkipAction();
                 Debug.Log("Bot skipped action");
                 break;
             default:
@@ -35,28 +33,28 @@ public class BotController
         }
     }
 
-    private void Move(Vector2 jumpVector)
+    private void ActMove(Vector2 jumpVector)
     {
-        _input.AimAndRelease(jumpVector);
+        AimAndRelease?.Invoke(jumpVector);
     }
 
-    private void Attack(Vector2 aimVector, Item weapon)
+    private void ActAttack(Vector2 aimVector, Item weapon)
     {
-        _input.SetSelectedItem(weapon);
-        _input.AimAndRelease(aimVector);
+        SwitchSelectedItem?.Invoke(weapon);
+        AimAndRelease?.Invoke(aimVector);
     }
 
-    private void UseItem(Item item, ItemUsageContext context)
+    private void ActUseItem(Item item, ItemUsageContext context)
     {
-        _input.SetSelectedItem(item);
+        SwitchSelectedItem?.Invoke(item);
         if(!item.Definition.UseInstantlyWhenSelected)
         {
-            _input.UseSelectedItem(context);
+            UseSelectedItem?.Invoke(context);
         }
     }
-    private void SkipAction()
+    private void ActSkipAction()
     {
-        _input.SkipAction();
+        SkipAction?.Invoke();
     }
 
 }

@@ -8,7 +8,7 @@ public class MenuNumericDisplayUI : MonoBehaviour
     [SerializeField] private MenuArrowButtonUI _downButton;
     [SerializeField] private TextMeshProUGUI _valueText;
     [SerializeField] private HoverableSelectableContainerUI _containerUI;
-    private LocalMenuInput _inputManager;
+    private LocalMenuUIInputSource _inputManager;
     private int _min;
     private int _max;
     private int _value;
@@ -42,7 +42,7 @@ public class MenuNumericDisplayUI : MonoBehaviour
 
     private void Awake()
     {
-        _inputManager = FindFirstObjectByType<LocalMenuInput>();
+        _inputManager = FindFirstObjectByType<LocalMenuUIInputSource>();
         _upButton.ArrowPressed += IncrementValue; 
         _downButton.ArrowPressed += DecrementValue;
     }

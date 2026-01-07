@@ -5,7 +5,7 @@ using UnityEngine;
 public class GameplayUIManager : MonoBehaviour
 {
     [SerializeField] private GameplaySettingsDefinition _gameplaySettings;
-    [SerializeField] private GameObject _gameplayPausedScreen;
+    [SerializeField] private GameObject _gameplayMenuUI;
     [SerializeField] private InventoryUI _inventoryUI;
     [SerializeField] private GameOverScreenUI _gameOverScreenUI;
     [SerializeField] private TeamHealthbarUIManager _teamHealthbarUIManager;
@@ -16,8 +16,8 @@ public class GameplayUIManager : MonoBehaviour
 
     private void Awake()
     {
-        var inputManager = FindFirstObjectByType<LocalGameplayInput>();
-        inputManager.ToggleInventoryPerformed += ToggleInventory;
+        var inputHandler = FindFirstObjectByType<LocalInputHandler>();
+        inputHandler.ToggleInventoryPerformed += OnInventoryToggled;
         _gameplayTimer.gameObject.SetActive(false);
         _countdownTimer.gameObject.SetActive(true);
     }
@@ -34,14 +34,14 @@ public class GameplayUIManager : MonoBehaviour
         _teamHealthbarUIManager.CreateHealthBars(teams);
     }
 
-    private void ToggleInventory()
+    private void OnInventoryToggled()
     {
         _inventoryUI.gameObject.SetActive(!_inventoryUI.gameObject.activeSelf);
     }
 
-    private void OnPause(bool pause)
+    private void OnGameplayMenuToggled(bool isGameplayMenuVisible)
     {
-        _gameplayPausedScreen.SetActive(pause);
+        _gameplayMenuUI.SetActive(isGameplayMenuVisible);
     }
 
     public void LoadCharacterData(Character character)
@@ -94,7 +94,7 @@ public class GameplayUIManager : MonoBehaviour
 
     private void OnGameStateChanged(GameStateType gameState)
     {
-        OnPause(gameState == GameStateType.Paused);
+        OnGameplayMenuToggled(gameState == GameStateType.Paused);
     } 
 
     #endregion

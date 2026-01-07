@@ -16,14 +16,14 @@ public class OnlineMultiplayerSetupMenuUI : MonoBehaviour
     [SerializeField] private TMP_InputField _joinCodeInputField;
     [SerializeField] private TextMeshProUGUI _numPlayersJoinedText;
 
-    private LocalMenuInput _inputManager;
+    private LocalMenuUIInputSource _inputManager;
     private MenuUIManager _menuUIManager;
     private SceneLoaderFactory _sceneLoaderFactory;
 
     private void Awake()
     {
         _menuUIManager = FindFirstObjectByType<MenuUIManager>();
-        _inputManager = FindFirstObjectByType<LocalMenuInput>();
+        _inputManager = FindFirstObjectByType<LocalMenuUIInputSource>();
         _sceneLoaderFactory = FindFirstObjectByType<SceneLoaderFactory>();
         _startButton.ButtonPressed += OnStartPressed;
         _cancelButton.ButtonPressed += OnCancelPressed;

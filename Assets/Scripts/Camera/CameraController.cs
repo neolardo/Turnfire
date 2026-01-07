@@ -40,8 +40,8 @@ public class CameraController : MonoBehaviour
     private void Start()
     {
         _mapCam.Follow = _mapTransform;
-        var localInput = FindFirstObjectByType<LocalGameplayInput>();
-        localInput.ShowMapToggled += OnShowMapToggled;
+        var inputHandler = FindFirstObjectByType<LocalInputHandler>();
+        inputHandler.ShowMapToggled += OnShowMapToggled;
         _secondaryCameraType = VirtualCameraType.Map;
         _secondaryCameraBlend = _brain.DefaultBlend;
         PrioritizeVirtualCameras();

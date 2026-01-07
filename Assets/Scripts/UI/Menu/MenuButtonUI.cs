@@ -10,7 +10,7 @@ public class MenuButtonUI : ScreenSizeDependantHoverableSelectableContainerUI
     [SerializeField] private Sprite _disabledSprite;
     [SerializeField] private TextMeshProUGUI _text;
     [SerializeField] private Color _disabledTextColor;
-    private LocalMenuInput _inputManager;
+    private LocalMenuUIInputSource _inputManager;
     private Sprite _normalSprite;
     private Color _normalTextColor;
 
@@ -22,7 +22,7 @@ public class MenuButtonUI : ScreenSizeDependantHoverableSelectableContainerUI
     {
         base.Awake();
         _rectTransform = _text.rectTransform;
-        _inputManager = FindFirstObjectByType<LocalMenuInput>();
+        _inputManager = FindFirstObjectByType<LocalMenuUIInputSource>();
         _image = GetComponent<Image>();
         _normalSprite = _image.sprite;
         _normalTextColor = _text.color;

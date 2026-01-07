@@ -13,7 +13,7 @@ public class JoinRoomMultiplayerMenuUI : MonoBehaviour
     [SerializeField] private TMP_InputField _joinCodeInputField;
     [SerializeField] private TMP_InputField _playerNameInputField;
     [SerializeField] private TextMeshProUGUI _responseText;
-    private LocalMenuInput _inputManager;
+    private LocalMenuUIInputSource _inputManager;
 
     private bool _isJoinInitiated;
 
@@ -22,7 +22,7 @@ public class JoinRoomMultiplayerMenuUI : MonoBehaviour
     private void Awake()
     {
         _menuUIManager = FindFirstObjectByType<MenuUIManager>();
-        _inputManager = FindFirstObjectByType<LocalMenuInput>();
+        _inputManager = FindFirstObjectByType<LocalMenuUIInputSource>();
         _joinButton.ButtonPressed += OnJoinPressed;
         _backButton.ButtonPressed += OnCancelPressed;
     }

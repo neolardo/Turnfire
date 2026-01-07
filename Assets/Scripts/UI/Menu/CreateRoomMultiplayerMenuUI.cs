@@ -14,13 +14,13 @@ public class CreateRoomMultiplayerMenuUI : MonoBehaviour
     [SerializeField] private OnlineMultiplayerSetupMenuUI _onlineMultiplayerSetup;
     [SerializeField] private RoomNetworkSession _roomSessionPrefab;
 
-    private LocalMenuInput _inputManager;
+    private LocalMenuUIInputSource _inputManager;
     private MenuUIManager _menuUIManager;
 
     private void Awake()
     {
         _menuUIManager = FindFirstObjectByType<MenuUIManager>();
-        _inputManager = FindFirstObjectByType<LocalMenuInput>();
+        _inputManager = FindFirstObjectByType<LocalMenuUIInputSource>();
         _hostButton.ButtonPressed += OnHostPressed;
         _cancelButton.ButtonPressed += OnCancelPressed;
     }

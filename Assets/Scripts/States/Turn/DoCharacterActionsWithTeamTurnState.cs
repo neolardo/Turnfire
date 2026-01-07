@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 public class DoCharacterActionsWithTeamTurnState : TurnState
 {
     public override TurnStateType State => TurnStateType.DoCharacterActions;

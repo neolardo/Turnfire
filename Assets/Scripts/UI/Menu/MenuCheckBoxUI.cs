@@ -17,7 +17,7 @@ public class MenuCheckBoxUI : MonoBehaviour,
     [SerializeField] private Sprite _hoveredSprite;
     [SerializeField] private bool _initialValue;
     [SerializeField] private HoverableSelectableContainerUI _containerUI;
-    private LocalMenuInput _inputManager;
+    private LocalMenuUIInputSource _inputManager;
     private Sprite _normalSprite;
     private Image _image;
     private bool _hovered;
@@ -30,7 +30,7 @@ public class MenuCheckBoxUI : MonoBehaviour,
         _image = GetComponent<Image>();
         _normalSprite = _image.sprite;
         var canvas = FindFirstObjectByType<Canvas>();
-        _inputManager = FindFirstObjectByType<LocalMenuInput>();
+        _inputManager = FindFirstObjectByType<LocalMenuUIInputSource>();
     }
     private void Start()
     {

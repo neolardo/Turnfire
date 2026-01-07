@@ -1,6 +1,8 @@
 public enum InputSourceType
 {
-    Local = 0,
-    Bot = 1,
-    Remote = 2,
+    OfflineHuman = 0,
+    OnlineHuman = 1,
+
+    OfflineBot = 2,
+    OnlineBot = 3,
 }

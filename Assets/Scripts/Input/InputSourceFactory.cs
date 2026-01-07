@@ -1,19 +1,33 @@
+using Unity.Netcode;
 using UnityEngine;
 
-public static class GameplayInputSourceFactory
+public class GameplayInputSourceFactory : MonoBehaviour
 {
-    public static IGameplayInputSource Create(InputSourceType inputType, GameObject parent)
+    [SerializeField] private OfflineHumanTeamInputSource _offlineHumanInputPrefab;
+    [SerializeField] private OnlineHumanTeamInputSource _onlineHumanInputPrefab;
+    [SerializeField] private OfflineBotTeamInputSource _offlineBotInputPrefab;
+    [SerializeField] private OnlineBotTeamInputSource _onlineBotInputPrefab;
+
+    private OfflineHumanTeamInputSource _offlineHumanInput;
+
+    public ITeamInputSource Create(InputSourceType inputType, Transform parent)
     {
         switch (inputType)
         {
-            case InputSourceType.Local:
-                return Object.FindFirstObjectByType<LocalGameplayInput>();
-            case InputSourceType.Bot:
-                return parent.AddComponent(typeof(BotGameplayInput)) as BotGameplayInput;
-            case InputSourceType.Remote:
-                return parent.AddComponent(typeof(RemoteGameplayInput)) as RemoteGameplayInput;
+            case InputSourceType.OfflineHuman:
+                if (_offlineHumanInput == null)
+                {
+                    _offlineHumanInput = Instantiate(_offlineHumanInputPrefab, parent);
+                }
+                return _offlineHumanInput;
+            case InputSourceType.OnlineHuman:
+                return Instantiate(_onlineHumanInputPrefab, parent);
+            case InputSourceType.OfflineBot:
+                return Instantiate(_offlineBotInputPrefab, parent);
+            case InputSourceType.OnlineBot:
+                return Instantiate(_onlineBotInputPrefab, parent);
             default:
-                throw new System.Exception($"Invalid {nameof(IGameplayInputSource)} when creating input sources.");
+                throw new System.Exception($"Invalid {nameof(ITeamInputSource)} when creating input sources.");
         }
     }
 }

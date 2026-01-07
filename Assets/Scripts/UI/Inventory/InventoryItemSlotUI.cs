@@ -12,14 +12,15 @@ public class InventoryItemSlotUI : MonoBehaviour,
     IPointerExitHandler, 
     IPointerDownHandler, 
     ISelectHandler,
-    IDeselectHandler
+    IDeselectHandler, 
+    ISubmitHandler
 {
     [SerializeField] private Image _slotImage;
     [SerializeField] private Image _itemImage;
     [SerializeField] private Sprite _selectedSlotSprite;
     [SerializeField] private Sprite _deselectedSlotSprite;
     [SerializeField] private TextMeshProUGUI _quantityText;
-    private LocalGameplayInput _inputManager;
+    private LocalInputHandler _inputHandler;
     public Item Item => _item;
     private Item _item;
 
@@ -29,7 +30,7 @@ public class InventoryItemSlotUI : MonoBehaviour,
 
     private void Awake()
     {
-        _inputManager = FindFirstObjectByType<LocalGameplayInput>();
+        _inputHandler = FindFirstObjectByType<LocalInputHandler>();
         var selectable = GetComponent<Selectable>();
         selectable.transition = Selectable.Transition.None;
     }
@@ -64,8 +65,18 @@ public class InventoryItemSlotUI : MonoBehaviour,
 
     public void OnPointerDown(PointerEventData eventData)
     {
+        SelectSlot();
+    }
+
+    public void OnSubmit(BaseEventData eventData)
+    {
+        SelectSlot();
+    }
+    private void SelectSlot()
+    {
         Selected?.Invoke(this);
     }
+
 
     #endregion
 
@@ -82,7 +93,7 @@ public class InventoryItemSlotUI : MonoBehaviour,
 
     public void OnSelect(BaseEventData eventData)
     {
-        if(_inputManager.CurrentInputDevice is not Mouse && _inputManager.CurrentInputDevice is not Keyboard)
+        if(_inputHandler.CurrentInputDevice is not Mouse && _inputHandler.CurrentInputDevice is not Keyboard)
         {
             Hover();
         }
@@ -90,7 +101,7 @@ public class InventoryItemSlotUI : MonoBehaviour,
 
     public void OnDeselect(BaseEventData eventData)
     {
-        if (_inputManager.CurrentInputDevice is not Mouse && _inputManager.CurrentInputDevice is not Keyboard)
+        if (_inputHandler.CurrentInputDevice is not Mouse && _inputHandler.CurrentInputDevice is not Keyboard)
         {
             UnHover();
         }

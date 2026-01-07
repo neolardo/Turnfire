@@ -29,9 +29,8 @@ public class InventoryUI : MonoBehaviour
 
     private void Awake()
     {
-        var inputManager = FindFirstObjectByType<LocalGameplayInput>();
-        inputManager.ToggleInventoryCreateDestroyPerformed += _itemTypeToggle.Toggle;
-        inputManager.SelectInventorySlotPerformed += SelectPreviewedSlot;
+        var inputHandler = FindFirstObjectByType<LocalInputHandler>();
+        inputHandler.ToggleInventoryCreateDestroyPerformed += _itemTypeToggle.Toggle;
         _itemTypeToggle.InitializeToggledLeftValue(true);
         _itemTypeToggle.Toggled += OnItemTypeToggled;
 

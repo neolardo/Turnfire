@@ -5,7 +5,7 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
     public override CharacterActionStateType State => CharacterActionStateType.ReadyToMove;
     private PixelTrajectoryRenderer _trajectoryRenderer;
     private GameplayUIManager _uiManager;
-    private IGameplayInputSource _inputSource;
+    private ITeamInputSource _inputSource;
 
     public ReadyToMoveCharacterActionState(PixelTrajectoryRenderer trajectoryRenderer, GameplayUIManager uiManager, UISoundsDefinition uiSounds) : base(CoroutineRunner.Instance, uiSounds)
     {
@@ -39,7 +39,7 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
         _trajectoryRenderer.SetOrigin(currentCharacter.transform, currentCharacter.FeetOffset);
         _trajectoryRenderer.ToggleGravity(true);
         _trajectoryRenderer.SetTrajectoryMultipler(currentCharacter.JumpStrength);
-        _inputSource.RequestInputForAction(State);
+        _inputSource.RequestAction(State);
     }
 
     private void OnAimStarted(Vector2 initialPosition)

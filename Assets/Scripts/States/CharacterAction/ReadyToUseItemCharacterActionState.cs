@@ -9,7 +9,7 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
     private PixelLaserRenderer _laserRenderer;
     private PixelTrajectoryRenderer _trajectoryRenderer;
     private GameplayUIManager _uiManager;
-    private IGameplayInputSource _inputSource;
+    private ITeamInputSource _inputSource;
 
     public ReadyToUseItemCharacterActionState(ItemPreviewRendererManager rendererManager, PixelLaserRenderer laserRenderer, ProjectilePool projectilePool, PixelTrajectoryRenderer trajectoryRenderer, GameplayUIManager uiManager, UISoundsDefinition uiSounds) : base(CoroutineRunner.Instance, uiSounds)
     {
@@ -84,7 +84,7 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
         _inputSource.IsOpeningInventoryEnabled = true;
         var selectedItem = _currentCharacter.GetSelectedItem();
         OnSelectedItemChanged(selectedItem);
-        _inputSource.RequestInputForAction(State);
+        _inputSource.RequestAction(State);
     }
 
     public void OnSelectedItemChanged(Item selectedItem)

@@ -1,14 +1,16 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class PausedScreenUI : MonoBehaviour
+public class GameplayMenuUI : MonoBehaviour
 {
+    [SerializeField] private TextMeshProUGUI _titleText;
     [SerializeField] private TextButtonUI _resumeButton;
     [SerializeField] private TextButtonUI _showControlsButton;
     [SerializeField] private TextButtonUI _restartButton;
     [SerializeField] private TextButtonUI _exitButton;
     [SerializeField] private ControlsPanelUI controlsPanel;
-    private LocalGameplayInput _localInput;
+    private LocalInputHandler _inputHandler;
 
 
     private void Awake()
@@ -17,29 +19,21 @@ public class PausedScreenUI : MonoBehaviour
         _showControlsButton.ButtonPressed += OnShowControlsButtonPressed;
         _restartButton.ButtonPressed += OnRestartButtonPressed;
         _exitButton.ButtonPressed += OnExitButtonPressed;
-        _localInput = FindFirstObjectByType<LocalGameplayInput>();
+        _inputHandler = FindFirstObjectByType<LocalInputHandler>();
+        if(GameplaySceneSettingsStorage.Current.IsOnlineGame)
+        {
+            _titleText.text = "";
+        }
     }
 
     private void OnEnable()
     {
-        _localInput.PausedScreenConfirmPerformed += _resumeButton.PressIfHoveredOrSelected;
-        _localInput.PausedScreenConfirmPerformed += _showControlsButton.PressIfHoveredOrSelected;
-        _localInput.PausedScreenConfirmPerformed += _restartButton.PressIfHoveredOrSelected;
-        _localInput.PausedScreenConfirmPerformed += _exitButton.PressIfHoveredOrSelected;
         EventSystem.current.SetSelectedGameObject(_resumeButton.gameObject);
-    }
-
-    private void OnDisable()
-    {
-        _localInput.PausedScreenConfirmPerformed -= _resumeButton.PressIfHoveredOrSelected;
-        _localInput.PausedScreenConfirmPerformed -= _showControlsButton.PressIfHoveredOrSelected;
-        _localInput.PausedScreenConfirmPerformed -= _restartButton.PressIfHoveredOrSelected;
-        _localInput.PausedScreenConfirmPerformed -= _exitButton.PressIfHoveredOrSelected;
     }
 
     private void OnResumeButtonPressed()
     {
-        _localInput.TogglePauseResumeGameplay();
+        _inputHandler.ToggleGameplayMenu();
     }
 
     private void OnShowControlsButtonPressed()

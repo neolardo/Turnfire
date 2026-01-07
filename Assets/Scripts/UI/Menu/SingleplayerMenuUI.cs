@@ -13,14 +13,14 @@ public class SingleplayerMenuUI : MonoBehaviour
     [SerializeField] private MenuMapDisplayUI _mapDisplay;
     [SerializeField] private MenuCheckBoxUI _useTimerCheckbox;
 
-    private LocalMenuInput _inputManager;
+    private LocalMenuUIInputSource _inputManager;
     private MenuUIManager _menuUIManager;
     private SceneLoaderFactory _sceneLoaderFactory;
 
     private void Awake()
     {
         _menuUIManager = FindFirstObjectByType<MenuUIManager>();
-        _inputManager = FindFirstObjectByType<LocalMenuInput>();
+        _inputManager = FindFirstObjectByType<LocalMenuUIInputSource>();
         _sceneLoaderFactory = FindFirstObjectByType<SceneLoaderFactory>();
         _confirmButton.ButtonPressed += OnConfirmPressed;
         _cancelButton.ButtonPressed += OnCancelPressed;

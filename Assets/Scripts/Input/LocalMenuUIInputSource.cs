@@ -1,26 +1,29 @@
 using System;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class LocalMenuInput : LocalInputBase
+public class LocalMenuUIInputSource : MonoBehaviour
 {
+    private LocalInputHandler _inputHandler;
+
     public event Action MenuConfirmPerformed;
     public event Action MenuBackPerformed;
     public event Action MenuIncrementValuePerformed;
     public event Action MenuDecrementValuePerformed;
 
-    protected override void Awake()
+    private void Start()
     {
-        base.Awake();
-        SwitchToInputActionMap(InputActionMapType.Menu);
+        _inputHandler = FindFirstObjectByType<LocalInputHandler>();
+        _inputHandler.SwitchToInputActionMap(InputActionMapType.Menu);
+        SubscribeToInputEvents();
     }
-
-    protected override void SubscribeToInputEvents()
+    private void SubscribeToInputEvents()
     {
-        base.SubscribeToInputEvents();
-        _inputActions.Menu.Back.performed += OnMenuBackPerformed;
-        _inputActions.Menu.Confirm.performed += OnMenuConfirmPerformed;
-        _inputActions.Menu.IncrementValue.performed += OnMenuIncrementValuePerformed;
-        _inputActions.Menu.DecrementValue.performed += OnMenuDecrementValuePerformed;
+        var inputActions = _inputHandler.InputActions;
+        inputActions.Menu.Back.performed += OnMenuBackPerformed;
+        inputActions.Menu.Confirm.performed += OnMenuConfirmPerformed;
+        inputActions.Menu.IncrementValue.performed += OnMenuIncrementValuePerformed;
+        inputActions.Menu.DecrementValue.performed += OnMenuDecrementValuePerformed;
     }
 
 

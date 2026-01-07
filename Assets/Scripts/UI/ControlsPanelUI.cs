@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 
 public class ControlsPanelUI : MonoBehaviour
 {
-    private LocalGameplayInput _localInput;
+    private LocalInputHandler _inputHandler;
 
     [SerializeField] private TextMeshProUGUI _aimText;
     [SerializeField] private TextMeshProUGUI _jumpAndShootText;
@@ -16,7 +16,7 @@ public class ControlsPanelUI : MonoBehaviour
 
     private void Awake()
     {
-        _localInput = FindFirstObjectByType<LocalGameplayInput>();
+        _inputHandler = FindFirstObjectByType<LocalInputHandler>();
     }
 
     private void Start()
@@ -39,7 +39,7 @@ public class ControlsPanelUI : MonoBehaviour
 
     public void Refresh()
     {
-        if(_localInput.CurrentInputDevice is Gamepad)
+        if(_inputHandler.CurrentInputDevice is Gamepad)
         {
             RefreshTextsForGamepadInput();
         }

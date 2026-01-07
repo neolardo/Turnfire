@@ -1,5 +1,7 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Netcode;
 using UnityEngine;
 
 public class TeamManager : MonoBehaviour
@@ -13,57 +15,71 @@ public class TeamManager : MonoBehaviour
         {
             Debug.LogWarning("There are no teams.");
         }
-
-        InitializeTeams();
-        GameServices.TurnStateManager.Initialize(_teams);
-    }
-
-    private void InitializeTeams()
-    {
         int playerCount = GameplaySceneSettingsStorage.Current.Players.Count;
         _teams = _possibleTeams.Take(playerCount).ToList();
         for (int i = _teams.Count; i < _possibleTeams.Count; i++)
         {
             _possibleTeams[i].gameObject.SetActive(false);
         }
-        CreateRandomizedTeamSetup();
+        StartCoroutine(CreateTeamSetupCoroutine());
     }
 
-    private void CreateRandomizedTeamSetup()
+    private IEnumerator CreateTeamSetupCoroutine()
     {
+        var factory = FindFirstObjectByType<GameplayInputSourceFactory>();
         var botManagerFactory = FindFirstObjectByType<BotManagerFactory>();
-        var gameplaySettings = GameplaySceneSettingsStorage.Current;
-        var players = gameplaySettings.Players;
-        foreach (var player in players) 
+
+        var settings = GameplaySceneSettingsStorage.Current;
+        var players = settings.Players;
+        var isOnlineGame = settings.IsOnlineGame;
+        foreach (var player in players)
         {
             var team = _teams[player.TeamIndex];
             team.TeamName = player.Name;
-            if (player.Type == PlayerType.Human)
+
+            ITeamInputSource inputSource;
+
+            if (!isOnlineGame)
             {
-                team.InitializeInputSource(InputSourceType.Local); //TODO: remote?
+                inputSource = factory.Create(player.Type == PlayerType.Human ? InputSourceType.OfflineHuman : InputSourceType.OfflineBot, team.transform);
             }
-            else if(player.Type == PlayerType.Bot)
+            else
             {
-                team.InitializeInputSource(InputSourceType.Bot);
-                botManagerFactory.CreateBotForTeam(team, gameplaySettings.BotDifficulty);
+                inputSource = factory.Create(player.Type == PlayerType.Human? InputSourceType.OnlineHuman : InputSourceType.OnlineBot,team.transform);
+                var netObj = (inputSource as NetworkBehaviour).GetComponent<NetworkObject>();
+                netObj.SpawnWithOwnership(player.ClientId, true);
+                yield return new WaitUntil(() => netObj.IsSpawned);
+            }
+
+            team.InitializeInputSource(inputSource);
+
+            if (player.Type == PlayerType.Bot)
+            {
+                botManagerFactory.CreateBotForTeam(team, settings.BotDifficulty);
             }
         }
+        GameServices.TurnStateManager.Initialize(_teams);
     }
+
 
     private void CreateRandomizedBotEvaluationTeamSetup(BotDifficulty analyzedDifficulty, BotDifficulty otherDifficulty)
     {
         var botManagerFactory = FindFirstObjectByType<BotManagerFactory>();
+        var inputSourceFactory = FindFirstObjectByType<GameplayInputSourceFactory>();
         Team analyzedTeam = _teams[Random.Range(0, _teams.Count)];
-        analyzedTeam.InitializeInputSource(InputSourceType.Bot);
+        var analyzedTeamInput = inputSourceFactory.Create(InputSourceType.OfflineBot, analyzedTeam.transform);
+        analyzedTeam.InitializeInputSource(analyzedTeamInput);
         botManagerFactory.CreateBotForTeam(analyzedTeam, analyzedDifficulty);
         foreach (var team in _teams)
         {
             if (team == analyzedTeam)
                 continue;
 
-            team.InitializeInputSource(InputSourceType.Bot);
+            var otherTeamInput = inputSourceFactory.Create(InputSourceType.OfflineBot, analyzedTeam.transform);
+            team.InitializeInputSource(otherTeamInput);
             botManagerFactory.CreateBotForTeam(team, otherDifficulty);
         }
+        GameServices.TurnStateManager.Initialize(_teams);
     }
 
 }

@@ -12,7 +12,7 @@ public class Team : MonoBehaviour, IConditionalEnumerable
     private CyclicConditionalEnumerator<Character> _characterEnumerator;
     private bool _isSelected;
     public string TeamName { get; set; }
-    public IGameplayInputSource InputSource { get; private set; }
+    public ITeamInputSource InputSource { get; private set; }
     public Color TeamColor => _teamColor;
     public Character CurrentCharacter => _characterEnumerator.Current;
     public float NormalizedTeamHealth => _characters.Sum(c => c.NormalizedHealth) / _characters.Count;
@@ -63,9 +63,9 @@ public class Team : MonoBehaviour, IConditionalEnumerable
         }
     }
 
-    public void InitializeInputSource(InputSourceType inputType)
+    public void InitializeInputSource(ITeamInputSource inputSource)
     {
-        InputSource = GameplayInputSourceFactory.Create(inputType, gameObject);
+        InputSource = inputSource;
     }
 
     private void OnAnyTeamCharacterHealthChanged()

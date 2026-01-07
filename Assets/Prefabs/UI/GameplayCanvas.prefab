@@ -514,7 +514,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _gameplaySettings: {fileID: 11400000, guid: f6a671206be112945a4d9684f7c3a42b, type: 2}
-  _gameplayPausedScreen: {fileID: 7433795745632519879}
+  _gameplayMenuUI: {fileID: 7433795745632519879}
   _inventoryUI: {fileID: 739108499352803836}
   _gameOverScreenUI: {fileID: 6016962164086459816}
   _teamHealthbarUIManager: {fileID: 3695820797858234754}
@@ -2779,7 +2779,7 @@ GameObject:
   - component: {fileID: 2928872016208067432}
   - component: {fileID: 670074481725192112}
   m_Layer: 5
-  m_Name: GameplayPausedScreen
+  m_Name: GameplayMenu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2856,6 +2856,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9171a66e3d78ae44a493932708eb44c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _titleText: {fileID: 649863888034071690}
   _resumeButton: {fileID: 1491428525346794747}
   _showControlsButton: {fileID: 1243161118120131650}
   _restartButton: {fileID: 4038698192587536639}

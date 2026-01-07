@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public interface IGameplayInputSource
+public interface ITeamInputSource
 {
     event Action<Vector2> AimStarted;
     event Action<Vector2> AimChanged;
@@ -16,5 +16,5 @@ public interface IGameplayInputSource
 
     void ForceCloseInventory();
     void ForceCancelAiming();
-    void RequestInputForAction(CharacterActionStateType action);
+    void RequestAction(CharacterActionStateType action);
 }

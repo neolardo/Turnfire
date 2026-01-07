@@ -10,10 +10,9 @@ public class BotManagerFactory : MonoBehaviour
 
     public void CreateBotForTeam(Team team, BotDifficulty difficulty)
     {
-        var input = team.InputSource as BotGameplayInput;
         var brain = CreateBrain(difficulty);
         var botManager = team.gameObject.AddComponent<BotManager>();
-        botManager.Initialize(team, brain, input);
+        botManager.Initialize(team, brain);
     }
 
     private BotBrain CreateBrain(BotDifficulty difficulty)

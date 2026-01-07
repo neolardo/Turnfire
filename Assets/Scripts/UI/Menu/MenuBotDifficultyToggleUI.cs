@@ -7,7 +7,7 @@ public class MenuBotDifficultyToggleUI : HoverableSelectableContainerUI
     [SerializeField] private MenuArrowButtonUI _leftButton;
     [SerializeField] private MenuArrowButtonUI _rightButton;
     [SerializeField] private TextMeshProUGUI _valueText;
-    private LocalMenuInput _inputManager;
+    private LocalMenuUIInputSource _inputManager;
     private const int Min = (int)BotDifficulty.Easy;
     private const int Max = (int)BotDifficulty.Hard;
     private BotDifficulty _value;
@@ -33,7 +33,7 @@ public class MenuBotDifficultyToggleUI : HoverableSelectableContainerUI
     protected override void Awake()
     {
         base.Awake();
-        _inputManager = FindFirstObjectByType<LocalMenuInput>();
+        _inputManager = FindFirstObjectByType<LocalMenuUIInputSource>();
         _leftButton.ArrowPressed += DecrementValue;
         _rightButton.ArrowPressed += IncrementValue;
     }

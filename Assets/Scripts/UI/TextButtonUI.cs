@@ -11,7 +11,8 @@ public class TextButtonUI : ScreenSizeDependantUI,
     IPointerDownHandler,
     IPointerUpHandler,
     ISelectHandler,
-    IDeselectHandler
+    IDeselectHandler,
+    ISubmitHandler
 {
     [SerializeField] private PixelUIDefinition _uiDefinition;
     [SerializeField] private UISoundsDefinition _uiSounds;
@@ -34,7 +35,7 @@ public class TextButtonUI : ScreenSizeDependantUI,
         _parentCanvasRect = canvas.GetComponent<RectTransform>();
         var selectable = GetComponent<Selectable>();
         selectable.transition = Selectable.Transition.None;
-        
+
     }
 
     protected override void OnEnable()
@@ -75,12 +76,16 @@ public class TextButtonUI : ScreenSizeDependantUI,
 
     public void PressIfHoveredOrSelected()
     {
-        if(_hovered || EventSystem.current.currentSelectedGameObject == gameObject)
+        if (_hovered || EventSystem.current.currentSelectedGameObject == gameObject)
         {
             Press();
         }
     }
 
+    public void OnSubmit(BaseEventData eventData)
+    {
+        PressIfHoveredOrSelected();
+    }
     private void Press()
     {
         SetPressedVisuals();
@@ -126,4 +131,5 @@ public class TextButtonUI : ScreenSizeDependantUI,
         var offset = TextHoverOffsetPixels * scale;
         _text.rectTransform.anchoredPosition = _hovered ? _originalTextPosition + offset : _originalTextPosition;
     }
+
 }
