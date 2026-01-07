@@ -361,7 +361,7 @@ public class LocalInputHandler : MonoBehaviour
             return;
         }
         SwitchToInputActionMap(targetActionMapType);
-        GameServices.GameStateManager.TogglePauseResumeGameplay();
+        GameServices.GameStateManager.TogglePauseResumeGameplay(); //TODO: check ui if pause not possible
     }
 
     private void OnToggleGameplayMenu(InputAction.CallbackContext ctx)

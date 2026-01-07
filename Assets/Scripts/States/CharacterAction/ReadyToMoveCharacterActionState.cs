@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class ReadyToMoveCharacterActionState : CharacterActionState
@@ -20,6 +21,7 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
         _inputSource.AimChanged += OnAimChanged;
         _inputSource.AimCancelled += OnAimCancelled;
         _inputSource.ActionSkipped += OnActionSkipped;
+        _currentCharacter.Jumped += EndState;
     }
     protected override void UnsubscribeFromEvents()
     {
@@ -28,8 +30,9 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
         _inputSource.AimChanged -= OnAimChanged;
         _inputSource.AimCancelled -= OnAimCancelled;
         _inputSource.ActionSkipped -= OnActionSkipped;
+        _currentCharacter.Jumped -= EndState;
     }
-
+    
     public override void StartState(Character currentCharacter)
     {
         _inputSource = currentCharacter.Team.InputSource;
@@ -67,7 +70,6 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
         _trajectoryRenderer.HideTrajectory();
         _uiManager.HideAimCircles();
         _currentCharacter.Jump(aimDirection);
-        EndState();
     }
 
     protected override void EndState()

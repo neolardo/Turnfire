@@ -14,15 +14,10 @@ public class CharacterAnimator : MonoBehaviour
 
     private const float JumpCancelThreshold = 1.0f;
 
-    private void Awake()
+    public void Initialize(CharacterDefinition definition, Color teamColor)
     {
-        var character = transform.parent.GetComponent<Character>();
-        _bodyAnimator.SetCharacterDefinition(character.CharacterDefinition);
-    }
-
-    public void SetTeamColor(Color color)
-    {
-        _bodyAnimator.SetTeamColor(color);
+        _bodyAnimator.SetCharacterDefinition(definition);
+        _bodyAnimator.SetTeamColor(teamColor);
     }
 
     public void StartAiming(Item weapon)

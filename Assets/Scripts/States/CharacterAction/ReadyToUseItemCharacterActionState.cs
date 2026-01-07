@@ -82,7 +82,7 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
 
         GameServices.GameplayTimer.Resume();
         _inputSource.IsOpeningInventoryEnabled = true;
-        var selectedItem = _currentCharacter.GetSelectedItem();
+        var selectedItem = _currentCharacter.SelectedItem;
         OnSelectedItemChanged(selectedItem);
         _inputSource.RequestAction(State);
     }

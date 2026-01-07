@@ -34,7 +34,7 @@ public class Team : MonoBehaviour, IConditionalEnumerable
             var character = child.GetComponent<Character>();
             character.Died += OnAnyTeamCharacterDied;
             character.HealthChanged += (_, _) => OnAnyTeamCharacterHealthChanged();
-            character.SetTeam(this);
+            character.Initialize(this);
             _characters.Add(character);
         }
         _characterEnumerator = new CyclicConditionalEnumerator<Character>(_characters);

@@ -1,53 +1,33 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class Character : MonoBehaviour, IConditionalEnumerable
 {
-
     [SerializeField] private CharacterHealthbarRenderer _healthbarRenderer;
     [SerializeField] private CharacterAnimator _animator;
-    [SerializeField] private CharacterDefinition _characterDefinition;
+    [SerializeField] private CharacterDefinition _definition;
     [SerializeField] private SectorHitbox _meleeHitbox;
-    private List<Item> _items;
-    private Item _selectedItem;
-    private Rigidbody2D _rb;
-    private float _jumpBoost;
-    private int _health;
-    public int Health
-    {
-        get
-        {
-            return _health;
-        }
-        private set
-        {
-            if (_health != value)
-            {
-                _health = value;
-                HealthChanged?.Invoke(NormalizedHealth, Health);
-            }
-        }
-    }
 
-    public CharacterDefinition CharacterDefinition => _characterDefinition;
+    private CharacterModel _model;
+    private CharacterView _view;
+    private ICharacterMovementController _movementController;
+    private ICharacterItemsController _itemsController;
     public CharacterArmorManager ArmorManager { get; private set; }
     public SectorHitbox MeleeHitbox => _meleeHitbox;
-    public Team Team { get; private set; }
-    public Collider2D Collider { get; private set; }
-    public Transform ItemTransform => _animator.ItemTransform;
-    public bool IsAlive => _health > 0;
-    public bool IsMoving => _rb.linearVelocity.magnitude > Mathf.Epsilon;
-    public bool IsUsingSelectedItem => _selectedItem == null ? false : _selectedItem.Behavior.IsInUse || _animator.IsPlayingNonIdleAnimation;
-    public float NormalizedHealth => _health / (float)CharacterDefinition.MaxHealth;
-    public Vector2 FeetPosition => (Vector2)transform.position + Vector2.down * Collider.bounds.extents.y;
-    public Vector2 FeetOffset => Vector2.down * Collider.bounds.extents.y;
-
-    public float JumpStrength => _jumpBoost + CharacterDefinition.JumpStrength;
-
+    public Collider2D Collider => _movementController.Collider;
+    public Transform ItemTransform => _view.ItemTransform;
+    public Team Team => _model.Team;
+    public bool IsAlive => _model.IsAlive;
+    public bool IsMoving => _movementController.IsMoving;
+    public bool IsUsingSelectedItem => _itemsController.IsUsingSelectedItem || _view.IsPlayingNonIdleAnimation;
+    public float NormalizedHealth => _model.NormalizedHealth;
+    public Vector2 FeetPosition => _movementController.FeetPosition;
+    public Vector2 FeetOffset => _movementController.FeetOffset;
+    public float JumpStrength => _itemsController.JumpBoost + CharacterDefinition.JumpStrength;
     public bool EnumeratorCondition => IsAlive;
+    public Item SelectedItem => _itemsController.SelectedItem;
 
     public event Action<float, int> HealthChanged;
     public event Action Jumped;
@@ -55,73 +35,57 @@ public class Character : MonoBehaviour, IConditionalEnumerable
     public event Action<Item> SelectedItemChanged;
     public event Action SelectedItemUsed;
 
-    #region Initialization
-
-    private void Awake()
+    public void Initialize(Team team)
     {
-        Health = CharacterDefinition.MaxHealth;
         ArmorManager = new CharacterArmorManager();
-        ArmorManager.ArmorEquipped += _animator.PlayEquipArmorAnimation;
-        ArmorManager.ArmorUnequipped += _animator.PlayUnequipArmorAnimation;
-        _items = new List<Item>();
-        foreach (var itemDefinition in CharacterDefinition.InitialItems)
-        {
-            TryAddItem(new Item(itemDefinition, false));
-        }
-        _rb = GetComponent<Rigidbody2D>();
-        Collider = GetComponent<Collider2D>();
-        _selectedItem = _items.FirstOrDefault();
-        HealthChanged += _healthbarRenderer.SetCurrentHealth;
-        _healthbarRenderer.Initilaize(_health);
+        _animator.Initialize(_definition, team.TeamColor);
+        _model = new CharacterModel( _definition, team, ArmorManager);
+        _view = new CharacterView(_animator, _definition, _healthbarRenderer, ArmorManager);
+        //TODO: create and initialize controllers
+        _model.Healed += _view.OnHealed;
+        _model.Hurt += _view.OnHealed;
+        _model.Died += _view.OnDied;
+        _model.Died += InvokeDied;
+        _model.Blocked += _view.OnBlocked;
+        _model.HealthChanged += InvokeHealthChanged;
+        _movementController.Jumped += _view.OnJumpStarted;
+        _movementController.Jumped += InvokeJumped;
+        _itemsController.SelectedItemUsed += _view.OnItemUsed;
+        _itemsController.SelectedItemUsed += InvokeSelectedItemUsed;
+        _itemsController.SelectedItemChanged += InvokeSelectedItemChanged;
     }
 
-    public void SetTeam(Team team)
+    private void OnDestroy()
     {
-        Team = team;
-        _animator.SetTeamColor(Team.TeamColor);
+        _model.Healed -= _view.OnHealed;
+        _model.Hurt -= _view.OnHealed;
+        _model.Died -= _view.OnDied;
+        _model.Died -= InvokeDied;
+        _model.Blocked -= _view.OnBlocked;
+        _model.HealthChanged -= InvokeHealthChanged;
+        _movementController.Jumped -= _view.OnJumpStarted;
+        _movementController.Jumped -= InvokeJumped;
+        _itemsController.SelectedItemUsed -= _view.OnItemUsed;
+        _itemsController.SelectedItemUsed -= InvokeSelectedItemUsed;
+        _itemsController.SelectedItemChanged -= InvokeSelectedItemChanged;
     }
-
-    #endregion
 
     #region Health
 
     public void Damage(int value)
     {
-        if (ArmorManager.IsProtected)
-        {
-            var armor = ArmorManager.BlockAttack();
-            _animator.PlayGuardAnimation(armor);
-        }
-        else
-        {
-            _animator.PlayHurtAnimation();
-            Health = Mathf.Max(0, Health - value);
-            if (!IsAlive)
-            {
-                Die();
-            }
-        }
+        _model.Damage(value);
     }
 
     public void Heal(int value)
     {
-        Health = Mathf.Min(Health + value, CharacterDefinition.MaxHealth);
-        _animator.PlayHealAnimation();
+        _model.Heal(value);
     }
 
     public void Kill()
     {
-        Damage(Health);
+        _model.Kill();
     }
-
-    private void Die()
-    {
-        _animator.PlayDeathAnimation();
-        gameObject.layer = Constants.DeadCharacterLayer;
-        Debug.Log(gameObject.name + " died.");
-        Died?.Invoke();
-    }
-
 
     #endregion
 
@@ -129,17 +93,17 @@ public class Character : MonoBehaviour, IConditionalEnumerable
 
     public void StartAiming()
     {
-        _animator.StartAiming(_selectedItem);
+        _view.StartAiming(SelectedItem);
     }
 
     public void ChangeAim(Vector2 aimVector)
     {
-        _animator.ChangeAim(aimVector);
+        _view.ChangeAim(aimVector);
     }
 
     public void CancelAiming()
     {
-        _animator.CancelAiming();
+        _view.CancelAiming();
     }
 
     #endregion
@@ -148,41 +112,38 @@ public class Character : MonoBehaviour, IConditionalEnumerable
 
     public void Push(Vector2 impulse)
     {
-        _rb.AddForce(impulse, ForceMode2D.Impulse);
+        _movementController.Push(impulse);  
     }
 
     public void AddJumpBoost(float jumpBoost)
     {
-        _jumpBoost = jumpBoost;
+        _itemsController.ApplyJumpBoost(jumpBoost);
     }
 
     public void RemoveJumpBoost()
     {
-        _jumpBoost = 0;
+        _itemsController.RemoveJumpBoost();
     }
 
     public void Jump(Vector2 aimDirection)
-    { 
-        var jumpForce = aimDirection * (CharacterDefinition.JumpStrength + _jumpBoost);
-        _rb.AddForce(jumpForce, ForceMode2D.Impulse);
-        _animator.OnJumpStarted(jumpForce);
-        Jumped?.Invoke();
+    {
+        var jumpForce = aimDirection * JumpStrength;
+        _movementController.StartJump(jumpForce);
     }
-
 
     public void PrepareToJump()
     {
-        _animator.PlayPrepareToJumpAnimation();
+        _view.PrepareToJump();
     }
 
     public void ChangeJumpAim(Vector2 aimDirection)
     {
-        _animator.ChangeJumpAim(aimDirection);
+        _view.ChangeJumpAim(aimDirection);
     }
 
     public void CancelJump()
     {
-        _animator.PlayCancelJumpAnimation();
+        _view.CancelJump();
     }
 
 
@@ -192,96 +153,53 @@ public class Character : MonoBehaviour, IConditionalEnumerable
 
     public bool TryAddItem(Item item)
     {
-        var existingItem = _items.FirstOrDefault(i => i.IsSameType(item));
-        if (existingItem == null)
-        {
-            _items.Add(item);
-            item.CollectibleDestroyed += OnItemDestroyed;
-            if (_selectedItem == null && item.Definition.ItemType == ItemType.Weapon)
-            {
-                TrySelectItem(item);
-            }
-            return true;
-        }
-        else
-        {
-            return existingItem.TryMerge(item); 
-        }
-    }
-
-    private void OnItemDestroyed(ICollectible collectible)
-    {
-        var item = _items.FirstOrDefault(i => i == collectible);
-        if(item != null)
-        {
-            RemoveItem(item);   
-        }
-    }
-
-    private void RemoveItem(Item item)
-    {
-        _items.Remove(item);
-        if(_selectedItem == item)
-        {
-            TrySelectItem(_items.FirstOrDefault(i => i.Definition.ItemType == ItemType.Weapon));
-        }
+        return _itemsController.TryAddItem(item);
     }
 
     public IEnumerable<Item> GetAllItems()
     {
-        return _items;
+        return _itemsController.GetAllItems();
     }
 
     #region Selected Item
 
     public void UseSelectedItem(ItemUsageContext context)
     {
-        _animator.PlayItemActionAnimation(context.AimVector, _selectedItem);
-        _selectedItem.Behavior.Use(context);
-        SelectedItemUsed?.Invoke();
+        _itemsController.UseSelectedItem(context);
     }
 
     public bool TrySelectItem(Item item)
     {
-        if ((item == null) || (_items.Contains(item) && item != _selectedItem))
-        {
-            if (item != null && item.Definition.UseInstantlyWhenSelected)
-            {
-                var context = new ItemUsageContext(this);
-                if (item.Behavior.CanUseItem(context))
-                {
-                    _selectedItem = item;
-                    SelectedItemChanged?.Invoke(item);
-                    UseSelectedItem(context);
-                    // instantly used items should be deselected after usage
-                    return TrySelectItem(null);
-                }
-                else
-                {
-                    Debug.LogWarning($"Item should be used instantly but was not able to use it: {item.Definition.Name}");
-                    return false;
-                }
-            }
-            else
-            {
-                _selectedItem = item;
-                SelectedItemChanged?.Invoke(item);
-                return true;
-            }
-        }
-        else
-        {
-            Debug.LogWarning($"Item selection failed for item: {item.Definition.Name}.");
-            return false;
-        }
+        return _itemsController.TrySelectItem(item);
+        //TODO: use here?
     }
 
-    public Item GetSelectedItem()
-    {
-        return _selectedItem;
-    } 
+    #endregion
 
     #endregion
+
+    #region Invoke Events
+
+    private void InvokeJumped(Vector2 jumpVector)
+    {
+        Jumped?.Invoke();
+    }
+    private void InvokeDied()
+    {
+        Died?.Invoke();
+    }
+    private void InvokeHealthChanged(float normalizedValue, int value)
+    {
+        HealthChanged?.Invoke(normalizedValue, value);
+    }
+    private void InvokeSelectedItemChanged(Item newItem)
+    {
+        SelectedItemChanged?.Invoke(newItem);
+    }
+    private void InvokeSelectedItemUsed(Item item, ItemUsageContext context)
+    {
+        SelectedItemUsed?.Invoke();
+    }
 
     #endregion
 
@@ -289,20 +207,12 @@ public class Character : MonoBehaviour, IConditionalEnumerable
 
     public bool OverlapPoint(Vector2 point)
     {
-        return Collider.bounds.Contains(point);
+        return _movementController.OverlapPoint(point);
     }
 
     public Vector2 NormalAtPoint(Vector2 point)
     {
-        float linearHalfLength = Collider.bounds.extents.y - Collider.bounds.extents.x;
-        if (Mathf.Abs(point.y - transform.position.y) < linearHalfLength)
-        {
-            return new Vector2(point.x - transform.position.x, 0).normalized;
-        }
-        else
-        {
-            return (point - (Vector2)transform.position).normalized;
-        }
+        return _movementController.NormalAtPoint(point);
     }
 
     #endregion
