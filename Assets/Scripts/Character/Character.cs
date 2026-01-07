@@ -19,6 +19,7 @@ public class Character : MonoBehaviour, IConditionalEnumerable
     public Collider2D Collider => _movementController.Collider;
     public Transform ItemTransform => _view.ItemTransform;
     public Team Team => _model.Team;
+    public int Health => _model.Health;
     public bool IsAlive => _model.IsAlive;
     public bool IsMoving => _movementController.IsMoving;
     public bool IsUsingSelectedItem => _itemsController.IsUsingSelectedItem || _view.IsPlayingNonIdleAnimation;

@@ -77,7 +77,7 @@ public class InventoryUI : MonoBehaviour
             itemSlot.UnloadItem();
         }
         var items = _currentCharacter.GetAllItems().ToList();
-        var selectedItem = _currentCharacter.GetSelectedItem();
+        var selectedItem = _currentCharacter.SelectedItem;
 
         bool isToggledToWeapon = _itemTypeToggle.IsToggledLeft;
         int slotIndex = 0;
