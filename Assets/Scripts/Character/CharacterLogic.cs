@@ -3,19 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class CharacterItemsController
+public class CharacterLogic
 {
-    private CharacterDefinition _definition;
-    private List<Item> _items;
-    public bool IsUsingSelectedItem => SelectedItem == null ? false : SelectedItem.Behavior.IsInUse;
-    public Item SelectedItem { get; private set; }
-    public float JumpBoost {get; private set; }
-
-    public event Action<Item> SelectedItemChanged;
-    public event Action<Item, ItemUsageContext> SelectedItemUsed;
-
-    public CharacterItemsController(CharacterDefinition characterDefinition)
+    ICharacterState _state;
+    public CharacterLogic(ICharacterState state)
     {
+        _state = state;
         _definition = characterDefinition;
         _items = new List<Item>();
         foreach (var itemDefinition in _definition.InitialItems)

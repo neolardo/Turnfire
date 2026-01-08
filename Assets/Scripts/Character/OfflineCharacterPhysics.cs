@@ -1,16 +1,13 @@
-using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
-public class OfflineCharacterMovementController : MonoBehaviour, ICharacterMovementController
+public class OfflineCharacterPhysics : MonoBehaviour, ICharacterPhysics
 {
     private Rigidbody2D _rb;
     public Collider2D Collider { get; private set; }
     public bool IsMoving => _rb.linearVelocity.magnitude > Mathf.Epsilon;
     public Vector2 FeetPosition => (Vector2)transform.position + Vector2.down * Collider.bounds.extents.y;
     public Vector2 FeetOffset => Vector2.down * Collider.bounds.extents.y;
-
-    public event Action<Vector2> Jumped;
 
     private void Awake()
     {
@@ -28,7 +25,6 @@ public class OfflineCharacterMovementController : MonoBehaviour, ICharacterMovem
     public void StartJump(Vector2 jumpVector)
     {
         _rb.AddForce(jumpVector, ForceMode2D.Impulse);
-        Jumped?.Invoke(jumpVector);
     }
 
     #endregion

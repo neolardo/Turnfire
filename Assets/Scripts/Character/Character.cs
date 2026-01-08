@@ -10,25 +10,25 @@ public class Character : MonoBehaviour, IConditionalEnumerable
     [SerializeField] private CharacterDefinition _definition;
     [SerializeField] private SectorHitbox _meleeHitbox;
 
-    private CharacterModel _model;
+    private ICharacterState _state;
+    private ICharacterPhysics _physics;
     private CharacterView _view;
-    private CharacterItemsController _itemsController;
-    private ICharacterMovementController _movementController;
+    private CharacterLogic _logic;
     public CharacterArmorManager ArmorManager { get; private set; }
     public SectorHitbox MeleeHitbox => _meleeHitbox;
-    public Collider2D Collider => _movementController.Collider;
+    public Collider2D Collider => _physics.Collider;
     public Transform ItemTransform => _view.ItemTransform;
-    public Team Team => _model.Team;
-    public int Health => _model.Health;
-    public bool IsAlive => _model.IsAlive;
-    public bool IsMoving => _movementController.IsMoving;
-    public bool IsUsingSelectedItem => _itemsController.IsUsingSelectedItem || _view.IsPlayingNonIdleAnimation;
-    public float NormalizedHealth => _model.NormalizedHealth;
-    public Vector2 FeetPosition => _movementController.FeetPosition;
-    public Vector2 FeetOffset => _movementController.FeetOffset;
-    public float JumpStrength => _itemsController.JumpBoost + CharacterDefinition.JumpStrength;
+    public Team Team => _state.Team;
+    public int Health => _state.Health;
+    public bool IsAlive => _state.IsAlive;
+    public bool IsMoving => _physics.IsMoving;
+    public bool IsUsingSelectedItem => _state.IsUsingSelectedItem || _view.IsPlayingNonIdleAnimation;
+    public float NormalizedHealth => _state.NormalizedHealth;
+    public Vector2 FeetPosition => _physics.FeetPosition;
+    public Vector2 FeetOffset => _physics.FeetOffset;
+    public float JumpStrength => _state.JumpBoost + CharacterDefinition.JumpStrength; //TODO: move to state
     public bool EnumeratorCondition => IsAlive;
-    public Item SelectedItem => _itemsController.SelectedItem;
+    public Item SelectedItem => _state.SelectedItem;
 
     public event Action<float, int> HealthChanged;
     public event Action Jumped;
@@ -40,52 +40,52 @@ public class Character : MonoBehaviour, IConditionalEnumerable
     {
         ArmorManager = new CharacterArmorManager();
         _animator.Initialize(_definition, team.TeamColor);
-        _model = new CharacterModel( _definition, team, ArmorManager);
+        _state = new OfflineCharacterState( _definition, team, ArmorManager);
         _view = new CharacterView(_animator, _definition, _healthbarRenderer, ArmorManager);
         //TODO: create and initialize controllers
-        _model.Healed += _view.OnHealed;
-        _model.Hurt += _view.OnHealed;
-        _model.Died += _view.OnDied;
-        _model.Died += InvokeDied;
-        _model.Blocked += _view.OnBlocked;
-        _model.HealthChanged += InvokeHealthChanged;
-        _movementController.Jumped += _view.OnJumpStarted;
-        _movementController.Jumped += InvokeJumped;
-        _itemsController.SelectedItemUsed += _view.OnItemUsed;
-        _itemsController.SelectedItemUsed += InvokeSelectedItemUsed;
-        _itemsController.SelectedItemChanged += InvokeSelectedItemChanged;
+        _state.Healed += _view.OnHealed;
+        _state.Hurt += _view.OnHealed;
+        _state.Died += _view.OnDied;
+        _state.Died += InvokeDied;
+        _state.Blocked += _view.OnBlocked;
+        _state.HealthChanged += InvokeHealthChanged;
+        _state.Jumped += _view.OnJumpStarted;
+        _state.Jumped += _physics.StartJump;
+        _logic.SelectedItemUsed += _view.OnItemUsed;
+        _logic.SelectedItemUsed += InvokeSelectedItemUsed;
+        _logic.SelectedItemChanged += InvokeSelectedItemChanged;
     }
 
     private void OnDestroy()
     {
-        _model.Healed -= _view.OnHealed;
-        _model.Hurt -= _view.OnHealed;
-        _model.Died -= _view.OnDied;
-        _model.Died -= InvokeDied;
-        _model.Blocked -= _view.OnBlocked;
-        _model.HealthChanged -= InvokeHealthChanged;
-        _movementController.Jumped -= _view.OnJumpStarted;
-        _movementController.Jumped -= InvokeJumped;
-        _itemsController.SelectedItemUsed -= _view.OnItemUsed;
-        _itemsController.SelectedItemUsed -= InvokeSelectedItemUsed;
-        _itemsController.SelectedItemChanged -= InvokeSelectedItemChanged;
+        _state.Healed -= _view.OnHealed;
+        _state.Hurt -= _view.OnHealed;
+        _state.Died -= _view.OnDied;
+        _state.Died -= InvokeDied;
+        _state.Blocked -= _view.OnBlocked;
+        _state.HealthChanged -= InvokeHealthChanged;
+        _physics.Jumped -= _view.OnJumpStarted;
+        _physics.Jumped -= InvokeJumped;
+        _logic.SelectedItemUsed -= _view.OnItemUsed;
+        _logic.SelectedItemUsed -= InvokeSelectedItemUsed;
+        _logic.SelectedItemChanged -= InvokeSelectedItemChanged;
     }
 
     #region Health
 
     public void Damage(int value)
     {
-        _model.Damage(value);
+        _state.Damage(value);
     }
 
     public void Heal(int value)
     {
-        _model.Heal(value);
+        _state.Heal(value);
     }
 
     public void Kill()
     {
-        _model.Kill();
+        _state.Kill();
     }
 
     #endregion
@@ -113,23 +113,23 @@ public class Character : MonoBehaviour, IConditionalEnumerable
 
     public void Push(Vector2 impulse)
     {
-        _movementController.Push(impulse);  
+        _physics.Push(impulse);  
     }
 
     public void AddJumpBoost(float jumpBoost)
     {
-        _itemsController.ApplyJumpBoost(jumpBoost);
+        _logic.ApplyJumpBoost(jumpBoost);
     }
 
     public void RemoveJumpBoost()
     {
-        _itemsController.RemoveJumpBoost();
+        _logic.RemoveJumpBoost();
     }
 
     public void Jump(Vector2 aimDirection)
     {
         var jumpForce = aimDirection * JumpStrength;
-        _movementController.StartJump(jumpForce);
+        _physics.StartJump(jumpForce);
     }
 
     public void PrepareToJump()
@@ -154,25 +154,24 @@ public class Character : MonoBehaviour, IConditionalEnumerable
 
     public bool TryAddItem(Item item)
     {
-        return _itemsController.TryAddItem(item);
+        return _logic.TryAddItem(item);
     }
 
     public IEnumerable<Item> GetAllItems()
     {
-        return _itemsController.GetAllItems();
+        return _logic.GetAllItems();
     }
 
     #region Selected Item
 
     public void UseSelectedItem(ItemUsageContext context)
     {
-        _itemsController.UseSelectedItem(context);
+        _logic.UseSelectedItem(context);
     }
 
     public bool TrySelectItem(Item item)
     {
-        return _itemsController.TrySelectItem(item);
-        //TODO: use here?
+        return _logic.TrySelectItem(item);
     }
 
     #endregion
@@ -208,12 +207,12 @@ public class Character : MonoBehaviour, IConditionalEnumerable
 
     public bool OverlapPoint(Vector2 point)
     {
-        return _movementController.OverlapPoint(point);
+        return _physics.OverlapPoint(point);
     }
 
     public Vector2 NormalAtPoint(Vector2 point)
     {
-        return _movementController.NormalAtPoint(point);
+        return _physics.NormalAtPoint(point);
     }
 
     #endregion

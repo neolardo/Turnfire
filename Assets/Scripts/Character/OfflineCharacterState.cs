@@ -1,7 +1,8 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class CharacterModel
+public class OfflineCharacterState : ICharacterState
 {
     private CharacterArmorManager _armorManager;
     private CharacterDefinition _definition;
@@ -21,19 +22,29 @@ public class CharacterModel
             }
         }
     }
-
-    public Team Team { get; private set; }
-    public bool IsAlive => _health > 0;
     public float NormalizedHealth => _health / (float)_definition.MaxHealth;
+
+    public bool IsAlive => _health > 0;
+
+    private List<Item> _items;
+    public bool IsUsingSelectedItem => SelectedItem == null ? false : SelectedItem.Behavior.IsInUse;
+    public Item SelectedItem { get; private set; }
+    public float JumpBoost { get; private set; }
+    public Team Team { get; private set; }
 
     public event Action<float, int> HealthChanged;
     public event Action Died;
     public event Action<ArmorDefinition> Blocked;
     public event Action Hurt;
     public event Action Healed;
+    public event Action Jumped;
+    public event Action Pushed;
+    public event Action<Item, ItemUsageContext> ItemUsed;
+    public event Action<Item> ItemSwitched;
 
-    public CharacterModel(CharacterDefinition characterDefinition, Team team, CharacterArmorManager armorManager)
+    public OfflineCharacterState(CharacterDefinition characterDefinition, Team team, CharacterArmorManager armorManager)
     {
+        _items = new List<Item>(); //TODO
         Team = team;
         _definition = characterDefinition;
         _armorManager = armorManager;
@@ -72,6 +83,27 @@ public class CharacterModel
     private void Die()
     {
         Died?.Invoke();
+    }
+
+    public void RequestJump()
+    {
+        Jumped?.Invoke();
+    }
+    public void RequestPush()
+    {
+        Pushed?.Invoke();
+    }
+    public void RequestItemSwitched(Item item)
+    {
+        ItemSwitched?.Invoke(item);
+    }
+    public void RequestItemUsage(Item item,ItemUsageContext context)
+    {
+        ItemUsed?.Invoke(item, context);
+    }
+    public IEnumerable<Item> GetAllItems()
+    {
+        return _items;
     }
 
 }

@@ -1,17 +1,14 @@
-using System;
 using Unity.Netcode;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
-public class OnineCharacterMovementController : NetworkBehaviour, ICharacterMovementController
+public class OnlineCharacterPhysics : NetworkBehaviour, ICharacterPhysics
 {
     private Rigidbody2D _rb;
     public Collider2D Collider { get; private set; }
     public bool IsMoving => _rb.linearVelocity.magnitude > Mathf.Epsilon;
     public Vector2 FeetPosition => (Vector2)transform.position + Vector2.down * Collider.bounds.extents.y;
     public Vector2 FeetOffset => Vector2.down * Collider.bounds.extents.y;
-
-    public event Action<Vector2> Jumped;
 
     private void Awake()
     {
@@ -30,26 +27,20 @@ public class OnineCharacterMovementController : NetworkBehaviour, ICharacterMove
 
     public void Push(Vector2 impulse)
     {
-        if (IsServer)
+        if (!IsServer)
         {
-            ApplyPush(impulse);
+            return;
         }
-        else if (IsOwner)
-        {
-            PushServerRpc(impulse);
-        }
+        ApplyPush(impulse);
     }
 
     public void StartJump(Vector2 jumpVector)
     {
-        if (IsServer)
+        if (!IsServer)
         {
-            ApplyJump(jumpVector);
+            return;
         }
-        else if (IsOwner)
-        {
-            StartJumpServerRpc(jumpVector);
-        }
+        ApplyJump(jumpVector);
     }
 
     #endregion
@@ -64,23 +55,6 @@ public class OnineCharacterMovementController : NetworkBehaviour, ICharacterMove
     private void ApplyJump(Vector2 jumpVector)
     {
         _rb.AddForce(jumpVector, ForceMode2D.Impulse);
-        Jumped?.Invoke(jumpVector);
-    }
-
-    #endregion
-
-    #region RPCs
-
-    [Rpc(SendTo.Server, InvokePermission =RpcInvokePermission.Owner)]
-    private void PushServerRpc(Vector2 impulse)
-    {
-        ApplyPush(impulse);
-    }
-
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
-    private void StartJumpServerRpc(Vector2 jumpVector)
-    {
-        ApplyJump(jumpVector);
     }
 
     #endregion
