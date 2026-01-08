@@ -22,11 +22,11 @@ public class Character : MonoBehaviour, IConditionalEnumerable
     public int Health => _state.Health;
     public bool IsAlive => _state.IsAlive;
     public bool IsMoving => _physics.IsMoving;
-    public bool IsUsingSelectedItem => _state.IsUsingSelectedItem || _view.IsPlayingNonIdleAnimation;
+    public bool IsUsingSelectedItem => _state.IsUsingSelectedItem || _view.IsPlayingNonIdleAnimation; //TODO? view?
     public float NormalizedHealth => _state.NormalizedHealth;
     public Vector2 FeetPosition => _physics.FeetPosition;
     public Vector2 FeetOffset => _physics.FeetOffset;
-    public float JumpStrength => _state.JumpBoost + CharacterDefinition.JumpStrength; //TODO: move to state
+    public float JumpStrength => _state.JumpStrength;
     public bool EnumeratorCondition => IsAlive;
     public Item SelectedItem => _state.SelectedItem;
 
@@ -42,33 +42,47 @@ public class Character : MonoBehaviour, IConditionalEnumerable
         _animator.Initialize(_definition, team.TeamColor);
         _state = new OfflineCharacterState( _definition, team, ArmorManager);
         _view = new CharacterView(_animator, _definition, _healthbarRenderer, ArmorManager);
-        //TODO: create and initialize controllers
-        _state.Healed += _view.OnHealed;
-        _state.Hurt += _view.OnHealed;
-        _state.Died += _view.OnDied;
-        _state.Died += InvokeDied;
-        _state.Blocked += _view.OnBlocked;
-        _state.HealthChanged += InvokeHealthChanged;
-        _state.Jumped += _view.OnJumpStarted;
-        _state.Jumped += _physics.StartJump;
-        _logic.SelectedItemUsed += _view.OnItemUsed;
-        _logic.SelectedItemUsed += InvokeSelectedItemUsed;
-        _logic.SelectedItemChanged += InvokeSelectedItemChanged;
+        _logic = new CharacterLogic(_state, _definition);
+        _physics = new OfflineCharacterPhysics();
+        //TODO: create and initialize controllers from factory
+        SubscribeToStateChangedEvents();
     }
 
     private void OnDestroy()
     {
+        UnsubscribeFromStateChangedEvents();
+    }
+
+    private void SubscribeToStateChangedEvents()
+    {
+        _state.Healed += _view.OnHealed;
+        _state.Hurt += _view.OnHurt;
+        _state.Died += _view.OnDied;
+        _state.Died += InvokeDied;
+        _state.Blocked += _view.OnBlocked;
+        _state.HealthChanged += InvokeHealthChanged;
+        _state.Jumped += _physics.Jump;
+        _state.Jumped += _view.OnJumpStarted;
+        _state.Jumped += InvokeJumped;
+        _state.ItemUsed += _view.OnItemUsed;
+        _state.ItemUsed += InvokeSelectedItemUsed;
+        _state.ItemSwitched += InvokeSelectedItemChanged;
+    }
+
+    private void UnsubscribeFromStateChangedEvents()
+    {
         _state.Healed -= _view.OnHealed;
-        _state.Hurt -= _view.OnHealed;
+        _state.Hurt -= _view.OnHurt;
         _state.Died -= _view.OnDied;
         _state.Died -= InvokeDied;
         _state.Blocked -= _view.OnBlocked;
         _state.HealthChanged -= InvokeHealthChanged;
-        _physics.Jumped -= _view.OnJumpStarted;
-        _physics.Jumped -= InvokeJumped;
-        _logic.SelectedItemUsed -= _view.OnItemUsed;
-        _logic.SelectedItemUsed -= InvokeSelectedItemUsed;
-        _logic.SelectedItemChanged -= InvokeSelectedItemChanged;
+        _state.Jumped -= _physics.Jump;
+        _state.Jumped -= _view.OnJumpStarted;
+        _state.Jumped -= InvokeJumped;
+        _state.ItemUsed -= _view.OnItemUsed;
+        _state.ItemUsed -= InvokeSelectedItemUsed;
+        _state.ItemSwitched -= InvokeSelectedItemChanged;
     }
 
     #region Health
@@ -113,23 +127,22 @@ public class Character : MonoBehaviour, IConditionalEnumerable
 
     public void Push(Vector2 impulse)
     {
-        _physics.Push(impulse);  
-    }
-
-    public void AddJumpBoost(float jumpBoost)
-    {
-        _logic.ApplyJumpBoost(jumpBoost);
-    }
-
-    public void RemoveJumpBoost()
-    {
-        _logic.RemoveJumpBoost();
+        _logic.Push(impulse);  
     }
 
     public void Jump(Vector2 aimDirection)
     {
-        var jumpForce = aimDirection * JumpStrength;
-        _physics.StartJump(jumpForce);
+        _logic.Jump(aimDirection);
+    }
+
+    public void AddJumpBoost(float jumpBoost)
+    {
+        _state.ApplyJumpBoost(jumpBoost);
+    }
+
+    public void RemoveJumpBoost()
+    {
+        _state.RemoveJumpBoost();
     }
 
     public void PrepareToJump()
@@ -159,7 +172,7 @@ public class Character : MonoBehaviour, IConditionalEnumerable
 
     public IEnumerable<Item> GetAllItems()
     {
-        return _logic.GetAllItems();
+        return _state.GetAllItems();
     }
 
     #region Selected Item

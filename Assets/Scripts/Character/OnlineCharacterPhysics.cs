@@ -34,7 +34,7 @@ public class OnlineCharacterPhysics : NetworkBehaviour, ICharacterPhysics
         ApplyPush(impulse);
     }
 
-    public void StartJump(Vector2 jumpVector)
+    public void Jump(Vector2 jumpVector)
     {
         if (!IsServer)
         {

@@ -22,7 +22,7 @@ public class OfflineCharacterPhysics : MonoBehaviour, ICharacterPhysics
         _rb.AddForce(impulse, ForceMode2D.Impulse);
     }
 
-    public void StartJump(Vector2 jumpVector)
+    public void Jump(Vector2 jumpVector)
     {
         _rb.AddForce(jumpVector, ForceMode2D.Impulse);
     }

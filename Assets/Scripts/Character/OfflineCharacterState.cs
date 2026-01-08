@@ -30,6 +30,7 @@ public class OfflineCharacterState : ICharacterState
     public bool IsUsingSelectedItem => SelectedItem == null ? false : SelectedItem.Behavior.IsInUse;
     public Item SelectedItem { get; private set; }
     public float JumpBoost { get; private set; }
+    public float JumpStrength => CharacterDefinition.JumpStrength + JumpBoost;
     public Team Team { get; private set; }
 
     public event Action<float, int> HealthChanged;
@@ -37,19 +38,21 @@ public class OfflineCharacterState : ICharacterState
     public event Action<ArmorDefinition> Blocked;
     public event Action Hurt;
     public event Action Healed;
-    public event Action Jumped;
-    public event Action Pushed;
+    public event Action<Vector2> Jumped;
+    public event Action<Vector2> Pushed;
     public event Action<Item, ItemUsageContext> ItemUsed;
     public event Action<Item> ItemSwitched;
 
     public OfflineCharacterState(CharacterDefinition characterDefinition, Team team, CharacterArmorManager armorManager)
     {
-        _items = new List<Item>(); //TODO
+        _items = new List<Item>(); //TODO: initial items
+
         Team = team;
         _definition = characterDefinition;
         _armorManager = armorManager;
     }
 
+    #region Health
 
     public void Damage(int value)
     {
@@ -83,27 +86,56 @@ public class OfflineCharacterState : ICharacterState
     private void Die()
     {
         Died?.Invoke();
+    } 
+
+    #endregion
+
+    #region Movement
+
+    public void RequestJump(Vector2 jumpVector)
+    {
+        Jumped?.Invoke(jumpVector);
+    }
+    public void RequestPush(Vector2 pushVector)
+    {
+        Pushed?.Invoke(pushVector);
+    } 
+
+    public void ApplyJumpBoost(float jumpBoost)
+    {
+        JumpBoost = jumpBoost;
+    }
+    public void RemoveJumpBoost()
+    {
+        JumpBoost = 0;
     }
 
-    public void RequestJump()
+    #endregion
+
+    #region Items
+    public void RequestAddItem(Item item)
     {
-        Jumped?.Invoke();
+        _items.Add(item);
     }
-    public void RequestPush()
+    public void RequestRemoveItem(Item item)
     {
-        Pushed?.Invoke();
+        _items.Remove(item);
     }
-    public void RequestItemSwitched(Item item)
+    public void RequestSelectItem(Item item)
     {
+        SelectedItem = item;
         ItemSwitched?.Invoke(item);
     }
-    public void RequestItemUsage(Item item,ItemUsageContext context)
+    public void RequestUseItem(Item item, ItemUsageContext context)
     {
+        SelectedItem.Behavior.Use(context);
         ItemUsed?.Invoke(item, context);
     }
     public IEnumerable<Item> GetAllItems()
     {
         return _items;
-    }
+    } 
+
+    #endregion
 
 }

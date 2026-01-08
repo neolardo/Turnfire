@@ -70,9 +70,9 @@ public class CharacterView : MonoBehaviour
 
     #region Movement
 
-    public void OnJumpStarted(Vector2 jumpForce)
+    public void OnJumpStarted(Vector2 jumpVector)
     {
-        _animator.OnJumpStarted(jumpForce);
+        _animator.OnJumpStarted(jumpVector);
     }
 
     public void PrepareToJump()

@@ -5,43 +5,48 @@ using UnityEngine;
 
 public class CharacterLogic
 {
-    ICharacterState _state;
-    public CharacterLogic(ICharacterState state)
+    private ICharacterState _state;
+    public CharacterLogic(ICharacterState state, CharacterDefinition definition)
     {
         _state = state;
-        _definition = characterDefinition;
-        _items = new List<Item>();
-        foreach (var itemDefinition in _definition.InitialItems)
-        {
-            TryAddItem(new Item(itemDefinition, false));
-        }
-        SelectedItem = _items.FirstOrDefault();
+        AddInitialItems(definition.InitialItems);
     }
 
-    #region Jump Boost
+    #region Movement
 
-    public void ApplyJumpBoost(float jumpBoost)
+    public void Push(Vector2 pushVector)
     {
-        JumpBoost = jumpBoost;
+        _state.RequestPush(pushVector);
     }
 
-    public void RemoveJumpBoost()
+    public void Jump(Vector2 aimVector)
     {
-        JumpBoost = 0;
+        _state.RequestJump(aimVector * _state.JumpStrength);
     }
 
     #endregion
 
     #region Items
 
+    private void AddInitialItems(IEnumerable<ItemDefinition> initialItems)
+    {
+        foreach (var itemDefinition in initialItems)
+        {
+            TryAddItem(new Item(itemDefinition, false));
+        }
+        var allItems = _state.GetAllItems();
+        TrySelectItem(allItems.Where(i => i.Definition.ItemType == ItemType.Weapon).FirstOrDefault());
+    }
+
     public bool TryAddItem(Item item)
     {
-        var existingItem = _items.FirstOrDefault(i => i.IsSameType(item));
+        var items = _state.GetAllItems();
+        var existingItem = items.FirstOrDefault(i => i.IsSameType(item));
         if (existingItem == null)
         {
-            _items.Add(item);
+            _state.RequestAddItem(item);
             item.CollectibleDestroyed += OnItemDestroyed;
-            if (SelectedItem == null && item.Definition.ItemType == ItemType.Weapon)
+            if (_state.SelectedItem == null && item.Definition.ItemType == ItemType.Weapon)
             {
                 TrySelectItem(item);
             }
@@ -55,7 +60,8 @@ public class CharacterLogic
 
     private void OnItemDestroyed(ICollectible collectible)
     {
-        var item = _items.FirstOrDefault(i => i == collectible);
+        var items = _state.GetAllItems();
+        var item = items.FirstOrDefault(i => i == collectible);
         if (item != null)
         {
             RemoveItem(item);
@@ -64,36 +70,29 @@ public class CharacterLogic
 
     private void RemoveItem(Item item)
     {
-        _items.Remove(item);
-        if (SelectedItem == item)
+        var items = _state.GetAllItems();
+        _state.RequestRemoveItem(item);
+        if (_state == item)
         {
-            TrySelectItem(_items.FirstOrDefault(i => i.Definition.ItemType == ItemType.Weapon));
+            TrySelectItem(items.FirstOrDefault(i => i.Definition.ItemType == ItemType.Weapon));
         }
     }
 
-    public IEnumerable<Item> GetAllItems()
-    {
-        return _items;
-    }
-
-    #region Selected Item
-
     public void UseSelectedItem(ItemUsageContext context)
     {
-        SelectedItem.Behavior.Use(context);
-        SelectedItemUsed?.Invoke(SelectedItem, context);
+        _state.RequestUseItem(_state.SelectedItem, context);
     }
 
-    public bool TrySelectItem(Item item, ItemUsageContext usageContext = default)
+    public bool TrySelectItem(Item item, ItemUsageContext usageContext = default) //TODO: usage context
     {
-        if ((item == null) || (_items.Contains(item) && item != SelectedItem))
+        var items = _state.GetAllItems();
+        if ((item == null) || (items.Contains(item) && item != _state.SelectedItem))
         {
             if (item != null && item.Definition.UseInstantlyWhenSelected)
             {
                 if (item.Behavior.CanUseItem(usageContext))
                 {
-                    SelectedItem = item;
-                    SelectedItemChanged?.Invoke(item);
+                    _state.RequestSelectItem(item);
                     UseSelectedItem(usageContext);
                     // instantly used items should be deselected after usage
                     return TrySelectItem(null);
@@ -106,8 +105,7 @@ public class CharacterLogic
             }
             else
             {
-                SelectedItem = item;
-                SelectedItemChanged?.Invoke(item);
+                _state.RequestSelectItem(item);
                 return true;
             }
         }
@@ -117,8 +115,6 @@ public class CharacterLogic
             return false;
         }
     }
-
-    #endregion
 
     #endregion
 

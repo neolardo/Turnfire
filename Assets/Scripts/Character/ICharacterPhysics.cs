@@ -8,7 +8,7 @@ public interface ICharacterPhysics
     public Vector2 FeetOffset { get; }
 
     public void Push(Vector2 impulse);
-    public void StartJump(Vector2 jumpVector);
+    public void Jump(Vector2 jumpVector);
     public bool OverlapPoint(Vector2 point);
     public Vector2 NormalAtPoint(Vector2 point);
 }
