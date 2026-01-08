@@ -19,7 +19,6 @@ public class OnlineTurnStateManager : NetworkBehaviour, ITurnStateManager
     {
         var trajectoryRenderer = FindFirstObjectByType<PixelTrajectoryRenderer>();
         var itemPreviewRendererManager = FindFirstObjectByType<ItemPreviewRendererManager>();
-        var dropManager = FindFirstObjectByType<DropManager>();
         var cameraController = FindFirstObjectByType<CameraController>();
         var uiManager = FindFirstObjectByType<GameplayUIManager>();
         var projectilePool = FindFirstObjectByType<ProjectilePool>();
@@ -29,7 +28,7 @@ public class OnlineTurnStateManager : NetworkBehaviour, ITurnStateManager
         uiManager.CreateTeamHealthbars(teams);
 
         var characterActionsState = new DoCharacterActionsWithTeamTurnState(characterActionManager);
-        var dropItemsState = new DropPackagesTurnState(dropManager);
+        var dropItemsState = new DropPackagesTurnState();
         var finishedState = new FinishedTurnState();
 
         _logic = new TurnStateManagerLogic(teams, characterActionsState, dropItemsState, finishedState);

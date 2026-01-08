@@ -153,7 +153,7 @@ public class BotBrain : UnityDriven
             packageGreed = _tuning.RemainingAmmoLowPackageGreed;
         }
 
-        foreach (Package p in context.Packages)
+        foreach (OfflinePackage p in context.Packages)
         {
             var packagePos = context.JumpGraph.FindClosestStandingPoint(p.transform.position);
             if (context.JumpGraph.TryCalculateJumpDistanceBetween(targetPoint, packagePos, out var numJumps))

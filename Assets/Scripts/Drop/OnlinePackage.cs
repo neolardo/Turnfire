@@ -1,32 +1,48 @@
 using System;
+using Unity.Netcode;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class Package : MonoBehaviour
+public class OnlinePackage : NetworkBehaviour, IPackage
 {
     [SerializeField] private SFXDefiniton spawnSFX;
     [SerializeField] private SFXDefiniton collectSFX;
     public bool IsMoving => _rb.linearVelocity.magnitude > 0;
+    public bool IsActiveInHierarchy => gameObject.activeInHierarchy;
+    public Transform Transform => transform;
+
     private Rigidbody2D _rb;
     private ICollectible _collectible;
-
+    private CameraController _cameraController;
     private bool _destroyed;
 
-    public event Action<Package> Destroyed;
+    public event Action<IPackage> Destroyed;
 
 
     private void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
+        _cameraController = FindFirstObjectByType<CameraController>();
+        _rb.simulated = IsServer;
     }
 
     private void OnEnable()
     {
+        if (_destroyed)
+        {
+            return;
+        }
+        _cameraController.SetPackageTarget(this);
         AudioManager.Instance.PlaySFXAt(spawnSFX, transform);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if(!IsServer)
+        {
+            return;
+        }
+
         if (collision.CompareTag(Constants.CharacterTag))
         {
             var character = collision.GetComponent<Character>();

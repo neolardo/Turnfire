@@ -48,7 +48,9 @@ MonoBehaviour:
   _onlineTurnStateManagerPrefab: {fileID: 6119509186967578773, guid: 9008f4d9ba47d164a9351709bdddc7bc, type: 3}
   _onlineTimerPrefab: {fileID: 4680235980999089542, guid: d9622130bc70a1f4d9d6bfc9e8653a78, type: 3}
   _onlineSceneLoaderPrefab: {fileID: 2340165904196392950, guid: 09457fe8f5c4d0a4bb12e22a10fccc66, type: 3}
+  _onlineDropManagerPrefab: {fileID: 8553052072097350224, guid: 27d6c22f6de42bb4f97234b6f3bb0214, type: 3}
   _offlineGameStateManagerPrefab: {fileID: 6388547255340193819, guid: 72d049bc0e9e9fc44b61a6f429a2b746, type: 3}
   _offlineTurnStateManagerPrefab: {fileID: 7754326784142910902, guid: e3d66f1c410400a439dd0baab58c45cc, type: 3}
   _offlineTimerPrefab: {fileID: 8354179038335759795, guid: b76c83b66f99a354b9d89f8088037352, type: 3}
   _offlineSceneLoaderPrefab: {fileID: 4632844748752445241, guid: a4ff985ce750de54cb405c422e861ab3, type: 3}
+  _offlineDropManagerPrefab: {fileID: 3615479629450516572, guid: d6f929277ff7a43418a99ced134c14ee, type: 3}

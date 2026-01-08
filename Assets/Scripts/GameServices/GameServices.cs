@@ -8,18 +8,20 @@ public static class GameServices
     public static ITimer CountdownTimer { get; private set; }
     public static ITimer GameplayTimer { get; private set; }
     public static ISceneLoader SceneLoader { get; private set; }
+    public static IDropManager DropManager { get; private set; }
 
-    public static void InitializeOffline(OfflineGameStateManager gameStateManagerPrefab, OfflineTurnStateManager turnStateManagerPrefab, OfflineTimer timerPrefab, OfflineSceneLoader sceneLoaderPrefab)
+    public static void InitializeOffline(OfflineGameStateManager gameStateManagerPrefab, OfflineTurnStateManager turnStateManagerPrefab, OfflineTimer timerPrefab, OfflineSceneLoader sceneLoaderPrefab, OfflineDropManager dropManagerPrefab)
     {
         GameStateManager = GameObject.Instantiate(gameStateManagerPrefab);
         TurnStateManager = GameObject.Instantiate(turnStateManagerPrefab);
         CountdownTimer = GameObject.Instantiate(timerPrefab);
         GameplayTimer = GameObject.Instantiate(timerPrefab);
         SceneLoader = OfflineSceneLoader.Instance == null ? GameObject.Instantiate(sceneLoaderPrefab) : OfflineSceneLoader.Instance;
+        DropManager = GameObject.Instantiate(dropManagerPrefab);
         ConnectServices();
     }
 
-    public static void InitializeOnline(OnlineGameStateManager gameStateManagerPrefab, OnlineTurnStateManager turnStateManagerPrefab, OnlineTimer timerPrefab, OnlineSceneLoader sceneLoaderPrefab)
+    public static void InitializeOnline(OnlineGameStateManager gameStateManagerPrefab, OnlineTurnStateManager turnStateManagerPrefab, OnlineTimer timerPrefab, OnlineSceneLoader sceneLoaderPrefab, OnlineDropManager dropManagerPrefab)
     {
         if (!NetworkManager.Singleton.IsServer)
         {
@@ -45,6 +47,10 @@ public static class GameServices
         var sceneLoader = OnlineSceneLoader.Instance == null ? GameObject.Instantiate(sceneLoaderPrefab) : OnlineSceneLoader.Instance;
         sceneLoader.GetComponent<NetworkObject>().Spawn();
         SceneLoader = sceneLoader;
+
+        var dropManager = GameObject.Instantiate(dropManagerPrefab);
+        dropManager.GetComponent<NetworkObject>().Spawn();
+        DropManager = dropManager;
 
         ConnectServices();
     }

@@ -114,11 +114,11 @@ public class CameraController : MonoBehaviour
         PrioritizeVirtualCameras();
     }
 
-    public void SetPackageTarget(Package p)
+    public void SetPackageTarget(IPackage p)
     {
         _secondaryCameraType = VirtualCameraType.Package;
         _secondaryCameraBlend = _defaultEaseInBlend;
-        _packageCam.Follow = p.transform;
+        _packageCam.Follow = p.Transform;
         PrioritizeVirtualCameras();
     }
 

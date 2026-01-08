@@ -21,7 +21,7 @@ public class DeadZone : MonoBehaviour
         }
         else if (collision.CompareTag(Constants.PackageTag))
         {
-            var p = collision.GetComponent<Package>();
+            var p = collision.GetComponent<OfflinePackage>();
             p.Destroy();
         }
         else if (collision.CompareTag(Constants.HitboxTag))

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7dfde59b4a656724db07f3b707c091d3, type: 3}
-  m_Name: PackagePickuoSFX
+  m_Name: PackagePickupSFX
   m_EditorClassIdentifier: 
   clips:
   - {fileID: 8300000, guid: 12ca5fa230c3bfc47b27d9915736982e, type: 3}

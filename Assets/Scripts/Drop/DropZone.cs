@@ -3,24 +3,13 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider2D))]
 public class DropZone : MonoBehaviour
 {
-    [SerializeField] private Package _packagePrefab;
     private BoxCollider2D _zoneCollider;
 
     private void Awake()
     {
         _zoneCollider = GetComponent<BoxCollider2D>();
     }
-
-    public Package DropItemInPackage(ItemDefinition definition)
-    {
-        var spawnPos = GetRandomPointInZone();
-        var package = Instantiate(_packagePrefab, spawnPos, Quaternion.identity);
-        package.SetCollectible(new Item(definition));
-        package.gameObject.SetActive(true);
-        return package;
-    }
-
-    private Vector2 GetRandomPointInZone()
+    public Vector2 GetRandomPoint()
     {
         Vector2 center = (Vector2)transform.position + _zoneCollider.offset;
         Vector2 size = _zoneCollider.size;
