@@ -155,7 +155,7 @@ public class BotBrain : UnityDriven
 
         foreach (IPackage p in context.Packages)
         {
-            var packagePos = context.JumpGraph.FindClosestStandingPoint(p.transform.position);
+            var packagePos = context.JumpGraph.FindClosestStandingPoint(p.Transform.position);
             if (context.JumpGraph.TryCalculateJumpDistanceBetween(targetPoint, packagePos, out var numJumps))
             {
                 float packageScore = PackageJumpDistanceUtility(numJumps);

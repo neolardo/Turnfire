@@ -20,9 +20,10 @@ public interface ICharacterState
     event Action Healed;
     event Action<Vector2> Jumped;
     event Action<Vector2> Pushed;
-    event Action<Item, ItemUsageContext> ItemUsed;
-    event Action<Item> ItemSwitched;
+    event Action<ItemInstance, ItemUsageContext> ItemUsed;
+    event Action<ItemInstance> ItemSelected;
 
+    void Initialize(CharacterDefinition characterDefinition, Team team, CharacterArmorManager armorManager);
     void Damage(int value);
     void Heal(int value);
     void Kill();
@@ -30,9 +31,9 @@ public interface ICharacterState
     void RequestPush(Vector2 pushVector);
     void ApplyJumpBoost(float jumpBoost);
     void RemoveJumpBoost();
-    void RequestAddItem(Item item);
-    void RequestRemoveItem(Item item);
-    void RequestSelectItem(Item item);
-    void RequestUseItem(Item item, ItemUsageContext context);
-    IEnumerable<Item> GetAllItems();
+    void RequestAddItem(ItemInstance item);
+    void RequestRemoveItem(ItemInstance item);
+    void RequestSelectItem(ItemInstance item);
+    void RequestUseItem(ItemInstance item, ItemUsageContext context);
+    IEnumerable<ItemInstance> GetAllItems();
 }

@@ -8,13 +8,14 @@ public class CharacterView : MonoBehaviour
     private CharacterArmorManager _armorManager;
     public Transform ItemTransform => _animator.ItemTransform;
     public bool IsPlayingNonIdleAnimation => _animator.IsPlayingNonIdleAnimation;
-    public CharacterView(CharacterAnimator animator, CharacterDefinition definition, CharacterHealthbarRenderer healthbarRenderer, CharacterArmorManager armorManager)
+    public CharacterView(CharacterAnimator animator, CharacterDefinition definition, CharacterHealthbarRenderer healthbarRenderer, CharacterArmorManager armorManager, Team team)
     {
+        _definition = definition;
         _armorManager = armorManager;
         _armorManager.ArmorEquipped += _animator.PlayEquipArmorAnimation;
         _armorManager.ArmorUnequipped += _animator.PlayUnequipArmorAnimation;
         _animator = animator;
-        _definition = definition;
+        _animator.Initialize(_definition, team.TeamColor);
         _healthbarRenderer = healthbarRenderer;
         _healthbarRenderer.Initilaize(_definition.MaxHealth);
     }

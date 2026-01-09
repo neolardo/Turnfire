@@ -22,7 +22,7 @@ public class Character : MonoBehaviour, IConditionalEnumerable
     public int Health => _state.Health;
     public bool IsAlive => _state.IsAlive;
     public bool IsMoving => _physics.IsMoving;
-    public bool IsUsingSelectedItem => _state.IsUsingSelectedItem || _view.IsPlayingNonIdleAnimation; //TODO? view?
+    public bool IsUsingSelectedItem => _state.IsUsingSelectedItem;
     public float NormalizedHealth => _state.NormalizedHealth;
     public Vector2 FeetPosition => _physics.FeetPosition;
     public Vector2 FeetOffset => _physics.FeetOffset;
@@ -36,15 +36,14 @@ public class Character : MonoBehaviour, IConditionalEnumerable
     public event Action<Item> SelectedItemChanged;
     public event Action SelectedItemUsed;
 
-    public void Initialize(Team team)
+    public void Initialize(Team team, ICharacterState state, ICharacterPhysics physics)
     {
         ArmorManager = new CharacterArmorManager();
-        _animator.Initialize(_definition, team.TeamColor);
-        _state = new OfflineCharacterState( _definition, team, ArmorManager);
-        _view = new CharacterView(_animator, _definition, _healthbarRenderer, ArmorManager);
+        _state = state;
+        _physics = physics;
+        _state.Initialize(_definition, team, ArmorManager);
+        _view = new CharacterView(_animator, _definition, _healthbarRenderer, ArmorManager, team);
         _logic = new CharacterLogic(_state, _definition);
-        _physics = new OfflineCharacterPhysics();
-        //TODO: create and initialize controllers from factory
         SubscribeToStateChangedEvents();
     }
 
@@ -66,7 +65,7 @@ public class Character : MonoBehaviour, IConditionalEnumerable
         _state.Jumped += InvokeJumped;
         _state.ItemUsed += _view.OnItemUsed;
         _state.ItemUsed += InvokeSelectedItemUsed;
-        _state.ItemSwitched += InvokeSelectedItemChanged;
+        _state.ItemSelected += InvokeSelectedItemChanged;
     }
 
     private void UnsubscribeFromStateChangedEvents()
@@ -82,7 +81,7 @@ public class Character : MonoBehaviour, IConditionalEnumerable
         _state.Jumped -= InvokeJumped;
         _state.ItemUsed -= _view.OnItemUsed;
         _state.ItemUsed -= InvokeSelectedItemUsed;
-        _state.ItemSwitched -= InvokeSelectedItemChanged;
+        _state.ItemSelected -= InvokeSelectedItemChanged;
     }
 
     #region Health

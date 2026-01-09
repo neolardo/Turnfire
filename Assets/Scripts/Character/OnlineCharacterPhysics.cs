@@ -1,7 +1,9 @@
 using Unity.Netcode;
+using Unity.Netcode.Components;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
+[RequireComponent(typeof(NetworkRigidbody2D), typeof(NetworkTransform))]
 public class OnlineCharacterPhysics : NetworkBehaviour, ICharacterPhysics
 {
     private Rigidbody2D _rb;
@@ -10,17 +12,24 @@ public class OnlineCharacterPhysics : NetworkBehaviour, ICharacterPhysics
     public Vector2 FeetPosition => (Vector2)transform.position + Vector2.down * Collider.bounds.extents.y;
     public Vector2 FeetOffset => Vector2.down * Collider.bounds.extents.y;
 
-    private void Awake()
-    {
-        _rb = GetComponent<Rigidbody2D>();
-        Collider = GetComponent<Collider2D>();
-    }
-
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-        //TODO: use network transform
-        _rb.simulated = IsServer;
+        _rb = GetComponent<Rigidbody2D>();
+        Collider = GetComponent<Collider2D>();
+        var netRb = GetComponent<NetworkRigidbody2D>();
+        netRb.UseRigidBodyForMotion = true;
+        if (IsServer)
+        {
+            _rb.bodyType = RigidbodyType2D.Dynamic;
+            _rb.simulated = true;
+
+        }
+        else
+        {
+            _rb.bodyType = RigidbodyType2D.Kinematic;
+            _rb.simulated = false;
+        }
     }
 
     #region Movement

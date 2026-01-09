@@ -14,17 +14,19 @@ public class GameplayerServicesBootstrap : MonoBehaviour
     [SerializeField] OfflineTimer _offlineTimerPrefab;
     [SerializeField] OfflineSceneLoader _offlineSceneLoaderPrefab;
     [SerializeField] OfflineDropManager _offlineDropManagerPrefab;
+    [Header("Invariant")]
+    [SerializeField] ItemDatabase _itemDatabase;
 
     private void Awake()
     {
         bool isOnlineGame = GameplaySceneSettingsStorage.Current.IsOnlineGame;
         if(isOnlineGame)
         {
-            GameServices.InitializeOnline(_onlineGameStateManagerPrefab, _onlineTurnStateManagerPrefab, _onlineTimerPrefab, _onlineSceneLoaderPrefab, _onlineDropManagerPrefab);
+            GameServices.InitializeOnline(_onlineGameStateManagerPrefab, _onlineTurnStateManagerPrefab, _onlineTimerPrefab, _onlineSceneLoaderPrefab, _onlineDropManagerPrefab, _itemDatabase);
         }
         else
         {
-            GameServices.InitializeOffline(_offlineGameStateManagerPrefab, _offlineTurnStateManagerPrefab, _offlineTimerPrefab, _offlineSceneLoaderPrefab, _offlineDropManagerPrefab);
+            GameServices.InitializeOffline(_offlineGameStateManagerPrefab, _offlineTurnStateManagerPrefab, _offlineTimerPrefab, _offlineSceneLoaderPrefab, _offlineDropManagerPrefab, _itemDatabase);
         }
     }
 }

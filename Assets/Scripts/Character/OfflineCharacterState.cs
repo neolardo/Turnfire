@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OfflineCharacterState : ICharacterState
+public class OfflineCharacterState : MonoBehaviour, ICharacterState
 {
     private CharacterArmorManager _armorManager;
+    private CharacterItemInventory _inventory;
     private CharacterDefinition _definition;
     private int _health;
     public int Health
@@ -26,7 +27,6 @@ public class OfflineCharacterState : ICharacterState
 
     public bool IsAlive => _health > 0;
 
-    private List<Item> _items;
     public bool IsUsingSelectedItem => SelectedItem == null ? false : SelectedItem.Behavior.IsInUse;
     public Item SelectedItem { get; private set; }
     public float JumpBoost { get; private set; }
@@ -40,16 +40,15 @@ public class OfflineCharacterState : ICharacterState
     public event Action Healed;
     public event Action<Vector2> Jumped;
     public event Action<Vector2> Pushed;
-    public event Action<Item, ItemUsageContext> ItemUsed;
-    public event Action<Item> ItemSwitched;
+    public event Action<ItemInstance, ItemUsageContext> ItemUsed;
+    public event Action<ItemInstance> ItemSelected;
 
-    public OfflineCharacterState(CharacterDefinition characterDefinition, Team team, CharacterArmorManager armorManager)
+    public void Initialize(CharacterDefinition characterDefinition, Team team, CharacterArmorManager armorManager)
     {
-        _items = new List<Item>(); //TODO: initial items
-
-        Team = team;
         _definition = characterDefinition;
         _armorManager = armorManager;
+        Team = team;
+        _inventory = new CharacterItemInventory();
     }
 
     #region Health
@@ -113,28 +112,29 @@ public class OfflineCharacterState : ICharacterState
     #endregion
 
     #region Items
-    public void RequestAddItem(Item item)
+
+    public void RequestAddItem(ItemInstance item)
     {
-        _items.Add(item);
+        _inventory.AddItem(item);
     }
-    public void RequestRemoveItem(Item item)
+    public void RequestRemoveItem(ItemInstance item)
     {
-        _items.Remove(item);
+        _inventory.RemoveItem(item);
     }
-    public void RequestSelectItem(Item item)
+    public void RequestSelectItem(ItemInstance item)
     {
-        SelectedItem = item;
-        ItemSwitched?.Invoke(item);
+        _inventory.SelectItem(item);
+        ItemSelected?.Invoke(item);
     }
-    public void RequestUseItem(Item item, ItemUsageContext context)
+    public void RequestUseItem(ItemInstance item, ItemUsageContext context)
     {
         SelectedItem.Behavior.Use(context);
         ItemUsed?.Invoke(item, context);
     }
-    public IEnumerable<Item> GetAllItems()
+    public IEnumerable<ItemInstance> GetAllItems()
     {
-        return _items;
-    } 
+        return _inventory.GetAllItems();
+    }
 
     #endregion
 

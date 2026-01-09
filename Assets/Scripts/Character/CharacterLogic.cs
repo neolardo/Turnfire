@@ -32,20 +32,20 @@ public class CharacterLogic
     {
         foreach (var itemDefinition in initialItems)
         {
-            TryAddItem(new Item(itemDefinition, false));
+            TryAddItem(new ItemInstance(itemDefinition.Id, false));
         }
         var allItems = _state.GetAllItems();
         TrySelectItem(allItems.Where(i => i.Definition.ItemType == ItemType.Weapon).FirstOrDefault());
     }
 
-    public bool TryAddItem(Item item)
+    public bool TryAddItem(ItemInstance item)
     {
         var items = _state.GetAllItems();
         var existingItem = items.FirstOrDefault(i => i.IsSameType(item));
         if (existingItem == null)
         {
             _state.RequestAddItem(item);
-            item.CollectibleDestroyed += OnItemDestroyed;
+            item.Destroyed += OnItemDestroyed;
             if (_state.SelectedItem == null && item.Definition.ItemType == ItemType.Weapon)
             {
                 TrySelectItem(item);
@@ -68,11 +68,11 @@ public class CharacterLogic
         }
     }
 
-    private void RemoveItem(Item item)
+    private void RemoveItem(ItemInstance item)
     {
         var items = _state.GetAllItems();
         _state.RequestRemoveItem(item);
-        if (_state == item)
+        if (_state.SelectedItem == item)
         {
             TrySelectItem(items.FirstOrDefault(i => i.Definition.ItemType == ItemType.Weapon));
         }

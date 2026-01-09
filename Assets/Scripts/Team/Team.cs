@@ -5,13 +5,14 @@ using UnityEngine;
 
 public class Team : MonoBehaviour, IConditionalEnumerable
 {
-    [HideInInspector] public bool IsTeamAlive => _characters.Any(c => c.IsAlive);
     [SerializeField] private Color _teamColor;
 
     private List<Character> _characters;
     private CyclicConditionalEnumerator<Character> _characterEnumerator;
     private bool _isSelected;
-    public string TeamName { get; set; }
+    public string TeamName { get; private set; }
+    public int TeamId { get; private set; }
+    public bool IsTeamAlive => _characters.Any(c => c.IsAlive);
     public ITeamInputSource InputSource { get; private set; }
     public Color TeamColor => _teamColor;
     public Character CurrentCharacter => _characterEnumerator.Current;
@@ -24,25 +25,28 @@ public class Team : MonoBehaviour, IConditionalEnumerable
     public event Action TeamLost;
     public event Action<bool> TeamSelectedChanged;
 
-    private void Awake()
+
+    public void Initialize(ITeamInputSource inputSource, int teamId, string teamName)
     {
-        TeamName = gameObject.name;
+        InputSource = inputSource;
+        TeamId = teamId;
+        TeamName = teamName;
         _characters = new List<Character>();
-        for (int i=0; i< transform.childCount; i++)
+        for (int i = 0; i < transform.childCount; i++)
         {
             var child = transform.GetChild(i);
             var character = child.GetComponent<Character>();
             character.Died += OnAnyTeamCharacterDied;
             character.HealthChanged += (_, _) => OnAnyTeamCharacterHealthChanged();
-            character.Initialize(this);
+            CharacterComposer.Compose(character, this);
             _characters.Add(character);
         }
-        _characterEnumerator = new CyclicConditionalEnumerator<Character>(_characters);
-        _characterEnumerator.Reset();
         if (_characters.Count == 0)
         {
             Debug.LogWarning($"{TeamName} has 0 characters.");
         }
+        _characterEnumerator = new CyclicConditionalEnumerator<Character>(_characters);
+        _characterEnumerator.Reset();
     }
 
     public void SelectTeam()
@@ -61,11 +65,6 @@ public class Team : MonoBehaviour, IConditionalEnumerable
             _isSelected = false;
             TeamSelectedChanged?.Invoke(_isSelected);
         }
-    }
-
-    public void InitializeInputSource(ITeamInputSource inputSource)
-    {
-        InputSource = inputSource;
     }
 
     private void OnAnyTeamCharacterHealthChanged()

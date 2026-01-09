@@ -23,7 +23,6 @@ public static class BotEvaluationStatistics
         _dataPerTeam[team] = new BotEvaluationData();
         _dataPerTeam[team].TeamName = team.TeamName;
         _difficultyPerTeam[team] = difficulty;
-        team.TeamName += $" {difficulty}";
     } 
 
     public static BotEvaluationData GetData(Team team)

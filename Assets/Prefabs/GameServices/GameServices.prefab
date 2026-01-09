@@ -54,3 +54,4 @@ MonoBehaviour:
   _offlineTimerPrefab: {fileID: 8354179038335759795, guid: b76c83b66f99a354b9d89f8088037352, type: 3}
   _offlineSceneLoaderPrefab: {fileID: 4632844748752445241, guid: a4ff985ce750de54cb405c422e861ab3, type: 3}
   _offlineDropManagerPrefab: {fileID: 3615479629450516572, guid: d6f929277ff7a43418a99ced134c14ee, type: 3}
+  _itemDatabase: {fileID: 11400000, guid: 402d0a0ee04303440b967f165ac777d1, type: 2}
