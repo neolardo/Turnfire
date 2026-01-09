@@ -75,7 +75,7 @@ public class CharacterBodyAnimator : MonoBehaviour
         PlayAnimation(CharacterAnimationState.Idle);
     }
 
-    public void PlayItemActionAnimation(Vector2 aimVector, Item selectedItem)
+    public void PlayItemActionAnimation(Vector2 aimVector, ItemInstance selectedItem)
     {
         aimVector = aimVector.normalized;
         var nextAnimation = CharacterAnimationState.Idle;

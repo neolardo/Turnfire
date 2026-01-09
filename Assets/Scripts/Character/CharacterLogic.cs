@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -9,7 +8,7 @@ public class CharacterLogic
     public CharacterLogic(ICharacterState state, CharacterDefinition definition)
     {
         _state = state;
-        AddInitialItems(definition.InitialItems);
+        TrySelectAnyWeapon();
     }
 
     #region Movement
@@ -28,12 +27,8 @@ public class CharacterLogic
 
     #region Items
 
-    private void AddInitialItems(IEnumerable<ItemDefinition> initialItems)
+    private void TrySelectAnyWeapon()
     {
-        foreach (var itemDefinition in initialItems)
-        {
-            TryAddItem(new ItemInstance(itemDefinition.Id, false));
-        }
         var allItems = _state.GetAllItems();
         TrySelectItem(allItems.Where(i => i.Definition.ItemType == ItemType.Weapon).FirstOrDefault());
     }
@@ -58,10 +53,10 @@ public class CharacterLogic
         }
     }
 
-    private void OnItemDestroyed(ICollectible collectible)
+    private void OnItemDestroyed(ItemInstance destroyedItem)
     {
         var items = _state.GetAllItems();
-        var item = items.FirstOrDefault(i => i == collectible);
+        var item = items.FirstOrDefault(i => i.InstanceId == destroyedItem.InstanceId);
         if (item != null)
         {
             RemoveItem(item);
@@ -74,7 +69,7 @@ public class CharacterLogic
         _state.RequestRemoveItem(item);
         if (_state.SelectedItem == item)
         {
-            TrySelectItem(items.FirstOrDefault(i => i.Definition.ItemType == ItemType.Weapon));
+            TrySelectAnyWeapon();
         }
     }
 
@@ -83,7 +78,7 @@ public class CharacterLogic
         _state.RequestUseItem(_state.SelectedItem, context);
     }
 
-    public bool TrySelectItem(Item item, ItemUsageContext usageContext = default) //TODO: usage context
+    public bool TrySelectItem(ItemInstance item, ItemUsageContext usageContext = default) //TODO: usage context
     {
         var items = _state.GetAllItems();
         if ((item == null) || (items.Contains(item) && item != _state.SelectedItem))

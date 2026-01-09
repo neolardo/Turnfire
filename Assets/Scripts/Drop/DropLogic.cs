@@ -32,25 +32,13 @@ public class DropLogic
         return numDrops;
     }
 
-    public IPackage CreatePackage(OfflinePackage packagePrefab, IList<DropZone> dropZones)
+    public T CreatePackage<T>(T packagePrefab, IList<DropZone> dropZones) where T: Object, IPackage
     {
         var itemDefinition = PickRandomItem();
         int zoneIndex = Random.Range(0, dropZones.Count);
         var spawnPos = dropZones[zoneIndex].GetRandomPoint();
         var package = GameObject.Instantiate(packagePrefab, spawnPos, Quaternion.identity);
-        package.SetCollectible(new Item(itemDefinition));
-        package.gameObject.SetActive(true);
-        return package;
-    }
-
-    public IPackage CreatePackage(OnlinePackage packagePrefab, IList<DropZone> dropZones)
-    {
-        var itemDefinition = PickRandomItem();
-        int zoneIndex = Random.Range(0, dropZones.Count);
-        var spawnPos = dropZones[zoneIndex].GetRandomPoint();
-        var package = GameObject.Instantiate(packagePrefab, spawnPos, Quaternion.identity);
-        package.SetCollectible(new Item(itemDefinition));
-        package.gameObject.SetActive(true);
+        package.SetItem(ItemInstance.CreateAsDrop(itemDefinition));
         return package;
     }
 

@@ -12,7 +12,7 @@ public class OnlinePackage : NetworkBehaviour, IPackage
     public Transform Transform => transform;
 
     private Rigidbody2D _rb;
-    private ICollectible _collectible;
+    private ItemInstance _itemInstance;
     private CameraController _cameraController;
     private bool _destroyed;
 
@@ -46,7 +46,7 @@ public class OnlinePackage : NetworkBehaviour, IPackage
         if (collision.CompareTag(Constants.CharacterTag))
         {
             var character = collision.GetComponent<Character>();
-            if (_collectible.TryCollect(character))
+            if (character.TryAddItem(_itemInstance))
             {
                 AudioManager.Instance.PlaySFXAt(collectSFX, transform.position);
                 Destroy();
@@ -67,8 +67,8 @@ public class OnlinePackage : NetworkBehaviour, IPackage
         Destroy(gameObject);
     }
 
-    public void SetCollectible(ICollectible collectible)
+    public void SetItem(ItemInstance item)
     {
-        _collectible = collectible;
+        _itemInstance = item;
     }
 }

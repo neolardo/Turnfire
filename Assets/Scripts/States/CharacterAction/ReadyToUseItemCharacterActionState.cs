@@ -24,7 +24,7 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
         _currentCharacter.SelectedItemChanged += OnSelectedItemChanged;
         _currentCharacter.SelectedItemUsed += EndState;
         _inputSource.SelectedItemUsed += _currentCharacter.UseSelectedItem;
-        _inputSource.SelectedItemSwitchRequested += OnSelectedItemSwitchRequested;
+        _inputSource.ItemSelected += OnItemSelected;
         _inputSource.ImpulseReleased += OnImpulseReleased;
         _inputSource.AimStarted += OnAimStarted;
         _inputSource.AimChanged += OnAimChanged;
@@ -36,7 +36,7 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
         _currentCharacter.SelectedItemChanged -= OnSelectedItemChanged;
         _currentCharacter.SelectedItemUsed -= EndState;
         _inputSource.SelectedItemUsed -= _currentCharacter.UseSelectedItem;
-        _inputSource.SelectedItemSwitchRequested -= OnSelectedItemSwitchRequested;
+        _inputSource.ItemSelected -= OnItemSelected;
         _inputSource.ImpulseReleased -= OnImpulseReleased;
         _inputSource.AimStarted -= OnAimStarted;
         _inputSource.AimChanged -= OnAimChanged;
@@ -44,7 +44,7 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
         _inputSource.ActionSkipped -= OnActionSkipped;
     }
 
-    private void OnSelectedItemSwitchRequested(Item item)
+    private void OnItemSelected(ItemInstance item)
     {
         _currentCharacter.TrySelectItem(item);
     }
@@ -87,7 +87,7 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
         _inputSource.RequestAction(State);
     }
 
-    public void OnSelectedItemChanged(Item selectedItem)
+    public void OnSelectedItemChanged(ItemInstance selectedItem)
     {
         _inputSource.IsAimingEnabled = selectedItem != null;
         if (selectedItem == null)

@@ -7,6 +7,6 @@ public interface IPackage
     bool IsActiveInHierarchy { get; }
     Transform Transform { get; }
     event Action<IPackage> Destroyed;
-    void SetCollectible(ICollectible collectible);
+    void SetItem(ItemInstance itemInstance);
     void Destroy();
 }

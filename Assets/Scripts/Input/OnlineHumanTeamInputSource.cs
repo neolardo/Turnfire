@@ -62,7 +62,7 @@ public class OnlineHumanTeamInputSource : NetworkBehaviour, ITeamInputSource
     public event Action AimCancelled;
     public event Action ActionSkipped;
     public event Action<ItemUsageContext> SelectedItemUsed;
-    public event Action<Item> SelectedItemSwitchRequested;
+    public event Action<ItemInstance> ItemSelected;
 
     private void Start()
     {

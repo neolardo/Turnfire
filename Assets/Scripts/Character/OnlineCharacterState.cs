@@ -15,7 +15,7 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
 
     public bool IsUsingSelectedItem => throw new NotImplementedException();
 
-    public Item SelectedItem => throw new NotImplementedException();
+    public ItemInstance SelectedItem => throw new NotImplementedException();
 
     public float JumpBoost => throw new NotImplementedException();
 

@@ -28,12 +28,12 @@ public class Character : MonoBehaviour, IConditionalEnumerable
     public Vector2 FeetOffset => _physics.FeetOffset;
     public float JumpStrength => _state.JumpStrength;
     public bool EnumeratorCondition => IsAlive;
-    public Item SelectedItem => _state.SelectedItem;
+    public ItemInstance SelectedItem => _state.SelectedItem;
 
     public event Action<float, int> HealthChanged;
     public event Action Jumped;
     public event Action Died;
-    public event Action<Item> SelectedItemChanged;
+    public event Action<ItemInstance> SelectedItemChanged;
     public event Action SelectedItemUsed;
 
     public void Initialize(Team team, ICharacterState state, ICharacterPhysics physics)
@@ -164,12 +164,12 @@ public class Character : MonoBehaviour, IConditionalEnumerable
 
     #region Items
 
-    public bool TryAddItem(Item item)
+    public bool TryAddItem(ItemInstance item)
     {
         return _logic.TryAddItem(item);
     }
 
-    public IEnumerable<Item> GetAllItems()
+    public IEnumerable<ItemInstance> GetAllItems()
     {
         return _state.GetAllItems();
     }
@@ -181,7 +181,7 @@ public class Character : MonoBehaviour, IConditionalEnumerable
         _logic.UseSelectedItem(context);
     }
 
-    public bool TrySelectItem(Item item)
+    public bool TrySelectItem(ItemInstance item)
     {
         return _logic.TrySelectItem(item);
     }
@@ -204,11 +204,11 @@ public class Character : MonoBehaviour, IConditionalEnumerable
     {
         HealthChanged?.Invoke(normalizedValue, value);
     }
-    private void InvokeSelectedItemChanged(Item newItem)
+    private void InvokeSelectedItemChanged(ItemInstance newItem)
     {
         SelectedItemChanged?.Invoke(newItem);
     }
-    private void InvokeSelectedItemUsed(Item item, ItemUsageContext context)
+    private void InvokeSelectedItemUsed(ItemInstance item, ItemUsageContext context)
     {
         SelectedItemUsed?.Invoke();
     }

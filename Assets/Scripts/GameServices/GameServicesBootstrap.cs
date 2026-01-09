@@ -8,12 +8,14 @@ public class GameplayerServicesBootstrap : MonoBehaviour
     [SerializeField] OnlineTimer _onlineTimerPrefab;
     [SerializeField] OnlineSceneLoader _onlineSceneLoaderPrefab;
     [SerializeField] OnlineDropManager _onlineDropManagerPrefab;
+    [SerializeField] OnlineIdGenerator _onlineIdGeneratorPrefab;
     [Header("Offline")]
     [SerializeField] OfflineGameStateManager _offlineGameStateManagerPrefab;
     [SerializeField] OfflineTurnStateManager _offlineTurnStateManagerPrefab;
     [SerializeField] OfflineTimer _offlineTimerPrefab;
     [SerializeField] OfflineSceneLoader _offlineSceneLoaderPrefab;
     [SerializeField] OfflineDropManager _offlineDropManagerPrefab;
+    [SerializeField] OfflineIdGenerator _offlineIdGeneratorPrefab;
     [Header("Invariant")]
     [SerializeField] ItemDatabase _itemDatabase;
 
@@ -22,11 +24,11 @@ public class GameplayerServicesBootstrap : MonoBehaviour
         bool isOnlineGame = GameplaySceneSettingsStorage.Current.IsOnlineGame;
         if(isOnlineGame)
         {
-            GameServices.InitializeOnline(_onlineGameStateManagerPrefab, _onlineTurnStateManagerPrefab, _onlineTimerPrefab, _onlineSceneLoaderPrefab, _onlineDropManagerPrefab, _itemDatabase);
+            GameServices.InitializeOnline(_onlineGameStateManagerPrefab, _onlineTurnStateManagerPrefab, _onlineTimerPrefab, _onlineSceneLoaderPrefab, _onlineDropManagerPrefab, _onlineIdGeneratorPrefab, _itemDatabase);
         }
         else
         {
-            GameServices.InitializeOffline(_offlineGameStateManagerPrefab, _offlineTurnStateManagerPrefab, _offlineTimerPrefab, _offlineSceneLoaderPrefab, _offlineDropManagerPrefab, _itemDatabase);
+            GameServices.InitializeOffline(_offlineGameStateManagerPrefab, _offlineTurnStateManagerPrefab, _offlineTimerPrefab, _offlineSceneLoaderPrefab, _offlineDropManagerPrefab, _offlineIdGeneratorPrefab ,_itemDatabase);
         }
     }
 }

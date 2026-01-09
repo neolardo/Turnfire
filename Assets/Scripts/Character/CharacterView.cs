@@ -52,7 +52,7 @@ public class CharacterView : MonoBehaviour
 
     #region Aim
 
-    public void StartAiming(Item item)
+    public void StartAiming(ItemInstance item)
     {
         _animator.StartAiming(item);
     }
@@ -96,7 +96,7 @@ public class CharacterView : MonoBehaviour
 
     #region Item
 
-    public void OnItemUsed(Item item, ItemUsageContext context)
+    public void OnItemUsed(ItemInstance item, ItemUsageContext context)
     {
         _animator.PlayItemActionAnimation(context.AimVector, item);
     }

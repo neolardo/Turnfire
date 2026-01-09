@@ -20,7 +20,7 @@ public class CharacterAnimator : MonoBehaviour
         _bodyAnimator.SetTeamColor(teamColor);
     }
 
-    public void StartAiming(Item weapon)
+    public void StartAiming(ItemInstance weapon)
     {
         _isCurrentWeaponRanged = (weapon.Definition as WeaponDefinition).IsRanged;
         _itemRenderer.ChangeItem(weapon);
@@ -49,7 +49,7 @@ public class CharacterAnimator : MonoBehaviour
         _bodyAnimator.PlayIdleAnimation();
     }
 
-    public void PlayItemActionAnimation(Vector2 aimVector, Item item)
+    public void PlayItemActionAnimation(Vector2 aimVector, ItemInstance item)
     {
         if(item.Definition.HideItemDuringUsage)
         {

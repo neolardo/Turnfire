@@ -42,6 +42,7 @@ public class OfflineDropManager : MonoBehaviour, IDropManager
         for (int i = 0; i < numDrops; i++)
         {
             var package = _logic.CreatePackage(_offlinePackagePrefab, _dropZones);
+            package.gameObject.SetActive(true);
             package.Destroyed += OnPackageDestroyed;
             _currentPackages.Add(package);
             yield return WaitForPackageToLand(package);

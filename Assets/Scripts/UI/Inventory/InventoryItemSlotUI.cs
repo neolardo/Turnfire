@@ -21,8 +21,7 @@ public class InventoryItemSlotUI : MonoBehaviour,
     [SerializeField] private Sprite _deselectedSlotSprite;
     [SerializeField] private TextMeshProUGUI _quantityText;
     private LocalInputHandler _inputHandler;
-    public Item Item => _item;
-    private Item _item;
+    public ItemInstance Item {get; private set;}
 
     public event Action<InventoryItemSlotUI> Selected;
     public event Action<InventoryItemSlotUI> Hovered;
@@ -37,9 +36,9 @@ public class InventoryItemSlotUI : MonoBehaviour,
 
     #region Item
 
-    public void LoadItem(Item item)
+    public void LoadItem(ItemInstance item)
     {
-        _item = item;
+        Item = item;
         _itemImage.sprite = item.Definition.Sprite;
         _itemImage.gameObject.SetActive(true);
         _quantityText.text = (item.Definition.IsQuantityInfinite || item.Definition.MaximumQuantity == 1) ? string.Empty : item.Quantity.ToString();
@@ -47,7 +46,7 @@ public class InventoryItemSlotUI : MonoBehaviour,
 
     public void UnloadItem()
     {
-        _item = null;
+        Item = null;
         _itemImage.sprite = null;
         _itemImage.gameObject.SetActive(false);
         _quantityText.text = string.Empty;

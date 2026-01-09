@@ -13,7 +13,7 @@ public class OfflineBotTeamInputSource : MonoBehaviour, ITeamInputSource
     public event Action AimCancelled;
     public event Action ActionSkipped;
     public event Action<ItemUsageContext> SelectedItemUsed;
-    public event Action<Item> SelectedItemSwitchRequested;
+    public event Action<ItemInstance> ItemSelected;
 
     private void Start()
     {
@@ -54,9 +54,9 @@ public class OfflineBotTeamInputSource : MonoBehaviour, ITeamInputSource
         ActionSkipped?.Invoke();
     }
 
-    private void InvokeSwitchSelectedItem(Item item)
+    private void InvokeSwitchSelectedItem(ItemInstance item)
     {
-        SelectedItemSwitchRequested?.Invoke(item);
+        ItemSelected?.Invoke(item);
     }
 
     private void InvokeUseSelectedItem(ItemUsageContext context)

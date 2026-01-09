@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class OfflineCharacterState : MonoBehaviour, ICharacterState
 {
-    private CharacterArmorManager _armorManager;
-    private CharacterItemInventory _inventory;
     private CharacterDefinition _definition;
+    private CharacterItemInventory _inventory;
+    private CharacterArmorManager _armorManager;
     private int _health;
     public int Health
     {
@@ -28,7 +28,7 @@ public class OfflineCharacterState : MonoBehaviour, ICharacterState
     public bool IsAlive => _health > 0;
 
     public bool IsUsingSelectedItem => SelectedItem == null ? false : SelectedItem.Behavior.IsInUse;
-    public Item SelectedItem { get; private set; }
+    public ItemInstance SelectedItem { get; private set; }
     public float JumpBoost { get; private set; }
     public float JumpStrength => CharacterDefinition.JumpStrength + JumpBoost;
     public Team Team { get; private set; }
@@ -49,6 +49,10 @@ public class OfflineCharacterState : MonoBehaviour, ICharacterState
         _armorManager = armorManager;
         Team = team;
         _inventory = new CharacterItemInventory();
+        foreach (var itemDef in _definition.InitialItems)
+        {
+            _inventory.AddItem(ItemInstance.CreateAsInitialItem(itemDef));
+        }
     }
 
     #region Health

@@ -4,7 +4,7 @@ using UnityEngine;
 public class BotController
 {
     public event Action<Vector2> AimAndRelease; 
-    public event Action<Item> SwitchSelectedItem; 
+    public event Action<ItemInstance> SwitchSelectedItem; 
     public event Action<ItemUsageContext> UseSelectedItem;
     public event Action SkipAction;
 
@@ -38,13 +38,13 @@ public class BotController
         AimAndRelease?.Invoke(jumpVector);
     }
 
-    private void ActAttack(Vector2 aimVector, Item weapon)
+    private void ActAttack(Vector2 aimVector, ItemInstance weapon)
     {
         SwitchSelectedItem?.Invoke(weapon);
         AimAndRelease?.Invoke(aimVector);
     }
 
-    private void ActUseItem(Item item, ItemUsageContext context)
+    private void ActUseItem(ItemInstance item, ItemUsageContext context)
     {
         SwitchSelectedItem?.Invoke(item);
         if(!item.Definition.UseInstantlyWhenSelected)

@@ -2,8 +2,8 @@ using System;
 
 public class ItemInstance 
 {
-    public int InstanceId { get; private set; }
-    public int DefinitionId { get; private set; }
+    public int InstanceId { get;  }
+    public int DefinitionId { get; }
 
     private int _quantity;
     public int Quantity
@@ -17,22 +17,33 @@ public class ItemInstance
             if(_quantity != value) 
             {
                 _quantity = value;
-                QuantityChanged?.Invoke();
+                QuantityChanged?.Invoke(this);
             }
         }
     }
 
-    private ItemDefinition _definition;
+    public IItemBehavior Behavior { get; }
+    public ItemDefinition Definition { get; }
 
-    public event Action QuantityChanged;
-    public event Action Destroyed;
+    public event Action<ItemInstance> QuantityChanged;
+    public event Action<ItemInstance> Destroyed;
 
     public ItemInstance(int instanceId, int definitionId, int initialQuantity)
     {
         InstanceId = instanceId;
         DefinitionId = definitionId;
         Quantity = initialQuantity;
-        _definition = GameServices.ItemDatabase.GetById(instanceId);
+        Definition = GameServices.ItemDatabase.GetById(instanceId);
+        Behavior = Definition.CreateItemBehavior();
+    }
+
+    public static ItemInstance CreateAsInitialItem(ItemDefinition definition)
+    {
+        return new ItemInstance(definition.Id, GameServices.ItemInstanceIdGenerator.GenerateId(), definition.InitialQuantity);
+    }
+    public static ItemInstance CreateAsDrop(ItemDefinition definition)
+    {
+        return new ItemInstance(definition.Id, GameServices.ItemInstanceIdGenerator.GenerateId(), definition.DropQuantityRange.CalculateValue());
     }
 
     public bool IsSameType(ItemInstance other)
@@ -46,9 +57,9 @@ public class ItemInstance
         {
             return false;
         }
-        if (Quantity < _definition.MaximumQuantity && !_definition.IsQuantityInfinite)
+        if (Quantity < Definition.MaximumQuantity && !Definition.IsQuantityInfinite)
         {
-            Quantity = Math.Min(_definition.MaximumQuantity, Quantity + other.Quantity);
+            Quantity = Math.Min(Definition.MaximumQuantity, Quantity + other.Quantity);
             return true;
         }
         return false;
@@ -56,19 +67,19 @@ public class ItemInstance
 
     public void DecreaseQuantity()
     {
-        if (_definition.IsQuantityInfinite)
+        if (Definition.IsQuantityInfinite)
         {
             return;
         }
         Quantity--;
         if (Quantity == 0)
         {
-            Destroyed?.Invoke();
+            Destroy();
         }
     }
 
     public void Destroy()
     {
-        Destroyed?.Invoke();
+        Destroyed?.Invoke(this);
     }
 }

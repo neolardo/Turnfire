@@ -238,7 +238,7 @@ public class BotBrain : UnityDriven
         onDone?.Invoke(pickedGoal);       
     }
 
-    private IEnumerator EvaluateItemScore(Item item, BotContext context, Action<float, BotGoal> onDone)
+    private IEnumerator EvaluateItemScore(ItemInstance item, BotContext context, Action<float, BotGoal> onDone)
     {
         var startPos = context.Self.ItemTransform.position;
         var simulationContext = new ItemBehaviorSimulationContext(context.Self, context.TeamMates.Concat(context.Enemies), startPos, Vector2.zero, context.Terrain);

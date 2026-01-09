@@ -44,9 +44,10 @@ public class OnlineDropManager : NetworkBehaviour, IDropManager
         for (int i = 0; i < numDrops; i++)
         {
             var package = _logic.CreatePackage(_onlinePackagePrefab, _dropZones);
-            var networkObj = (package as OnlinePackage).GetComponent<NetworkObject>();
-            networkObj.Spawn();
+            package.gameObject.SetActive(true);
             package.Destroyed += OnPackageDestroyed;
+            var networkObj = package.GetComponent<NetworkObject>();
+            networkObj.Spawn();
             _currentPackages.Add(package);
             yield return new WaitUntil(() => networkObj.IsSpawned);
             yield return WaitForPackageToLand(package);

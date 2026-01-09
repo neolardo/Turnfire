@@ -5,7 +5,7 @@ using UnityEngine;
 public class CharacterItemRenderer : MonoBehaviour
 {
     private SpriteRenderer _spriteRenderer;
-    private Item _currentItem;
+    private ItemInstance _currentItem;
 
     [SerializeField] private CharacterAnimatorDefinition _animatorDefinition;
 
@@ -31,7 +31,7 @@ public class CharacterItemRenderer : MonoBehaviour
         _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    public void ChangeItem(Item item)
+    public void ChangeItem(ItemInstance item)
     {
         _currentItem = item;
         if (_currentItem.Definition.ItemType == ItemType.Weapon)

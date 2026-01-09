@@ -14,7 +14,7 @@ public class OnlineBotTeamInputSource : NetworkBehaviour, ITeamInputSource
     public event Action AimCancelled;
     public event Action ActionSkipped;
     public event Action<ItemUsageContext> SelectedItemUsed;
-    public event Action<Item> SelectedItemSwitchRequested;
+    public event Action<ItemInstance> ItemSelected;
 
     public override void OnNetworkSpawn()
     {
@@ -23,8 +23,8 @@ public class OnlineBotTeamInputSource : NetworkBehaviour, ITeamInputSource
         var controller = _botManager.Controller;
         controller.SkipAction += InvokeSkipAction;
         controller.AimAndRelease += InvokeAimAndRelease;
-        controller.SwitchSelectedItem += InvokeSwitchSelectedItem;
-        controller.UseSelectedItem += InvokeUseSelectedItem;
+        controller.SwitchSelectedItem += InvokeItemSelected;
+        controller.UseSelectedItem += InvokeSelectedItemUsed;
     } 
 
     public override void OnDestroy()
@@ -32,8 +32,8 @@ public class OnlineBotTeamInputSource : NetworkBehaviour, ITeamInputSource
         var controller = _botManager.Controller;
         controller.SkipAction -= InvokeSkipAction;
         controller.AimAndRelease -= InvokeAimAndRelease;
-        controller.SwitchSelectedItem -= InvokeSwitchSelectedItem;
-        controller.UseSelectedItem -= InvokeUseSelectedItem;
+        controller.SwitchSelectedItem -= InvokeItemSelected;
+        controller.UseSelectedItem -= InvokeSelectedItemUsed;
     }
 
     public void ForceCancelAiming() { }
@@ -69,16 +69,16 @@ public class OnlineBotTeamInputSource : NetworkBehaviour, ITeamInputSource
         ActionSkipped?.Invoke();
     }
 
-    private void InvokeSwitchSelectedItem(Item item)
+    private void InvokeItemSelected(ItemInstance item)
     {
         if (!IsServer)
         {
             return;
         }
-        SelectedItemSwitchRequested?.Invoke(item);
+        ItemSelected?.Invoke(item);
     }
 
-    private void InvokeUseSelectedItem(ItemUsageContext context)
+    private void InvokeSelectedItemUsed(ItemUsageContext context)
     {
         if (!IsServer)
         {

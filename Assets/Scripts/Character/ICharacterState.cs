@@ -9,7 +9,7 @@ public interface ICharacterState
     Team Team { get; }
     bool IsAlive { get; }
     bool IsUsingSelectedItem { get; }
-    Item SelectedItem { get; }
+    ItemInstance SelectedItem { get; }
     float JumpBoost { get; }
     float JumpStrength { get; }
 
