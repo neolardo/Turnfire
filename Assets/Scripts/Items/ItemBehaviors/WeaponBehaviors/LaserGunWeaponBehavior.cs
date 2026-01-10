@@ -102,7 +102,7 @@ public class LaserGunWeaponBehavior : WeaponBehavior
 
                 if (c.OverlapPoint(laserRenderer.LaserHead.position))
                 { 
-                    c.Damage(_definition.Damage.CalculateValue());
+                    c.TakeDamage(_definition, _definition.Damage.CalculateValue());
                     removableCharacters.Add(c);
                 }
             }
@@ -117,7 +117,7 @@ public class LaserGunWeaponBehavior : WeaponBehavior
         // if any unhit characters remain beause of the yield interval, damage now
         foreach (var c in hitCharacters)
         {
-            c.Damage(_definition.Damage.CalculateValue());
+            c.TakeDamage(_definition, _definition.Damage.CalculateValue());
         }
         _isAttacking = false;
         InvokeItemUsageFinished();

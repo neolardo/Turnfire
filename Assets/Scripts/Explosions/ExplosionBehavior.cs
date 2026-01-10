@@ -23,7 +23,7 @@ public class ExplosionBehavior : UnityDriven
         _explosionTransform = explosionTransform;
     }
 
-    public IEnumerable<Character> Explode(Vector2 contactPoint, int damage)
+    public IEnumerable<Character> Explode(Vector2 contactPoint, int damage,IDamageSourceDefinition damageSource)
     {
         IsExploding = true;
         _explosionTransform.position = contactPoint;
@@ -40,7 +40,7 @@ public class ExplosionBehavior : UnityDriven
             if (hit.TryGetComponent(out Character character))
             {
                 var pushVector = ((Vector2)character.transform.position - contactPoint) / explosionRadius;
-                character.Damage(damage);
+                character.TakeDamage(damageSource, damage);
                 character.Push(pushVector * explosionStrength);
                 _explodedCharacters.Add(character);
             }

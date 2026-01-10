@@ -34,20 +34,25 @@ public class OfflineCharacterState : MonoBehaviour, ICharacterState
     public Team Team { get; private set; }
 
     public event Action<float, int> HealthChanged;
-    public event Action Died;
-    public event Action<ArmorDefinition> Blocked;
-    public event Action Hurt;
     public event Action Healed;
+    public event Action Died;
+    public event Action<IDamageSourceDefinition> Hurt;
+    public event Action<ArmorDefinition> Blocked;
     public event Action<Vector2> Jumped;
     public event Action<Vector2> Pushed;
+
     public event Action<ItemInstance, ItemUsageContext> ItemUsed;
     public event Action<ItemInstance> ItemSelected;
 
-    public void Initialize(CharacterDefinition characterDefinition, Team team, CharacterArmorManager armorManager)
+    public event Action<ArmorDefinition> ArmorEquipped;
+    public event Action<ArmorDefinition> ArmorUnequipped;
+
+    public void Initialize(CharacterDefinition characterDefinition, Team team)
     {
         _definition = characterDefinition;
-        _armorManager = armorManager;
         Team = team;
+        _armorManager = new CharacterArmorManager();
+        _armorManager.ArmorUnequipped += InvokeArmorUnequipped;
         _inventory = new CharacterItemInventory();
         foreach (var itemDef in _definition.InitialItems)
         {
@@ -57,7 +62,7 @@ public class OfflineCharacterState : MonoBehaviour, ICharacterState
 
     #region Health
 
-    public void RequestTakeDamage(int value)
+    public void RequestTakeDamage(IDamageSourceDefinition weapon, int damageValue)
     {
         if (_armorManager.IsProtected)
         {
@@ -66,8 +71,8 @@ public class OfflineCharacterState : MonoBehaviour, ICharacterState
         }
         else
         {
-            Hurt?.Invoke();
-            Health = Mathf.Max(0, Health - value);
+            Hurt?.Invoke(weapon);
+            Health = Mathf.Max(0, Health - damageValue);
             if (!IsAlive)
             {
                 Die();
@@ -83,13 +88,38 @@ public class OfflineCharacterState : MonoBehaviour, ICharacterState
 
     public void RequestKill()
     {
-        RequestTakeDamage(Health);
+        Health = 0;
+        Die();
     }
 
     private void Die()
     {
         Died?.Invoke();
-    } 
+    }
+
+    #endregion
+
+    #region Armor
+
+    public bool TryEquipArmor(ArmorDefinition armorDefinition, ArmorBehavior armorBehavior)
+    {
+        var equipped = _armorManager.TryEquipArmor(armorDefinition, armorBehavior);
+        if (equipped)
+        {
+            ArmorEquipped?.Invoke(armorDefinition);
+        }
+        return equipped;
+    }
+
+    public bool CanEquipArmor(ArmorDefinition definition)
+    {
+        return _armorManager.CanEquip(definition);
+    }
+
+    private void InvokeArmorUnequipped(ArmorDefinition armor)
+    {
+        ArmorUnequipped?.Invoke(armor);
+    }
 
     #endregion
 

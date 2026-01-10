@@ -86,11 +86,13 @@ public class CharacterAnimator : MonoBehaviour
     public void PlayEquipArmorAnimation(ArmorDefinition armor)
     {
         _bodyAnimator.PlayEquipArmorAnimation(armor);
+        AudioManager.Instance.PlaySFXAt(armor.EquipSFX, transform);
     }
 
     public void PlayUnequipArmorAnimation(ArmorDefinition armor)
     {
         _bodyAnimator.PlayUnequipArmorAnimation(armor);
+        AudioManager.Instance.PlaySFXAt(armor.UnequipSFX, transform);
     }
 
     public void PlayGuardAnimation(ArmorDefinition armor)
@@ -99,10 +101,14 @@ public class CharacterAnimator : MonoBehaviour
         _bodyAnimator.PlayGuardAnimation(armor);
     }
 
-    public void PlayHurtAnimation()
+    public void PlayHurtAnimation(IDamageSourceDefinition damageSource)
     {
         _itemRenderer.HideItem();
         _bodyAnimator.PlayHurtAnimation();
+        if (damageSource.HitSFX != null)
+        {
+            AudioManager.Instance.PlaySFXAt(damageSource.HitSFX, transform);
+        }
     }
     public void PlayHealAnimation()
     {

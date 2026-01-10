@@ -8,29 +8,20 @@ public class CharacterView : MonoBehaviour
     private CharacterArmorManager _armorManager;
     public Transform ItemTransform => _animator.ItemTransform;
     public bool IsPlayingNonIdleAnimation => _animator.IsPlayingNonIdleAnimation;
-    public CharacterView(CharacterAnimator animator, CharacterDefinition definition, CharacterHealthbarRenderer healthbarRenderer, CharacterArmorManager armorManager, Team team)
+    public CharacterView(CharacterAnimator animator, CharacterDefinition definition, CharacterHealthbarRenderer healthbarRenderer, Team team)
     {
         _definition = definition;
-        _armorManager = armorManager;
-        _armorManager.ArmorEquipped += _animator.PlayEquipArmorAnimation;
-        _armorManager.ArmorUnequipped += _animator.PlayUnequipArmorAnimation;
         _animator = animator;
         _animator.Initialize(_definition, team.TeamColor);
         _healthbarRenderer = healthbarRenderer;
         _healthbarRenderer.Initilaize(_definition.MaxHealth);
     }
 
-    private void OnDestroy()
-    {
-        _armorManager.ArmorEquipped -= _animator.PlayEquipArmorAnimation;
-        _armorManager.ArmorUnequipped -= _animator.PlayUnequipArmorAnimation;
-    }
-
     #region Health
 
-    public void OnHurt()
+    public void OnHurt(IDamageSourceDefinition damageSource)
     {
-        _animator.PlayHurtAnimation();
+        _animator.PlayHurtAnimation(damageSource);
     }
 
     public void OnHealed()
@@ -47,7 +38,21 @@ public class CharacterView : MonoBehaviour
     {
         _animator.PlayGuardAnimation(armor);
     }
-   
+
+    #endregion
+
+    #region Armor
+
+    public void OnArmorEquipped(ArmorDefinition armor)
+    {
+        _animator.PlayEquipArmorAnimation(armor);
+    }
+
+    public void OnArmorUnequipped(ArmorDefinition armor)
+    {
+        _animator.PlayUnequipArmorAnimation(armor);
+    }
+
     #endregion
 
     #region Aim

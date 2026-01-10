@@ -9,5 +9,5 @@ public interface IExplosion
     
     event Action<IExplosion> Exploded;
     void Initialize(ExplosionDefinition explosionDefinition);
-    IEnumerable<Character> Explode(Vector2 contactPoint, int damage);
+    IEnumerable<Character> Explode(Vector2 contactPoint, int damage, IDamageSourceDefinition damageSource);
 }

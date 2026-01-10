@@ -11,10 +11,10 @@ public class BootsArmorBehavior : ArmorBehavior
     public override void Use(ItemUsageContext context)
     {
         base.Use(context);
-        _owner.ArmorManager.TryEquipArmor(_definition, this);
-        _owner.AddJumpBoost(_definition.AdditionalJumpRange.CalculateValue());
+        _owner.TryEquipArmor(_definition, this);
+        _owner.ApplyJumpBoost(_definition.AdditionalJumpRange.CalculateValue());
         _owner.Jumped += OnOwnerJumped;
-        OnItemUsageFinished();
+        InvokeItemUsageFinished();
     }
 
     private void OnOwnerJumped()
@@ -31,7 +31,7 @@ public class BootsArmorBehavior : ArmorBehavior
 
     public override IEnumerator SimulateUsage(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone)
     {
-        if(context.Owner.ArmorManager.CanEquip(_definition))
+        if(context.Owner.CanEquipArmor(_definition))
         {
             onDone?.Invoke(ItemBehaviorSimulationResult.MobilityBoost(_definition.AdditionalJumpRange.AvarageValue));
         }

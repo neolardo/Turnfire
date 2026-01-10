@@ -46,14 +46,14 @@ public class OnlineExplosion : NetworkBehaviour, IExplosion
         _view.Initialize(def);
     }
 
-    public IEnumerable<Character> Explode(Vector2 contactPoint, int damage)
+    public IEnumerable<Character> Explode(Vector2 contactPoint, int damage, IDamageSourceDefinition damageSource)
     {
         if(!IsServer)
         {
             return null;
         }
         ExplosionStartedClientRpc();
-        return _behavior.Explode(contactPoint, damage);
+        return _behavior.Explode(contactPoint, damage, damageSource);
     }
 
     [Rpc(SendTo.Everyone, InvokePermission =RpcInvokePermission.Server)]

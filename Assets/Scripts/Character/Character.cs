@@ -14,7 +14,6 @@ public class Character : MonoBehaviour, IConditionalEnumerable
     private ICharacterPhysics _physics;
     private CharacterView _view;
     private CharacterLogic _logic;
-    public CharacterArmorManager ArmorManager { get; private set; }
     public SectorHitbox MeleeHitbox => _meleeHitbox;
     public Collider2D Collider => _physics.Collider;
     public Transform ItemTransform => _view.ItemTransform;
@@ -35,15 +34,15 @@ public class Character : MonoBehaviour, IConditionalEnumerable
     public event Action Died;
     public event Action<ItemInstance> SelectedItemChanged;
     public event Action SelectedItemUsed;
+    public event Action<ArmorDefinition> BlockedWithArmor;
 
     public void Initialize(Team team, ICharacterState state, ICharacterPhysics physics)
     {
-        ArmorManager = new CharacterArmorManager();
         _physics = physics;
         _state = state;
-        _state.Initialize(_definition, team, ArmorManager);
+        _state.Initialize(_definition, team);
         SubscribeToStateChangedEvents();
-        _view = new CharacterView(_animator, _definition, _healthbarRenderer, ArmorManager, team);
+        _view = new CharacterView(_animator, _definition, _healthbarRenderer, team);
         _logic = new CharacterLogic(_state, _definition);
     }
 
@@ -54,41 +53,55 @@ public class Character : MonoBehaviour, IConditionalEnumerable
 
     private void SubscribeToStateChangedEvents()
     {
+        _state.HealthChanged += InvokeHealthChanged;
         _state.Healed += _view.OnHealed;
-        _state.Hurt += _view.OnHurt;
         _state.Died += _view.OnDied;
         _state.Died += InvokeDied;
+        _state.Hurt += _view.OnHurt;
         _state.Blocked += _view.OnBlocked;
-        _state.HealthChanged += InvokeHealthChanged;
+        _state.Blocked += InvokeBlockedWithArmor;
+
         _state.Jumped += _physics.Jump;
         _state.Jumped += _view.OnJumpStarted;
         _state.Jumped += InvokeJumped;
+        _state.Pushed += _physics.Push;
+
         _state.ItemUsed += _view.OnItemUsed;
         _state.ItemUsed += InvokeSelectedItemUsed;
         _state.ItemSelected += InvokeSelectedItemChanged;
-    }
+
+        _state.ArmorEquipped += _view.OnArmorEquipped;
+        _state.ArmorUnequipped += _view.OnArmorUnequipped;
+    }   
 
     private void UnsubscribeFromStateChangedEvents()
     {
+        _state.HealthChanged -= InvokeHealthChanged;
         _state.Healed -= _view.OnHealed;
-        _state.Hurt -= _view.OnHurt;
         _state.Died -= _view.OnDied;
         _state.Died -= InvokeDied;
+        _state.Hurt -= _view.OnHurt;
         _state.Blocked -= _view.OnBlocked;
-        _state.HealthChanged -= InvokeHealthChanged;
+        _state.Blocked -= InvokeBlockedWithArmor;
+
         _state.Jumped -= _physics.Jump;
         _state.Jumped -= _view.OnJumpStarted;
         _state.Jumped -= InvokeJumped;
+        _state.Pushed -= _physics.Push;
+
         _state.ItemUsed -= _view.OnItemUsed;
         _state.ItemUsed -= InvokeSelectedItemUsed;
         _state.ItemSelected -= InvokeSelectedItemChanged;
+
+        _state.ArmorEquipped -= _view.OnArmorEquipped;
+        _state.ArmorUnequipped -= _view.OnArmorUnequipped;
     }
 
     #region Health
 
-    public void Damage(int value)
+    public void TakeDamage(IDamageSourceDefinition damageSource, int damageValue)
     {
-        _state.RequestTakeDamage(value);
+        _state.RequestTakeDamage(damageSource, damageValue);
     }
 
     public void Heal(int value)
@@ -122,6 +135,20 @@ public class Character : MonoBehaviour, IConditionalEnumerable
 
     #endregion
 
+    #region Armor
+
+    public bool TryEquipArmor(ArmorDefinition definition, ArmorBehavior behavior)
+    {
+        return _state.TryEquipArmor(definition, behavior);
+    }
+
+    public bool CanEquipArmor(ArmorDefinition definition)
+    {
+        return _state.CanEquipArmor(definition);
+    }
+
+    #endregion
+
     #region Movement
 
     public void Push(Vector2 impulse)
@@ -134,7 +161,7 @@ public class Character : MonoBehaviour, IConditionalEnumerable
         _logic.Jump(aimDirection);
     }
 
-    public void AddJumpBoost(float jumpBoost)
+    public void ApplyJumpBoost(float jumpBoost)
     {
         _state.RequestApplyJumpBoost(jumpBoost);
     }
@@ -211,6 +238,10 @@ public class Character : MonoBehaviour, IConditionalEnumerable
     private void InvokeSelectedItemUsed(ItemInstance item, ItemUsageContext context)
     {
         SelectedItemUsed?.Invoke();
+    }
+    private void InvokeBlockedWithArmor(ArmorDefinition armor)
+    {
+        BlockedWithArmor?.Invoke(armor);
     }
 
     #endregion

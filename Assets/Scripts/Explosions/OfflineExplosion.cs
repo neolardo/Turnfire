@@ -31,10 +31,10 @@ public class OfflineExplosion : MonoBehaviour, IExplosion
         _behavior.Exploded += OnExplosionFinished;
     }
 
-    public IEnumerable<Character> Explode(Vector2 contactPoint, int damage)
+    public IEnumerable<Character> Explode(Vector2 contactPoint, int damage, IDamageSourceDefinition damageSource)
     {
         _view.PlayExplosionAnimation();
-        return _behavior.Explode(contactPoint, damage);
+        return _behavior.Explode(contactPoint, damage, damageSource);
     }
 
     private void OnExplosionFinished()

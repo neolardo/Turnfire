@@ -12,9 +12,9 @@ public class ProtectiveArmorBehavior : ArmorBehavior
     public override void Use(ItemUsageContext context)
     {
         base.Use(context);
-        _owner.ArmorManager.BlockedWithArmor += OnBlockedWithArmor;
-        _owner.ArmorManager.TryEquipArmor(_definition, this);
-        OnItemUsageFinished();
+        _owner.BlockedWithArmor += OnBlockedWithArmor;
+        _owner.TryEquipArmor(_definition, this);
+        InvokeItemUsageFinished();
     }
 
     private void OnBlockedWithArmor(ArmorDefinition armorDefinition)
@@ -28,12 +28,12 @@ public class ProtectiveArmorBehavior : ArmorBehavior
     protected override void OnArmorWornOut()
     {
         base.OnArmorWornOut();
-        _owner.ArmorManager.BlockedWithArmor -= OnBlockedWithArmor;
+        _owner.BlockedWithArmor -= OnBlockedWithArmor;
     }
 
     public override IEnumerator SimulateUsage(ItemBehaviorSimulationContext context, Action<ItemBehaviorSimulationResult> onDone)
     {
-        if (context.Owner.ArmorManager.CanEquip(_definition))
+        if (context.Owner.CanEquipArmor(_definition))
         {
             onDone?.Invoke(ItemBehaviorSimulationResult.ArmorBoost(_definition.MaxDurability.AvarageValue));
         }

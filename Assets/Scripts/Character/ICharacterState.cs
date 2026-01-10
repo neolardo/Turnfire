@@ -2,38 +2,45 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface ICharacterState 
+public interface ICharacterState
 {
-    int Health { get; }
-    float NormalizedHealth { get; }
-    Team Team { get; }
-    bool IsAlive { get; }
-    bool IsUsingSelectedItem { get; }
-    ItemInstance SelectedItem { get; }
-    float JumpBoost { get; }
-    float JumpStrength { get; }
+    public int Health { get; }
+    public float NormalizedHealth { get; }
+    public bool IsAlive { get; }
+    public bool IsUsingSelectedItem { get; }
+    public ItemInstance SelectedItem { get; }
+    public float JumpBoost { get; }
+    public float JumpStrength { get; }
+    public Team Team { get; }
 
-    event Action<float, int> HealthChanged;
-    event Action Died;
-    event Action<ArmorDefinition> Blocked;
-    event Action Hurt;
-    event Action Healed;
-    event Action<Vector2> Jumped;
-    event Action<Vector2> Pushed;
-    event Action<ItemInstance, ItemUsageContext> ItemUsed;
-    event Action<ItemInstance> ItemSelected;
+    public event Action<float, int> HealthChanged;
+    public event Action Healed;
+    public event Action Died;
+    public event Action<IDamageSourceDefinition> Hurt;
+    public event Action<ArmorDefinition> Blocked;
+    public event Action<Vector2> Jumped;
+    public event Action<Vector2> Pushed;
 
-    void Initialize(CharacterDefinition characterDefinition, Team team, CharacterArmorManager armorManager);
-    void RequestTakeDamage(int value);
-    void RequestHeal(int value);
-    void RequestKill();
-    void RequestJump(Vector2 jumpVector);
-    void RequestPush(Vector2 pushVector);
-    void RequestApplyJumpBoost(float jumpBoost);
-    void RequestRemoveJumpBoost();
-    void RequestAddItem(ItemInstance item);
-    void RequestRemoveItem(ItemInstance item);
-    void RequestSelectItem(ItemInstance item);
-    void RequestUseItem(ItemInstance item, ItemUsageContext context);
-    IEnumerable<ItemInstance> GetAllItems();
+    public event Action<ItemInstance, ItemUsageContext> ItemUsed;
+    public event Action<ItemInstance> ItemSelected;
+
+    public event Action<ArmorDefinition> ArmorEquipped;
+    public event Action<ArmorDefinition> ArmorUnequipped;
+
+    public void Initialize(CharacterDefinition characterDefinition, Team team);
+
+    public void RequestTakeDamage(IDamageSourceDefinition weapon, int damageValue);
+    public void RequestHeal(int value);
+    public void RequestKill();
+    public bool TryEquipArmor(ArmorDefinition armorDefinition, ArmorBehavior armorBehavior);
+    public bool CanEquipArmor(ArmorDefinition definition);
+    public void RequestJump(Vector2 jumpVector);
+    public void RequestPush(Vector2 pushVector);
+    public void RequestApplyJumpBoost(float jumpBoost);
+    public void RequestRemoveJumpBoost();
+    public void RequestAddItem(ItemInstance item);
+    public void RequestRemoveItem(ItemInstance item);
+    public void RequestSelectItem(ItemInstance item);
+    public void RequestUseItem(ItemInstance item, ItemUsageContext context);
+    public IEnumerable<ItemInstance> GetAllItems();
 }
