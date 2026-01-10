@@ -91,34 +91,34 @@ public class CameraController : MonoBehaviour
         }
     }
 
-    public void SetProjectileTarget(Projectile p)
+    public void SetProjectileTarget(Transform projectileTransform)
     {
         _secondaryCameraType = VirtualCameraType.Projectile;
         _secondaryCameraBlend = _defaultEaseInBlend;
-        _projectileCam.Follow = p.transform;
+        _projectileCam.Follow = projectileTransform;
         PrioritizeVirtualCameras();
     }
-    public void SetLaserTarget(Transform l)
+    public void SetLaserTarget(Transform laserTransform)
     {
         _secondaryCameraType = VirtualCameraType.Laser;
         _secondaryCameraBlend = _defaultEaseInBlend;
-        _projectileCam.Follow = l;
+        _projectileCam.Follow = laserTransform;
         PrioritizeVirtualCameras();
     }
 
-    public void SetCharacterTarget(Character c)
+    public void SetCharacterTarget(Transform characterTransform)
     {
         _secondaryCameraType = VirtualCameraType.Character;
         _secondaryCameraBlend = _defaultEaseInOutBlend;
-        _characterCam.Follow = c.transform;
+        _characterCam.Follow = characterTransform;
         PrioritizeVirtualCameras();
     }
 
-    public void SetPackageTarget(IPackage p)
+    public void SetPackageTarget(Transform packageTransform)
     {
         _secondaryCameraType = VirtualCameraType.Package;
         _secondaryCameraBlend = _defaultEaseInBlend;
-        _packageCam.Follow = p.Transform;
+        _packageCam.Follow = packageTransform;
         PrioritizeVirtualCameras();
     }
 

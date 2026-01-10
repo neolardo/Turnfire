@@ -57,7 +57,7 @@ public class OfflineCharacterState : MonoBehaviour, ICharacterState
 
     #region Health
 
-    public void Damage(int value)
+    public void RequestTakeDamage(int value)
     {
         if (_armorManager.IsProtected)
         {
@@ -75,15 +75,15 @@ public class OfflineCharacterState : MonoBehaviour, ICharacterState
         }
     }
 
-    public void Heal(int value)
+    public void RequestHeal(int value)
     {
         Health = Mathf.Min(Health + value, _definition.MaxHealth);
         Healed?.Invoke();
     }
 
-    public void Kill()
+    public void RequestKill()
     {
-        Damage(Health);
+        RequestTakeDamage(Health);
     }
 
     private void Die()
@@ -104,11 +104,11 @@ public class OfflineCharacterState : MonoBehaviour, ICharacterState
         Pushed?.Invoke(pushVector);
     } 
 
-    public void ApplyJumpBoost(float jumpBoost)
+    public void RequestApplyJumpBoost(float jumpBoost)
     {
         JumpBoost = jumpBoost;
     }
-    public void RemoveJumpBoost()
+    public void RequestRemoveJumpBoost()
     {
         JumpBoost = 0;
     }

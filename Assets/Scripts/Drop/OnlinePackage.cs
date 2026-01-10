@@ -3,7 +3,7 @@ using Unity.Netcode;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class OnlinePackage : NetworkBehaviour, IPackage
+public class OnlinePackage : NetworkBehaviour, IPackage //TODO: make online
 {
     [SerializeField] private SFXDefiniton spawnSFX;
     [SerializeField] private SFXDefiniton collectSFX;
@@ -32,7 +32,7 @@ public class OnlinePackage : NetworkBehaviour, IPackage
         {
             return;
         }
-        _cameraController.SetPackageTarget(this);
+        _cameraController.SetPackageTarget(this.transform);
         AudioManager.Instance.PlaySFXAt(spawnSFX, transform);
     }
 
@@ -48,7 +48,6 @@ public class OnlinePackage : NetworkBehaviour, IPackage
             var character = collision.GetComponent<Character>();
             if (character.TryAddItem(_itemInstance))
             {
-                AudioManager.Instance.PlaySFXAt(collectSFX, transform.position);
                 Destroy();
             }
         }
@@ -61,6 +60,7 @@ public class OnlinePackage : NetworkBehaviour, IPackage
             return;
         }
 
+        AudioManager.Instance.PlaySFXAt(collectSFX, transform.position);
         _destroyed = true;
         Destroyed?.Invoke(this);
         gameObject.SetActive(false);

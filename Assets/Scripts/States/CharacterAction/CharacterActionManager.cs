@@ -15,7 +15,7 @@ public class CharacterActionManager : UnityDriven
 
     public event Action CharacterActionsFinished;
 
-    public CharacterActionManager(PixelTrajectoryRenderer trajectoryRenderer, ItemPreviewRendererManager itemPreviewRendererManager, CameraController cameraController, GameplayUIManager uiManager, PixelLaserRenderer laserRenderer, ProjectilePool projectilePool,  UISoundsDefinition uiSounds) : base(CoroutineRunner.Instance)
+    public CharacterActionManager(PixelTrajectoryRenderer trajectoryRenderer, ItemPreviewRendererManager itemPreviewRendererManager, CameraController cameraController, GameplayUIManager uiManager, PixelLaserRenderer laserRenderer,  UISoundsDefinition uiSounds) : base(CoroutineRunner.Instance)
     {
         _cameraController = cameraController;
         _uiManager = uiManager;
@@ -23,7 +23,7 @@ public class CharacterActionManager : UnityDriven
         {
             new ReadyToMoveCharacterActionState(trajectoryRenderer, uiManager, uiSounds),
             new MovingCharacterActionState( uiSounds),
-            new ReadyToUseItemCharacterActionState(itemPreviewRendererManager,laserRenderer, projectilePool, trajectoryRenderer, uiManager, uiSounds),
+            new ReadyToUseItemCharacterActionState(itemPreviewRendererManager,laserRenderer, trajectoryRenderer, uiManager, uiSounds),
             new UsingItemCharacterActionState(uiSounds),
             new FinishedCharacterActionState(uiSounds),
         };
@@ -38,7 +38,7 @@ public class CharacterActionManager : UnityDriven
     {
         _forceEndActions = false;
         _character = character;
-        _cameraController.SetCharacterTarget(_character);
+        _cameraController.SetCharacterTarget(_character.transform);
         character.Team.InputSource.ForceCloseInventory();
         _uiManager.LoadCharacterData(_character);
         _characterActionIndex = 0;

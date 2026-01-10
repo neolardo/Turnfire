@@ -30,7 +30,7 @@ public class OfflinePackage : MonoBehaviour, IPackage
         {
             return;
         }
-        _cameraController.SetPackageTarget(this);
+        _cameraController.SetPackageTarget(transform);
         AudioManager.Instance.PlaySFXAt(spawnSFX, transform);
     }
 

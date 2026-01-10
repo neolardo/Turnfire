@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class ItemDefinition : ScriptableObject
+public abstract class ItemDefinition : DatabaseItemScriptableObject
 {
-    public int Id { get; private set; }
     public abstract ItemType ItemType { get; }
 
     public Sprite Sprite;
@@ -21,10 +20,5 @@ public abstract class ItemDefinition : ScriptableObject
 
     public abstract IItemBehavior CreateItemBehavior();
     public abstract IEnumerable<RangedStat> GetRangedStats();
-
-    public void AssingId(int id)
-    {
-        Id = id;
-    }
 
 }

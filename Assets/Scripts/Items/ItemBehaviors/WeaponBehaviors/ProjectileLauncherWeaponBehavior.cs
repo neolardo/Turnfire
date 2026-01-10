@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Linq;
+using UnityEngine;
 
 public class ProjectileLauncherWeaponBehavior : WeaponBehavior
 {
@@ -16,18 +17,24 @@ public class ProjectileLauncherWeaponBehavior : WeaponBehavior
 
     public override void Use(ItemUsageContext context)
     {
+        StartCoroutine(CreateAndLaunchProjectile(context));
+    }
+
+    protected IEnumerator CreateAndLaunchProjectile(ItemUsageContext context)
+    {
         _isAttacking = true;
-        var p = context.ProjectilePool.Get();
+        var p = GameServices.ProjectilePool.Get();
+        yield return new WaitUntil(() => p.IsReady);
         p.Initialize(_definition.ProjectileDefinition, _projectileBehavior);
         p.Launch(context, _definition.FireStrength.CalculateValue());
     }
 
     private void OnProjectileExploded(ExplosionInfo ei)
     {
-        StartCoroutine(WaitUntilFiringFinished(ei));
+        StartCoroutine(WaitUntilExplosionFinished(ei));
     }
 
-    private IEnumerator WaitUntilFiringFinished(ExplosionInfo ei)
+    private IEnumerator WaitUntilExplosionFinished(ExplosionInfo ei)
     {
         while (ei.ExplodedCharacters.Any(c => c.IsAlive && c.IsMoving) || ei.Explosion.IsExploding)
         {

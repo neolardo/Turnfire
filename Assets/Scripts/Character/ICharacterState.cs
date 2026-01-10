@@ -24,13 +24,13 @@ public interface ICharacterState
     event Action<ItemInstance> ItemSelected;
 
     void Initialize(CharacterDefinition characterDefinition, Team team, CharacterArmorManager armorManager);
-    void Damage(int value);
-    void Heal(int value);
-    void Kill();
+    void RequestTakeDamage(int value);
+    void RequestHeal(int value);
+    void RequestKill();
     void RequestJump(Vector2 jumpVector);
     void RequestPush(Vector2 pushVector);
-    void ApplyJumpBoost(float jumpBoost);
-    void RemoveJumpBoost();
+    void RequestApplyJumpBoost(float jumpBoost);
+    void RequestRemoveJumpBoost();
     void RequestAddItem(ItemInstance item);
     void RequestRemoveItem(ItemInstance item);
     void RequestSelectItem(ItemInstance item);

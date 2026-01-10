@@ -23,7 +23,7 @@ public class LaserGunWeaponBehavior : WeaponBehavior
     {
         _isAttacking = true;
         var points = CalculateLaserPath(context.Owner, context.AimOrigin, context.AimVector, out var hitCharacters);
-        context.LaserRenderer.StartLaser(points.ToArray());
+        context.LaserRenderer.StartLaser(points.ToArray()); //TODO: move
         StartCoroutine(FollowLaserAndDamageCharactersOnContact(context.Owner, hitCharacters, context.LaserRenderer));
     }
 

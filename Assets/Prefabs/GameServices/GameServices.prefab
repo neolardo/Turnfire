@@ -50,10 +50,16 @@ MonoBehaviour:
   _onlineSceneLoaderPrefab: {fileID: 2340165904196392950, guid: 09457fe8f5c4d0a4bb12e22a10fccc66, type: 3}
   _onlineDropManagerPrefab: {fileID: 8553052072097350224, guid: 27d6c22f6de42bb4f97234b6f3bb0214, type: 3}
   _onlineIdGeneratorPrefab: {fileID: 8962046323924781083, guid: d2258053d86ab354681db1215d66d1f1, type: 3}
+  _onlineExplosionPoolPrefab: {fileID: 7673436279072541881, guid: 2d53ebd253495444d8ca8d12caf53b38, type: 3}
+  _onlineProjectilePoolPrefab: {fileID: 7272432285260476566, guid: 58b1f349e5ef09b4f9b83de6b700cc62, type: 3}
   _offlineGameStateManagerPrefab: {fileID: 6388547255340193819, guid: 72d049bc0e9e9fc44b61a6f429a2b746, type: 3}
   _offlineTurnStateManagerPrefab: {fileID: 7754326784142910902, guid: e3d66f1c410400a439dd0baab58c45cc, type: 3}
   _offlineTimerPrefab: {fileID: 8354179038335759795, guid: b76c83b66f99a354b9d89f8088037352, type: 3}
   _offlineSceneLoaderPrefab: {fileID: 4632844748752445241, guid: a4ff985ce750de54cb405c422e861ab3, type: 3}
   _offlineDropManagerPrefab: {fileID: 3615479629450516572, guid: d6f929277ff7a43418a99ced134c14ee, type: 3}
   _offlineIdGeneratorPrefab: {fileID: 8901743742562232290, guid: f67695cafd7a8434fa2b20e35f449f1c, type: 3}
-  _itemDatabase: {fileID: 11400000, guid: 402d0a0ee04303440b967f165ac777d1, type: 2}
+  _offlineExplosionPoolPrefab: {fileID: 6656883632540386499, guid: fa55335b449603f4992e77040f02a7a2, type: 3}
+  _offlineProjectilePoolPrefab: {fileID: 2734561888057221797, guid: 9ac8df386043cf34f8adfa3a92afc079, type: 3}
+  _itemDatabase: {fileID: 11400000, guid: fcb852b1652ede14b979a13143f891ac, type: 2}
+  _explosionDatabase: {fileID: 11400000, guid: b42b40b61a7fc1449bc6cf081453f25e, type: 2}
+  _projectileDatabase: {fileID: 11400000, guid: f39a7d14ad4677440801e717a94c18e7, type: 2}

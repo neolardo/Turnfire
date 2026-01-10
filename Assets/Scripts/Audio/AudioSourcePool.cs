@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Audio;
 
-public class AudioSourcePool : Pool<AudioSource>
+public class AudioSourcePool : OfflinePool<AudioSource>
 {
     [SerializeField] private AudioMixerGroup _mixerOutputGroup;
 

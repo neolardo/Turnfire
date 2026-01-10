@@ -31,12 +31,12 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
     public event Action<ItemInstance, ItemUsageContext> ItemUsed;
     public event Action<ItemInstance> ItemSelected;
 
-    public void ApplyJumpBoost(float jumpBoost)
+    public void RequestApplyJumpBoost(float jumpBoost)
     {
         throw new NotImplementedException();
     }
 
-    public void Damage(int value)
+    public void RequestTakeDamage(int value)
     {
         throw new NotImplementedException();
     }
@@ -46,7 +46,7 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
         throw new NotImplementedException();
     }
 
-    public void Heal(int value)
+    public void RequestHeal(int value)
     {
         throw new NotImplementedException();
     }
@@ -56,12 +56,12 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
         throw new NotImplementedException();
     }
 
-    public void Kill()
+    public void RequestKill()
     {
         throw new NotImplementedException();
     }
 
-    public void RemoveJumpBoost()
+    public void RequestRemoveJumpBoost()
     {
         throw new NotImplementedException();
     }

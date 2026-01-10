@@ -60,6 +60,7 @@ public class ItemInstance
         if (Quantity < Definition.MaximumQuantity && !Definition.IsQuantityInfinite)
         {
             Quantity = Math.Min(Definition.MaximumQuantity, Quantity + other.Quantity);
+            other.Destroy();
             return true;
         }
         return false;

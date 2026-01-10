@@ -21,9 +21,8 @@ public class OnlineTurnStateManager : NetworkBehaviour, ITurnStateManager
         var itemPreviewRendererManager = FindFirstObjectByType<ItemPreviewRendererManager>();
         var cameraController = FindFirstObjectByType<CameraController>();
         var uiManager = FindFirstObjectByType<GameplayUIManager>();
-        var projectilePool = FindFirstObjectByType<ProjectilePool>();
         var laserRenderer = FindFirstObjectByType<PixelLaserRenderer>();
-        var characterActionManager = new CharacterActionManager(trajectoryRenderer, itemPreviewRendererManager, cameraController, uiManager, laserRenderer, projectilePool, _uiSounds);
+        var characterActionManager = new CharacterActionManager(trajectoryRenderer, itemPreviewRendererManager, cameraController, uiManager, laserRenderer, _uiSounds);
 
         uiManager.CreateTeamHealthbars(teams);
 

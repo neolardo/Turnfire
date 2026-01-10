@@ -39,12 +39,12 @@ public class Character : MonoBehaviour, IConditionalEnumerable
     public void Initialize(Team team, ICharacterState state, ICharacterPhysics physics)
     {
         ArmorManager = new CharacterArmorManager();
-        _state = state;
         _physics = physics;
+        _state = state;
         _state.Initialize(_definition, team, ArmorManager);
+        SubscribeToStateChangedEvents();
         _view = new CharacterView(_animator, _definition, _healthbarRenderer, ArmorManager, team);
         _logic = new CharacterLogic(_state, _definition);
-        SubscribeToStateChangedEvents();
     }
 
     private void OnDestroy()
@@ -88,17 +88,17 @@ public class Character : MonoBehaviour, IConditionalEnumerable
 
     public void Damage(int value)
     {
-        _state.Damage(value);
+        _state.RequestTakeDamage(value);
     }
 
     public void Heal(int value)
     {
-        _state.Heal(value);
+        _state.RequestHeal(value);
     }
 
     public void Kill()
     {
-        _state.Kill();
+        _state.RequestKill();
     }
 
     #endregion
@@ -136,12 +136,12 @@ public class Character : MonoBehaviour, IConditionalEnumerable
 
     public void AddJumpBoost(float jumpBoost)
     {
-        _state.ApplyJumpBoost(jumpBoost);
+        _state.RequestApplyJumpBoost(jumpBoost);
     }
 
     public void RemoveJumpBoost()
     {
-        _state.RemoveJumpBoost();
+        _state.RequestRemoveJumpBoost();
     }
 
     public void PrepareToJump()
