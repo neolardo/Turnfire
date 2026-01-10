@@ -41,6 +41,6 @@ public interface ICharacterState
     public void RequestAddItem(ItemInstance item);
     public void RequestRemoveItem(ItemInstance item);
     public void RequestSelectItem(ItemInstance item);
-    public void RequestUseItem(ItemInstance item, ItemUsageContext context);
+    public void RequestUseSelectedItem(ItemUsageContext context);
     public IEnumerable<ItemInstance> GetAllItems();
 }

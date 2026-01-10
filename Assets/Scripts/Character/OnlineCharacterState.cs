@@ -2,24 +2,55 @@ using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class OnlineCharacterState : NetworkBehaviour, ICharacterState
 {
-    public int Health => throw new NotImplementedException();
+    private CharacterDefinition _definition;
+    private CharacterItemInventory _inventory;
+    private CharacterArmorManager _armorManager;
 
-    public float NormalizedHealth => throw new NotImplementedException();
+    private NetworkVariable<int> _health = new NetworkVariable<int>();
+    public int Health
+    {
+        get
+        {
+            return _health.Value;
+        }
+        private set
+        {
+            if (!IsServer)
+            {
+                return;
+            }
+            _health.Value = value;
+        }
+    }
+    public float NormalizedHealth => Health / (float)_definition.MaxHealth;
 
-    public bool IsAlive => throw new NotImplementedException();
+    public bool IsAlive => Health > 0;
 
-    public bool IsUsingSelectedItem => throw new NotImplementedException();
+    public bool IsUsingSelectedItem => SelectedItem == null ? false : SelectedItem.Behavior.IsInUse;
+    public ItemInstance SelectedItem { get; private set; }
 
-    public ItemInstance SelectedItem => throw new NotImplementedException();
-
-    public float JumpBoost => throw new NotImplementedException();
-
-    public float JumpStrength => throw new NotImplementedException();
-
-    public Team Team => throw new NotImplementedException();
+    private NetworkVariable<float> _jumpBoost = new NetworkVariable<float>();
+    public float JumpBoost
+    {
+        get 
+        { 
+            return _jumpBoost.Value; 
+        }
+        private set
+        {
+            if(!IsServer)
+            { 
+                return;
+            }    
+            _jumpBoost.Value = value;
+        }
+    }
+    public float JumpStrength => CharacterDefinition.JumpStrength + JumpBoost;
+    public Team Team { get; private set; }
 
     public event Action<float, int> HealthChanged;
     public event Action Healed;
@@ -28,83 +59,269 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
     public event Action<ArmorDefinition> Blocked;
     public event Action<Vector2> Jumped;
     public event Action<Vector2> Pushed;
+
     public event Action<ItemInstance, ItemUsageContext> ItemUsed;
     public event Action<ItemInstance> ItemSelected;
+
     public event Action<ArmorDefinition> ArmorEquipped;
     public event Action<ArmorDefinition> ArmorUnequipped;
 
-    public bool CanEquipArmor(ArmorDefinition definition)
-    {
-        throw new NotImplementedException();
-    }
-
-    public IEnumerable<ItemInstance> GetAllItems()
-    {
-        throw new NotImplementedException();
-    }
-
     public void Initialize(CharacterDefinition characterDefinition, Team team)
     {
-        throw new NotImplementedException();
+        _definition = characterDefinition;
+        Team = team;
+        _armorManager = new CharacterArmorManager();
+        _inventory = new CharacterItemInventory();
+        _health.OnValueChanged += OnNetworkHealthValueChanged;
+        if (!IsServer)
+        {
+            return; 
+        }
+
+        _armorManager.ArmorUnequipped += InvokeArmorUnequipped;
+        foreach (var itemDef in _definition.InitialItems)
+        {
+            _inventory.AddItem(ItemInstance.CreateAsInitialItem(itemDef));
+        }
     }
 
-    public void RequestAddItem(ItemInstance item)
+    #region Health
+
+    public void RequestTakeDamage(IDamageSourceDefinition damageSource, int damageValue)
     {
-        throw new NotImplementedException();
+        if(!IsServer)
+        {
+            return;
+        }    
+
+        if (_armorManager.IsProtected)
+        {
+            var armor = _armorManager.BlockAttack();
+            InvokeBlockedClientRpc(armor.Id);
+        }
+        else
+        {
+            InvokeHurtClientRpc(damageSource);
+            Health = Mathf.Max(0, Health - damageValue);
+            if (!IsAlive)
+            {
+                InvokeDiedClientRpc();
+            }
+        }
     }
 
-    public void RequestApplyJumpBoost(float jumpBoost)
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
+    private void InvokeHurtClientRpc(IDamageSourceDefinition damageSource) //TODO: use network data
     {
-        throw new NotImplementedException();
+        Hurt?.Invoke(damageSource); //TODO: convert
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
+    private void InvokeBlockedClientRpc(int armorDefinitionId) 
+    {
+        Blocked?.Invoke(GameServices.ItemDatabase.GetById(armorDefinitionId) as ArmorDefinition); 
     }
 
     public void RequestHeal(int value)
     {
-        throw new NotImplementedException();
+        if (!IsServer)
+        {
+            return;
+        }
+        Health = Mathf.Min(Health + value, _definition.MaxHealth);
+        InvokeHealedClientRpc();
     }
-
-    public void RequestJump(Vector2 jumpVector)
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
+    private void InvokeHealedClientRpc()
     {
-        throw new NotImplementedException();
+        Healed?.Invoke();
     }
 
     public void RequestKill()
     {
-        throw new NotImplementedException();
+        if(!IsServer)
+        {
+            return;
+        }
+        Health = 0;
+        InvokeDiedClientRpc();
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
+    private void InvokeDiedClientRpc()
+    {
+        Died?.Invoke();
+    }
+
+    private void OnNetworkHealthValueChanged(int oldValue, int newValue)
+    {
+        HealthChanged?.Invoke(NormalizedHealth, Health);
+    }
+
+    #endregion
+
+    #region Armor
+
+    public bool TryEquipArmor(ArmorDefinition armorDefinition, ArmorBehavior armorBehavior)
+    {
+        if (!IsServer)
+        {
+            return false;
+        }
+        var equipped = _armorManager.TryEquipArmor(armorDefinition, armorBehavior);
+        if (equipped)
+        {
+            InvokeArmorEquippedClientRpc(armorDefinition.Id);
+        }
+        return equipped;
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
+    private void InvokeArmorEquippedClientRpc(int armorDefinitionId)
+    {
+        ArmorEquipped?.Invoke(GameServices.ItemDatabase.GetById(armorDefinitionId) as ArmorDefinition);
+    }
+
+    public bool CanEquipArmor(ArmorDefinition definition)
+    {
+        if(!IsServer)
+        {
+            return false;
+        }
+        return _armorManager.CanEquip(definition);
+    }
+
+    private void InvokeArmorUnequipped(ArmorDefinition armor)
+    {
+        if(!IsServer)
+        {
+            return;
+        }
+        InvokeArmorUnequippedClientRpc(armor.Id);
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
+    private void InvokeArmorUnequippedClientRpc(int armorDefinitionId)
+    {
+        ArmorUnequipped?.Invoke(GameServices.ItemDatabase.GetById(armorDefinitionId) as ArmorDefinition);
+    }
+
+    #endregion
+
+    #region Movement
+
+    public void RequestJump(Vector2 jumpVector)
+    {
+        if (!IsServer)
+        {
+            return;
+        }
+        InvokeJumpedClientRpc(jumpVector);
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
+    private void InvokeJumpedClientRpc(Vector2 jumpVector)
+    {
+        Jumped?.Invoke(jumpVector);
     }
 
     public void RequestPush(Vector2 pushVector)
     {
-        throw new NotImplementedException();
+        if (!IsServer)
+        {
+            return;
+        }
+        InvokePushedClientRpc(pushVector);
     }
 
-    public void RequestRemoveItem(ItemInstance item)
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
+    private void InvokePushedClientRpc(Vector2 pushVector)
     {
-        throw new NotImplementedException();
+        Pushed?.Invoke(pushVector);
     }
 
+    public void RequestApplyJumpBoost(float jumpBoost)
+    {
+        if (!IsServer)
+        {
+            return;
+        }
+        JumpBoost = jumpBoost;
+    }
     public void RequestRemoveJumpBoost()
     {
-        throw new NotImplementedException();
+        if (!IsServer)
+        {
+            return;
+        }
+        JumpBoost = 0;
+    }
+
+    #endregion
+
+    #region Items
+
+    public void RequestAddItem(ItemInstance item)
+    {
+        if (!IsServer)
+        {
+            return;
+        }
+        AddItemClientRpc(item.InstanceId);
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
+    private void AddItemClientRpc(int itemInstanceId)
+    {
+        //TODO: create?
+    }
+    public void RequestRemoveItem(ItemInstance item)
+    {
+        if (!IsServer)
+        {
+            return;
+        }
+        RemoveItemClientRpc(item.InstanceId);
+    }
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
+    private void RemoveItemClientRpc(int itemInstanceId)
+    {
+        _inventory.RemoveItem(itemInstanceId);
     }
 
     public void RequestSelectItem(ItemInstance item)
     {
-        throw new NotImplementedException();
+        if (!IsServer)
+        {
+            return;
+        }
+        SelectItemClientRpc(item.InstanceId);
     }
 
-    public void RequestTakeDamage(IDamageSourceDefinition weapon, int damageValue)
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
+    private void SelectItemClientRpc(int itemInstanceId)
     {
-        throw new NotImplementedException();
+        _inventory.SelectItem(itemInstanceId);
+        ItemSelected?.Invoke(SelectedItem);
+    }
+    public void RequestUseSelectedItem(ItemUsageContext context)
+    {
+        if (!IsServer)
+        {
+            return;
+        }
+        UseSelectedItemClientRpc(context);
+    }
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
+    private void UseSelectedItemClientRpc(ItemUsageContext context) //TODO: convert to network data
+    {
+        SelectedItem.Behavior.Use(context);
+        ItemUsed?.Invoke(SelectedItem, context);
+    }
+    public IEnumerable<ItemInstance> GetAllItems()
+    {
+        return _inventory.GetAllItems();
     }
 
-    public void RequestUseItem(ItemInstance item, ItemUsageContext context)
-    {
-        throw new NotImplementedException();
-    }
-
-    public bool TryEquipArmor(ArmorDefinition armorDefinition, ArmorBehavior armorBehavior)
-    {
-        throw new NotImplementedException();
-    }
+    #endregion
 }

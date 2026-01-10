@@ -75,7 +75,7 @@ public class CharacterLogic
 
     public void UseSelectedItem(ItemUsageContext context)
     {
-        _state.RequestUseItem(_state.SelectedItem, context);
+        _state.RequestUseSelectedItem(context);
     }
 
     public bool TrySelectItem(ItemInstance item, ItemUsageContext usageContext = default) //TODO: usage context

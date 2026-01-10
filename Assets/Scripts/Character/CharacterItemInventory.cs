@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public class CharacterItemInventory
 {
@@ -25,10 +26,26 @@ public class CharacterItemInventory
         _items.Remove(item);
         ItemRemoved?.Invoke(item);
     }
+    public void RemoveItem(int instanceId)
+    {
+        var item = GetItemByInstanceId(instanceId);
+        ItemRemoved?.Invoke(item);
+    }
     public void SelectItem(ItemInstance item)
     {
         SelectedItem = item;
         ItemSelected?.Invoke(item);
+    }
+    public void SelectItem(int instanceId)
+    {
+        var item = GetItemByInstanceId(instanceId);
+        SelectedItem = item;
+        ItemSelected?.Invoke(item);
+    }
+
+    private ItemInstance GetItemByInstanceId(int instanceId)
+    {
+        return _items.First(i => i.InstanceId == instanceId); //TODO: dict?
     }
     public IEnumerable<ItemInstance> GetAllItems()
     {
