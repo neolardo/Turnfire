@@ -16,6 +16,6 @@ public class DropZoneContainer : MonoBehaviour
     }
     public IList<DropZone> GetDropZones()
     {
-        return GetDropZones();
+        return _dropZones;
     }
 }

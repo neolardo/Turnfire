@@ -13,6 +13,7 @@ public abstract class CharacterActionState : StateBase
 
     public virtual void StartState(Character currentCharacter)
     {
+        Debug.Log($"{State} started");
         IsActive = true;
         _currentCharacter = currentCharacter;
         SubscribeToEvents();

@@ -370,6 +370,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GrenadeHolder
       objectReference: {fileID: 0}
+    - target: {fileID: 5981456936172700841, guid: 80b753ee29ae933469686cba712bcc59, type: 3}
+      propertyPath: _definition
+      value: 
+      objectReference: {fileID: 11400000, guid: ea8f07a424fd8ef4c8d79fc7d0179728, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -540,6 +544,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tank
       objectReference: {fileID: 0}
+    - target: {fileID: 5981456936172700841, guid: 80b753ee29ae933469686cba712bcc59, type: 3}
+      propertyPath: _definition
+      value: 
+      objectReference: {fileID: 11400000, guid: e5f0e070014ed3141b2d49ce648d93a2, type: 2}
     - target: {fileID: 5981456936172700841, guid: 80b753ee29ae933469686cba712bcc59, type: 3}
       propertyPath: CharacterDefinition
       value: 
@@ -11947,6 +11955,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GrenadeHolder
       objectReference: {fileID: 0}
+    - target: {fileID: 5981456936172700841, guid: 80b753ee29ae933469686cba712bcc59, type: 3}
+      propertyPath: _definition
+      value: 
+      objectReference: {fileID: 11400000, guid: 852bc67809d5a8a40b8018dc7511c79e, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -14976,6 +14988,10 @@ PrefabInstance:
       value: Gunslinger
       objectReference: {fileID: 0}
     - target: {fileID: 5981456936172700841, guid: 80b753ee29ae933469686cba712bcc59, type: 3}
+      propertyPath: _definition
+      value: 
+      objectReference: {fileID: 11400000, guid: 852bc67809d5a8a40b8018dc7511c79e, type: 2}
+    - target: {fileID: 5981456936172700841, guid: 80b753ee29ae933469686cba712bcc59, type: 3}
       propertyPath: CharacterDefinition
       value: 
       objectReference: {fileID: 11400000, guid: 5ea8801324e151f45b3dd8ac54c6d490, type: 2}
@@ -15134,6 +15150,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GrenadeHolder
       objectReference: {fileID: 0}
+    - target: {fileID: 5981456936172700841, guid: 80b753ee29ae933469686cba712bcc59, type: 3}
+      propertyPath: _definition
+      value: 
+      objectReference: {fileID: 11400000, guid: ea8f07a424fd8ef4c8d79fc7d0179728, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -17072,6 +17092,10 @@ PrefabInstance:
       value: Tank
       objectReference: {fileID: 0}
     - target: {fileID: 5981456936172700841, guid: 80b753ee29ae933469686cba712bcc59, type: 3}
+      propertyPath: _definition
+      value: 
+      objectReference: {fileID: 11400000, guid: e5f0e070014ed3141b2d49ce648d93a2, type: 2}
+    - target: {fileID: 5981456936172700841, guid: 80b753ee29ae933469686cba712bcc59, type: 3}
       propertyPath: CharacterDefinition
       value: 
       objectReference: {fileID: 11400000, guid: 8bf4a5219f0af3d439cb60aa4a9345c4, type: 2}
@@ -17137,6 +17161,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Gunslinger
       objectReference: {fileID: 0}
+    - target: {fileID: 5981456936172700841, guid: 80b753ee29ae933469686cba712bcc59, type: 3}
+      propertyPath: _definition
+      value: 
+      objectReference: {fileID: 11400000, guid: 852bc67809d5a8a40b8018dc7511c79e, type: 2}
     - target: {fileID: 5981456936172700841, guid: 80b753ee29ae933469686cba712bcc59, type: 3}
       propertyPath: CharacterDefinition
       value: 
@@ -17455,6 +17483,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Gunslinger
       objectReference: {fileID: 0}
+    - target: {fileID: 5981456936172700841, guid: 80b753ee29ae933469686cba712bcc59, type: 3}
+      propertyPath: _definition
+      value: 
+      objectReference: {fileID: 11400000, guid: 852bc67809d5a8a40b8018dc7511c79e, type: 2}
     - target: {fileID: 5981456936172700841, guid: 80b753ee29ae933469686cba712bcc59, type: 3}
       propertyPath: CharacterDefinition
       value: 
@@ -18169,63 +18201,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e66300127724c004e930fa879b28ded7, type: 3}
---- !u!1001 &3722355434831725669
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 15237956933787224, guid: d670270c2801cda4da2208c189d23db8, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 15237956933787224, guid: d670270c2801cda4da2208c189d23db8, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 15237956933787224, guid: d670270c2801cda4da2208c189d23db8, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 15237956933787224, guid: d670270c2801cda4da2208c189d23db8, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 15237956933787224, guid: d670270c2801cda4da2208c189d23db8, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 15237956933787224, guid: d670270c2801cda4da2208c189d23db8, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 15237956933787224, guid: d670270c2801cda4da2208c189d23db8, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 15237956933787224, guid: d670270c2801cda4da2208c189d23db8, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 15237956933787224, guid: d670270c2801cda4da2208c189d23db8, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 15237956933787224, guid: d670270c2801cda4da2208c189d23db8, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8848114249950170745, guid: d670270c2801cda4da2208c189d23db8, type: 3}
-      propertyPath: m_Name
-      value: InputSourceFactory
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: d670270c2801cda4da2208c189d23db8, type: 3}
 --- !u!1001 &4171034752514190471
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18491,4 +18466,3 @@ SceneRoots:
   - {fileID: 2006579318}
   - {fileID: 3658241172711356776}
   - {fileID: 5408690045898910}
-  - {fileID: 3722355434831725669}

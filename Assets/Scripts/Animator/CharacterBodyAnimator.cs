@@ -49,21 +49,17 @@ public class CharacterBodyAnimator : MonoBehaviour
         {
             Debug.LogWarning($"{nameof(CharacterDefinition)} not set for {nameof(CharacterBodyAnimator)}.");
         }
-        _characterDefinition.InitializeAnimations();
         _characterGroundChecker.IsGroundedChanged += OnCharacterIsGroundedChanged;
-        PlayAnimation(CharacterAnimationState.Idle);
     }
 
-    public void SetCharacterDefinition(CharacterDefinition characterDefinition)
+    public void Initialize(CharacterDefinition characterDefinition, Color teamColor)
     {
+        _teamColor = teamColor;
+        _clothesSpriteRenderer.color = teamColor;
+        _overItemClothesSpriteRenderer.color = teamColor;
         _characterDefinition = characterDefinition;
-    }
-
-    public void SetTeamColor(Color color)
-    {
-        _teamColor = color;
-        _clothesSpriteRenderer.color = color;
-        _overItemClothesSpriteRenderer.color = color;
+        _characterDefinition.InitializeAnimations();
+        PlayAnimation(CharacterAnimationState.Idle);
     }
 
     #endregion

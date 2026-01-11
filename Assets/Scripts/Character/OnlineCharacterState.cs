@@ -81,6 +81,7 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
             return; 
         }
 
+        _health.Value = _definition.MaxHealth;
         _armorManager.ArmorUnequipped += InvokeArmorUnequipped;
         foreach (var itemDef in _definition.InitialItems)
         {

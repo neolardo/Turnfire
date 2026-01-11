@@ -26,7 +26,6 @@ public class TeamManager : MonoBehaviour
 
     private IEnumerator CreateTeamSetupCoroutine()
     {
-        var factory = FindFirstObjectByType<GameplayInputSourceFactory>();
         var botManagerFactory = FindFirstObjectByType<BotManagerFactory>();
 
         var settings = GameplaySceneSettingsStorage.Current;
@@ -39,11 +38,11 @@ public class TeamManager : MonoBehaviour
 
             if (!isOnlineGame)
             {
-                inputSource = factory.Create(player.Type == PlayerType.Human ? InputSourceType.OfflineHuman : InputSourceType.OfflineBot, team.transform);
+                inputSource = TeamInputSourceFactory.Create(player.Type == PlayerType.Human ? InputSourceType.OfflineHuman : InputSourceType.OfflineBot, team.transform);
             }
             else
             {
-                inputSource = factory.Create(player.Type == PlayerType.Human? InputSourceType.OnlineHuman : InputSourceType.OnlineBot,team.transform);
+                inputSource = TeamInputSourceFactory.Create(player.Type == PlayerType.Human? InputSourceType.OnlineHuman : InputSourceType.OnlineBot,team.transform);
                 var netObj = (inputSource as NetworkBehaviour).GetComponent<NetworkObject>();
                 netObj.SpawnWithOwnership(player.ClientId, true);
                 yield return new WaitUntil(() => netObj.IsSpawned);
@@ -63,10 +62,9 @@ public class TeamManager : MonoBehaviour
     private void CreateRandomizedBotEvaluationTeamSetup(BotDifficulty analyzedDifficulty, BotDifficulty otherDifficulty)
     {
         var botManagerFactory = FindFirstObjectByType<BotManagerFactory>();
-        var inputSourceFactory = FindFirstObjectByType<GameplayInputSourceFactory>();
         int teamIndex = Random.Range(0, _teams.Count);
         Team analyzedTeam = _teams[teamIndex];
-        var analyzedTeamInput = inputSourceFactory.Create(InputSourceType.OfflineBot, analyzedTeam.transform);
+        var analyzedTeamInput = TeamInputSourceFactory.Create(InputSourceType.OfflineBot, analyzedTeam.transform);
         analyzedTeam.Initialize(analyzedTeamInput, teamIndex, analyzedDifficulty.ToString() );
         botManagerFactory.CreateBotForTeam(analyzedTeam, analyzedDifficulty);
         foreach (var team in _teams)
@@ -74,7 +72,7 @@ public class TeamManager : MonoBehaviour
             if (team == analyzedTeam)
                 continue;
             teamIndex = _teams.IndexOf(team);
-            var otherTeamInput = inputSourceFactory.Create(InputSourceType.OfflineBot, analyzedTeam.transform);
+            var otherTeamInput = TeamInputSourceFactory.Create(InputSourceType.OfflineBot, analyzedTeam.transform);
             team.Initialize(otherTeamInput, teamIndex, otherDifficulty.ToString());
             botManagerFactory.CreateBotForTeam(team, otherDifficulty);
         }

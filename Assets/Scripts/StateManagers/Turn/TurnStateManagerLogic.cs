@@ -25,8 +25,6 @@ public class TurnStateManagerLogic
     {
         _teams = new List<Team>(teams);
         _teamEnumerator = new CyclicConditionalEnumerator<Team>(_teams);
-        _teamEnumerator.Reset();
-        _teamEnumerator.MoveNext(out var _);
         foreach (var team in _teams)
         {
             team.TeamHealthChanged += OnAnyTeamHealthChanged;
@@ -72,6 +70,8 @@ public class TurnStateManagerLogic
 
     public void Start()
     {
+        _teamEnumerator.Reset();
+        _teamEnumerator.MoveNext(out var _);
         StartTurnState();
     }
 

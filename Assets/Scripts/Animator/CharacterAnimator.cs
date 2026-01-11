@@ -16,8 +16,7 @@ public class CharacterAnimator : MonoBehaviour
 
     public void Initialize(CharacterDefinition definition, Color teamColor)
     {
-        _bodyAnimator.SetCharacterDefinition(definition);
-        _bodyAnimator.SetTeamColor(teamColor);
+        _bodyAnimator.Initialize(definition, teamColor);
     }
 
     public void StartAiming(ItemInstance weapon)

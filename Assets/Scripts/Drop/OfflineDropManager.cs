@@ -15,7 +15,7 @@ public class OfflineDropManager : MonoBehaviour, IDropManager
 
     private DropLogic _logic;
 
-    private void Awake()
+    private void Start()
     {
         _currentPackages = new List<IPackage>();
         _dropZones = FindFirstObjectByType<DropZoneContainer>().GetDropZones().ToList();
@@ -23,10 +23,6 @@ public class OfflineDropManager : MonoBehaviour, IDropManager
         {
             Debug.LogWarning("No drop zones to drop from.");
         }
-       
-    }
-    private void Start()
-    {
         _logic = new DropLogic();
     }
 

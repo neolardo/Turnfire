@@ -53,9 +53,10 @@ public class OfflineCharacterState : MonoBehaviour, ICharacterState
         _character = character;
         _definition = characterDefinition;
         Team = team;
+        _inventory = new CharacterItemInventory();
         _armorManager = new CharacterArmorManager();
         _armorManager.ArmorUnequipped += InvokeArmorUnequipped;
-        _inventory = new CharacterItemInventory();
+        _health = _definition.MaxHealth;
         foreach (var itemDef in _definition.InitialItems)
         {
             _inventory.AddItem(ItemInstance.CreateAsInitialItem(itemDef));

@@ -41,9 +41,9 @@ public class Character : MonoBehaviour, IConditionalEnumerable
         _physics = physics;
         _state = state;
         _state.Initialize(this, _definition, team);
-        SubscribeToStateChangedEvents();
         _view = new CharacterView(_animator, _definition, _healthbarRenderer, team);
         _logic = new CharacterLogic(this, _state, _definition);
+        SubscribeToStateChangedEvents();
     }
 
     private void OnDestroy()
@@ -76,6 +76,10 @@ public class Character : MonoBehaviour, IConditionalEnumerable
 
     private void UnsubscribeFromStateChangedEvents()
     {
+        if (_state == null)
+        {
+            return;
+        }
         _state.HealthChanged -= InvokeHealthChanged;
         _state.Healed -= _view.OnHealed;
         _state.Died -= _view.OnDied;
