@@ -19,7 +19,7 @@ public class LaserPhysics
         _hitCharacters = new HashSet<Character>();
     }
 
-    public void Inirialize(int maximumBounceCount, float maximumDistance)
+    public void Initialize(int maximumBounceCount, float maximumDistance)
     {
         _maximumBounceCount = maximumBounceCount;
         _maximumDistance = maximumDistance;
@@ -30,9 +30,9 @@ public class LaserPhysics
         return _hitCharacters;
     }
 
-
-    public IEnumerable<Vector2> CalculateLaserPath(Character owner, Vector2 origin, Vector2 direction)
+    public IEnumerable<Vector2> CalculateLaserPath(Vector2 origin, Vector2 direction, Character owner)
     {
+        _hitCharacters.Clear();
         var points = new List<Vector2>();
 
         origin += direction.normalized * _visualStartDirectionalOffset + _visualStartGlobalOffset;

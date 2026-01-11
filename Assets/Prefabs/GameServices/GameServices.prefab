@@ -52,6 +52,7 @@ MonoBehaviour:
   _onlineIdGeneratorPrefab: {fileID: 8962046323924781083, guid: d2258053d86ab354681db1215d66d1f1, type: 3}
   _onlineExplosionPoolPrefab: {fileID: 7673436279072541881, guid: 2d53ebd253495444d8ca8d12caf53b38, type: 3}
   _onlineProjectilePoolPrefab: {fileID: 7272432285260476566, guid: 58b1f349e5ef09b4f9b83de6b700cc62, type: 3}
+  _onlineLaserPoolPrefab: {fileID: 8911905903386303496, guid: 54d8eeb01edb97945be460bdb1bd609a, type: 3}
   _offlineGameStateManagerPrefab: {fileID: 6388547255340193819, guid: 72d049bc0e9e9fc44b61a6f429a2b746, type: 3}
   _offlineTurnStateManagerPrefab: {fileID: 7754326784142910902, guid: e3d66f1c410400a439dd0baab58c45cc, type: 3}
   _offlineTimerPrefab: {fileID: 8354179038335759795, guid: b76c83b66f99a354b9d89f8088037352, type: 3}
@@ -60,6 +61,7 @@ MonoBehaviour:
   _offlineIdGeneratorPrefab: {fileID: 8901743742562232290, guid: f67695cafd7a8434fa2b20e35f449f1c, type: 3}
   _offlineExplosionPoolPrefab: {fileID: 6656883632540386499, guid: fa55335b449603f4992e77040f02a7a2, type: 3}
   _offlineProjectilePoolPrefab: {fileID: 2734561888057221797, guid: 9ac8df386043cf34f8adfa3a92afc079, type: 3}
+  _offlineLaserPoolPrefab: {fileID: 5432046830099231842, guid: 68f834381f6a2a3438d389a4499d6201, type: 3}
   _itemDatabase: {fileID: 11400000, guid: fcb852b1652ede14b979a13143f891ac, type: 2}
   _explosionDatabase: {fileID: 11400000, guid: b42b40b61a7fc1449bc6cf081453f25e, type: 2}
   _projectileDatabase: {fileID: 11400000, guid: f39a7d14ad4677440801e717a94c18e7, type: 2}

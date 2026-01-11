@@ -12,12 +12,13 @@ public static class GameServices
     public static IIdGenerator ItemInstanceIdGenerator { get; private set; }
     public static IPool<IProjectile> ProjectilePool { get; private set; }
     public static IPool<IExplosion> ExplosionPool { get; private set; }
+    public static IPool<ILaser> LaserPool { get; private set; }
     public static IDatabase<ItemDefinition> ItemDatabase { get; private set; }
     public static IDatabase<ExplosionDefinition> ExplosionDatabase { get; private set; }
     public static IDatabase<ProjectileDefinition> ProjectileDatabase { get; private set; }
 
 
-    public static void InitializeOffline(OfflineGameStateManager gameStateManagerPrefab, OfflineTurnStateManager turnStateManagerPrefab, OfflineTimer timerPrefab, OfflineSceneLoader sceneLoaderPrefab, OfflineDropManager dropManagerPrefab, OfflineIdGenerator idGeneratorPrefab, OfflineExplosionPool explosionPool, OfflineProjectilePool projectilePool,  ItemDefinitionDatabase itemDatabase, ExplosionDefinitionDatabase explosionDatabase, ProjectileDefinitionDatabase projectileDatabase)
+    public static void InitializeOffline(OfflineGameStateManager gameStateManagerPrefab, OfflineTurnStateManager turnStateManagerPrefab, OfflineTimer timerPrefab, OfflineSceneLoader sceneLoaderPrefab, OfflineDropManager dropManagerPrefab, OfflineIdGenerator idGeneratorPrefab, OfflineExplosionPool explosionPool, OfflineProjectilePool projectilePool, OfflineLaserPool laserPool, ItemDefinitionDatabase itemDatabase, ExplosionDefinitionDatabase explosionDatabase, ProjectileDefinitionDatabase projectileDatabase)
     {
         GameStateManager = GameObject.Instantiate(gameStateManagerPrefab);
         TurnStateManager = GameObject.Instantiate(turnStateManagerPrefab);
@@ -29,6 +30,7 @@ public static class GameServices
 
         ProjectilePool = GameObject.Instantiate(projectilePool);
         ExplosionPool = GameObject.Instantiate(explosionPool);
+        LaserPool = GameObject.Instantiate(laserPool);
 
         ItemDatabase = itemDatabase;
         ItemDatabase.Initialize();
@@ -39,7 +41,7 @@ public static class GameServices
         ConnectServices();
     }
 
-    public static void InitializeOnline(OnlineGameStateManager gameStateManagerPrefab, OnlineTurnStateManager turnStateManagerPrefab, OnlineTimer timerPrefab, OnlineSceneLoader sceneLoaderPrefab, OnlineDropManager dropManagerPrefab, OnlineIdGenerator idGeneratorPrefab, OnlineExplosionPool explosionPool, OnlineProjectilePool projectilePool, ItemDefinitionDatabase itemDatabase, ExplosionDefinitionDatabase explosionDatabase, ProjectileDefinitionDatabase projectileDatabase)
+    public static void InitializeOnline(OnlineGameStateManager gameStateManagerPrefab, OnlineTurnStateManager turnStateManagerPrefab, OnlineTimer timerPrefab, OnlineSceneLoader sceneLoaderPrefab, OnlineDropManager dropManagerPrefab, OnlineIdGenerator idGeneratorPrefab, OnlineExplosionPool explosionPool, OnlineProjectilePool projectilePool, OnlineLaserPool laserPool, ItemDefinitionDatabase itemDatabase, ExplosionDefinitionDatabase explosionDatabase, ProjectileDefinitionDatabase projectileDatabase)
     {
         if (!NetworkManager.Singleton.IsServer)
         {
@@ -76,6 +78,7 @@ public static class GameServices
 
         ProjectilePool = GameObject.Instantiate(projectilePool);
         ExplosionPool = GameObject.Instantiate(explosionPool);
+        LaserPool = GameObject.Instantiate(laserPool);
 
         ItemDatabase = itemDatabase;
         ItemDatabase.Initialize();

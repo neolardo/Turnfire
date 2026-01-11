@@ -14849,74 +14849,6 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
---- !u!1001 &557013528
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 3294387576401109056, guid: 1a6a8807647d7fe4aa5a55a38ac03b82, type: 3}
-      propertyPath: m_Name
-      value: Pools
-      objectReference: {fileID: 0}
-    - target: {fileID: 8072797112312079027, guid: 1a6a8807647d7fe4aa5a55a38ac03b82, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8072797112312079027, guid: 1a6a8807647d7fe4aa5a55a38ac03b82, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8072797112312079027, guid: 1a6a8807647d7fe4aa5a55a38ac03b82, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8072797112312079027, guid: 1a6a8807647d7fe4aa5a55a38ac03b82, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8072797112312079027, guid: 1a6a8807647d7fe4aa5a55a38ac03b82, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8072797112312079027, guid: 1a6a8807647d7fe4aa5a55a38ac03b82, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8072797112312079027, guid: 1a6a8807647d7fe4aa5a55a38ac03b82, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8072797112312079027, guid: 1a6a8807647d7fe4aa5a55a38ac03b82, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8072797112312079027, guid: 1a6a8807647d7fe4aa5a55a38ac03b82, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8072797112312079027, guid: 1a6a8807647d7fe4aa5a55a38ac03b82, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 1a6a8807647d7fe4aa5a55a38ac03b82, type: 3}
---- !u!114 &557013529 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7500434361357237245, guid: 1a6a8807647d7fe4aa5a55a38ac03b82, type: 3}
-  m_PrefabInstance: {fileID: 557013528}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dd80529a02fef5640928568bd360a1d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &564425830
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15050,7 +14982,7 @@ PrefabInstance:
     - target: {fileID: 4624734449567860538, guid: 1027455669f1aaf48a24291c868c5e98, type: 3}
       propertyPath: _explosionHolePool
       value: 
-      objectReference: {fileID: 557013529}
+      objectReference: {fileID: 0}
     - target: {fileID: 4624734449567860538, guid: 1027455669f1aaf48a24291c868c5e98, type: 3}
       propertyPath: _initialExplosionHoleContainer
       value: 
@@ -18478,7 +18410,6 @@ SceneRoots:
   - {fileID: 1452147646}
   - {fileID: 126879100}
   - {fileID: 885767096}
-  - {fileID: 557013528}
   - {fileID: 156809999}
   - {fileID: 4171034752514190471}
   - {fileID: 908586429}

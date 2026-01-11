@@ -7,22 +7,21 @@ using UnityEngine;
 public class LaserGunWeaponBehavior : WeaponBehavior
 {
     private LaserGunWeaponDefinition _definition;
-    private RaycastHit2D[] _raycastHitArray;
-    private const float _visualStartDirectionalOffset = .01f;
-    private readonly Vector2 _visualStartGlobalOffset = new Vector2(0f, 0.05f);
-    private const float _requiredSafeRadius = .2f;
+
+    private LaserPhysics _simulationLaserPhysics;
+  
 
     public LaserGunWeaponBehavior(LaserGunWeaponDefinition definition) : base(CoroutineRunner.Instance)
     {
         _definition = definition;
         IsAimingNormalized = true;
-        _raycastHitArray = new RaycastHit2D[Constants.RaycastHitColliderNumMax];
+        _simulationLaserPhysics = new LaserPhysics();
     }
 
     public override void Use(ItemUsageContext context)
     {
         _isAttacking = true;
-        StartCoroutine(StartLaserAndDamageCharactersOnContact(context);
+        StartCoroutine(StartLaserAndDamageCharactersOnContact(context));
     }
 
     public IEnumerator StartLaserAndDamageCharactersOnContact(ItemUsageContext context)
@@ -31,10 +30,10 @@ public class LaserGunWeaponBehavior : WeaponBehavior
         var owner = context.Owner;
         yield return new WaitUntil(() => laser.IsReady);
         laser.Initialize(_definition.MaximumBounceCount.CalculateValue(), _definition.MaximumDistance.CalculateValue());
-        laser.StartLaser(context.AimOrigin, context.AimVector.normalized);
+        laser.StartBeam(context.AimOrigin, context.AimVector.normalized, owner);
         var hitCharacters = laser.GetHitCharacters().ToList();
         var removableCharacters = new List<Character>();
-        while(laser.IsAnimationInProgress)
+        while(laser.IsBeamAnimationInProgress)
         {
             foreach (var c in hitCharacters)
             {
@@ -79,7 +78,9 @@ public class LaserGunWeaponBehavior : WeaponBehavior
         int damage = _definition.Damage.AvarageValue;
         int damageToAllies = 0;
         int damageToEnemies = 0;
-        CalculateLaserPath(context.Owner, context.Origin, context.AimVector, out var hitCharacters);
+        _simulationLaserPhysics.Initialize(_definition.MaximumBounceCount.AvarageValue, _definition.MaximumDistance.AvarageValue);
+        _simulationLaserPhysics.CalculateLaserPath(context.Origin, context.AimVector, context.Owner);
+        var hitCharacters = _simulationLaserPhysics.GetHitCharacters().ToList();
         Vector2 closestDamagingPosition = hitCharacters.Count == 0 ? context.Origin : hitCharacters.First().transform.position;
         float minDist = Vector2.Distance(closestDamagingPosition, context.Origin);
         foreach (var c in hitCharacters)

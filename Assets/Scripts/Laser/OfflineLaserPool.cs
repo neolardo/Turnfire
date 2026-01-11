@@ -1,0 +1,31 @@
+using System.Collections.Generic;
+
+public class OfflineLaserPool : OfflinePool<OfflineLaser>, IPool<ILaser>
+{
+    protected override OfflineLaser CreateInstance()
+    {
+        var laser = base.CreateInstance();
+        laser.BeamEnded += OnLaserBeamEnded;
+        return laser;
+    }
+
+    ILaser IPool<ILaser>.Get()
+    {
+        return Get();
+    }
+
+    IEnumerable<ILaser> IPool<ILaser>.GetMultiple(int count)
+    {
+        return GetMultiple(count);
+    }
+
+    private void OnLaserBeamEnded(ILaser laser)
+    {
+        Release(laser);
+    }
+
+    public void Release(ILaser laser)
+    {
+        base.Release(laser as OfflineLaser);
+    }
+}
