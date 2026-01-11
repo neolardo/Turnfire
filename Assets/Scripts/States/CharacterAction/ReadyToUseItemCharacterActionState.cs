@@ -5,15 +5,13 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
 {
     public override CharacterActionStateType State => CharacterActionStateType.ReadyToUseItem;
     private ItemPreviewRendererManager _rendererManager;
-    private PixelLaserRenderer _laserRenderer;
     private PixelTrajectoryRenderer _trajectoryRenderer;
     private GameplayUIManager _uiManager;
     private ITeamInputSource _inputSource;
 
-    public ReadyToUseItemCharacterActionState(ItemPreviewRendererManager rendererManager, PixelLaserRenderer laserRenderer, PixelTrajectoryRenderer trajectoryRenderer, GameplayUIManager uiManager, UISoundsDefinition uiSounds) : base(CoroutineRunner.Instance, uiSounds)
+    public ReadyToUseItemCharacterActionState(ItemPreviewRendererManager rendererManager, PixelTrajectoryRenderer trajectoryRenderer, GameplayUIManager uiManager, UISoundsDefinition uiSounds) : base(CoroutineRunner.Instance, uiSounds)
     {
         _rendererManager = rendererManager;
-        _laserRenderer = laserRenderer;
         _trajectoryRenderer = trajectoryRenderer;
         _uiManager = uiManager;
     }
@@ -92,7 +90,7 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
         {
             return;
         }
-        var context = new ItemUsageContext(_currentCharacter.ItemTransform.position, Vector2.zero, _currentCharacter, _laserRenderer);
+        var context = new ItemUsageContext(_currentCharacter.ItemTransform.position, Vector2.zero, _currentCharacter);
         selectedItem.Behavior.InitializePreview(context, _rendererManager);
     }
 
@@ -109,6 +107,6 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
     {
         _trajectoryRenderer.HideTrajectory();
         _uiManager.HideAimCircles();
-        _currentCharacter.UseSelectedItem(new ItemUsageContext(_currentCharacter.ItemTransform.position, aimVector, _currentCharacter, _laserRenderer));
+        _currentCharacter.UseSelectedItem(new ItemUsageContext(_currentCharacter.ItemTransform.position, aimVector, _currentCharacter));
     }
 }

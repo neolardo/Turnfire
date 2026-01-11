@@ -15,7 +15,7 @@ public class CharacterActionManager : UnityDriven
 
     public event Action CharacterActionsFinished;
 
-    public CharacterActionManager(PixelTrajectoryRenderer trajectoryRenderer, ItemPreviewRendererManager itemPreviewRendererManager, CameraController cameraController, GameplayUIManager uiManager, PixelLaserRenderer laserRenderer,  UISoundsDefinition uiSounds) : base(CoroutineRunner.Instance)
+    public CharacterActionManager(PixelTrajectoryRenderer trajectoryRenderer, ItemPreviewRendererManager itemPreviewRendererManager, CameraController cameraController, GameplayUIManager uiManager,  UISoundsDefinition uiSounds) : base(CoroutineRunner.Instance)
     {
         _cameraController = cameraController;
         _uiManager = uiManager;
@@ -23,7 +23,7 @@ public class CharacterActionManager : UnityDriven
         {
             new ReadyToMoveCharacterActionState(trajectoryRenderer, uiManager, uiSounds),
             new MovingCharacterActionState( uiSounds),
-            new ReadyToUseItemCharacterActionState(itemPreviewRendererManager,laserRenderer, trajectoryRenderer, uiManager, uiSounds),
+            new ReadyToUseItemCharacterActionState(itemPreviewRendererManager, trajectoryRenderer, uiManager, uiSounds),
             new UsingItemCharacterActionState(uiSounds),
             new FinishedCharacterActionState(uiSounds),
         };

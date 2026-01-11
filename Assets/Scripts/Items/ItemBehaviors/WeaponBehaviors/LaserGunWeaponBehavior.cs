@@ -22,85 +22,28 @@ public class LaserGunWeaponBehavior : WeaponBehavior
     public override void Use(ItemUsageContext context)
     {
         _isAttacking = true;
-        var points = CalculateLaserPath(context.Owner, context.AimOrigin, context.AimVector, out var hitCharacters);
-        context.LaserRenderer.StartLaser(points.ToArray()); //TODO: move
-        StartCoroutine(FollowLaserAndDamageCharactersOnContact(context.Owner, hitCharacters, context.LaserRenderer));
+        StartCoroutine(StartLaserAndDamageCharactersOnContact(context);
     }
 
-
-    private IEnumerable<Vector2> CalculateLaserPath(Character owner, Vector2 origin, Vector2 direction, out HashSet<Character> hitCharacters)
+    public IEnumerator StartLaserAndDamageCharactersOnContact(ItemUsageContext context)
     {
-        int maxBounces = _definition.MaximumBounceCount.CalculateValue();
-        float maxDistance = _definition.MaximumDistance.CalculateValue();
-        
-        var points = new List<Vector2>();
-        hitCharacters = new HashSet<Character>();
-
-        origin += direction.normalized * _visualStartDirectionalOffset + _visualStartGlobalOffset;
-        if (SafeObjectPlacer.TryFindSafePosition(origin, direction, LayerMaskHelper.GetLayerMask(Constants.GroundLayer), _requiredSafeRadius, out var safePosition))
-        {
-            origin = safePosition;
-        }
-
-        points.Add(origin);
-
-        Vector2 currentPos = origin;
-        Vector2 currentDir = direction.normalized;
-        var mask = LayerMaskHelper.GetCombinedLayerMask(Constants.GroundLayer, Constants.CharacterLayer);
-        var filter = new ContactFilter2D();
-        filter.SetLayerMask(mask);
-
-        for (int i = 0; i < maxBounces; i++)
-        {
-            int numHits = Physics2D.Raycast(currentPos, currentDir, filter,_raycastHitArray, maxDistance);
-            var hits = _raycastHitArray.Take(numHits);
-            var closestGroundHit = hits.Where(hit => hit.collider != null && hit.collider.tag == Constants.GroundTag).OrderBy(hit => hit.distance).FirstOrDefault();
-            var characterHits = hits.Where(hit => hit.collider != null && hit.collider.tag == Constants.CharacterTag);
-
-            foreach(var cHit in characterHits)
-            {
-                cHit.collider.TryGetComponent<Character>(out var c);
-
-                if (i == 0 && c == owner)
-                {
-                    continue;
-                }
-
-                hitCharacters.Add(c);
-            }
-
-            if (closestGroundHit.collider == null)
-            {
-                points.Add(currentPos + currentDir * maxDistance);
-                break;
-            }
-
-            var hit = closestGroundHit;
-
-            points.Add(hit.point);
-
-            currentDir = Vector2.Reflect(currentDir, hit.normal);
-
-            // Move slightly away to avoid self-hitting
-            currentPos = hit.point + currentDir * 0.01f;
-        }
-
-        return points;
-    }
-
-    public IEnumerator FollowLaserAndDamageCharactersOnContact(Character owner, HashSet<Character> hitCharacters, PixelLaserRenderer laserRenderer)
-    {
+        var laser = GameServices.LaserPool.Get();
+        var owner = context.Owner;
+        yield return new WaitUntil(() => laser.IsReady);
+        laser.Initialize(_definition.MaximumBounceCount.CalculateValue(), _definition.MaximumDistance.CalculateValue());
+        laser.StartLaser(context.AimOrigin, context.AimVector.normalized);
+        var hitCharacters = laser.GetHitCharacters().ToList();
         var removableCharacters = new List<Character>();
-        while(laserRenderer.IsAnimationInProgress)
+        while(laser.IsAnimationInProgress)
         {
             foreach (var c in hitCharacters)
             {
-                if (c == owner && laserRenderer.IsFirstRay)
+                if (c == owner && laser.IsFirstRayRendered)
                 {
                     continue;
                 }
 
-                if (c.OverlapPoint(laserRenderer.LaserHead.position))
+                if (c.OverlapPoint(laser.LaserHead.position))
                 { 
                     c.TakeDamage(_definition, _definition.Damage.CalculateValue());
                     removableCharacters.Add(c);

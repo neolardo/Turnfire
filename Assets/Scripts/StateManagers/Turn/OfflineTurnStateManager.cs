@@ -18,8 +18,7 @@ public class OfflineTurnStateManager : MonoBehaviour, ITurnStateManager
         var itemPreviewRendererManager = FindFirstObjectByType<ItemPreviewRendererManager>();
         var cameraController = FindFirstObjectByType<CameraController>();
         var uiManager = FindFirstObjectByType<GameplayUIManager>();
-        var laserRenderer = FindFirstObjectByType<PixelLaserRenderer>();
-        var characterActionManager = new CharacterActionManager(trajectoryRenderer, itemPreviewRendererManager, cameraController, uiManager, laserRenderer, _uiSounds);
+        var characterActionManager = new CharacterActionManager(trajectoryRenderer, itemPreviewRendererManager, cameraController, uiManager, _uiSounds);
 
         uiManager.CreateTeamHealthbars(teams);
 

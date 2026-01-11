@@ -13,7 +13,7 @@ public class PixelLaserRenderer : MonoBehaviour
     private CameraController _cameraController;
 
     public bool IsAnimationInProgress { get; private set; }
-    public bool IsFirstRay { get; private set; }
+    public bool IsFirstRayRendered { get; private set; }
     public Transform LaserHead => _laserHead; 
 
     private void Awake()
@@ -33,7 +33,7 @@ public class PixelLaserRenderer : MonoBehaviour
     private IEnumerator AnimateLaserLine(float speed, Vector2[] points)
     {
         IsAnimationInProgress = true;
-        IsFirstRay = true;
+        IsFirstRayRendered = true;
         _cameraController.SetLaserTarget(_laserHead);
 
         float totalPathLength;
@@ -56,7 +56,7 @@ public class PixelLaserRenderer : MonoBehaviour
 
             if(segment.Length > 2)
             {
-                IsFirstRay = false;
+                IsFirstRayRendered = false;
             }
 
             if (_updateRate <= 0f)
@@ -97,8 +97,6 @@ public class PixelLaserRenderer : MonoBehaviour
 
     private Vector2[] ExtractSegment( Vector2[] points, float[] cumulative, float startDistance, float endDistance)
     {
-        // Worst case: segment spans entire polyline
-        // Allocate small buffer only once per frame
         Vector2[] buffer = new Vector2[points.Length + 2];
         int count = 0;
 
