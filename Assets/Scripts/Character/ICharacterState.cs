@@ -27,8 +27,7 @@ public interface ICharacterState
     public event Action<ArmorDefinition> ArmorEquipped;
     public event Action<ArmorDefinition> ArmorUnequipped;
 
-    public void Initialize(CharacterDefinition characterDefinition, Team team);
-
+    public void Initialize(Character character, CharacterDefinition characterDefinition, Team team);
     public void RequestTakeDamage(IDamageSourceDefinition weapon, int damageValue);
     public void RequestHeal(int value);
     public void RequestKill();

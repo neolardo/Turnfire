@@ -40,7 +40,7 @@ public class Character : MonoBehaviour, IConditionalEnumerable
     {
         _physics = physics;
         _state = state;
-        _state.Initialize(_definition, team);
+        _state.Initialize(this, _definition, team);
         SubscribeToStateChangedEvents();
         _view = new CharacterView(_animator, _definition, _healthbarRenderer, team);
         _logic = new CharacterLogic(_state, _definition);

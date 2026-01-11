@@ -8,6 +8,7 @@ public struct NetworkPlayerData : INetworkSerializable
     public FixedString32Bytes Name; // max length enforced
     public PlayerType Type;
 
+
     public void NetworkSerialize<T>(BufferSerializer<T> serializer)
         where T : IReaderWriter
     {

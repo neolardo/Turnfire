@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class OfflineCharacterState : MonoBehaviour, ICharacterState
 {
+    private Character _character;
     private CharacterDefinition _definition;
     private CharacterItemInventory _inventory;
     private CharacterArmorManager _armorManager;
@@ -47,8 +49,9 @@ public class OfflineCharacterState : MonoBehaviour, ICharacterState
     public event Action<ArmorDefinition> ArmorEquipped;
     public event Action<ArmorDefinition> ArmorUnequipped;
 
-    public void Initialize(CharacterDefinition characterDefinition, Team team)
+    public void Initialize(Character character, CharacterDefinition characterDefinition, Team team)
     {
+        _character = character;
         _definition = characterDefinition;
         Team = team;
         _armorManager = new CharacterArmorManager();

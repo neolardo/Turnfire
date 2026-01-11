@@ -1,6 +1,7 @@
 using System;
+using Unity.Netcode;
 
-public class ItemInstance 
+public class ItemInstance
 {
     public int InstanceId { get;  }
     public int DefinitionId { get; }

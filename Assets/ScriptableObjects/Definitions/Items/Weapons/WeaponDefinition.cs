@@ -8,4 +8,8 @@ public abstract class WeaponDefinition : ItemDefinition, IDamageSourceDefinition
 
     [Range(0f, 360f)] public float InitialVisualRotationDegrees;
     public override ItemType ItemType => ItemType.Weapon;
+
+    public DamageSourceType Type => DamageSourceType.Weapon;
+
+    public int SourceDefinitionId => Id;
 }

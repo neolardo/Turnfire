@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class OnlineCharacterState : NetworkBehaviour, ICharacterState
 {
+    private Character _character;
     private CharacterDefinition _definition;
     private CharacterItemInventory _inventory;
     private CharacterArmorManager _armorManager;
@@ -66,8 +66,9 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
     public event Action<ArmorDefinition> ArmorEquipped;
     public event Action<ArmorDefinition> ArmorUnequipped;
 
-    public void Initialize(CharacterDefinition characterDefinition, Team team)
+    public void Initialize(Character character, CharacterDefinition characterDefinition, Team team)
     {
+        _character = character;
         _definition = characterDefinition;
         Team = team;
         _armorManager = new CharacterArmorManager();
@@ -101,7 +102,7 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
         }
         else
         {
-            InvokeHurtClientRpc(damageSource);
+            InvokeHurtClientRpc(new NetworkDamageSourceDefinitionData(damageSource));
             Health = Mathf.Max(0, Health - damageValue);
             if (!IsAlive)
             {
@@ -111,9 +112,9 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
-    private void InvokeHurtClientRpc(IDamageSourceDefinition damageSource) //TODO: use network data
+    private void InvokeHurtClientRpc(NetworkDamageSourceDefinitionData networkDamageSource)
     {
-        Hurt?.Invoke(damageSource); //TODO: convert
+        Hurt?.Invoke(networkDamageSource.ToDamageSource());
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
@@ -267,13 +268,31 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
         {
             return;
         }
-        AddItemClientRpc(item.InstanceId);
+        _inventory.AddItem(item);
+        item.QuantityChanged += OnItemQuantityChanged;
+        AddItemClientRpc(new NetworkItemInstanceData(item));
     }
 
-    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
-    private void AddItemClientRpc(int itemInstanceId)
+
+    [Rpc(SendTo.NotServer, InvokePermission = RpcInvokePermission.Server)]
+    private void AddItemClientRpc(NetworkItemInstanceData itemInstanceData)
     {
-        //TODO: create?
+        _inventory.AddItem(itemInstanceData.ToItemInstance());
+    }
+
+    private void OnItemQuantityChanged(ItemInstance itemInstance)
+    {
+        if(!IsServer)
+        {
+            return;
+        }
+        UpdateItemClientRpc(new NetworkItemInstanceData(itemInstance));
+    }
+
+    [Rpc(SendTo.NotServer, InvokePermission = RpcInvokePermission.Server)]
+    private void UpdateItemClientRpc(NetworkItemInstanceData itemInstanceData)
+    {
+        _inventory.UpdateItem(itemInstanceData.ToItemInstance());
     }
     public void RequestRemoveItem(ItemInstance item)
     {
@@ -310,13 +329,13 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
         {
             return;
         }
-        UseSelectedItemClientRpc(context);
+        SelectedItem.Behavior.Use(context);
+        InvokeSelectedItemUsedClientRpc(new NetworkItemUsageContextData(context));
     }
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
-    private void UseSelectedItemClientRpc(ItemUsageContext context) //TODO: convert to network data
+    private void InvokeSelectedItemUsedClientRpc(NetworkItemUsageContextData networkContext)
     {
-        SelectedItem.Behavior.Use(context);
-        ItemUsed?.Invoke(SelectedItem, context);
+        ItemUsed?.Invoke(SelectedItem, networkContext.ToItemUsageContext(_character));
     }
     public IEnumerable<ItemInstance> GetAllItems()
     {

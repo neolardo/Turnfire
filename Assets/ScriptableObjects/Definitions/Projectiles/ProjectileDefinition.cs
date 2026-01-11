@@ -10,6 +10,10 @@ public abstract class ProjectileDefinition : DatabaseItemScriptableObject, IDama
     [SerializeField] private SFXDefiniton _hitSFX;
     public SFXDefiniton HitSFX => _hitSFX;
 
+    public DamageSourceType Type => DamageSourceType.Projectile;
+
+    public int SourceDefinitionId => Id;
+
     public float ColliderRadius = .1f;
     public abstract IProjectileBehavior CreateProjectileBehavior();
     public virtual IEnumerable<RangedStat> GetRangedStats()
