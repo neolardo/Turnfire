@@ -5,7 +5,7 @@ using UnityEngine;
 public abstract class PoolBase<T> : MonoBehaviour, IPool<T> where T : Component
 {
     [SerializeField] protected T _prefab;
-    [SerializeField][Range(1, 100)] private int _initialSize = 10;
+    [SerializeField][Range(1, 100)] protected int _initialSize = 10;
     [SerializeField] private Transform _container;
 
     private List<T> _available;
@@ -29,6 +29,11 @@ public abstract class PoolBase<T> : MonoBehaviour, IPool<T> where T : Component
             _container = transform;
         }
 
+        CreateInitialItems();
+    }
+
+    protected virtual void CreateInitialItems()
+    {
         for (int i = 0; i < _initialSize; i++)
         {
             _available.Add(CreateInstance());

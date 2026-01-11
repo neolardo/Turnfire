@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
@@ -30,7 +31,8 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
 
     public bool IsAlive => Health > 0;
 
-    public bool IsUsingSelectedItem => SelectedItem == null ? false : SelectedItem.Behavior.IsInUse;
+    private NetworkVariable<bool> _isUsingSelectedItem = new NetworkVariable<bool>();
+    public bool IsUsingSelectedItem => _isUsingSelectedItem.Value;
     public ItemInstance SelectedItem { get; private set; }
 
     private NetworkVariable<float> _jumpBoost = new NetworkVariable<float>();
@@ -330,8 +332,17 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
             return;
         }
         SelectedItem.Behavior.Use(context);
+        StartCoroutine(MirrorIsUsingSelectedItemStateUntilUsageFinished());
         InvokeSelectedItemUsedClientRpc(new NetworkItemUsageContextData(context));
     }
+
+    private IEnumerator MirrorIsUsingSelectedItemStateUntilUsageFinished()
+    {
+        _isUsingSelectedItem.Value = true;
+        yield return new WaitUntil(() => !SelectedItem.Behavior.IsInUse);
+        _isUsingSelectedItem.Value = false;
+    }
+
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
     private void InvokeSelectedItemUsedClientRpc(NetworkItemUsageContextData networkContext)
     {

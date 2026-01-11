@@ -6,7 +6,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(OneShotAnimator))]
 [RequireComponent(typeof(NetworkTransform))]
-public class OnlineExplosion : NetworkBehaviour, IExplosion
+public class OnlineExplosion : IsActiveSyncedNetworkBehavior, IExplosion
 {
     [SerializeField] private ExplosionAnimatorDefinition _animatorDefinition;
     private ExplosionView _view;

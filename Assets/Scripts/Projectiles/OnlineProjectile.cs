@@ -7,7 +7,7 @@ using UnityEngine;
 [RequireComponent(typeof(CircleCollider2D))]
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(NetworkTransform), typeof(NetworkRigidbody2D))]
-public class OnlineProjectile : NetworkBehaviour, IProjectile
+public class OnlineProjectile : IsActiveSyncedNetworkBehavior, IProjectile
 {
     private ProjectileDefinition _definition;
     private ProjectilePhysics _physics;

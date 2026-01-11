@@ -1,15 +1,16 @@
 using System;
 using Unity.Netcode;
+using Unity.Netcode.Components;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class OnlinePackage : NetworkBehaviour, IPackage //TODO: make online
+[RequireComponent(typeof(NetworkTransform), typeof(NetworkRigidbody2D))]
+public class OnlinePackage : IsActiveSyncedNetworkBehavior, IPackage
 {
     [SerializeField] private SFXDefiniton spawnSFX;
     [SerializeField] private SFXDefiniton collectSFX;
     public bool IsMoving => _rb.linearVelocity.magnitude > 0;
     public bool IsActiveInHierarchy => gameObject.activeInHierarchy;
-    public Transform Transform => transform;
 
     private Rigidbody2D _rb;
     private ItemInstance _itemInstance;
@@ -23,16 +24,22 @@ public class OnlinePackage : NetworkBehaviour, IPackage //TODO: make online
     {
         _rb = GetComponent<Rigidbody2D>();
         _cameraController = FindFirstObjectByType<CameraController>();
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
         _rb.simulated = IsServer;
     }
 
-    private void OnEnable()
+    protected override void OnEnable()
     {
+        base.OnEnable();
         if (_destroyed)
         {
             return;
         }
-        _cameraController.SetPackageTarget(this.transform);
+        _cameraController.SetPackageTarget(transform);
         AudioManager.Instance.PlaySFXAt(spawnSFX, transform);
     }
 
@@ -60,11 +67,17 @@ public class OnlinePackage : NetworkBehaviour, IPackage //TODO: make online
             return;
         }
 
+        var netObj = GetComponent<NetworkObject>();
+        netObj.Despawn();
+    }
+
+    public override void OnNetworkDespawn()
+    {
         AudioManager.Instance.PlaySFXAt(collectSFX, transform.position);
         _destroyed = true;
         Destroyed?.Invoke(this);
         gameObject.SetActive(false);
-        Destroy(gameObject);
+        base.OnNetworkDespawn();
     }
 
     public void SetItem(ItemInstance item)

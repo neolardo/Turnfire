@@ -8,7 +8,6 @@ public class OfflinePackage : MonoBehaviour, IPackage
     [SerializeField] private SFXDefiniton collectSFX;
     public bool IsMoving => _rb.linearVelocity.magnitude > 0;
     public bool IsActiveInHierarchy => gameObject.activeInHierarchy;
-    public Transform Transform => transform;
 
     private Rigidbody2D _rb;
     private ItemInstance _itemInstance;

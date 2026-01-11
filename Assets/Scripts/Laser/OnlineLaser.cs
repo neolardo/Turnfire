@@ -5,7 +5,7 @@ using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
-public class OnlineLaser : NetworkBehaviour, ILaser
+public class OnlineLaser : IsActiveSyncedNetworkBehavior, ILaser
 {
     private LaserPhysics _physics;
     private LaserView _view;
