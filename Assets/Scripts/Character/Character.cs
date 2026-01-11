@@ -43,7 +43,7 @@ public class Character : MonoBehaviour, IConditionalEnumerable
         _state.Initialize(this, _definition, team);
         SubscribeToStateChangedEvents();
         _view = new CharacterView(_animator, _definition, _healthbarRenderer, team);
-        _logic = new CharacterLogic(_state, _definition);
+        _logic = new CharacterLogic(this, _state, _definition);
     }
 
     private void OnDestroy()

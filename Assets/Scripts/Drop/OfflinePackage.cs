@@ -6,6 +6,7 @@ public class OfflinePackage : MonoBehaviour, IPackage
 {
     [SerializeField] private SFXDefiniton spawnSFX;
     [SerializeField] private SFXDefiniton collectSFX;
+    public Transform Transform => transform;
     public bool IsMoving => _rb.linearVelocity.magnitude > 0;
     public bool IsActiveInHierarchy => gameObject.activeInHierarchy;
 

@@ -46,7 +46,7 @@ public class ExplosionBehavior : UnityDriven
             }
             else if (hit.TryGetComponent(out DestructibleTerrainReference terrainReference))
             {
-                terrainReference.ApplyExplosion(contactPoint, explosionRadius);
+                terrainReference.ApplyExplosion(contactPoint, explosionRadius); //TODO: sync?
             }
         }
 

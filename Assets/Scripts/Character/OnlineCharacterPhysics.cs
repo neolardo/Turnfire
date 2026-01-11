@@ -23,7 +23,6 @@ public class OnlineCharacterPhysics : NetworkBehaviour, ICharacterPhysics
         {
             _rb.bodyType = RigidbodyType2D.Dynamic;
             _rb.simulated = true;
-
         }
         else
         {

@@ -13,7 +13,7 @@ public class DestructibleTerrainManager : MonoBehaviour
     [SerializeField] private TilemapRenderer _tilemapRenderer;
     [SerializeField] private Tilemap _tilemap;
     [Header("Explosion Hole")]
-    [SerializeField] private OfflineExplosionHolePool _explosionHolePool;
+    [SerializeField] private ExplosionHolePool _explosionHolePool;
     [SerializeField] private Transform _initialExplosionHoleContainer;
     [SerializeField] private int _explosionHoleThresholdForColliderRebuild;
 
@@ -24,16 +24,16 @@ public class DestructibleTerrainManager : MonoBehaviour
 
     private bool _firstRebuildDone;
 
-    private List<OfflineExplosionHole> _newHoles;
-    private List<OfflineExplosionHole> _removableHoles;
+    private List<ExplosionHole> _newHoles;
+    private List<ExplosionHole> _removableHoles;
 
     public event Action<Vector2, float> TerrainModifiedByExplosion;
 
     private void Awake()
     {
         _explosionHoleContainer = _initialExplosionHoleContainer;
-        _newHoles = new List<OfflineExplosionHole>();
-        _removableHoles = new List<OfflineExplosionHole>();
+        _newHoles = new List<ExplosionHole>();
+        _removableHoles = new List<ExplosionHole>();
         _renderer.InitializeFromTilemap(_tilemap, _tilemapRenderer);
         _collider.RebuildFinished += OnColliderRebuildFinished;
         SafeObjectPlacer.SetDestructibleTerrain(this);
@@ -56,7 +56,6 @@ public class DestructibleTerrainManager : MonoBehaviour
             InitiateColliderRebuild();
         }
     }
-
 
     private void AddNewExplosionHole(Vector2 position, float radius)
     {

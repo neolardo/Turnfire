@@ -3,10 +3,10 @@ using UnityEngine;
 
 public abstract class DefinitionDatabase<T> : ScriptableObject, IDatabase<T> where T : DatabaseItemScriptableObject
 {
-    [SerializeField] private List<T> _definitions;
-    private Dictionary<int, T> _definitionsByIdDict;
+    [SerializeField] protected List<T> _definitions;
+    protected Dictionary<int, T> _definitionsByIdDict;
 
-    public void Initialize()
+    public virtual void Initialize()
     {
         _definitionsByIdDict = new Dictionary<int, T>();
         int id = 0;

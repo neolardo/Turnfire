@@ -11,13 +11,6 @@ public class DropLogic
         {
             Debug.LogWarning("No packages available to drop.");
         }
-        foreach (var drop in _currentMap.PossibleDrops)
-        {
-            if (drop.ItemDefinition is ArmorDefinition armorDef)
-            {
-                armorDef.InitializeAnimations(); //TODO: move
-            }
-        }
     }
 
     public int CalculateRandomizedNumberOfDrops()

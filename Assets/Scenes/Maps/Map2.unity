@@ -478,6 +478,7 @@ Transform:
   - {fileID: 319486632}
   - {fileID: 1565138927}
   - {fileID: 781547134}
+  - {fileID: 1804371898}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &258306766
@@ -12861,7 +12862,7 @@ PrefabInstance:
     - target: {fileID: 4624734449567860538, guid: 1027455669f1aaf48a24291c868c5e98, type: 3}
       propertyPath: _explosionHolePool
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1804371899}
     - target: {fileID: 4624734449567860538, guid: 1027455669f1aaf48a24291c868c5e98, type: 3}
       propertyPath: _initialExplosionHoleContainer
       value: 
@@ -16950,6 +16951,79 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d670270c2801cda4da2208c189d23db8, type: 3}
+--- !u!1001 &1804371897
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 258027079}
+    m_Modifications:
+    - target: {fileID: 7680489287809263391, guid: 6484c17264811404dbcb10603301cd76, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -3.07
+      objectReference: {fileID: 0}
+    - target: {fileID: 7680489287809263391, guid: 6484c17264811404dbcb10603301cd76, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -2.93
+      objectReference: {fileID: 0}
+    - target: {fileID: 7680489287809263391, guid: 6484c17264811404dbcb10603301cd76, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7680489287809263391, guid: 6484c17264811404dbcb10603301cd76, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7680489287809263391, guid: 6484c17264811404dbcb10603301cd76, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7680489287809263391, guid: 6484c17264811404dbcb10603301cd76, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7680489287809263391, guid: 6484c17264811404dbcb10603301cd76, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7680489287809263391, guid: 6484c17264811404dbcb10603301cd76, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7680489287809263391, guid: 6484c17264811404dbcb10603301cd76, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7680489287809263391, guid: 6484c17264811404dbcb10603301cd76, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8472721809726191532, guid: 6484c17264811404dbcb10603301cd76, type: 3}
+      propertyPath: m_Name
+      value: ExplosionHolePool
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6484c17264811404dbcb10603301cd76, type: 3}
+--- !u!4 &1804371898 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7680489287809263391, guid: 6484c17264811404dbcb10603301cd76, type: 3}
+  m_PrefabInstance: {fileID: 1804371897}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1804371899 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2982834045160503061, guid: 6484c17264811404dbcb10603301cd76, type: 3}
+  m_PrefabInstance: {fileID: 1804371897}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd80529a02fef5640928568bd360a1d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2027366804
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class CharacterLogic
 {
+    private Character _character;
     private ICharacterState _state;
-    public CharacterLogic(ICharacterState state, CharacterDefinition definition)
+    public CharacterLogic(Character character, ICharacterState state, CharacterDefinition definition)
     {
+        _character = character;
         _state = state;
         TrySelectAnyWeapon();
     }
@@ -78,17 +80,18 @@ public class CharacterLogic
         _state.RequestUseSelectedItem(context);
     }
 
-    public bool TrySelectItem(ItemInstance item, ItemUsageContext usageContext = default) //TODO: usage context
+    public bool TrySelectItem(ItemInstance item) 
     {
         var items = _state.GetAllItems();
         if ((item == null) || (items.Contains(item) && item != _state.SelectedItem))
         {
             if (item != null && item.Definition.UseInstantlyWhenSelected)
             {
-                if (item.Behavior.CanUseItem(usageContext))
+                var context = new ItemUsageContext(_character);
+                if (item.Behavior.CanUseItem(context))
                 {
                     _state.RequestSelectItem(item);
-                    UseSelectedItem(usageContext);
+                    UseSelectedItem(context);
                     // instantly used items should be deselected after usage
                     return TrySelectItem(null);
                 }
