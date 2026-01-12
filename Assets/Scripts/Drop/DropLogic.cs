@@ -25,12 +25,12 @@ public class DropLogic
         return numDrops;
     }
 
-    public T CreatePackage<T>(T packagePrefab, IList<DropZone> dropZones) where T: Object, IPackage
+    public T CreatePackage<T>(T packagePrefab, IList<DropZone> dropZones, Transform containerParent) where T: Object, IPackage
     {
         var itemDefinition = PickRandomItem();
         int zoneIndex = Random.Range(0, dropZones.Count);
         var spawnPos = dropZones[zoneIndex].GetRandomPoint();
-        var package = GameObject.Instantiate(packagePrefab, spawnPos, Quaternion.identity);
+        var package = GameObject.Instantiate(packagePrefab, spawnPos, Quaternion.identity, containerParent);
         package.SetItem(ItemInstance.CreateAsDrop(itemDefinition));
         return package;
     }

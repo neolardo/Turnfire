@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5471870071728689696}
   - component: {fileID: 2734561888057221797}
+  - component: {fileID: 4345153742340033486}
   m_Layer: 0
   m_Name: OfflineProjectilePool
   m_TagString: Untagged
@@ -47,3 +48,15 @@ MonoBehaviour:
   _prefab: {fileID: 9062505571680554449, guid: eb05b85027fa93d4caa6097369c6602b, type: 3}
   _initialSize: 10
   _container: {fileID: 0}
+--- !u!114 &4345153742340033486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7683326589807713363}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd80c557b591c414ba85b860894ad7e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

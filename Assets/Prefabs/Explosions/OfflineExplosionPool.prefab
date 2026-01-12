@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2151528975240900096}
   - component: {fileID: 6656883632540386499}
+  - component: {fileID: -4779520258591020434}
   m_Layer: 0
   m_Name: OfflineExplosionPool
   m_TagString: Untagged
@@ -47,3 +48,15 @@ MonoBehaviour:
   _prefab: {fileID: 7165292235912303260, guid: 10591e67bf244c7468ce8f58949344dd, type: 3}
   _initialSize: 10
   _container: {fileID: 0}
+--- !u!114 &-4779520258591020434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1813843176602889024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa17697243eaa59429ccab31453fd884, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

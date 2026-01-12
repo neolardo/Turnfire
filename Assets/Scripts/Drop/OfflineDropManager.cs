@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[RequireComponent(typeof(PackageContainer))]
 public class OfflineDropManager : MonoBehaviour, IDropManager
 {
     [SerializeField] private OfflinePackage _offlinePackagePrefab;
@@ -14,6 +15,7 @@ public class OfflineDropManager : MonoBehaviour, IDropManager
     private const float DelayAfterAllPackagesSpawned = 1f;
 
     private DropLogic _logic;
+    private PackageContainer _container;
 
     private void Start()
     {
@@ -24,6 +26,7 @@ public class OfflineDropManager : MonoBehaviour, IDropManager
             Debug.LogWarning("No drop zones to drop from.");
         }
         _logic = new DropLogic();
+        _container = GetComponent<PackageContainer>();
     }
 
     public void TrySpawnPackages()
@@ -37,7 +40,7 @@ public class OfflineDropManager : MonoBehaviour, IDropManager
 
         for (int i = 0; i < numDrops; i++)
         {
-            var package = _logic.CreatePackage(_offlinePackagePrefab, _dropZones);
+            var package = _logic.CreatePackage(_offlinePackagePrefab, _dropZones, _container.transform);
             package.gameObject.SetActive(true);
             package.Destroyed += OnPackageDestroyed;
             _currentPackages.Add(package);

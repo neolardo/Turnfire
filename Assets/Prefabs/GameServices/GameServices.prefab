@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6847539279503870528}
   - component: {fileID: 1023340579706496586}
+  - component: {fileID: -345752386076768430}
   m_Layer: 0
   m_Name: GameServices
   m_TagString: Untagged
@@ -65,3 +66,15 @@ MonoBehaviour:
   _itemDatabase: {fileID: 11400000, guid: fcb852b1652ede14b979a13143f891ac, type: 2}
   _explosionDatabase: {fileID: 11400000, guid: b42b40b61a7fc1449bc6cf081453f25e, type: 2}
   _projectileDatabase: {fileID: 11400000, guid: f39a7d14ad4677440801e717a94c18e7, type: 2}
+--- !u!114 &-345752386076768430
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4524580438595071069}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1910938a384ff847a29982c7e87777a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

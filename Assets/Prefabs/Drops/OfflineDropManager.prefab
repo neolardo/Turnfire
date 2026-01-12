@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5533128976833949905}
   - component: {fileID: 3615479629450516572}
+  - component: {fileID: -1310437227241655550}
   m_Layer: 0
   m_Name: OfflineDropManager
   m_TagString: Untagged
@@ -45,3 +46,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _offlinePackagePrefab: {fileID: 1921391790687242564, guid: 31efd3d1d9b1b864f9a28d093fc9f234, type: 3}
+--- !u!114 &-1310437227241655550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1077659101757453034}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66f2f4d5f989cce43a99fb46db023074, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

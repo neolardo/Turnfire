@@ -32,6 +32,8 @@ public class OnlineProjectile : IsActiveSyncedNetworkBehavior, IProjectile
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
+        var container = FindFirstObjectByType<ProjectileContainer>();
+        transform.parent = container.transform;
         _rb.simulated = IsServer;
         IsReady = true;
     }

@@ -30,13 +30,14 @@ public class GameplayerServicesBootstrap : MonoBehaviour
     private void Awake()
     {
         bool isOnlineGame = GameplaySceneSettingsStorage.Current.IsOnlineGame;
+        var containerTransform = GetComponent<GameServicesContainer>().transform;
         if(isOnlineGame)
         {
-            GameServices.InitializeOnline(_onlineGameStateManagerPrefab, _onlineTurnStateManagerPrefab, _onlineTimerPrefab, _onlineSceneLoaderPrefab, _onlineDropManagerPrefab, _onlineIdGeneratorPrefab, _onlineExplosionPoolPrefab, _onlineProjectilePoolPrefab, _onlineLaserPoolPrefab,_itemDatabase, _explosionDatabase, _projectileDatabase);
+            GameServices.InitializeOnline(containerTransform,_onlineGameStateManagerPrefab, _onlineTurnStateManagerPrefab, _onlineTimerPrefab, _onlineSceneLoaderPrefab, _onlineDropManagerPrefab, _onlineIdGeneratorPrefab, _onlineExplosionPoolPrefab, _onlineProjectilePoolPrefab, _onlineLaserPoolPrefab,_itemDatabase, _explosionDatabase, _projectileDatabase);
         }
         else
         {
-            GameServices.InitializeOffline(_offlineGameStateManagerPrefab, _offlineTurnStateManagerPrefab, _offlineTimerPrefab, _offlineSceneLoaderPrefab, _offlineDropManagerPrefab, _offlineIdGeneratorPrefab, _offlineExplosionPoolPrefab, _offlineProjectilePoolPrefab, _offlineLaserPoolPrefab, _itemDatabase, _explosionDatabase, _projectileDatabase);
+            GameServices.InitializeOffline(containerTransform, _offlineGameStateManagerPrefab, _offlineTurnStateManagerPrefab, _offlineTimerPrefab, _offlineSceneLoaderPrefab, _offlineDropManagerPrefab, _offlineIdGeneratorPrefab, _offlineExplosionPoolPrefab, _offlineProjectilePoolPrefab, _offlineLaserPoolPrefab, _itemDatabase, _explosionDatabase, _projectileDatabase);
         }
     }
 }

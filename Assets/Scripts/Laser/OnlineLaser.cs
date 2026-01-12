@@ -26,6 +26,8 @@ public class OnlineLaser : IsActiveSyncedNetworkBehavior, ILaser
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
+        var container = FindFirstObjectByType<LaserContainer>();
+        transform.parent = container.transform;
         IsReady = true;
     }
 

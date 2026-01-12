@@ -4,6 +4,7 @@ using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
+[RequireComponent(typeof(PackageContainer))]
 public class OnlineDropManager : NetworkBehaviour, IDropManager
 {
     [SerializeField] private OnlinePackage _onlinePackagePrefab;
@@ -15,6 +16,7 @@ public class OnlineDropManager : NetworkBehaviour, IDropManager
     private const float DelayAfterAllPackagesSpawned = 1f;
 
     private DropLogic _logic;
+    private PackageContainer _container;
 
     public override void OnNetworkSpawn()
     {
@@ -26,6 +28,7 @@ public class OnlineDropManager : NetworkBehaviour, IDropManager
             Debug.LogWarning("No drop zones to drop from.");
         }
         _logic = new DropLogic();
+        _container = GetComponent<PackageContainer>();
     }
 
     public void TrySpawnPackages()
@@ -43,7 +46,7 @@ public class OnlineDropManager : NetworkBehaviour, IDropManager
 
         for (int i = 0; i < numDrops; i++)
         {
-            var package = _logic.CreatePackage(_onlinePackagePrefab, _dropZones);
+            var package = _logic.CreatePackage(_onlinePackagePrefab, _dropZones, _container.transform);
             package.gameObject.SetActive(true);
             package.Destroyed += OnPackageDestroyed;
             var networkObj = package.GetComponent<NetworkObject>();

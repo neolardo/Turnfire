@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4447069471517420960}
   - component: {fileID: 5368754695815933964}
   - component: {fileID: 8553052072097350224}
+  - component: {fileID: -5474231158692325657}
   m_Layer: 0
   m_Name: OnlineDropManager
   m_TagString: Untagged
@@ -45,7 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2176263254
+  GlobalObjectIdHash: 987024994
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -72,3 +73,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   _onlinePackagePrefab: {fileID: 8987649602444139002, guid: 79f96ff54b5423b46a93f0147ad6c779, type: 3}
+--- !u!114 &-5474231158692325657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3387019315999550555}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66f2f4d5f989cce43a99fb46db023074, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
