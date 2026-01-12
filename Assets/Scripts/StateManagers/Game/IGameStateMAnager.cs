@@ -6,4 +6,5 @@ public interface IGameStateManager
 
     event Action<GameStateType> StateChanged;
     void TogglePauseResumeGameplay();
+    void StartGame();
 }

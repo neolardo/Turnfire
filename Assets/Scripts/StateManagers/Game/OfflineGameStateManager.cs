@@ -9,10 +9,14 @@ public class OfflineGameStateManager : MonoBehaviour, IGameStateManager
 
     public event Action<GameStateType> StateChanged;
 
-    private void Start()
+    private void Awake()
     {
         _logic = new GameStateManagerLogic(_gameplaySettings);
         _logic.StateChanged += InvokeStateChanged;
+    }
+
+    public void StartGame()
+    {
         StartCoroutine(_logic.StartGameAfterCountdownCoroutine());
     }
 

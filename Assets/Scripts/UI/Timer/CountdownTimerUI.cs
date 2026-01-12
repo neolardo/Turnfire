@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -5,7 +6,20 @@ public class CountdownTimerUI : TimerUI
 {
     [SerializeField] private GameplaySettingsDefinition _timerSettings;
 
-    private void Start()
+    private void Awake()
+    {
+        GameServices.Initialized += OnGameServicesInitialized;
+        if(GameServices.IsInitialized)
+        {
+            OnGameServicesInitialized();
+        }
+    }
+    private void OnDestroy()
+    {
+        GameServices.Initialized -= OnGameServicesInitialized;
+    }
+
+    private void OnGameServicesInitialized()
     {
         var endText = _timerText.text;
         var timer = GameServices.CountdownTimer;

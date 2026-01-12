@@ -10,7 +10,7 @@ public static class CharacterComposer
         ICharacterState state;
         ICharacterPhysics physics;
 
-        if (isOnline)
+        if (isOnline && NetworkManager.Singleton.IsServer)
         {
             state = character.gameObject.AddComponent<OnlineCharacterState>();
             physics = character.gameObject.AddComponent<OnlineCharacterPhysics>();

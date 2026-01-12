@@ -20,7 +20,7 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
         _inputSource.AimChanged += OnAimChanged;
         _inputSource.AimCancelled += OnAimCancelled;
         _inputSource.ActionSkipped += OnActionSkipped;
-        _currentCharacter.Jumped += EndState; //TODO: update every state to be event based
+        _currentCharacter.Jumped += EndState;
     }
     protected override void UnsubscribeFromEvents()
     {

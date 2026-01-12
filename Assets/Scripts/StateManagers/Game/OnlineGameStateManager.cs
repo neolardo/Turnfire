@@ -22,6 +22,14 @@ public class OnlineGameStateManager : NetworkBehaviour, IGameStateManager
         }
         _logic = new GameStateManagerLogic(_gameplaySettings);
         _logic.StateChanged += ServerOnStateChanged;
+    }
+
+    public void StartGame()
+    {
+        if (!IsServer)
+        {
+            return;
+        }
         StartCoroutine(_logic.StartGameAfterCountdownCoroutine());
     }
 

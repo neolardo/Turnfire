@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2614563099518658898
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1639992378243085719}
+  - component: {fileID: 7022910815782399144}
+  m_Layer: 0
+  m_Name: OfflineGameplayServiceFactory
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1639992378243085719
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2614563099518658898}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7022910815782399144
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2614563099518658898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce7db1f40c33f73408926539c06e6827, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _gameStateManagerPrefab: {fileID: 6388547255340193819, guid: 72d049bc0e9e9fc44b61a6f429a2b746, type: 3}
+  _turnStateManagerPrefab: {fileID: 7754326784142910902, guid: e3d66f1c410400a439dd0baab58c45cc, type: 3}
+  _timerPrefab: {fileID: 8354179038335759795, guid: b76c83b66f99a354b9d89f8088037352, type: 3}
+  _sceneLoaderPrefab: {fileID: 4632844748752445241, guid: a4ff985ce750de54cb405c422e861ab3, type: 3}
+  _dropManagerPrefab: {fileID: 3615479629450516572, guid: d6f929277ff7a43418a99ced134c14ee, type: 3}
+  _idGeneratorPrefab: {fileID: 8901743742562232290, guid: f67695cafd7a8434fa2b20e35f449f1c, type: 3}
+  _explosionPoolPrefab: {fileID: 6656883632540386499, guid: fa55335b449603f4992e77040f02a7a2, type: 3}
+  _projectilePoolPrefab: {fileID: 2734561888057221797, guid: 9ac8df386043cf34f8adfa3a92afc079, type: 3}
+  _laserPoolPrefab: {fileID: 5432046830099231842, guid: 68f834381f6a2a3438d389a4499d6201, type: 3}
+  _itemDatabase: {fileID: 11400000, guid: fcb852b1652ede14b979a13143f891ac, type: 2}
+  _explosionDatabase: {fileID: 11400000, guid: b42b40b61a7fc1449bc6cf081453f25e, type: 2}
+  _projectileDatabase: {fileID: 11400000, guid: f39a7d14ad4677440801e717a94c18e7, type: 2}

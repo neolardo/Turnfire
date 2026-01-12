@@ -1,5 +1,4 @@
-using Unity.Netcode;
-using UnityEngine;
+using System;
 
 public static class GameServices
 {
@@ -17,72 +16,23 @@ public static class GameServices
     public static IDatabase<ExplosionDefinition> ExplosionDatabase { get; private set; }
     public static IDatabase<ProjectileDefinition> ProjectileDatabase { get; private set; }
 
-    //TODO: event for game services initialized?
+    public static bool IsInitialized { get; private set; }
 
+    public static event Action Initialized;
 
-    public static void InitializeOffline(Transform containerParent, OfflineGameStateManager gameStateManagerPrefab, OfflineTurnStateManager turnStateManagerPrefab, OfflineTimer timerPrefab, OfflineSceneLoader sceneLoaderPrefab, OfflineDropManager dropManagerPrefab, OfflineIdGenerator idGeneratorPrefab, OfflineExplosionPool explosionPool, OfflineProjectilePool projectilePool, OfflineLaserPool laserPool, ItemDefinitionDatabase itemDatabase, ExplosionDefinitionDatabase explosionDatabase, ProjectileDefinitionDatabase projectileDatabase)
+    public static void Initialize(IGameStateManager gameStateManager, ITurnStateManager turnStateManager, ITimer countdownTimer, ITimer gameplayTimer, ISceneLoader sceneLoader, IDropManager dropManager, IIdGenerator itemInstanceIdGenerator, IPool<IExplosion> explosionPool, IPool<IProjectile> projectilePool, IPool<ILaser> laserPool, ItemDefinitionDatabase itemDatabase, ExplosionDefinitionDatabase explosionDatabase, ProjectileDefinitionDatabase projectileDatabase)
     {
-        ClearServices();
-        GameStateManager = GameObject.Instantiate(gameStateManagerPrefab, containerParent);
-        TurnStateManager = GameObject.Instantiate(turnStateManagerPrefab, containerParent);
-        CountdownTimer = GameObject.Instantiate(timerPrefab, containerParent);
-        GameplayTimer = GameObject.Instantiate(timerPrefab, containerParent);
-        SceneLoader = OfflineSceneLoader.Instance == null ? GameObject.Instantiate(sceneLoaderPrefab, containerParent) : OfflineSceneLoader.Instance;
-        DropManager = GameObject.Instantiate(dropManagerPrefab, containerParent);
-        ItemInstanceIdGenerator = GameObject.Instantiate(idGeneratorPrefab, containerParent);
-
-        ProjectilePool = GameObject.Instantiate(projectilePool, containerParent);
-        ExplosionPool = GameObject.Instantiate(explosionPool, containerParent);
-        LaserPool = GameObject.Instantiate(laserPool, containerParent);
-
-        ItemDatabase = itemDatabase;
-        ItemDatabase.Initialize();
-        ExplosionDatabase = explosionDatabase;
-        ExplosionDatabase.Initialize();
-        ProjectileDatabase = projectileDatabase;
-        ProjectileDatabase.Initialize();
-        ConnectServices();
-    }
-
-    public static void InitializeOnline(Transform containerParent, OnlineGameStateManager gameStateManagerPrefab, OnlineTurnStateManager turnStateManagerPrefab, OnlineTimer timerPrefab, OnlineSceneLoader sceneLoaderPrefab, OnlineDropManager dropManagerPrefab, OnlineIdGenerator idGeneratorPrefab, OnlineExplosionPool explosionPool, OnlineProjectilePool projectilePool, OnlineLaserPool laserPool, ItemDefinitionDatabase itemDatabase, ExplosionDefinitionDatabase explosionDatabase, ProjectileDefinitionDatabase projectileDatabase)
-    {
-        if (!NetworkManager.Singleton.IsServer)
-        {
-            return;
-        }
-        ClearServices();
-        //TODO: assign them on spawn
-        var gameStateManager = GameObject.Instantiate(gameStateManagerPrefab, containerParent);
-        gameStateManager.GetComponent<NetworkObject>().Spawn();
         GameStateManager = gameStateManager;
-
-        var turnStateManager = GameObject.Instantiate(turnStateManagerPrefab, containerParent);
-        turnStateManager.GetComponent<NetworkObject>().Spawn();
         TurnStateManager = turnStateManager;
-
-        var countdownTimer = GameObject.Instantiate(timerPrefab, containerParent);
-        countdownTimer.GetComponent<NetworkObject>().Spawn();
         CountdownTimer = countdownTimer;
-
-        var gameplayTimer = GameObject.Instantiate(timerPrefab, containerParent);
-        gameplayTimer.GetComponent<NetworkObject>().Spawn();
         GameplayTimer = gameplayTimer;
-
-        var sceneLoader = OnlineSceneLoader.Instance == null ? GameObject.Instantiate(sceneLoaderPrefab, containerParent) : OnlineSceneLoader.Instance;
-        sceneLoader.GetComponent<NetworkObject>().Spawn();
         SceneLoader = sceneLoader;
-
-        var dropManager = GameObject.Instantiate(dropManagerPrefab, containerParent);
-        dropManager.GetComponent<NetworkObject>().Spawn();
         DropManager = dropManager;
-
-        var itemInstanceIdGenerator = GameObject.Instantiate(idGeneratorPrefab, containerParent);
-        itemInstanceIdGenerator.GetComponent<NetworkObject>().Spawn();
         ItemInstanceIdGenerator = itemInstanceIdGenerator;
 
-        ProjectilePool = GameObject.Instantiate(projectilePool, containerParent);
-        ExplosionPool = GameObject.Instantiate(explosionPool, containerParent);
-        LaserPool = GameObject.Instantiate(laserPool, containerParent);
+        ProjectilePool = projectilePool;
+        ExplosionPool = explosionPool;
+        LaserPool = laserPool;
 
         ItemDatabase = itemDatabase;
         ItemDatabase.Initialize();
@@ -90,7 +40,6 @@ public static class GameServices
         ExplosionDatabase.Initialize();
         ProjectileDatabase = projectileDatabase;
         ProjectileDatabase.Initialize();
-
         ConnectServices();
     }
 
@@ -111,10 +60,13 @@ public static class GameServices
                     GameplayTimer.Resume();
             };
         }
+        IsInitialized = true;
+        Initialized?.Invoke();
     }
 
-    private static void ClearServices()
+    public static void ClearServices()
     {
+        IsInitialized = false;
         GameStateManager = null;
         TurnStateManager = null;
         CountdownTimer = null;

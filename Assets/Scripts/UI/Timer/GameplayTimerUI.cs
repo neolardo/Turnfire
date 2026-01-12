@@ -8,9 +8,23 @@ public class GameplayTimerUI : TimerUI
     [SerializeField] private UISoundsDefinition _uiSounds;
     private Color _normalColor;
 
-    private void Start()
+
+    private void Awake()
     {
         _normalColor = _timerText.color;
+        GameServices.Initialized += OnGameServicesInitialized;
+        if (GameServices.IsInitialized)
+        {
+            OnGameServicesInitialized();
+        }
+    }
+    private void OnDestroy()
+    {
+        GameServices.Initialized -= OnGameServicesInitialized;
+    }
+
+    private void OnGameServicesInitialized()
+    {
         var timer = GameServices.GameplayTimer;
         timer.Initialize(_timerSettings.SecondsAvaiablePerPlayerTurn);
         this.Initialize(timer);

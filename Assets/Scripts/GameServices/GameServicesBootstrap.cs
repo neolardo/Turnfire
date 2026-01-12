@@ -1,43 +1,44 @@
+using System.Collections;
+using Unity.Netcode;
 using UnityEngine;
 
 public class GameplayerServicesBootstrap : MonoBehaviour
 {
-    [Header("Online")]
-    [SerializeField] private OnlineGameStateManager _onlineGameStateManagerPrefab;
-    [SerializeField] private OnlineTurnStateManager _onlineTurnStateManagerPrefab;
-    [SerializeField] private OnlineTimer _onlineTimerPrefab;
-    [SerializeField] private OnlineSceneLoader _onlineSceneLoaderPrefab;
-    [SerializeField] private OnlineDropManager _onlineDropManagerPrefab;
-    [SerializeField] private OnlineIdGenerator _onlineIdGeneratorPrefab;
-    [SerializeField] private OnlineExplosionPool _onlineExplosionPoolPrefab;
-    [SerializeField] private OnlineProjectilePool _onlineProjectilePoolPrefab;
-    [SerializeField] private OnlineLaserPool _onlineLaserPoolPrefab;
-    [Header("Offline")]
-    [SerializeField] private OfflineGameStateManager _offlineGameStateManagerPrefab;
-    [SerializeField] private OfflineTurnStateManager _offlineTurnStateManagerPrefab;
-    [SerializeField] private OfflineTimer _offlineTimerPrefab;
-    [SerializeField] private OfflineSceneLoader _offlineSceneLoaderPrefab;
-    [SerializeField] private OfflineDropManager _offlineDropManagerPrefab;
-    [SerializeField] private OfflineIdGenerator _offlineIdGeneratorPrefab;
-    [SerializeField] private OfflineExplosionPool _offlineExplosionPoolPrefab;
-    [SerializeField] private OfflineProjectilePool _offlineProjectilePoolPrefab;
-    [SerializeField] private OfflineLaserPool _offlineLaserPoolPrefab;
-    [Header("Invariant")]
-    [SerializeField] ItemDefinitionDatabase _itemDatabase;
-    [SerializeField] ExplosionDefinitionDatabase _explosionDatabase;
-    [SerializeField] ProjectileDefinitionDatabase _projectileDatabase;
+    [SerializeField] private OnlineGameplayServiceFactory _onlineServiceFactory;
+    [SerializeField] private OfflineGameplayServiceFactory _offlineServiceFactory;
 
     private void Awake()
     {
         bool isOnlineGame = GameplaySceneSettingsStorage.Current.IsOnlineGame;
-        var containerTransform = GetComponent<GameServicesContainer>().transform;
-        if(isOnlineGame)
+        var container = GetComponent<GameServicesContainer>().transform;
+
+        GameServices.ClearServices();
+        if (isOnlineGame)
         {
-            GameServices.InitializeOnline(containerTransform,_onlineGameStateManagerPrefab, _onlineTurnStateManagerPrefab, _onlineTimerPrefab, _onlineSceneLoaderPrefab, _onlineDropManagerPrefab, _onlineIdGeneratorPrefab, _onlineExplosionPoolPrefab, _onlineProjectilePoolPrefab, _onlineLaserPoolPrefab,_itemDatabase, _explosionDatabase, _projectileDatabase);
+            StartCoroutine(CreateOnlineServices(container));
         }
         else
         {
-            GameServices.InitializeOffline(containerTransform, _offlineGameStateManagerPrefab, _offlineTurnStateManagerPrefab, _offlineTimerPrefab, _offlineSceneLoaderPrefab, _offlineDropManagerPrefab, _offlineIdGeneratorPrefab, _offlineExplosionPoolPrefab, _offlineProjectilePoolPrefab, _offlineLaserPoolPrefab, _itemDatabase, _explosionDatabase, _projectileDatabase);
+            StartCoroutine(CreateOfflineServices(container));
         }
+    }
+
+    private IEnumerator CreateOfflineServices(Transform container)
+    {
+        var factory = Instantiate(_offlineServiceFactory, container);
+        factory.CreateServices(container);
+        yield break;
+    }
+    private IEnumerator CreateOnlineServices(Transform container)
+    {
+        if(!NetworkManager.Singleton.IsServer)
+        {
+            yield break;
+        }
+        var factory = Instantiate(_onlineServiceFactory, container);
+        var netObj = factory.GetComponent<NetworkObject>();
+        netObj.Spawn();
+        yield return new WaitUntil(() => netObj.IsSpawned);
+        factory.CreateServices(container);
     }
 }
