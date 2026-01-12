@@ -278,6 +278,12 @@
             ]
         },
         {
+            "name": "GameOver",
+            "id": "ad4f9d00-6645-4f04-9409-c0c754d2d9e5",
+            "actions": [],
+            "bindings": []
+        },
+        {
             "name": "Inventory",
             "id": "272f6d14-89ba-496f-b7ff-215263d3219f",
             "actions": [

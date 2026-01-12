@@ -43,13 +43,22 @@ public class OnlineProjectile : IsActiveSyncedNetworkBehavior, IProjectile
             return;
         }
         InitializeClientRpc(definition.Id);
-        if (_behavior != null)
-        {
-            _behavior.Exploded -= OnExploded;
-        }
+
         _behavior = behavior;
         _behavior.Exploded += OnExploded;
         _behavior.ContactedWithoutExplosion += OnContactedWithoutExplosion;
+    }
+
+
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+        if (_behavior != null && IsServer)
+        {
+            _behavior.Exploded -= OnExploded;
+            _behavior.ContactedWithoutExplosion -= OnContactedWithoutExplosion;
+            _behavior = null;
+        }
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]

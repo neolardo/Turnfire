@@ -364,6 +364,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             ]
         },
         {
+            ""name"": ""GameOver"",
+            ""id"": ""ad4f9d00-6645-4f04-9409-c0c754d2d9e5"",
+            ""actions"": [],
+            ""bindings"": []
+        },
+        {
             ""name"": ""Inventory"",
             ""id"": ""272f6d14-89ba-496f-b7ff-215263d3219f"",
             ""actions"": [
@@ -947,6 +953,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         // GameplayMenu
         m_GameplayMenu = asset.FindActionMap("GameplayMenu", throwIfNotFound: true);
         m_GameplayMenu_ResumeGameplay = m_GameplayMenu.FindAction("ResumeGameplay", throwIfNotFound: true);
+        // GameOver
+        m_GameOver = asset.FindActionMap("GameOver", throwIfNotFound: true);
         // Inventory
         m_Inventory = asset.FindActionMap("Inventory", throwIfNotFound: true);
         m_Inventory_ToggleCreateDestroy = m_Inventory.FindAction("ToggleCreateDestroy", throwIfNotFound: true);
@@ -970,6 +978,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     {
         UnityEngine.Debug.Assert(!m_Gameplay.enabled, "This will cause a leak and performance issues, PlayerInputActions.Gameplay.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_GameplayMenu.enabled, "This will cause a leak and performance issues, PlayerInputActions.GameplayMenu.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_GameOver.enabled, "This will cause a leak and performance issues, PlayerInputActions.GameOver.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_Inventory.enabled, "This will cause a leak and performance issues, PlayerInputActions.Inventory.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_Menu.enabled, "This will cause a leak and performance issues, PlayerInputActions.Menu.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_UI.enabled, "This will cause a leak and performance issues, PlayerInputActions.UI.Disable() has not been called.");
@@ -1302,6 +1311,91 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     /// Provides a new <see cref="GameplayMenuActions" /> instance referencing this action map.
     /// </summary>
     public GameplayMenuActions @GameplayMenu => new GameplayMenuActions(this);
+
+    // GameOver
+    private readonly InputActionMap m_GameOver;
+    private List<IGameOverActions> m_GameOverActionsCallbackInterfaces = new List<IGameOverActions>();
+    /// <summary>
+    /// Provides access to input actions defined in input action map "GameOver".
+    /// </summary>
+    public struct GameOverActions
+    {
+        private @PlayerInputActions m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public GameOverActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_GameOver; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="GameOverActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(GameOverActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="GameOverActions" />
+        public void AddCallbacks(IGameOverActions instance)
+        {
+            if (instance == null || m_Wrapper.m_GameOverActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_GameOverActionsCallbackInterfaces.Add(instance);
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="GameOverActions" />
+        private void UnregisterCallbacks(IGameOverActions instance)
+        {
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="GameOverActions.UnregisterCallbacks(IGameOverActions)" />.
+        /// </summary>
+        /// <seealso cref="GameOverActions.UnregisterCallbacks(IGameOverActions)" />
+        public void RemoveCallbacks(IGameOverActions instance)
+        {
+            if (m_Wrapper.m_GameOverActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="GameOverActions.AddCallbacks(IGameOverActions)" />
+        /// <seealso cref="GameOverActions.RemoveCallbacks(IGameOverActions)" />
+        /// <seealso cref="GameOverActions.UnregisterCallbacks(IGameOverActions)" />
+        public void SetCallbacks(IGameOverActions instance)
+        {
+            foreach (var item in m_Wrapper.m_GameOverActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_GameOverActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="GameOverActions" /> instance referencing this action map.
+    /// </summary>
+    public GameOverActions @GameOver => new GameOverActions(this);
 
     // Inventory
     private readonly InputActionMap m_Inventory;
@@ -1814,6 +1908,14 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnResumeGameplay(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "GameOver" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="GameOverActions.AddCallbacks(IGameOverActions)" />
+    /// <seealso cref="GameOverActions.RemoveCallbacks(IGameOverActions)" />
+    public interface IGameOverActions
+    {
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Inventory" which allows adding and removing callbacks.

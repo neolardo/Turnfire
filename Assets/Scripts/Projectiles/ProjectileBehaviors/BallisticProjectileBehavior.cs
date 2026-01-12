@@ -35,9 +35,19 @@ public class BallisticProjectileBehavior : UnityDriven, IProjectileBehavior
     public virtual void Launch(ProjectileLaunchContext context)
     {
         _exploded = false;
-        _currentPhysics = context.Physics;
+        InitializePhysics(context.Physics);
         PlaceProjectile(context);
         context.Physics.AddImpulse(context.AimVector);
+    }
+
+    protected virtual void InitializePhysics(ProjectilePhysics physics)
+    {
+        if(_currentPhysics != null)
+        {
+            _currentPhysics.Contacted -= OnContact;
+        }
+        _currentPhysics = physics;
+        _currentPhysics.Contacted += OnContact;
     }
 
     protected virtual void PlaceProjectile(ProjectileLaunchContext context)

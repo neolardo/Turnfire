@@ -21,6 +21,7 @@ public class ExplosionBehavior : UnityDriven
         _explodedCharacters = new List<Character>();
         _explosionDefinition = explosionDefinition;
         _explosionTransform = explosionTransform;
+        _explosionDuration = explosionDuration;
     }
 
     public IEnumerable<Character> Explode(Vector2 contactPoint, int damage,IDamageSourceDefinition damageSource)

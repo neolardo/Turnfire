@@ -13,6 +13,7 @@ public class TeamHealthbarUI : MonoBehaviour
     [SerializeField] private Color _selectedTeamTextColor;
     [SerializeField] private float _textColorFadeSeconds =.5f;
 
+    private Team _team;
     private float _initialScale;
     private Color _originalTextColor;
     private readonly Vector2Int TextMarginPixels = new Vector2Int(2, 2);
@@ -23,14 +24,24 @@ public class TeamHealthbarUI : MonoBehaviour
         _originalTextColor = _teamText.color;
     }
 
+    private void Start()
+    {
+        GameServices.TurnStateManager.SelectedTeamChanged += OnSelectedTeamChanged;
+    }
+
+    private void OnSelectedTeamChanged(Team selectedTeam)
+    {
+        FadeTextOnTeamSelectionChanged(selectedTeam == _team);
+    }
+
     public void SetTeam(Team team)
     {
+        _team = team;
         SetTeamHealth(1);
         _healthbarInnerContentImage.color = team.TeamColor;
         _teamText.text = team.TeamName;
         team.TeamHealthChanged += SetTeamHealth;
         team.TeamLost += FadeTextOnTeamLost;
-        team.TeamSelectedChanged += FadeTextOnTeamSelectionChanged;
     }
 
     private void FadeTextOnTeamLost()

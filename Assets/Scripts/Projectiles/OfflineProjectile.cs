@@ -31,13 +31,19 @@ public class OfflineProjectile : MonoBehaviour, IProjectile
         _view.Initialize(_definition);
         _physics.Initialize(_definition);
 
-        if (_behavior != null)
-        {
-            _behavior.Exploded -= OnExploded;
-        }
         _behavior = behavior;
         _behavior.Exploded += OnExploded;
         _behavior.ContactedWithoutExplosion += OnContactedWithoutExplosion;
+    }
+
+    private void OnDisable()
+    {
+        if (_behavior != null)
+        {
+            _behavior.Exploded -= OnExploded;
+            _behavior.ContactedWithoutExplosion -= OnContactedWithoutExplosion;
+            _behavior = null;
+        }
     }
 
     #region Contact

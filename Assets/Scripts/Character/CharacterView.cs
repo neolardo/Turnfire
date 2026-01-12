@@ -5,7 +5,6 @@ public class CharacterView : MonoBehaviour
     private CharacterHealthbarRenderer _healthbarRenderer;
     private CharacterAnimator _animator;
     private CharacterDefinition _definition;
-    private CharacterArmorManager _armorManager;
     public Transform ItemTransform => _animator.ItemTransform;
     public bool IsPlayingNonIdleAnimation => _animator.IsPlayingNonIdleAnimation;
     public CharacterView(CharacterAnimator animator, CharacterDefinition definition, CharacterHealthbarRenderer healthbarRenderer, Team team)
@@ -18,6 +17,11 @@ public class CharacterView : MonoBehaviour
     }
 
     #region Health
+
+    public void OnHealthChanged(float normalizedHealth, int health)
+    {
+        _healthbarRenderer.SetCurrentHealth(normalizedHealth, health);
+    }
 
     public void OnHurt(IDamageSourceDefinition damageSource)
     {

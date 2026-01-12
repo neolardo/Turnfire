@@ -33,7 +33,7 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
 
     private NetworkVariable<bool> _isUsingSelectedItem = new NetworkVariable<bool>();
     public bool IsUsingSelectedItem => _isUsingSelectedItem.Value;
-    public ItemInstance SelectedItem { get; private set; }
+    public ItemInstance SelectedItem => _inventory.SelectedItem;
 
     private NetworkVariable<float> _jumpBoost = new NetworkVariable<float>();
     public float JumpBoost
@@ -85,9 +85,13 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
         _armorManager.ArmorUnequipped += InvokeArmorUnequipped;
         foreach (var itemDef in _definition.InitialItems)
         {
-            _inventory.AddItem(ItemInstance.CreateAsInitialItem(itemDef));
+            var instance = ItemInstance.CreateAsInitialItem(itemDef);
+            //instance.Destroyed += OnItemDestroyed; //TODO: check if needed
+            instance.QuantityChanged += OnItemQuantityChanged;
+            _inventory.AddItem(instance);
         }
     }
+
 
     #region Health
 
@@ -273,6 +277,7 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
         }
         _inventory.AddItem(item);
         item.QuantityChanged += OnItemQuantityChanged;
+        //item.Destroyed += OnItemDestroyed; //TODO: check if needed
         AddItemClientRpc(new NetworkItemInstanceData(item));
     }
 
@@ -305,6 +310,15 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
         }
         RemoveItemClientRpc(item.InstanceId);
     }
+    private void OnItemDestroyed(ItemInstance instance)
+    {
+        if (!IsServer)
+        {
+            return;
+        }
+        RemoveItemClientRpc(instance.InstanceId);
+    }
+
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
     private void RemoveItemClientRpc(int itemInstanceId)
     {

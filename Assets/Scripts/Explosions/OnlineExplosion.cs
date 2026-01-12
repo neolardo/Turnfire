@@ -14,7 +14,7 @@ public class OnlineExplosion : IsActiveSyncedNetworkBehavior, IExplosion
 
     public event Action<IExplosion> Exploded;
 
-    public bool IsExploding => _behavior.IsExploding;
+    public bool IsExploding => _behavior == null ? false : _behavior.IsExploding;
 
     public bool IsReady { get; private set; }
 
@@ -37,6 +37,17 @@ public class OnlineExplosion : IsActiveSyncedNetworkBehavior, IExplosion
         float explosionDuration = explosionDefinition.Animation.GetTotalDuration(frameDuration);
         _behavior = new ExplosionBehavior(explosionDefinition, explosionDuration, transform);
         _behavior.Exploded += OnExplosionFinished;
+    }
+
+
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+        if (_behavior != null && IsServer)
+        {
+            _behavior.Exploded -= OnExplosionFinished;
+            _behavior = null;
+        }
     }
 
     [Rpc(SendTo.Everyone, InvokePermission =RpcInvokePermission.Server)]

@@ -22,6 +22,10 @@ public abstract class TimerUI : MonoBehaviour
         {
             _timerText.text = _endText;
         }
+        else
+        {
+            UpdateDisplay();
+        }
     }
 
     void Update()

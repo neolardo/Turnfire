@@ -7,7 +7,6 @@ public class OfflineIdGenerator : MonoBehaviour, IIdGenerator
     private void Awake()
     {
         _lastId = IIdGenerator.InitialId;
-
     }
     public int GenerateId()
     {

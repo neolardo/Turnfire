@@ -7,7 +7,10 @@ public interface ITurnStateManager
 
     event Action GameStarted;
     event Action<Team> GameEnded;
+    event Action<Team> SelectedTeamChanged;
     void Initialize(IEnumerable<Team> teams);
     void StartGame();
     void ForceEndGame();
+    Character GetCurrentCharacterInTeam(Team team);
+
 }

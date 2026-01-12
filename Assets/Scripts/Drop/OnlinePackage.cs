@@ -9,8 +9,8 @@ public class OnlinePackage : IsActiveSyncedNetworkBehavior, IPackage
 {
     [SerializeField] private SFXDefiniton spawnSFX;
     [SerializeField] private SFXDefiniton collectSFX;
-    public bool IsMoving => _rb.linearVelocity.magnitude > 0;
-    public bool IsActiveInHierarchy => gameObject.activeInHierarchy;
+    public bool IsMoving => _destroyed? false : _rb.linearVelocity.magnitude > 0;
+    public bool IsActiveInHierarchy => _destroyed ? false : gameObject.activeInHierarchy;
     public Transform Transform => transform;
 
     private Rigidbody2D _rb;

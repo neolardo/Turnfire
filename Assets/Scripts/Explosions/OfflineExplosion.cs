@@ -11,7 +11,7 @@ public class OfflineExplosion : MonoBehaviour, IExplosion
 
     public event Action<IExplosion> Exploded;
 
-    public bool IsExploding => _behavior.IsExploding;
+    public bool IsExploding => _behavior == null ? false: _behavior.IsExploding;
 
     public bool IsReady {get; private set;}
 
@@ -29,6 +29,15 @@ public class OfflineExplosion : MonoBehaviour, IExplosion
         float explosionDuration = explosionDefinition.Animation.GetTotalDuration(frameDuration);
         _behavior = new ExplosionBehavior(explosionDefinition, explosionDuration, transform);
         _behavior.Exploded += OnExplosionFinished;
+    }
+
+    private void OnDisable()
+    {
+        if(_behavior!= null)
+        {
+            _behavior.Exploded -= OnExplosionFinished;
+            _behavior = null;
+        }
     }
 
     public IEnumerable<Character> Explode(Vector2 contactPoint, int damage, IDamageSourceDefinition damageSource)

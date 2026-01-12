@@ -17,6 +17,8 @@ public static class GameServices
     public static IDatabase<ExplosionDefinition> ExplosionDatabase { get; private set; }
     public static IDatabase<ProjectileDefinition> ProjectileDatabase { get; private set; }
 
+    //TODO: event for game services initialized?
+
 
     public static void InitializeOffline(OfflineGameStateManager gameStateManagerPrefab, OfflineTurnStateManager turnStateManagerPrefab, OfflineTimer timerPrefab, OfflineSceneLoader sceneLoaderPrefab, OfflineDropManager dropManagerPrefab, OfflineIdGenerator idGeneratorPrefab, OfflineExplosionPool explosionPool, OfflineProjectilePool projectilePool, OfflineLaserPool laserPool, ItemDefinitionDatabase itemDatabase, ExplosionDefinitionDatabase explosionDatabase, ProjectileDefinitionDatabase projectileDatabase)
     {
@@ -47,7 +49,7 @@ public static class GameServices
         {
             return;
         }
-
+        //TODO: assign them on spawn
         var gameStateManager = GameObject.Instantiate(gameStateManagerPrefab);
         gameStateManager.GetComponent<NetworkObject>().Spawn();
         GameStateManager = gameStateManager;

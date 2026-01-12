@@ -25,9 +25,10 @@ public class BotContextProvider : MonoBehaviour
         {
             InitializeTeams();
         }
-        var teamMates = botTeam.GetAllCharacters().Where(c => c != botTeam.CurrentCharacter && c.IsAlive);
+        var currentCharacter = GameServices.TurnStateManager.GetCurrentCharacterInTeam(botTeam);
+        var teamMates = botTeam.GetAllCharacters().Where(c => c != currentCharacter && c.IsAlive);
         var enemies = _teams.Where(t=> t != botTeam).Select(t => t.GetAllCharacters().Where(c => c.IsAlive)).Aggregate((t1, t2) => t1.Concat(t2));
-        return new BotContext(action, botTeam.CurrentCharacter, teamMates, enemies, GameServices.DropManager.GetAllAvailablePackages(), _destructibleTerrain, _jumpGraphManager.JumpGraph);
+        return new BotContext(action, currentCharacter, teamMates, enemies, GameServices.DropManager.GetAllAvailablePackages(), _destructibleTerrain, _jumpGraphManager.JumpGraph);
     }
 
 }

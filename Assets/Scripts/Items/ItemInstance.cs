@@ -34,17 +34,17 @@ public class ItemInstance
         InstanceId = instanceId;
         DefinitionId = definitionId;
         Quantity = initialQuantity;
-        Definition = GameServices.ItemDatabase.GetById(instanceId);
+        Definition = GameServices.ItemDatabase.GetById(definitionId);
         Behavior = Definition.CreateItemBehavior();
     }
 
     public static ItemInstance CreateAsInitialItem(ItemDefinition definition)
     {
-        return new ItemInstance(definition.Id, GameServices.ItemInstanceIdGenerator.GenerateId(), definition.InitialQuantity);
+        return new ItemInstance(GameServices.ItemInstanceIdGenerator.GenerateId(), definition.Id, definition.InitialQuantity);
     }
     public static ItemInstance CreateAsDrop(ItemDefinition definition)
     {
-        return new ItemInstance(definition.Id, GameServices.ItemInstanceIdGenerator.GenerateId(), definition.DropQuantityRange.CalculateValue());
+        return new ItemInstance(GameServices.ItemInstanceIdGenerator.GenerateId(), definition.Id, definition.DropQuantityRange.CalculateValue());
     }
 
     public bool IsSameType(ItemInstance other)

@@ -11,6 +11,7 @@ public class OfflineTurnStateManager : MonoBehaviour, ITurnStateManager
 
     public event Action GameStarted;
     public event Action<Team> GameEnded;
+    public event Action<Team> SelectedTeamChanged;
 
     public void Initialize(IEnumerable<Team> teams)
     {
@@ -27,8 +28,9 @@ public class OfflineTurnStateManager : MonoBehaviour, ITurnStateManager
         var finishedState = new FinishedTurnState();
 
         _logic = new TurnStateManagerLogic(teams, characterActionsState, dropItemsState, finishedState);
-        _logic.GameEnded += (team) => GameEnded?.Invoke(team);
+        _logic.GameEnded += OnGameEnded;
         _logic.TurnStateEnded += OnTurnStateEnded;
+        _logic.SelectedTeamChanged += OnSelectedTeamChanged;
         IsInitialized = true;
     }
 
@@ -52,8 +54,20 @@ public class OfflineTurnStateManager : MonoBehaviour, ITurnStateManager
         }
     }
 
+    private void OnSelectedTeamChanged(Team team)
+    {
+        SelectedTeamChanged?.Invoke(team);
+    }
+
+    private void OnGameEnded(Team team)
+    {
+        GameEnded?.Invoke(team);
+    }
+
     public void ForceEndGame()
     {
         _logic.ForceEndGame();
     }
+    public Character GetCurrentCharacterInTeam(Team team) => _logic.GetCurrentCharacterInTeam(team);
+
 }

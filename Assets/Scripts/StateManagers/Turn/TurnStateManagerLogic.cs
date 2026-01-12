@@ -7,7 +7,9 @@ public class TurnStateManagerLogic
 {
     private List<Team> _teams;
     private CyclicConditionalEnumerator<Team> _teamEnumerator;
-    private Team CurrentTeam => _teamEnumerator.Current;
+    public Team CurrentTeam => _teamEnumerator.Current;
+
+    private Dictionary<Team, CyclicConditionalEnumerator<Character>> _characterEnumeratorsPerTeamDict;
 
     private Dictionary<TurnStateType, TurnState> _turnStateDict;
     private TurnStateType _currentTurnStateType;
@@ -20,15 +22,20 @@ public class TurnStateManagerLogic
 
     public event Action<Team> GameEnded;
     public event Action TurnStateEnded;
+    public event Action<Team> SelectedTeamChanged;
 
     public TurnStateManagerLogic(IEnumerable<Team> teams, DoCharacterActionsWithTeamTurnState characterActionTurnState, DropPackagesTurnState dropPackagesTurnState, FinishedTurnState finishedTurnState)
     {
         _teams = new List<Team>(teams);
         _teamEnumerator = new CyclicConditionalEnumerator<Team>(_teams);
+        _teamEnumerator.Reset();
+        _characterEnumeratorsPerTeamDict = new Dictionary<Team, CyclicConditionalEnumerator<Character>>();
         foreach (var team in _teams)
         {
             team.TeamHealthChanged += OnAnyTeamHealthChanged;
             team.TeamLost += OnAnyTeamLost;
+            _characterEnumeratorsPerTeamDict[team] = new CyclicConditionalEnumerator<Character>(team.GetAllCharacters());
+            _characterEnumeratorsPerTeamDict[team].Reset();
         }
         _turnStateDict = new Dictionary<TurnStateType, TurnState>
         {
@@ -70,8 +77,7 @@ public class TurnStateManagerLogic
 
     public void Start()
     {
-        _teamEnumerator.Reset();
-        _teamEnumerator.MoveNext(out var _);
+        SelectNextTeam();
         StartTurnState();
     }
 
@@ -87,7 +93,7 @@ public class TurnStateManagerLogic
         var lastStateType = _currentTurnStateType;
         if (lastStateType == TurnStateType.Finished)
         {
-            _teamEnumerator.MoveNext(out var _);
+            SelectNextTeam();
             _currentTurnStateType = TurnStateType.DoCharacterActions;
             _numCharactersActedPerTeamThisRound = 0;
         }
@@ -105,7 +111,7 @@ public class TurnStateManagerLogic
             }
             else
             {
-                _teamEnumerator.MoveNext(out var _);
+                SelectNextTeam();
             }
         }
         else if (lastStateType == TurnStateType.DropItemsAndEffects)
@@ -118,10 +124,20 @@ public class TurnStateManagerLogic
         }
     }
 
+    private void SelectNextTeam()
+    {
+        _teamEnumerator.MoveNext(out var _);
+        SelectedTeamChanged?.Invoke(CurrentTeam);
+    }
+
+    private void DeselectAllTeams()
+    {
+        SelectedTeamChanged?.Invoke(null);
+    }
 
     private void StartTurnState()
     {
-        CurrentTurnState.StartState(new TurnStateContext(CurrentTeam));
+        CurrentTurnState.StartState(new TurnStateContext(CurrentTeam, _characterEnumeratorsPerTeamDict[CurrentTeam]));
     }
 
 
@@ -129,6 +145,7 @@ public class TurnStateManagerLogic
     {
         if (!IsGameOver)
         {
+            DeselectAllTeams();
             TurnStateEnded?.Invoke();
         }
     }
@@ -161,5 +178,15 @@ public class TurnStateManagerLogic
         }
     }
 
+    public Character GetCurrentCharacterInTeam(Team team) => _characterEnumeratorsPerTeamDict[team].Current;
+
+    public Team GetTeamById(int teamId)
+    {
+        if(teamId == Constants.InvalidId)
+        {
+            return null;
+        }
+        return _teams.First(t => t.TeamId == teamId);
+    }
 
 }

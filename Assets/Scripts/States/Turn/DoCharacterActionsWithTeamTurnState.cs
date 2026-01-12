@@ -3,7 +3,6 @@ public class DoCharacterActionsWithTeamTurnState : TurnState
     public override TurnStateType State => TurnStateType.DoCharacterActions;
 
     private CharacterActionManager _characterActionManager;
-    private Team _team;
 
     public DoCharacterActionsWithTeamTurnState(CharacterActionManager characterActionManager) : base(CoroutineRunner.Instance)
     {
@@ -13,17 +12,14 @@ public class DoCharacterActionsWithTeamTurnState : TurnState
     public override void StartState(TurnStateContext context)
     {
         base.StartState(context);
-        _team = context.CurrentTeam;
-        _team.SelectTeam();
-        _team.SelectNextCharacter();
-        _characterActionManager.StartActionsWithCharacter(_team.CurrentCharacter);
+        var character = SelectNextCharacterInTeam(context);
+        _characterActionManager.StartActionsWithCharacter(character);
     }
 
-    protected override void EndState()
+    private Character SelectNextCharacterInTeam(TurnStateContext context)
     {
-        _team.DeselectTeam();
-        _team = null;
-        base.EndState();
+        context.TeamCharacterEnumerator.MoveNext(out var _);
+        return context.TeamCharacterEnumerator.Current;
     }
 
     protected override void SubscribeToEvents()

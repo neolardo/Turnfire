@@ -8,6 +8,6 @@ public class GunWeaponBehavior : ProjectileLauncherWeaponBehavior
     public override void Use(ItemUsageContext context)
     {
         var updatedContext = new ItemUsageContext(context.AimOrigin, context.AimVector.normalized, context.Owner);
-        CreateAndLaunchProjectile(updatedContext);
+        StartCoroutine(CreateAndLaunchProjectile(updatedContext));
     }
 }

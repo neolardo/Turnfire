@@ -71,4 +71,5 @@ public static class Constants
 
     //network
     public const string InvalidNameReasonValue = "InvalidName";
+    public const int InvalidId = -1;
 }

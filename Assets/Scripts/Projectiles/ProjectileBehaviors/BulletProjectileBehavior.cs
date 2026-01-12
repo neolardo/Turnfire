@@ -15,7 +15,7 @@ public class BulletProjectileBehavior : BallisticProjectileBehavior
     public override void Launch(ProjectileLaunchContext context)
     {
         _exploded = false;
-        _currentPhysics = context.Physics;
+        InitializePhysics(context.Physics);
         float angle = Mathf.Atan2(context.AimVector.y, context.AimVector.x) * Mathf.Rad2Deg;
         context.Physics.ApplyRotation(angle);
         PlaceProjectile(context);

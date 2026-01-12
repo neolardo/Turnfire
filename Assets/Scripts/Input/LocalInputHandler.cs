@@ -110,6 +110,7 @@ public class LocalInputHandler : MonoBehaviour
             InputActionMapType.Gameplay => InputActions.Gameplay,
             InputActionMapType.Inventory => InputActions.Inventory,
             InputActionMapType.GameplayMenu => InputActions.GameplayMenu,
+            InputActionMapType.GameOverScreen => InputActions.GameOver,
             InputActionMapType.Menu => InputActions.Menu,
             _ => throw new Exception("Invalid input action type: " + type),
         };

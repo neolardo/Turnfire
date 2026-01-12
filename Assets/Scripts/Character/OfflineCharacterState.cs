@@ -29,7 +29,7 @@ public class OfflineCharacterState : MonoBehaviour, ICharacterState
     public bool IsAlive => _health > 0;
 
     public bool IsUsingSelectedItem => SelectedItem == null ? false : SelectedItem.Behavior.IsInUse;
-    public ItemInstance SelectedItem { get; private set; }
+    public ItemInstance SelectedItem => _inventory.SelectedItem;
     public float JumpBoost { get; private set; }
     public float JumpStrength => CharacterDefinition.JumpStrength + JumpBoost;
     public Team Team { get; private set; }
@@ -59,7 +59,9 @@ public class OfflineCharacterState : MonoBehaviour, ICharacterState
         _health = _definition.MaxHealth;
         foreach (var itemDef in _definition.InitialItems)
         {
-            _inventory.AddItem(ItemInstance.CreateAsInitialItem(itemDef));
+            var instance = ItemInstance.CreateAsInitialItem(itemDef);
+            //instance.Destroyed += OnItemDestroyed; //TODO: check if needed
+            _inventory.AddItem(instance);
         }
     }
 
@@ -157,6 +159,10 @@ public class OfflineCharacterState : MonoBehaviour, ICharacterState
     public void RequestRemoveItem(ItemInstance item)
     {
         _inventory.RemoveItem(item);
+    }
+    private void OnItemDestroyed(ItemInstance instance)
+    {
+        _inventory.RemoveItem(instance);
     }
     public void RequestSelectItem(ItemInstance item)
     {

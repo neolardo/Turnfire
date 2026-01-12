@@ -15,12 +15,18 @@ public class GrenadeProjectileBehavior : BallisticProjectileBehavior
 
     public override void Launch(ProjectileLaunchContext context)
     {
-        _contactCount = 0;
-        _currentPhysics = context.Physics;
+        _contactCount = 0; 
         _exploded = false;
+        InitializePhysics(context.Physics);
         PlaceProjectile(context);
         context.Physics.AddImpulse(context.AimVector);
         StartCoroutine(ExplodeAfterDelay(_definition.ExplosionDelaySeconds, context.Physics));
+    }
+
+    protected override void InitializePhysics(ProjectilePhysics physics)
+    {
+        base.InitializePhysics(physics);
+        _currentPhysics.InitializeAsBouncy(_definition.GrenadePhysicsMaterial);
     }
 
     protected override void PlaceProjectile(ProjectileLaunchContext context)

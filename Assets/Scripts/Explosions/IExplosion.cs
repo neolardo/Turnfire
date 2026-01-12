@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface IExplosion
 {
-    bool IsExploding { get; }
+    bool IsExploding { get; } 
     bool IsReady { get; }
     
     event Action<IExplosion> Exploded;

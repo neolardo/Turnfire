@@ -6,7 +6,6 @@ public class ProjectilePhysics
     private Rigidbody2D _rb;
     private CircleCollider2D _col;
     public float RigidbodyMass => _rb.mass;
-
     public Vector2 Position => _rb.position; 
 
     public event Action<HitboxContactContext> Contacted;

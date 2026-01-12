@@ -19,7 +19,7 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
     {
         _currentCharacter.SelectedItemChanged += OnSelectedItemChanged;
         _currentCharacter.SelectedItemUsed += EndState;
-        _inputSource.SelectedItemUsed += _currentCharacter.UseSelectedItem;
+        _inputSource.SelectedItemUsed += OnSelectedItemUsed;
         _inputSource.ItemSelected += OnItemSelected;
         _inputSource.ImpulseReleased += OnImpulseReleased;
         _inputSource.AimStarted += OnAimStarted;
@@ -27,11 +27,12 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
         _inputSource.AimCancelled += OnAimCancelled;
         _inputSource.ActionSkipped += OnActionSkipped;
     }
+
     protected override void UnsubscribeFromEvents()
     {
         _currentCharacter.SelectedItemChanged -= OnSelectedItemChanged;
         _currentCharacter.SelectedItemUsed -= EndState;
-        _inputSource.SelectedItemUsed -= _currentCharacter.UseSelectedItem;
+        _inputSource.SelectedItemUsed -= OnSelectedItemUsed;
         _inputSource.ItemSelected -= OnItemSelected;
         _inputSource.ImpulseReleased -= OnImpulseReleased;
         _inputSource.AimStarted -= OnAimStarted;
@@ -43,6 +44,10 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
     private void OnItemSelected(ItemInstance item)
     {
         _currentCharacter.TrySelectItem(item);
+    }
+    private void OnSelectedItemUsed(ItemUsageContext context)
+    {
+        _currentCharacter.UseSelectedItem(context);
     }
 
     private void OnAimStarted(Vector2 initialPosition)

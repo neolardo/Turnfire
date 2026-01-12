@@ -10,7 +10,6 @@ public class CharacterLogic
     {
         _character = character;
         _state = state;
-        TrySelectAnyWeapon();
     }
 
     #region Movement
@@ -28,6 +27,11 @@ public class CharacterLogic
     #endregion
 
     #region Items
+
+    public void SelectInitialItem()
+    {
+        TrySelectAnyWeapon();
+    }
 
     private void TrySelectAnyWeapon()
     {

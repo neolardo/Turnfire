@@ -14,6 +14,7 @@ public class OnlineTurnStateManager : NetworkBehaviour, ITurnStateManager
 
     public event Action GameStarted;
     public event Action<Team> GameEnded;
+    public event Action<Team> SelectedTeamChanged;
 
     public void Initialize(IEnumerable<Team> teams)
     {
@@ -30,9 +31,25 @@ public class OnlineTurnStateManager : NetworkBehaviour, ITurnStateManager
         var finishedState = new FinishedTurnState();
 
         _logic = new TurnStateManagerLogic(teams, characterActionsState, dropItemsState, finishedState);
-        _logic.GameEnded += (team) => GameEnded?.Invoke(team);
+        _logic.GameEnded += OnGameEnded;
         _logic.TurnStateEnded += OnTurnStateEnded;
+        _logic.SelectedTeamChanged += OnSelectedTeamChanged;
         _isInitialized.Value = true;
+    }
+
+    private void OnGameEnded(Team team)
+    {
+        if(!IsServer)
+        {
+            return;
+        }
+        InvokeGameEndedClientRpc(team == null ? Constants.InvalidId : team.TeamId);
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
+    private void InvokeGameEndedClientRpc(int winnerTeamid)
+    {
+        GameEnded?.Invoke(_logic.GetTeamById(winnerTeamid));
     }
 
     public override void OnDestroy()
@@ -76,6 +93,21 @@ public class OnlineTurnStateManager : NetworkBehaviour, ITurnStateManager
         _logic.Resume();
     }
 
+    private void OnSelectedTeamChanged(Team team)
+    {
+        if (!IsServer)
+        {
+            return;
+        }
+        InvokeSelectedTeamChangedClientRpc(team == null ? Constants.InvalidId : team.TeamId);
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
+    private void InvokeSelectedTeamChangedClientRpc(int teamId)
+    {
+        SelectedTeamChanged?.Invoke(_logic.GetTeamById(teamId));
+    }
+
     public void ForceEndGame()
     {
         if(!IsServer)
@@ -85,4 +117,7 @@ public class OnlineTurnStateManager : NetworkBehaviour, ITurnStateManager
 
         _logic.ForceEndGame();
     }
+
+    public Character GetCurrentCharacterInTeam(Team team) => _logic.GetCurrentCharacterInTeam(team);
+
 }

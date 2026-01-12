@@ -44,6 +44,7 @@ public class Character : MonoBehaviour, IConditionalEnumerable
         _view = new CharacterView(_animator, _definition, _healthbarRenderer, team);
         _logic = new CharacterLogic(this, _state, _definition);
         SubscribeToStateChangedEvents();
+        _logic.SelectInitialItem();
     }
 
     private void OnDestroy()
@@ -54,6 +55,7 @@ public class Character : MonoBehaviour, IConditionalEnumerable
     private void SubscribeToStateChangedEvents()
     {
         _state.HealthChanged += InvokeHealthChanged;
+        _state.HealthChanged += _view.OnHealthChanged;
         _state.Healed += _view.OnHealed;
         _state.Died += _view.OnDied;
         _state.Died += InvokeDied;
@@ -81,6 +83,7 @@ public class Character : MonoBehaviour, IConditionalEnumerable
             return;
         }
         _state.HealthChanged -= InvokeHealthChanged;
+        _state.HealthChanged -= _view.OnHealthChanged;
         _state.Healed -= _view.OnHealed;
         _state.Died -= _view.OnDied;
         _state.Died -= InvokeDied;
