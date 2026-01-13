@@ -33,9 +33,13 @@ public class GameplayerServicesBootstrap : MonoBehaviour
 
     private void Awake()
     {
+        GameServices.ClearServices();
+    }
+
+    private void Start()
+    {
         bool isOnlineGame = GameplaySceneSettingsStorage.Current.IsOnlineGame;
         var container = GetComponent<GameServicesContainer>().transform;
-        GameServices.ClearServices();
         if (isOnlineGame)
         {
             CreateOnlineServices(container);
@@ -74,12 +78,16 @@ public class GameplayerServicesBootstrap : MonoBehaviour
         Instantiate(_onlineProjectilePoolPrefab, container);
         Instantiate(_onlineExplosionPoolPrefab, container);
         Instantiate(_onlineLaserPoolPrefab, container);
-        // network objects
+        // possibly pre-spawned network objects
+        if (OnlineSceneLoader.Instance != null)
+        {
+            GameServices.Register(OnlineSceneLoader.Instance);
+        }
+        // unspawned network objects
         if (!NetworkManager.Singleton.IsServer)
         {
             return;
         }
-
         var netObjects = new List<NetworkObject>
         {
             Instantiate(_onlineGameStateManagerPrefab, container).GetComponent<NetworkObject>(),
@@ -96,11 +104,13 @@ public class GameplayerServicesBootstrap : MonoBehaviour
         else
         {
             netObjects.Add(OnlineSceneLoader.Instance.GetComponent<NetworkObject>());
-            GameServices.Register(OnlineSceneLoader.Instance);
         }
         foreach (var netObject in netObjects)
         {
-            netObject.Spawn();
+            if(!netObject.IsSpawned)
+            {
+                netObject.Spawn();
+            }
         }
     }
 

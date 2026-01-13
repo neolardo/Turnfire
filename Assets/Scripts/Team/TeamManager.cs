@@ -12,7 +12,6 @@ public class TeamManager : MonoBehaviour
     private void Start()
     {
         ActvatePlayableTeams();
-        InitializeTeams();
     }
 
     private void ActvatePlayableTeams()
@@ -29,7 +28,7 @@ public class TeamManager : MonoBehaviour
         }
     }
 
-    private void InitializeTeams()
+    public void InitializeTeams()
     {
         var botManagerFactory = FindFirstObjectByType<BotManagerFactory>();
         var settings = GameplaySceneSettingsStorage.Current;
@@ -38,7 +37,6 @@ public class TeamManager : MonoBehaviour
         {
             var team = _teams[player.TeamIndex];
             TeamComposer.Compose(team, player, botManagerFactory);
-            Debug.Log($"team {team.TeamName} composed");
         }
     }
 

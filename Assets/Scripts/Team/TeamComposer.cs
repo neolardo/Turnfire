@@ -32,16 +32,22 @@ public static class TeamComposer
         if (!NetworkManager.Singleton.IsServer)
             return;
 
-        var netObj = team.GetComponent<NetworkObject>();
-        if (netObj.IsSpawned)
-            return;
 
         ulong ownerClientId =
             GameplaySceneSettingsStorage.Current.Players
                 .First(p => p.TeamIndex == team.TeamId)
                 .ClientId;
 
-        netObj.SpawnAsPlayerObject(ownerClientId, true);
+        var netObj = team.GetComponent<NetworkObject>();
+
+        if (netObj.IsSpawned)
+        {
+            netObj.ChangeOwnership(ownerClientId);
+        }
+        else
+        {
+            netObj.SpawnAsPlayerObject(ownerClientId, true);
+        }
     }
 
 }

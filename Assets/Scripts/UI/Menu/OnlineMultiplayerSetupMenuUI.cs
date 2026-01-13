@@ -129,7 +129,7 @@ public class OnlineMultiplayerSetupMenuUI : MonoBehaviour
             Map = _mapDisplay.SelectedMap,
             UseTimer = _useTimerCheckbox.Value,
             Players = players,
-            IsOnlineGame = false
+            IsOnlineGame = true
         };
     }
 

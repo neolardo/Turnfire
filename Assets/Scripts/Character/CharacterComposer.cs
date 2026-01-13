@@ -1,6 +1,5 @@
 using System.Linq;
 using Unity.Netcode;
-using Unity.Netcode.Components;
 using UnityEngine;
 
 public static class CharacterComposer
@@ -19,9 +18,6 @@ public static class CharacterComposer
         {
             state = character.GetComponent<OnlineCharacterState>();
             physics = character.GetComponent<OnlineCharacterPhysics>();
-            character.GetComponent<NetworkObject>().enabled = true;
-            character.GetComponent<NetworkTransform>().enabled = true;
-            character.GetComponent<NetworkRigidbody2D>().enabled = true;
             SpawnCharacterNetworkObject(character, team);
         }
         else
@@ -40,15 +36,19 @@ public static class CharacterComposer
         if (!NetworkManager.Singleton.IsServer)
             return;
 
+        ulong ownerClientId =
+        GameplaySceneSettingsStorage.Current.Players
+            .First(p => p.TeamIndex == team.TeamId)
+            .ClientId;
+
         var netObj = character.GetComponent<NetworkObject>();
         if (netObj.IsSpawned)
-            return;
-
-        ulong ownerClientId =
-            GameplaySceneSettingsStorage.Current.Players
-                .First(p => p.TeamIndex == team.TeamId)
-                .ClientId;
-
-        netObj.SpawnAsPlayerObject(ownerClientId, true);
+        {
+            netObj.ChangeOwnership(ownerClientId);
+        }
+        else
+        {
+            netObj.SpawnAsPlayerObject(ownerClientId, true);
+        }
     }
 }

@@ -16,16 +16,15 @@ public class OnlineBotTeamInputSource : NetworkBehaviour, ITeamInputSource
     public event Action<ItemUsageContext> SelectedItemUsed;
     public event Action<int> ItemSelected;
 
-    public override void OnNetworkSpawn()
+    private void OnEnable()
     {
-        base.OnNetworkSpawn();
         _botManager = GetComponent<BotManager>();
         var controller = _botManager.Controller;
         controller.SkipAction += InvokeSkipAction;
         controller.AimAndRelease += InvokeAimAndRelease;
         controller.SwitchSelectedItem += InvokeItemSelected;
         controller.UseSelectedItem += InvokeSelectedItemUsed;
-    } 
+    }
 
     public override void OnDestroy()
     {

@@ -27,11 +27,6 @@ public class OnlinePackage : IsActiveSyncedNetworkBehavior, IPackage
         _cameraController = FindFirstObjectByType<CameraController>();
     }
 
-    public override void OnNetworkSpawn()
-    {
-        base.OnNetworkSpawn();
-        _rb.simulated = IsServer;
-    }
 
     protected override void OnEnable()
     {

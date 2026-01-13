@@ -16,13 +16,13 @@ public class OnlineGameStateManager : NetworkBehaviour, IGameStateManager
     { 
         base.OnNetworkSpawn();
         _state.OnValueChanged += InvokeStateChanged;
+        GameServices.Register(this);
         if (!IsServer)
         { 
             return;
         }
         _logic = new GameStateManagerLogic(_gameplaySettings);
         _logic.StateChanged += ServerOnStateChanged;
-        GameServices.Register(this);
     }
 
     public void StartGame()

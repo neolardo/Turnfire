@@ -20,6 +20,7 @@ public struct NetworkGameplaySceneSettingsData : INetworkSerializable
     public void NetworkSerialize<T>(BufferSerializer<T> serializer)
         where T : IReaderWriter
     {
+        serializer.SerializeValue(ref IsValid);
         serializer.SerializeValue(ref MapName);
         serializer.SerializeValue(ref BotDifficulty);
         serializer.SerializeValue(ref UseTimer);
@@ -36,6 +37,7 @@ public struct NetworkGameplaySceneSettingsData : INetworkSerializable
     {
         if(settings == null)
         {
+            UnityEngine.Debug.LogWarning("Gameplay scene was null, returning invalid network data.");
             return new NetworkGameplaySceneSettingsData() { IsValid = false };
         }
 
@@ -69,6 +71,7 @@ public struct NetworkGameplaySceneSettingsData : INetworkSerializable
             }
         }
 
+        UnityEngine.Debug.Log("Gameplay scene successfully converted to network data.");
         return data;
     }
 
@@ -76,6 +79,7 @@ public struct NetworkGameplaySceneSettingsData : INetworkSerializable
     {
         if(!IsValid)
         {
+            UnityEngine.Debug.LogWarning("Gameplay scene was invalid, returning null.");
             return null;
         }
 
@@ -86,6 +90,7 @@ public struct NetworkGameplaySceneSettingsData : INetworkSerializable
         if (this.PlayerCount > 2) players.Add(this.Player2.ToPlayer());
         if (this.PlayerCount > 3) players.Add(this.Player3.ToPlayer());
 
+        UnityEngine.Debug.Log("Gameplay scene successfully loaded from network data.");
         return new GameplaySceneSettings()
         {
             Map = mapLocator.GetMap(this.MapName.ToString()),

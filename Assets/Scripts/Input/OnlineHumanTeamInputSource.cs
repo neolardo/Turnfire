@@ -64,10 +64,8 @@ public class OnlineHumanTeamInputSource : NetworkBehaviour, ITeamInputSource
     public event Action<ItemUsageContext> SelectedItemUsed;
     public event Action<int> ItemSelected;
 
-
-    public override void OnNetworkSpawn()
+    private void OnEnable()
     {
-        base.OnNetworkSpawn();
         _inputHandler = FindFirstObjectByType<LocalInputHandler>();
         if (!IsOwner)
         {

@@ -21,10 +21,13 @@ public class OnlineExplosion : IsActiveSyncedNetworkBehavior, IExplosion
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-        var container = FindFirstObjectByType<ExplosionContainer>();
-        transform.parent = container.transform;
         var animator = GetComponent<OneShotAnimator>();
         _view = new ExplosionView(animator, _animatorDefinition);
+        if(IsServer)
+        {
+            var container = FindFirstObjectByType<ExplosionContainer>();
+            transform.parent = container.transform;
+        }
         IsReady = true;
     }
 

@@ -40,7 +40,10 @@ public class OnlineTurnStateManager : NetworkBehaviour, ITurnStateManager
         _logic.GameEnded += OnGameEnded;
         _logic.TurnStateEnded += OnTurnStateEnded;
         _logic.SelectedTeamChanged += OnSelectedTeamChanged;
-        _isInitialized.Value = true;
+        if(IsServer)
+        {
+            _isInitialized.Value = true;
+        }
     }
 
     private void OnGameEnded(Team team)

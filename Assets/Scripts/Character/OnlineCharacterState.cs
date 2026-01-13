@@ -12,21 +12,7 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
     private CharacterArmorManager _armorManager;
 
     private NetworkVariable<int> _health = new NetworkVariable<int>();
-    public int Health
-    {
-        get
-        {
-            return _health.Value;
-        }
-        private set
-        {
-            if (!IsServer)
-            {
-                return;
-            }
-            _health.Value = value;
-        }
-    }
+    public int Health => _health.Value;
     public float NormalizedHealth => Health / (float)_definition.MaxHealth;
 
     public bool IsAlive => Health > 0;
@@ -36,21 +22,10 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
     public ItemInstance SelectedItem => _inventory.SelectedItem;
 
     private NetworkVariable<float> _jumpBoost = new NetworkVariable<float>();
-    public float JumpBoost
-    {
-        get 
-        { 
-            return _jumpBoost.Value; 
-        }
-        private set
-        {
-            if(!IsServer)
-            { 
-                return;
-            }    
-            _jumpBoost.Value = value;
-        }
-    }
+    public float JumpBoost => _jumpBoost.Value;
+
+    private NetworkVariable<bool> _isGrounded = new NetworkVariable<bool>();
+    public bool IsGrounded => _isGrounded.Value;
     public float JumpStrength => CharacterDefinition.JumpStrength + JumpBoost;
     public Team Team { get; private set; }
 
@@ -61,6 +36,7 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
     public event Action<ArmorDefinition> Blocked;
     public event Action<Vector2> Jumped;
     public event Action<Vector2> Pushed;
+    public event Action<bool> IsGroundedChanged;
 
     public event Action<ItemInstance, ItemUsageContext> ItemUsed;
     public event Action<ItemInstance> ItemSelected;
@@ -76,11 +52,12 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
         _armorManager = new CharacterArmorManager();
         _inventory = new CharacterItemInventory();
         _health.OnValueChanged += OnNetworkHealthValueChanged;
+        _isGrounded.OnValueChanged += OnNetworkIsGroundedValueChanged;
         if (!IsServer)
         {
             return; 
         }
-
+        GetComponent<GroundChecker>().IsGroundedChanged += OnGroundCheckerIsGroundedChanged;
         _health.Value = _definition.MaxHealth;
         _armorManager.ArmorUnequipped += InvokeArmorUnequipped;
         foreach (var itemDef in _definition.InitialItems)
@@ -110,7 +87,7 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
         else
         {
             InvokeHurtClientRpc(new NetworkDamageSourceDefinitionData(damageSource));
-            Health = Mathf.Max(0, Health - damageValue);
+            _health.Value = Mathf.Max(0, Health - damageValue);
             if (!IsAlive)
             {
                 InvokeDiedClientRpc();
@@ -136,7 +113,7 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
         {
             return;
         }
-        Health = Mathf.Min(Health + value, _definition.MaxHealth);
+        _health.Value = Mathf.Min(Health + value, _definition.MaxHealth);
         InvokeHealedClientRpc();
     }
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
@@ -151,7 +128,7 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
         {
             return;
         }
-        Health = 0;
+        _health.Value = 0;
         InvokeDiedClientRpc();
     }
 
@@ -231,6 +208,7 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
     private void InvokeJumpedClientRpc(Vector2 jumpVector)
     {
         Jumped?.Invoke(jumpVector);
+        Debug.Log($"jumped");
     }
 
     public void RequestPush(Vector2 pushVector)
@@ -254,7 +232,7 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
         {
             return;
         }
-        JumpBoost = jumpBoost;
+        _jumpBoost.Value = jumpBoost;
     }
     public void RequestRemoveJumpBoost()
     {
@@ -262,8 +240,23 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
         {
             return;
         }
-        JumpBoost = 0;
+        _jumpBoost.Value = 0;
     }
+
+    private void OnGroundCheckerIsGroundedChanged(bool isGrounded)
+    {
+        if(!IsServer)
+        {
+            return;
+        }
+        _isGrounded.Value = isGrounded;
+    }
+
+    private void OnNetworkIsGroundedValueChanged(bool oldValue, bool newValue)
+    {
+        IsGroundedChanged?.Invoke(newValue);
+    }
+
 
     #endregion
 

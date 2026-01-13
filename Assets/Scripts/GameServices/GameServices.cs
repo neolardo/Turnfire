@@ -91,6 +91,7 @@ public static class GameServices
 
     private static void ConnectServicesIfAllServicesRegistered()
     {
+        UnityEngine.Debug.Log("service registered");
         if (GameStateManager != null 
             && TurnStateManager != null 
             && CountdownTimer != null 

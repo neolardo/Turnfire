@@ -12,23 +12,10 @@ public class OnlineCharacterPhysics : NetworkBehaviour, ICharacterPhysics
     public Vector2 FeetPosition => (Vector2)transform.position + Vector2.down * Collider.bounds.extents.y;
     public Vector2 FeetOffset => Vector2.down * Collider.bounds.extents.y;
 
-    public override void OnNetworkSpawn()
+    private void Awake()
     {
-        base.OnNetworkSpawn();
         _rb = GetComponent<Rigidbody2D>();
         Collider = GetComponent<Collider2D>();
-        var netRb = GetComponent<NetworkRigidbody2D>();
-        netRb.UseRigidBodyForMotion = true;
-        if (IsServer)
-        {
-            _rb.bodyType = RigidbodyType2D.Dynamic;
-            _rb.simulated = true;
-        }
-        else
-        {
-            _rb.bodyType = RigidbodyType2D.Kinematic;
-            _rb.simulated = false;
-        }
     }
 
     #region Movement
@@ -48,6 +35,7 @@ public class OnlineCharacterPhysics : NetworkBehaviour, ICharacterPhysics
         {
             return;
         }
+        Debug.Log($"jump applied with force: {jumpVector}");
         ApplyJump(jumpVector);
     }
 

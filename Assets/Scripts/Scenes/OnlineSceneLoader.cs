@@ -85,8 +85,9 @@ public class OnlineSceneLoader : NetworkBehaviour, ISceneLoader
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
-    void SaveGameplaySceneSettingsClientRpc(NetworkGameplaySceneSettingsData networkSettings)
+    private void SaveGameplaySceneSettingsClientRpc(NetworkGameplaySceneSettingsData networkSettings)
     {
+        Debug.Log("Gameplay scene settings saved");
         GameplaySceneSettingsStorage.Current = networkSettings.ToSceneSettings(_mapLocator);
     }
 

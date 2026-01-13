@@ -11,6 +11,7 @@ public interface ICharacterState
     public ItemInstance SelectedItem { get; }
     public float JumpBoost { get; }
     public float JumpStrength { get; }
+    public bool IsGrounded { get; }
     public Team Team { get; }
 
     public event Action<float, int> HealthChanged;
@@ -20,6 +21,7 @@ public interface ICharacterState
     public event Action<ArmorDefinition> Blocked;
     public event Action<Vector2> Jumped;
     public event Action<Vector2> Pushed;
+    public event Action<bool> IsGroundedChanged;
 
     public event Action<ItemInstance, ItemUsageContext> ItemUsed;
     public event Action<ItemInstance> ItemSelected;

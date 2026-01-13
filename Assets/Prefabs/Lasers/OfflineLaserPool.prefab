@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 9029617773816026187}
   - component: {fileID: 5432046830099231842}
-  - component: {fileID: 5186784365391149956}
   m_Layer: 0
   m_Name: OfflineLaserPool
   m_TagString: Untagged
@@ -48,15 +47,3 @@ MonoBehaviour:
   _prefab: {fileID: 2713429643912336474, guid: 52086c7c77c0a344db7166cdbccd2398, type: 3}
   _initialSize: 10
   _container: {fileID: 0}
---- !u!114 &5186784365391149956
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5837907453980951442}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2cce38ff5286522459fe9b9069b70af4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

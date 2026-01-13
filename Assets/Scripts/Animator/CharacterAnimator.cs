@@ -137,4 +137,9 @@ public class CharacterAnimator : MonoBehaviour
         _bodyAnimator.ChangeJumpAim(aimDirection);
     }
 
+    public void OnIsGroundedChanged(bool isGrounded)
+    {
+        _bodyAnimator.OnIsGroundedChanged(isGrounded);
+    }
+
 }

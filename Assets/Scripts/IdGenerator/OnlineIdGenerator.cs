@@ -8,7 +8,10 @@ public class OnlineIdGenerator : NetworkBehaviour, IIdGenerator
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-        _lastId.Value = IIdGenerator.InitialId;
+        if(IsServer)
+        {
+            _lastId.Value = IIdGenerator.InitialId;
+        }
         GameServices.Register(this);
     }
     public int GenerateId()

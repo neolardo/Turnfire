@@ -82,6 +82,7 @@ public class CharacterView
 
     public void OnJumpStarted(Vector2 jumpVector)
     {
+        Debug.Log($"Jump animation started, jump vector was: {jumpVector}");
         _animator.OnJumpStarted(jumpVector);
     }
 
@@ -98,6 +99,11 @@ public class CharacterView
     public void CancelJump()
     {
         _animator.PlayCancelJumpAnimation();
+    }
+
+    public void OnIsGroundedChanged(bool isGrounded)
+    {
+        _animator.OnIsGroundedChanged(isGrounded);
     }
 
 

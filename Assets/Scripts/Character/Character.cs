@@ -45,7 +45,7 @@ public class Character : MonoBehaviour, IConditionalEnumerable
         _view = new CharacterView(_animator, _definition, _healthbarRenderer, team);
         _logic = new CharacterLogic(this, _state, _definition);
         SubscribeToStateChangedEvents();
-        _logic.SelectInitialItem();
+        //_logic.SelectInitialItem(); //TODO
         IsInitialized = true;
     }
 
@@ -69,6 +69,7 @@ public class Character : MonoBehaviour, IConditionalEnumerable
         _state.Jumped += _view.OnJumpStarted;
         _state.Jumped += InvokeJumped;
         _state.Pushed += _physics.Push;
+        _state.IsGroundedChanged += _view.OnIsGroundedChanged;
 
         _state.ItemUsed += _view.OnItemUsed;
         _state.ItemUsed += InvokeSelectedItemUsed;
@@ -96,7 +97,8 @@ public class Character : MonoBehaviour, IConditionalEnumerable
         _state.Jumped -= _physics.Jump;
         _state.Jumped -= _view.OnJumpStarted;
         _state.Jumped -= InvokeJumped;
-        _state.Pushed -= _physics.Push;
+        _state.Pushed -= _physics.Push; 
+        _state.IsGroundedChanged -= _view.OnIsGroundedChanged;
 
         _state.ItemUsed -= _view.OnItemUsed;
         _state.ItemUsed -= InvokeSelectedItemUsed;

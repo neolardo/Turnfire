@@ -32,6 +32,7 @@ public class OfflineCharacterState : MonoBehaviour, ICharacterState
     public ItemInstance SelectedItem => _inventory.SelectedItem;
     public float JumpBoost { get; private set; }
     public float JumpStrength => CharacterDefinition.JumpStrength + JumpBoost;
+    public bool IsGrounded { get; private set; }
     public Team Team { get; private set; }
 
     public event Action<float, int> HealthChanged;
@@ -41,6 +42,7 @@ public class OfflineCharacterState : MonoBehaviour, ICharacterState
     public event Action<ArmorDefinition> Blocked;
     public event Action<Vector2> Jumped;
     public event Action<Vector2> Pushed;
+    public event Action<bool> IsGroundedChanged;
 
     public event Action<ItemInstance, ItemUsageContext> ItemUsed;
     public event Action<ItemInstance> ItemSelected;
@@ -57,6 +59,7 @@ public class OfflineCharacterState : MonoBehaviour, ICharacterState
         _armorManager = new CharacterArmorManager();
         _armorManager.ArmorUnequipped += InvokeArmorUnequipped;
         _health = _definition.MaxHealth;
+        GetComponent<GroundChecker>().IsGroundedChanged += OnIsGroundedChanged;
         foreach (var itemDef in _definition.InitialItems)
         {
             var instance = ItemInstance.CreateAsInitialItem(itemDef);
@@ -145,6 +148,12 @@ public class OfflineCharacterState : MonoBehaviour, ICharacterState
     public void RequestRemoveJumpBoost()
     {
         JumpBoost = 0;
+    }
+
+    private void OnIsGroundedChanged(bool isGrounded)
+    {
+        IsGrounded = isGrounded;
+        IsGroundedChanged?.Invoke(isGrounded);
     }
 
     #endregion

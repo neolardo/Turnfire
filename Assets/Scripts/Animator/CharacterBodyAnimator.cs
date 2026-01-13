@@ -6,7 +6,6 @@ using UnityEngine;
 public class CharacterBodyAnimator : MonoBehaviour
 {
     [SerializeField] private CharacterAnimatorDefinition _animatorDefinition;
-    [SerializeField] private GroundChecker _characterGroundChecker;
     [SerializeField] private FlashSpriteAnimator _flashAnimator;
 
     [Header("Sprite Renderers")]
@@ -44,12 +43,6 @@ public class CharacterBodyAnimator : MonoBehaviour
         _baseSpriteRenderers[CharacterAnimationLayer.OverItemClothes] = _overItemClothesSpriteRenderer;
 
         _equippedArmorSpriteRenderers = new Dictionary<ArmorDefinition, SpriteRenderer>();
-
-        if (_currentAnimationRoutine != null)
-        {
-            Debug.LogWarning($"{nameof(CharacterDefinition)} not set for {nameof(CharacterBodyAnimator)}.");
-        }
-        _characterGroundChecker.IsGroundedChanged += OnCharacterIsGroundedChanged;
     }
 
     public void Initialize(CharacterDefinition characterDefinition, Color teamColor)
@@ -101,7 +94,6 @@ public class CharacterBodyAnimator : MonoBehaviour
 
     public void PlayEquipArmorAnimation(ArmorDefinition armor)
     {
-        Debug.Log("Equip animation started");
         _equippedArmorSpriteRenderers[armor] = _equippedArmorSpriteRendererPool.Get();
         _equippedArmorSpriteRenderers[armor].flipX = _baseSpriteRenderers[0].flipX;
         _equippedArmorSpriteRenderers[armor].sprite = armor.Animations[_currentAnimationState][_lastFrameIndex];
@@ -169,10 +161,12 @@ public class CharacterBodyAnimator : MonoBehaviour
 
     private void PlayJumpAnimation()
     {
+        Debug.Log("Jump animation played!");
         PlayAnimation(CharacterAnimationState.Jump, CharacterAnimationState.None);
     }
     private void PlayLandAnimation()
     {
+        Debug.Log("Land animation played!");
         PlayAnimation(CharacterAnimationState.Land, CharacterAnimationState.Idle);
     }
 
@@ -283,7 +277,7 @@ public class CharacterBodyAnimator : MonoBehaviour
 
     #region Ground Check
 
-    private void OnCharacterIsGroundedChanged(bool isGrounded)
+    public void OnIsGroundedChanged(bool isGrounded)
     {
         if (isGrounded)
         {
