@@ -1,7 +1,8 @@
 using System;
 using System.Collections;
+using UnityEngine;
 
-public abstract class ArmorBehavior : IItemBehavior
+public abstract class ArmorBehavior : UnityDriven,IItemBehavior
 {
     protected int _durability;
     protected Character _owner;
@@ -12,7 +13,7 @@ public abstract class ArmorBehavior : IItemBehavior
 
     private ArmorDefinition _definition;
 
-    protected ArmorBehavior(ArmorDefinition definition)
+    protected ArmorBehavior(ArmorDefinition definition) : base(CoroutineRunner.Instance)
     {
         _definition = definition;
         _durability = _definition.MaxDurability.CalculateValue();
@@ -37,6 +38,12 @@ public abstract class ArmorBehavior : IItemBehavior
 
     protected void InvokeItemUsageFinished()
     {
+        StartCoroutine(WaitForItemUsageDelayThenInvokeFinished());
+    }
+
+    private IEnumerator WaitForItemUsageDelayThenInvokeFinished()
+    { 
+        yield return new WaitForSeconds(_definition.ItemUsagePostDelay);
         IsInUse = false;
         ItemUsageFinished?.Invoke();
     }

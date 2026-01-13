@@ -4,7 +4,7 @@ using System.Collections;
 public class FirstAidKitConsumableBehavior : ConsumableBehavior
 {
     FirstAidKitConsumableDefinition _definition;
-    public FirstAidKitConsumableBehavior(FirstAidKitConsumableDefinition definition)
+    public FirstAidKitConsumableBehavior(FirstAidKitConsumableDefinition definition) : base(definition)
     {
         _definition = definition;
     }

@@ -67,7 +67,13 @@ public class ItemInstance
         return false;
     }
 
-    public void DecreaseQuantity()
+    public void Use(ItemUsageContext context)
+    {
+        Behavior.Use(context);
+        DecreaseQuantity();
+    }
+
+    private void DecreaseQuantity()
     {
         if (Definition.IsQuantityInfinite)
         {

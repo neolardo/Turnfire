@@ -60,7 +60,6 @@ public class OfflineCharacterState : MonoBehaviour, ICharacterState
         foreach (var itemDef in _definition.InitialItems)
         {
             var instance = ItemInstance.CreateAsInitialItem(itemDef);
-            //instance.Destroyed += OnItemDestroyed; //TODO: check if needed
             _inventory.AddItem(instance);
         }
     }
@@ -139,7 +138,6 @@ public class OfflineCharacterState : MonoBehaviour, ICharacterState
     {
         Pushed?.Invoke(pushVector);
     }
-
     public void RequestApplyJumpBoost(float jumpBoost)
     {
         JumpBoost = jumpBoost;
@@ -161,10 +159,6 @@ public class OfflineCharacterState : MonoBehaviour, ICharacterState
     {
         _inventory.RemoveItem(item);
     }
-    private void OnItemDestroyed(ItemInstance instance)
-    {
-        _inventory.RemoveItem(instance);
-    }
     public void RequestSelectItem(ItemInstance item)
     {
         _inventory.SelectItem(item);
@@ -172,7 +166,7 @@ public class OfflineCharacterState : MonoBehaviour, ICharacterState
     }
     public void RequestUseSelectedItem(ItemUsageContext context)
     {
-        SelectedItem.Behavior.Use(context);
+        SelectedItem.Use(context);
         ItemUsed?.Invoke(SelectedItem, context);
     }
     public IEnumerable<ItemInstance> GetAllItems()

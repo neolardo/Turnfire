@@ -9,9 +9,8 @@ public class LaserPhysics
     private RaycastHit2D[] _raycastHitArray;
     private HashSet<Character> _hitCharacters;
 
-    private const float _visualStartDirectionalOffset = .01f;
-    private readonly Vector2 _visualStartGlobalOffset = new Vector2(0f, 0.05f);
-    private const float _requiredSafeRadius = .2f;
+    private const float _beamDirectionalOffset = .08f;
+    private readonly Vector2 _beamGlobalOffset = new Vector2(0f, 0.05f);
 
     public LaserPhysics()
     {
@@ -35,11 +34,7 @@ public class LaserPhysics
         _hitCharacters.Clear();
         var points = new List<Vector2>();
 
-        origin += direction.normalized * _visualStartDirectionalOffset + _visualStartGlobalOffset;
-        if (SafeObjectPlacer.TryFindSafePosition(origin, direction, LayerMaskHelper.GetLayerMask(Constants.GroundLayer), _requiredSafeRadius, out var safePosition))
-        {
-            origin = safePosition;
-        }
+        origin += direction.normalized * _beamDirectionalOffset + _beamGlobalOffset;
 
         points.Add(origin);
 
@@ -55,9 +50,15 @@ public class LaserPhysics
             var hits = _raycastHitArray.Take(numHits);
             var closestGroundHit = hits.Where(hit => hit.collider != null && hit.collider.tag == Constants.GroundTag).OrderBy(hit => hit.distance).FirstOrDefault();
             var characterHits = hits.Where(hit => hit.collider != null && hit.collider.tag == Constants.CharacterTag);
+            var maxDistance = closestGroundHit.collider != null ? closestGroundHit.distance : _maximumDistance;
 
             foreach (var cHit in characterHits)
             {
+                if(cHit.distance > maxDistance)
+                {
+                    continue;
+                }
+
                 cHit.collider.TryGetComponent<Character>(out var c);
 
                 if (i == 0 && c == owner)

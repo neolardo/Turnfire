@@ -1,3 +1,4 @@
+using Mono.Cecil;
 using System;
 using System.Linq;
 using UnityEngine;
@@ -72,8 +73,9 @@ public class CharacterLogic
     private void RemoveItem(ItemInstance item)
     {
         var items = _state.GetAllItems();
+        bool itemWasSelected = _state.SelectedItem == item;
         _state.RequestRemoveItem(item);
-        if (_state.SelectedItem == item)
+        if (itemWasSelected)
         {
             TrySelectAnyWeapon();
         }
@@ -95,9 +97,15 @@ public class CharacterLogic
                 if (item.Behavior.CanUseItem(context))
                 {
                     _state.RequestSelectItem(item);
-                    UseSelectedItem(context);
-                    // instantly used items should be deselected after usage
-                    return TrySelectItem(null);
+                    if(_state.SelectedItem == item)
+                    {
+                        UseSelectedItem(context);
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
                 else
                 {

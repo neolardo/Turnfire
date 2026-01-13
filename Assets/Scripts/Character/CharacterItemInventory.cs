@@ -44,6 +44,10 @@ public class CharacterItemInventory
     public void UpdateItem(ItemInstance item)
     {
         _itemsDict[item.InstanceId] = item;
+        if(SelectedItem != null && SelectedItem.InstanceId == item.InstanceId)
+        {
+            SelectedItem = item;
+        }
     }
     public ItemInstance GetItemByInstanceId(int instanceId)
     {

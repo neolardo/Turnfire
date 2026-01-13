@@ -277,7 +277,6 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
         }
         _inventory.AddItem(item);
         item.QuantityChanged += OnItemQuantityChanged;
-        //item.Destroyed += OnItemDestroyed; //TODO: check if needed
         AddItemClientRpc(new NetworkItemInstanceData(item));
     }
 
@@ -310,14 +309,6 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
         }
         RemoveItemClientRpc(item.InstanceId);
     }
-    private void OnItemDestroyed(ItemInstance instance)
-    {
-        if (!IsServer)
-        {
-            return;
-        }
-        RemoveItemClientRpc(instance.InstanceId);
-    }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
     private void RemoveItemClientRpc(int itemInstanceId)
@@ -346,7 +337,7 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
         {
             return;
         }
-        SelectedItem.Behavior.Use(context);
+        SelectedItem.Use(context);
         StartCoroutine(MirrorIsUsingSelectedItemStateUntilUsageFinished());
         InvokeSelectedItemUsedClientRpc(new NetworkItemUsageContextData(context));
     }
@@ -354,7 +345,7 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
     private IEnumerator MirrorIsUsingSelectedItemStateUntilUsageFinished()
     {
         _isUsingSelectedItem.Value = true;
-        yield return new WaitUntil(() => !SelectedItem.Behavior.IsInUse);
+        yield return new WaitWhile(() => SelectedItem.Behavior.IsInUse);
         _isUsingSelectedItem.Value = false;
     }
 
