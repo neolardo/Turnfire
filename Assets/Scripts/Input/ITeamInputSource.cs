@@ -9,7 +9,7 @@ public interface ITeamInputSource
     event Action AimCancelled;
     event Action ActionSkipped;
     event Action<ItemUsageContext> SelectedItemUsed;
-    event Action<ItemInstance> ItemSelected;
+    event Action<int> ItemSelected;
 
     bool IsAimingEnabled { get; set; }
     bool IsOpeningInventoryEnabled { get; set; }

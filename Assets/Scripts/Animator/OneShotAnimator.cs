@@ -40,12 +40,8 @@ public class OneShotAnimator : MonoBehaviour
             AudioManager.Instance.PlaySFXAt(_sfx, transform.position);
         }
         var frames = _animation.Frames;
-        float debugDuration = 0;
         for (int i = 0; i < frames.Length; i++)
         {
-            Debug.Log($"frame {i}");
-            debugDuration += frameDuration;
-            Debug.Log($"duration: {debugDuration}");
             _spriteRenderer.sprite = frames[i];
             yield return new WaitForSeconds(frameDuration);
         }

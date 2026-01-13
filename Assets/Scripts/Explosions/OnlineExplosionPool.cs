@@ -2,6 +2,10 @@ using System.Collections.Generic;
 
 public class OnlineExplosionPool : OnlinePool<OnlineExplosion>, IPool<IExplosion>
 {
+    private void Start()
+    {
+        GameServices.Register(this);
+    }
     protected override OnlineExplosion CreateInstance()
     {
         var p = base.CreateInstance();

@@ -13,7 +13,7 @@ public class OfflineBotTeamInputSource : MonoBehaviour, ITeamInputSource
     public event Action AimCancelled;
     public event Action ActionSkipped;
     public event Action<ItemUsageContext> SelectedItemUsed;
-    public event Action<ItemInstance> ItemSelected;
+    public event Action<int> ItemSelected;
 
     private void Start()
     {
@@ -27,11 +27,14 @@ public class OfflineBotTeamInputSource : MonoBehaviour, ITeamInputSource
 
     private void OnDestroy()
     {
-        var controller = _botManager.Controller;
-        controller.SkipAction -= InvokeSkipAction;
-        controller.AimAndRelease -= InvokeAimAndRelease;
-        controller.SwitchSelectedItem -= InvokeSwitchSelectedItem;
-        controller.UseSelectedItem -= InvokeUseSelectedItem;
+        if (_botManager != null && _botManager.Controller != null)
+        {
+            var controller = _botManager.Controller;
+            controller.SkipAction -= InvokeSkipAction;
+            controller.AimAndRelease -= InvokeAimAndRelease;
+            controller.SwitchSelectedItem -= InvokeSwitchSelectedItem;
+            controller.UseSelectedItem -= InvokeUseSelectedItem;
+        }
     }
     public void ForceCancelAiming() { }
 
@@ -56,7 +59,7 @@ public class OfflineBotTeamInputSource : MonoBehaviour, ITeamInputSource
 
     private void InvokeSwitchSelectedItem(ItemInstance item)
     {
-        ItemSelected?.Invoke(item);
+        ItemSelected?.Invoke(item.InstanceId);
     }
 
     private void InvokeUseSelectedItem(ItemUsageContext context)

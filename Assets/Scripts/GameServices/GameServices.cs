@@ -20,27 +20,93 @@ public static class GameServices
 
     public static event Action Initialized;
 
-    public static void Initialize(IGameStateManager gameStateManager, ITurnStateManager turnStateManager, ITimer countdownTimer, ITimer gameplayTimer, ISceneLoader sceneLoader, IDropManager dropManager, IIdGenerator itemInstanceIdGenerator, IPool<IExplosion> explosionPool, IPool<IProjectile> projectilePool, IPool<ILaser> laserPool, ItemDefinitionDatabase itemDatabase, ExplosionDefinitionDatabase explosionDatabase, ProjectileDefinitionDatabase projectileDatabase)
+    public static void Register(IGameStateManager gameStateManager)
     {
         GameStateManager = gameStateManager;
+        ConnectServicesIfAllServicesRegistered();
+    }
+    public static void Register(ITurnStateManager turnStateManager)
+    {
         TurnStateManager = turnStateManager;
-        CountdownTimer = countdownTimer;
-        GameplayTimer = gameplayTimer;
+        ConnectServicesIfAllServicesRegistered();
+    }
+    public static void RegisterCountdownTimer(ITimer timer)
+    {
+        CountdownTimer = timer;
+        ConnectServicesIfAllServicesRegistered();
+    }
+    public static void RegisterGameplayTimer(ITimer timer)
+    {
+        GameplayTimer = timer;
+        ConnectServicesIfAllServicesRegistered();
+    }
+    public static void Register(ISceneLoader sceneLoader)
+    {
         SceneLoader = sceneLoader;
+        ConnectServicesIfAllServicesRegistered();
+    }
+    public static void Register(IDropManager dropManager)
+    {
         DropManager = dropManager;
+        ConnectServicesIfAllServicesRegistered();
+    }
+    public static void Register(IIdGenerator itemInstanceIdGenerator)
+    {
         ItemInstanceIdGenerator = itemInstanceIdGenerator;
-
+        ConnectServicesIfAllServicesRegistered();
+    }
+    public static void Register(IPool<IProjectile> projectilePool)
+    {
         ProjectilePool = projectilePool;
+        ConnectServicesIfAllServicesRegistered();
+    }
+    public static void Register(IPool<IExplosion> explosionPool)
+    {
         ExplosionPool = explosionPool;
+        ConnectServicesIfAllServicesRegistered();
+    }
+    public static void Register(IPool<ILaser> laserPool)
+    {
         LaserPool = laserPool;
-
+        ConnectServicesIfAllServicesRegistered();
+    }
+    public static void Register(IDatabase<ItemDefinition> itemDatabase)
+    {
         ItemDatabase = itemDatabase;
         ItemDatabase.Initialize();
+        ConnectServicesIfAllServicesRegistered();
+    }
+    public static void Register(IDatabase<ExplosionDefinition> explosionDatabase)
+    {
         ExplosionDatabase = explosionDatabase;
         ExplosionDatabase.Initialize();
+        ConnectServicesIfAllServicesRegistered();
+    }
+    public static void Register(IDatabase<ProjectileDefinition> projectileDatabase)
+    {
         ProjectileDatabase = projectileDatabase;
         ProjectileDatabase.Initialize();
-        ConnectServices();
+        ConnectServicesIfAllServicesRegistered();
+    }
+
+    private static void ConnectServicesIfAllServicesRegistered()
+    {
+        if (GameStateManager != null 
+            && TurnStateManager != null 
+            && CountdownTimer != null 
+            && GameplayTimer != null
+            && SceneLoader != null
+            && DropManager != null
+            && ItemInstanceIdGenerator != null 
+            && ProjectilePool != null
+            && ExplosionPool != null
+            && LaserPool != null 
+            && ItemDatabase != null
+            && ExplosionDatabase != null
+            && ProjectileDatabase != null)
+        {
+            ConnectServices();
+        }
     }
 
     private static void ConnectServices()

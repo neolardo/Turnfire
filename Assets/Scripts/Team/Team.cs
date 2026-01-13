@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[RequireComponent(typeof(OnlineHumanTeamInputSource))]
+[RequireComponent(typeof(OfflineHumanTeamInputSource))]
+[RequireComponent(typeof(OnlineBotTeamInputSource))]
+[RequireComponent(typeof(OfflineBotTeamInputSource))]
 public class Team : MonoBehaviour, IConditionalEnumerable
 {
     [SerializeField] private Color _teamColor;
@@ -16,6 +20,7 @@ public class Team : MonoBehaviour, IConditionalEnumerable
     public float NormalizedTeamHealth => _characters.Sum(c => c.NormalizedHealth) / _characters.Count;
     public int NumAliveCharacters => _characters.Count(c => c.IsAlive);
     public bool EnumeratorCondition => IsTeamAlive;
+    public bool IsTeamInitialized => _characters == null ? false: _characters.All(c => c.IsInitialized);
 
     public event Action<float> TeamHealthChanged;
     public event Action TeamLost;

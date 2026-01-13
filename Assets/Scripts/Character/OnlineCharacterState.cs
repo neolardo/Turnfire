@@ -368,5 +368,10 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
         return _inventory.GetAllItems();
     }
 
+    public ItemInstance GetItemByInstanceId(int instanceId)
+    {
+        return _inventory.GetItemByInstanceId(instanceId);
+    }
+
     #endregion
 }

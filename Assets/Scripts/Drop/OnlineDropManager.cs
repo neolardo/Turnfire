@@ -29,6 +29,7 @@ public class OnlineDropManager : NetworkBehaviour, IDropManager
         }
         _logic = new DropLogic();
         _container = GetComponent<PackageContainer>();
+        GameServices.Register(this);
     }
 
     public void TrySpawnPackages()

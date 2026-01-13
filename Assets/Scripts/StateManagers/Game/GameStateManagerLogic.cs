@@ -30,8 +30,6 @@ public class GameStateManagerLogic
     public GameStateManagerLogic(GameplaySettingsDefinition settings)
     {
         _gameplaySettings = settings;
-        GameServices.CountdownTimer.TimerEnded += OnCountdownEnded;
-        GameServices.TurnStateManager.GameEnded += OnGameOver;
     }
 
 
@@ -42,11 +40,13 @@ public class GameStateManagerLogic
 
     public IEnumerator StartGameAfterCountdownCoroutine()
     {
+        yield return new WaitUntil(() => GameServices.TurnStateManager.IsInitialized);
+        GameServices.CountdownTimer.TimerEnded += OnCountdownEnded;
+        GameServices.TurnStateManager.GameEnded += OnGameOver;
         yield return new WaitUntil(() => GameServices.CountdownTimer.IsInitialized);
         GameServices.CountdownTimer.Restart();
         yield return new WaitUntil(() => _countdownEnded);
         yield return new WaitForSeconds(_gameplaySettings.DelaySecondsAfterCountdown);
-        yield return new WaitUntil(() => GameServices.TurnStateManager.IsInitialized);
         StartGame();
     }
 
@@ -55,7 +55,7 @@ public class GameStateManagerLogic
         CurrentState = GameStateType.Playing;
         GameServices.GameplayTimer.Restart();
         GameServices.GameplayTimer.Pause();
-        GameServices.TurnStateManager.StartGame();
+        GameServices.TurnStateManager.StartFirstTurn();
     }
 
     private void OnGameOver(Team winnerTeam)

@@ -27,6 +27,7 @@ public class OnlineSceneLoader : NetworkBehaviour, ISceneLoader
         {
             NotifyServerReadyServerRpc();
         }
+        GameServices.Register(this);
         Debug.Log($"{nameof(OnlineSceneLoader)} spawned");
     }
 

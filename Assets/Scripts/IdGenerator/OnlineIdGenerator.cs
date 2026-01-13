@@ -9,6 +9,7 @@ public class OnlineIdGenerator : NetworkBehaviour, IIdGenerator
     {
         base.OnNetworkSpawn();
         _lastId.Value = IIdGenerator.InitialId;
+        GameServices.Register(this);
     }
     public int GenerateId()
     {

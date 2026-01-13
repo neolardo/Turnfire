@@ -30,7 +30,7 @@ public abstract class TimerUI : MonoBehaviour
 
     void Update()
     {
-        if (!_timer.IsRunning)
+        if (_timer == null || !_timer.IsRunning)
         {
             return;
         }

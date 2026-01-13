@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class CharacterView : MonoBehaviour
+public class CharacterView
 {
     private CharacterHealthbarRenderer _healthbarRenderer;
     private CharacterAnimator _animator;

@@ -41,6 +41,7 @@ public class LocalInputHandler : MonoBehaviour
 
     public event Action ToggleInventoryPerformed;
     public event Action ToggleInventoryCreateDestroyPerformed;
+    public event Action<ItemInstance> InventoryItemSelected;
 
     // pause
     public bool IsOpeningGameplayMenuEnabled { get; set; }
@@ -344,6 +345,11 @@ public class LocalInputHandler : MonoBehaviour
     private void OnToggleCreateDestroy(InputAction.CallbackContext ctx)
     {
         ToggleInventoryCreateDestroyPerformed?.Invoke();
+    }
+
+    public void RequestSelectItem(ItemInstance item)
+    {
+        InventoryItemSelected?.Invoke(item);
     }
 
     #endregion

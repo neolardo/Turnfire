@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class OnlineTimer : NetworkBehaviour, ITimer
 {
+    [SerializeField] private TimerType _timerType;
+    public TimerType TimerType => _timerType;
+
     private NetworkVariable<double> _endServerTime = new();
 
     private NetworkVariable<bool> _isRunning =  new();
@@ -18,11 +21,27 @@ public class OnlineTimer : NetworkBehaviour, ITimer
     public Func<bool> CanPause { get; set; }
     public Func<bool> CanResume { get; set ; }
 
+
     public event Action TimerEnded;
 
     private float _initialTime;
 
-
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+        if(_timerType == TimerType.Countdown )
+        {
+            GameServices.RegisterCountdownTimer(this);
+        }
+        else if (_timerType == TimerType.Gameplay)
+        {
+            GameServices.RegisterGameplayTimer(this);
+        }
+        else
+        {
+            Debug.LogError($"Invalid timer type: {_timerType}");
+        }
+    }
     public void Initialize(float initialTime)
     {
         if(!NetworkManager.Singleton.IsServer)

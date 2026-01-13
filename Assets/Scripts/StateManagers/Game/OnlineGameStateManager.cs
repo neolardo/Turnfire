@@ -22,6 +22,7 @@ public class OnlineGameStateManager : NetworkBehaviour, IGameStateManager
         }
         _logic = new GameStateManagerLogic(_gameplaySettings);
         _logic.StateChanged += ServerOnStateChanged;
+        GameServices.Register(this);
     }
 
     public void StartGame()

@@ -62,10 +62,12 @@ public class OnlineHumanTeamInputSource : NetworkBehaviour, ITeamInputSource
     public event Action AimCancelled;
     public event Action ActionSkipped;
     public event Action<ItemUsageContext> SelectedItemUsed;
-    public event Action<ItemInstance> ItemSelected;
+    public event Action<int> ItemSelected;
 
-    private void Start()
+
+    public override void OnNetworkSpawn()
     {
+        base.OnNetworkSpawn();
         _inputHandler = FindFirstObjectByType<LocalInputHandler>();
         if (!IsOwner)
         {
@@ -77,10 +79,22 @@ public class OnlineHumanTeamInputSource : NetworkBehaviour, ITeamInputSource
         _isAimingEnabled.OnValueChanged += OnIsAimingEnabledChanged;
         _isOpeningInventoryEnabled.OnValueChanged += OnIsOpeningInventoryEnabledChanged;
         _isOpeningGameplayMenuEnabled.OnValueChanged += OnIsOpeningGameplayMenuEnabledChanged;
-        GameServices.TurnStateManager.GameStarted += OnGameStarted;
-        GameServices.TurnStateManager.GameEnded += (_) => OnGameEnded();
+        if (GameServices.IsInitialized)
+        {
+            OnGameServicesInitialized();
+        }
+        else
+        {
+            GameServices.Initialized += OnGameServicesInitialized;
+        }
         DisableInputBeforeGameStart();
     }
+
+    private void OnGameServicesInitialized()
+    {
+        GameServices.TurnStateManager.GameStarted += OnGameStarted;
+        GameServices.TurnStateManager.GameEnded += (_) => OnGameEnded();
+    }    
     private void SubscribeToInputEvents()
     {
         var inputActions = _inputHandler.InputActions;
@@ -89,6 +103,7 @@ public class OnlineHumanTeamInputSource : NetworkBehaviour, ITeamInputSource
         _inputHandler.AimChanged += InvokeAimChanged;
         _inputHandler.AimCancelled += InvokeAimCancelled;
         _inputHandler.ActionSkipped += InvokeActionSkipped;
+        _inputHandler.InventoryItemSelected += InvokeItemSelected;
     }
 
     public void RequestAction(CharacterActionStateType action)
@@ -156,17 +171,12 @@ public class OnlineHumanTeamInputSource : NetworkBehaviour, ITeamInputSource
         {
             return;
         }
-        ImpulseReleased?.Invoke(impulse);
         InvokeImpulseReleasedServerRpc(impulse);
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
     private void InvokeImpulseReleasedServerRpc(Vector2 impulse)
     {
-        if (IsOwner)
-        {
-            return;
-        }
         ImpulseReleased?.Invoke(impulse);
     }
 
@@ -176,17 +186,12 @@ public class OnlineHumanTeamInputSource : NetworkBehaviour, ITeamInputSource
         {
             return;
         }
-        AimStarted?.Invoke(initialPosition);
         InvokeAimStartedServerRpc(initialPosition);
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
     private void InvokeAimStartedServerRpc(Vector2 initialPosition)
     {
-        if (IsOwner)
-        {
-            return;
-        }
         AimStarted?.Invoke(initialPosition);
     }
 
@@ -196,17 +201,12 @@ public class OnlineHumanTeamInputSource : NetworkBehaviour, ITeamInputSource
         {
             return;
         }
-        AimChanged?.Invoke(aimVector);
         InvokeAimChangedServerRpc(aimVector);
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
     private void InvokeAimChangedServerRpc(Vector2 aimVector)
     {
-        if(IsOwner)
-        {
-            return;
-        }
         AimChanged?.Invoke(aimVector);
     }
 
@@ -216,16 +216,11 @@ public class OnlineHumanTeamInputSource : NetworkBehaviour, ITeamInputSource
         {
             return;
         }
-        AimCancelled?.Invoke();
         InvokeAimCancelledServerRpc();
     }
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
     private void InvokeAimCancelledServerRpc()
     {
-        if (IsOwner)
-        {
-            return;
-        }
         AimCancelled?.Invoke();
     }
 
@@ -244,17 +239,12 @@ public class OnlineHumanTeamInputSource : NetworkBehaviour, ITeamInputSource
         {
             return;
         }
-        ActionSkipped?.Invoke();
         InvokeActionSkippedServerRpc();
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
     private void InvokeActionSkippedServerRpc()
     {
-        if (IsOwner)
-        {
-            return;
-        }
         ActionSkipped?.Invoke();
     }
 
@@ -280,6 +270,21 @@ public class OnlineHumanTeamInputSource : NetworkBehaviour, ITeamInputSource
     private void OnIsOpeningInventoryEnabledChanged(bool oldValue, bool newValue)
     {
         _inputHandler.IsOpeningInventoryEnabled = newValue;
+    }
+
+    private void InvokeItemSelected(ItemInstance item)
+    {
+        if (!IsOwner)
+        {
+            return;
+        }
+        InvokeItemSelectedServerRpc(item.InstanceId);
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
+    private void InvokeItemSelectedServerRpc(int itemInstanceId)
+    {
+        ItemSelected?.Invoke(itemInstanceId);
     }
 
     #endregion

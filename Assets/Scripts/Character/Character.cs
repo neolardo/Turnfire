@@ -28,6 +28,7 @@ public class Character : MonoBehaviour, IConditionalEnumerable
     public float JumpStrength => _state.JumpStrength;
     public bool EnumeratorCondition => IsAlive;
     public ItemInstance SelectedItem => _state.SelectedItem;
+    public bool IsInitialized { get; private set; }
 
     public event Action<float, int> HealthChanged;
     public event Action Jumped;
@@ -45,6 +46,7 @@ public class Character : MonoBehaviour, IConditionalEnumerable
         _logic = new CharacterLogic(this, _state, _definition);
         SubscribeToStateChangedEvents();
         _logic.SelectInitialItem();
+        IsInitialized = true;
     }
 
     private void OnDestroy()
@@ -165,6 +167,7 @@ public class Character : MonoBehaviour, IConditionalEnumerable
 
     public void Jump(Vector2 aimDirection)
     {
+        Debug.Log("jump requested");
         _logic.Jump(aimDirection);
     }
 
@@ -218,6 +221,15 @@ public class Character : MonoBehaviour, IConditionalEnumerable
     public bool TrySelectItem(ItemInstance item)
     {
         return _logic.TrySelectItem(item);
+    }
+    public bool TrySelectItem(int itemInstanceId)
+    {
+        return _logic.TrySelectItem(_state.GetItemByInstanceId(itemInstanceId));
+    }
+
+    public bool CanSelectItem(ItemInstance item)
+    {
+        return _logic.CanSelectItem(item);
     }
 
     #endregion

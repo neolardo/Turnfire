@@ -14,6 +14,11 @@ public class OfflineCharacterPhysics : MonoBehaviour, ICharacterPhysics
         _rb = GetComponent<Rigidbody2D>();
         Collider = GetComponent<Collider2D>();
     }
+    private void Start()
+    {
+        _rb.bodyType = RigidbodyType2D.Dynamic;
+        _rb.simulated = true;
+    }
 
     #region Movement
 
@@ -24,6 +29,7 @@ public class OfflineCharacterPhysics : MonoBehaviour, ICharacterPhysics
 
     public void Jump(Vector2 jumpVector)
     {
+        Debug.Log($"jump applied with force: {jumpVector}");
         _rb.AddForce(jumpVector, ForceMode2D.Impulse);
     }
 

@@ -13,6 +13,10 @@ public class OfflineTurnStateManager : MonoBehaviour, ITurnStateManager
     public event Action<Team> GameEnded;
     public event Action<Team> SelectedTeamChanged;
 
+    private void Start()
+    {
+        GameServices.Register(this);
+    }
     public void Initialize(IEnumerable<Team> teams)
     {
         var trajectoryRenderer = FindFirstObjectByType<PixelTrajectoryRenderer>();
@@ -39,7 +43,7 @@ public class OfflineTurnStateManager : MonoBehaviour, ITurnStateManager
         _logic.Dispose();
     }
 
-    public void StartGame()
+    public void StartFirstTurn()
     {
         GameStarted?.Invoke();
         Debug.Log("Game started");

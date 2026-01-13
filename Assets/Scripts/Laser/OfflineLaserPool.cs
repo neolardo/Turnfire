@@ -2,6 +2,10 @@ using System.Collections.Generic;
 
 public class OfflineLaserPool : OfflinePool<OfflineLaser>, IPool<ILaser>
 {
+    private void Start()
+    {
+        GameServices.Register(this);
+    }
     protected override OfflineLaser CreateInstance()
     {
         var laser = base.CreateInstance();

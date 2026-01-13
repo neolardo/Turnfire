@@ -25,12 +25,14 @@ public class InventoryUI : MonoBehaviour
     private Character _currentCharacter;
     private InventoryItemSlotUI _previewedSlot;
     private InventoryItemSlotUI _selectedSlot;
+    private LocalInputHandler _inputHandler;
 
 
     private void Awake()
     {
-        var inputHandler = FindFirstObjectByType<LocalInputHandler>();
-        inputHandler.ToggleInventoryCreateDestroyPerformed += _itemTypeToggle.Toggle;
+        _inputHandler = FindFirstObjectByType<LocalInputHandler>();
+        _inputHandler.ToggleInventoryCreateDestroyPerformed += _itemTypeToggle.Toggle;
+
         _itemTypeToggle.InitializeToggledLeftValue(true);
         _itemTypeToggle.Toggled += OnItemTypeToggled;
 
@@ -151,9 +153,10 @@ public class InventoryUI : MonoBehaviour
     {
         if (slot != null && slot.Item != null)
         {
-            var selectionSucceeded = _currentCharacter.TrySelectItem(slot.Item); //TODO: use input source instead
-            if (selectionSucceeded)
+            var canSelectItem = _currentCharacter.CanSelectItem(slot.Item);
+            if (canSelectItem)
             {
+                _inputHandler.RequestSelectItem(slot.Item);
                 AudioManager.Instance.PlayUISound(_uiSounds.Confirm);
                 MarkSlotAsSelected(slot);
                 LoadItemInfo(slot.Item.Definition);

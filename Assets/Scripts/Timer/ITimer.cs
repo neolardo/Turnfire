@@ -2,6 +2,7 @@ using System;
 
 public interface ITimer
 {
+    TimerType TimerType { get; }
     float CurrentTime { get; }
     bool IsRunning { get; }
     bool IsInitialized { get; }

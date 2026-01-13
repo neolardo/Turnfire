@@ -8,10 +8,13 @@ public class CountdownTimerUI : TimerUI
 
     private void Awake()
     {
-        GameServices.Initialized += OnGameServicesInitialized;
         if(GameServices.IsInitialized)
         {
             OnGameServicesInitialized();
+        }
+        else
+        {
+            GameServices.Initialized += OnGameServicesInitialized;
         }
     }
     private void OnDestroy()

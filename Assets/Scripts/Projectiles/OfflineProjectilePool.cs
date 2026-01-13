@@ -2,7 +2,10 @@ using System.Collections.Generic;
 
 public class OfflineProjectilePool : OfflinePool<OfflineProjectile>, IPool<IProjectile>
 {
-
+    private void Start()
+    {
+        GameServices.Register(this);
+    }
     protected override OfflineProjectile CreateInstance()
     {
         var p = base.CreateInstance();

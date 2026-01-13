@@ -8,6 +8,10 @@ public class OfflineIdGenerator : MonoBehaviour, IIdGenerator
     {
         _lastId = IIdGenerator.InitialId;
     }
+    private void Start()
+    {
+        GameServices.Register(this);
+    }
     public int GenerateId()
     {
         _lastId++;

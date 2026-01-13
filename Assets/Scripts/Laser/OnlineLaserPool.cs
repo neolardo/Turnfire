@@ -2,6 +2,10 @@ using System.Collections.Generic;
 
 public class OnlineLaserPool : OnlinePool<OnlineLaser>, IPool<ILaser>
 {
+    private void Start()
+    {
+        GameServices.Register(this);
+    }
     protected override OnlineLaser CreateInstance()
     {
         var laser = base.CreateInstance();

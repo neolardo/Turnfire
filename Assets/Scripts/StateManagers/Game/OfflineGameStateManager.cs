@@ -15,6 +15,11 @@ public class OfflineGameStateManager : MonoBehaviour, IGameStateManager
         _logic.StateChanged += InvokeStateChanged;
     }
 
+    private void Start()
+    {
+        GameServices.Register(this);
+    }
+
     public void StartGame()
     {
         StartCoroutine(_logic.StartGameAfterCountdownCoroutine());

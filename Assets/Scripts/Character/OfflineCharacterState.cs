@@ -132,12 +132,13 @@ public class OfflineCharacterState : MonoBehaviour, ICharacterState
 
     public void RequestJump(Vector2 jumpVector)
     {
+        Debug.Log("jumped");
         Jumped?.Invoke(jumpVector);
     }
     public void RequestPush(Vector2 pushVector)
     {
         Pushed?.Invoke(pushVector);
-    } 
+    }
 
     public void RequestApplyJumpBoost(float jumpBoost)
     {
@@ -177,6 +178,11 @@ public class OfflineCharacterState : MonoBehaviour, ICharacterState
     public IEnumerable<ItemInstance> GetAllItems()
     {
         return _inventory.GetAllItems();
+    }
+
+    public ItemInstance GetItemByInstanceId(int instanceId)
+    {
+        return _inventory.GetItemByInstanceId(instanceId);
     }
 
     #endregion

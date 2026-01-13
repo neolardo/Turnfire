@@ -14,7 +14,7 @@ public class OnlineBotTeamInputSource : NetworkBehaviour, ITeamInputSource
     public event Action AimCancelled;
     public event Action ActionSkipped;
     public event Action<ItemUsageContext> SelectedItemUsed;
-    public event Action<ItemInstance> ItemSelected;
+    public event Action<int> ItemSelected;
 
     public override void OnNetworkSpawn()
     {
@@ -29,11 +29,14 @@ public class OnlineBotTeamInputSource : NetworkBehaviour, ITeamInputSource
 
     public override void OnDestroy()
     {
-        var controller = _botManager.Controller;
-        controller.SkipAction -= InvokeSkipAction;
-        controller.AimAndRelease -= InvokeAimAndRelease;
-        controller.SwitchSelectedItem -= InvokeItemSelected;
-        controller.UseSelectedItem -= InvokeSelectedItemUsed;
+        if(_botManager != null && _botManager.Controller != null)
+        {
+            var controller = _botManager.Controller;
+            controller.SkipAction -= InvokeSkipAction;
+            controller.AimAndRelease -= InvokeAimAndRelease;
+            controller.SwitchSelectedItem -= InvokeItemSelected;
+            controller.UseSelectedItem -= InvokeSelectedItemUsed;
+        }
     }
 
     public void ForceCancelAiming() { }
@@ -75,7 +78,7 @@ public class OnlineBotTeamInputSource : NetworkBehaviour, ITeamInputSource
         {
             return;
         }
-        ItemSelected?.Invoke(item);
+        ItemSelected?.Invoke(item.InstanceId);
     }
 
     private void InvokeSelectedItemUsed(ItemUsageContext context)

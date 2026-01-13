@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class OfflineTimer : MonoBehaviour, ITimer
 {
+    [SerializeField] private TimerType _timerType;
+    public TimerType TimerType => _timerType;
     public float CurrentTime { get; private set; }
     public bool IsRunning { get; private set;}
     public bool IsInitialized { get; private set; }
@@ -13,6 +15,22 @@ public class OfflineTimer : MonoBehaviour, ITimer
     protected float _initialTime;
 
     public event Action TimerEnded;
+
+    private void Start()
+    {
+        if (_timerType == TimerType.Countdown)
+        {
+            GameServices.RegisterCountdownTimer(this);
+        }
+        else if (_timerType == TimerType.Gameplay)
+        {
+            GameServices.RegisterGameplayTimer(this);
+        }
+        else
+        {
+            Debug.LogError($"Invalid timer type: {_timerType}");
+        }
+    }
 
     public void Initialize(float initialTime)
     {

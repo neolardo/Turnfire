@@ -2,6 +2,10 @@ using System.Collections.Generic;
 
 public class OnlineProjectilePool : OnlinePool<OnlineProjectile>, IPool<IProjectile>
 {
+    private void Start()
+    {
+        GameServices.Register(this);
+    }
     protected override OnlineProjectile CreateInstance()
     {
         var p = base.CreateInstance();

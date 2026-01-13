@@ -118,6 +118,27 @@ public class CharacterLogic
         }
     }
 
+    public bool CanSelectItem(ItemInstance item)
+    {
+        var items = _state.GetAllItems();
+        if ((item == null) || (items.Contains(item) && item != _state.SelectedItem))
+        {
+            if (item != null && item.Definition.UseInstantlyWhenSelected)
+            {
+                var context = new ItemUsageContext(_character);
+                return item.Behavior.CanUseItem(context);
+            }
+            else
+            {
+                return true;
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     #endregion
 
 }

@@ -23,6 +23,18 @@ public class GameplayUIManager : MonoBehaviour
     }
     private void Start()
     {
+        if (GameServices.IsInitialized)
+        {
+            OnGameServicesInitialized();
+        }
+        else
+        {
+            GameServices.Initialized += OnGameServicesInitialized;
+        }
+    }
+            
+    private void OnGameServicesInitialized()
+    {
         GameServices.TurnStateManager.GameEnded += OnGameOver;
         GameServices.TurnStateManager.GameStarted += OnGameStarted;
         GameServices.GameStateManager.StateChanged += OnGameStateChanged;

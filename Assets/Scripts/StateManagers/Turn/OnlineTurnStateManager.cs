@@ -16,6 +16,12 @@ public class OnlineTurnStateManager : NetworkBehaviour, ITurnStateManager
     public event Action<Team> GameEnded;
     public event Action<Team> SelectedTeamChanged;
 
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+        GameServices.Register(this);
+    }
+
     public void Initialize(IEnumerable<Team> teams)
     {
         var trajectoryRenderer = FindFirstObjectByType<PixelTrajectoryRenderer>();
@@ -57,17 +63,17 @@ public class OnlineTurnStateManager : NetworkBehaviour, ITurnStateManager
         _logic.Dispose();
     }
 
-    public void StartGame()
+    public void StartFirstTurn()
     { 
         if (!IsServer)
         {
             return;
         }
-        StartGameClientRpc();
+        StartFirstTurnClientRpc();
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
-    private void StartGameClientRpc()
+    private void StartFirstTurnClientRpc()
     {
         GameStarted?.Invoke();
         Debug.Log("Game started");

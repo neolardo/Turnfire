@@ -26,6 +26,18 @@ public class TeamHealthbarUI : MonoBehaviour
 
     private void Start()
     {
+        if (GameServices.IsInitialized)
+        {
+            OnGameServicesInitialized();
+        }
+        else
+        {
+            GameServices.Initialized += OnGameServicesInitialized;
+        }
+    }
+
+    private void OnGameServicesInitialized()
+    {
         GameServices.TurnStateManager.SelectedTeamChanged += OnSelectedTeamChanged;
     }
 

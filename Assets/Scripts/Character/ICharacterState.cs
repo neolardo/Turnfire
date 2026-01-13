@@ -42,4 +42,5 @@ public interface ICharacterState
     public void RequestSelectItem(ItemInstance item);
     public void RequestUseSelectedItem(ItemUsageContext context);
     public IEnumerable<ItemInstance> GetAllItems();
+    public ItemInstance GetItemByInstanceId(int itemInstanceId);
 }

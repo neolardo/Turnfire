@@ -45,7 +45,7 @@ public class CharacterItemInventory
     {
         _itemsDict[item.InstanceId] = item;
     }
-    private ItemInstance GetItemByInstanceId(int instanceId)
+    public ItemInstance GetItemByInstanceId(int instanceId)
     {
         return _itemsDict[instanceId];
     }

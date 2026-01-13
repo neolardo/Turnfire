@@ -21,6 +21,18 @@ public class ControlsPanelUI : MonoBehaviour
 
     private void Start()
     {
+        if (GameServices.IsInitialized)
+        {
+            OnGameServicesInitialized();
+        }
+        else
+        {
+            GameServices.Initialized += OnGameServicesInitialized;
+        }
+    }
+
+    private void OnGameServicesInitialized()
+    {
         GameServices.GameStateManager.StateChanged += OnGameStateChanged;
     }
 

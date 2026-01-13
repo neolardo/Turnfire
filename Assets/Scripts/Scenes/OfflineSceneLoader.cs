@@ -18,6 +18,11 @@ public class OfflineSceneLoader : MonoBehaviour, ISceneLoader
         DontDestroyOnLoad(gameObject);
     }
 
+    private void Start()
+    {
+        GameServices.Register(this);
+    }
+
     private IEnumerator LoadSceneCoroutine(string sceneName)
     {
         yield return null;

@@ -41,9 +41,9 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
         _inputSource.ActionSkipped -= OnActionSkipped;
     }
 
-    private void OnItemSelected(ItemInstance item)
+    private void OnItemSelected(int itemInstanceId)
     {
-        _currentCharacter.TrySelectItem(item);
+        _currentCharacter.TrySelectItem(itemInstanceId);
     }
     private void OnSelectedItemUsed(ItemUsageContext context)
     {

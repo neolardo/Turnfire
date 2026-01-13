@@ -46,17 +46,30 @@ public class OfflineHumanTeamInputSource : MonoBehaviour, ITeamInputSource
     public event Action AimCancelled;
     public event Action ActionSkipped;
     public event Action<ItemUsageContext> SelectedItemUsed;
-    public event Action<ItemInstance> ItemSelected;
+    public event Action<int> ItemSelected;
 
     private void Start()
     {
         _inputHandler = FindFirstObjectByType<LocalInputHandler>();
         _inputHandler.SwitchToInputActionMap(InputActionMapType.Gameplay);
         SubscribeToInputEvents();
-        GameServices.TurnStateManager.GameStarted += OnGameStarted;
-        GameServices.TurnStateManager.GameEnded += (_) => OnGameEnded();
+        if (GameServices.IsInitialized)
+        {
+            OnGameServicesInitialized();
+        }
+        else
+        {
+            GameServices.Initialized += OnGameServicesInitialized;
+        }
         DisableInputBeforeGameStart();
     }
+
+    private void OnGameServicesInitialized()
+    {
+        GameServices.TurnStateManager.GameStarted += OnGameStarted;
+        GameServices.TurnStateManager.GameEnded += (_) => OnGameEnded();
+    }
+
     private void SubscribeToInputEvents()
     {
         var inputActions = _inputHandler.InputActions;
@@ -65,6 +78,7 @@ public class OfflineHumanTeamInputSource : MonoBehaviour, ITeamInputSource
         _inputHandler.AimChanged += InvokeAimChanged;
         _inputHandler.AimCancelled += InvokeAimCancelled;
         _inputHandler.ActionSkipped += InvokeActionSkipped;
+        _inputHandler.InventoryItemSelected += InvokeItemSelected;
     }
 
     public void RequestAction(CharacterActionStateType action)
@@ -105,6 +119,7 @@ public class OfflineHumanTeamInputSource : MonoBehaviour, ITeamInputSource
     }
     private void InvokeImpulseReleased(Vector2 impulse)
     {
+        Debug.Log("impulse released");
         ImpulseReleased?.Invoke(impulse);
     }
     private void InvokeAimStarted(Vector2 initialPosition)
@@ -118,6 +133,10 @@ public class OfflineHumanTeamInputSource : MonoBehaviour, ITeamInputSource
     private void InvokeAimCancelled()
     {
         AimCancelled?.Invoke();
+    }
+    private void InvokeItemSelected(ItemInstance item)
+    {
+        ItemSelected?.Invoke(item.InstanceId);
     }
 
     #endregion

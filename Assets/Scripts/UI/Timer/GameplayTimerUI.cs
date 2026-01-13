@@ -12,10 +12,13 @@ public class GameplayTimerUI : TimerUI
     private void Awake()
     {
         _normalColor = _timerText.color;
-        GameServices.Initialized += OnGameServicesInitialized;
         if (GameServices.IsInitialized)
         {
             OnGameServicesInitialized();
+        }
+        else
+        {
+            GameServices.Initialized += OnGameServicesInitialized;
         }
     }
     private void OnDestroy()
