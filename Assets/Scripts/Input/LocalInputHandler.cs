@@ -27,6 +27,7 @@ public class LocalInputHandler : MonoBehaviour
     private Vector2 _initialMouseAimPosition;
     private bool _isAiming;
     private bool _isInitialMouseAimPositionSet;
+    private AimCircleUI _aimCircleUI;
 
     public static readonly Vector2 DefaultAimStartPosition = new Vector2(-1, -1);
     public bool IsAimingEnabled { get; set; }
@@ -78,6 +79,8 @@ public class LocalInputHandler : MonoBehaviour
 
         InputSystem.onDeviceChange += OnDeviceChange;
         _onAnyButtonPressSubscription = InputSystem.onAnyButtonPress.Call(OnAnyButtonPress);
+
+        _aimCircleUI = FindFirstObjectByType<AimCircleUI>();
     }
 
     private void OnDestroy()
@@ -259,7 +262,7 @@ public class LocalInputHandler : MonoBehaviour
         if (ctx.control.device is Mouse)
         {
             initialPos = Mouse.current.position.ReadValue();
-            _mouseAimRadius = (AimCircleUI.OuterRadiusPercent - AimCircleUI.InnerRadiusPercent) * Screen.width;
+            _mouseAimRadius = _aimCircleUI.MouseAimRadiusScreenHeightRatio * Screen.height;
         }
         AimStarted?.Invoke(initialPos);
         Cursor.visible = false;

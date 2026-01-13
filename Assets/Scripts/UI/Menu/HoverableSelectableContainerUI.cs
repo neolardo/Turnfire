@@ -12,6 +12,7 @@ public class HoverableSelectableContainerUI : Selectable
     protected Vector2 _originalAnchoredPosition;
     protected bool _isHovered;
     public bool IsSelected { get; private set; }
+    protected bool _isAnchoredPositionInitialized;
 
     protected override void Awake()
     {
@@ -20,6 +21,14 @@ public class HoverableSelectableContainerUI : Selectable
         var canvas = FindFirstObjectByType<Canvas>();
         _parentCanvasRect = canvas.GetComponent<RectTransform>();
         _rectTransform = GetComponent<RectTransform>();
+    }
+    protected override void Start()
+    {
+        if (!_isAnchoredPositionInitialized)
+        { 
+            _originalAnchoredPosition = _rectTransform.anchoredPosition;
+            _isAnchoredPositionInitialized = true;
+        }
     }
 
     public override void OnSelect(BaseEventData eventData)
@@ -53,7 +62,6 @@ public class HoverableSelectableContainerUI : Selectable
             return;
         }
         AudioManager.Instance.PlayUISound(_uiSounds.Hover);
-        _originalAnchoredPosition = _rectTransform.anchoredPosition;
         _rectTransform.anchoredPosition += _uiDefinition.CalculateHoverOffset(_parentCanvasRect.sizeDelta.y);
         _isHovered = true;
     }

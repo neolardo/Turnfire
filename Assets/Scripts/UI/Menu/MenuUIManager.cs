@@ -26,19 +26,23 @@ public class MenuUIManager : MonoBehaviour
 
     public void SwitchPanel(MenuPanelType panel, bool previous = false)
     {
-        Debug.Log($"Switched to panel: {panel}");
         if(_currentPanel != panel)
         {
             if(_currentPanel != MenuPanelType.None && !previous)
             {
                 _previousPanels.Push(_currentPanel);
             }
+            if (panel != MenuPanelType.None) // show current
+            {
+                var nextGo = GetPanelGOFromType(panel);
+                nextGo.SetActive(true);
+            }
+            if(_currentPanel != MenuPanelType.None) // hide last
+            {
+                var lastGo = GetPanelGOFromType(_currentPanel);
+                lastGo.SetActive(false);
+            }
             _currentPanel = panel;
-
-            HideAllPanels();
-
-            var go = GetPanelGOFromType(panel);
-            go.SetActive(true);
         }
     }
 

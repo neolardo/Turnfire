@@ -884,6 +884,8 @@ MonoBehaviour:
   _uiDefinition: {fileID: 11400000, guid: 93667ed427ce1234d954789779612623, type: 2}
   _innerCircle: {fileID: 8997493564369990330}
   _outerCircle: {fileID: 1950880429954772715}
+  _outerCirclePixelSize: 53
+  _innerCirclePixelSize: 21
 --- !u!1 &3140383665277357044
 GameObject:
   m_ObjectHideFlags: 0
@@ -1811,7 +1813,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 15.85
+  m_fontSize: 14.4
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2395,7 +2397,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8997493564369990330}
   - component: {fileID: 3117653655767155666}
-  - component: {fileID: 5538227635288944818}
+  - component: {fileID: 3750865469174719488}
   m_Layer: 5
   m_Name: InnerCircle
   m_TagString: Untagged
@@ -2420,7 +2422,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 8, y: 8}
+  m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3117653655767155666
 CanvasRenderer:
@@ -2430,7 +2432,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6887464793628706806}
   m_CullTransparentMesh: 1
---- !u!114 &5538227635288944818
+--- !u!114 &3750865469174719488
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2442,15 +2444,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 98ab404485e57fe45ad67ef8f8b3edd7, type: 2}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.8}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 0}
+  m_Texture: {fileID: 2800000, guid: d8cf3af0f3b1e99409df1b298ea511cf, type: 3}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -3317,7 +3319,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1950880429954772715}
   - component: {fileID: 4838113227028925035}
-  - component: {fileID: 3812419953913749439}
+  - component: {fileID: 1599927871089014513}
   m_Layer: 5
   m_Name: OuterCircle
   m_TagString: Untagged
@@ -3342,7 +3344,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 30, y: 30}
+  m_SizeDelta: {x: 53, y: 53}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4838113227028925035
 CanvasRenderer:
@@ -3352,7 +3354,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8394899104773199433}
   m_CullTransparentMesh: 1
---- !u!114 &3812419953913749439
+--- !u!114 &1599927871089014513
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3364,15 +3366,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 51aab5273a6918c44a4875c0b9ccbebe, type: 2}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.8}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 0}
+  m_Texture: {fileID: 2800000, guid: 0701024f02dd45a4cba40c8d07b49bfa, type: 3}
   m_UVRect:
     serializedVersion: 2
     x: 0

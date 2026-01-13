@@ -174,3 +174,5 @@ MonoBehaviour:
   MaxHealth: 8
   InitialItems:
   - {fileID: 11400000, guid: 3adb2e281e926714ca60f3a253fa55dc, type: 2}
+  - {fileID: 11400000, guid: 597ba13a37f49cf41aa1765a91f223db, type: 2}
+  - {fileID: 11400000, guid: 20aba8eec478fc74b8883aa5cc7dcdef, type: 2}
