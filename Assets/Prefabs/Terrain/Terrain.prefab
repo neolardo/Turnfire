@@ -120,7 +120,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _islandColliderPrefab: {fileID: 3719362305191040824, guid: 3ef8e0b226b838241afb2950f2fd9b22, type: 3}
-  _pixelsPerUnit: 64
 --- !u!114 &7377760404246369975
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -144,8 +143,9 @@ GameObject:
   m_Component:
   - component: {fileID: 284339481309142092}
   - component: {fileID: 4624734449567860538}
+  - component: {fileID: 1913416161565453046}
   m_Layer: 8
-  m_Name: DestructibleTerrain
+  m_Name: Terrain
   m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -182,12 +182,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _renderer: {fileID: 7273123915422273504}
   _collider: {fileID: 4152527661270326358}
-  _tilemapCollider: {fileID: 0}
-  _tilemapRenderer: {fileID: 0}
+  _pixelsPerUnit: 64
+  _pixelsPerTile: 32
   _tilemap: {fileID: 0}
+  _tilemapRenderer: {fileID: 0}
+  _tilemapCollider: {fileID: 0}
   _explosionHolePool: {fileID: 0}
   _initialExplosionHoleContainer: {fileID: 0}
   _explosionHoleThresholdForColliderRebuild: 5
+--- !u!114 &1913416161565453046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 871412234236439777}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb65f5ba65634e04880bd138a01fcb51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onlineRegistryPrefab: {fileID: 6583973437322933862, guid: ab9532e68e136c849b03cfc640f714d4, type: 3}
+  _offlineRegistryPrefab: {fileID: 4797848768607147111, guid: b582e2c8ebfd76f4a9c94ca861afed69, type: 3}
 --- !u!1 &940022755006411494
 GameObject:
   m_ObjectHideFlags: 0
@@ -288,5 +304,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 913b7219b66e2ae479cca911ac216a5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pixelsPerTile: 32
-  _pixelsPerUnit: 64

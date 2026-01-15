@@ -72,4 +72,8 @@ public static class Constants
     //network
     public const string InvalidNameReasonValue = "InvalidName";
     public const int InvalidId = -1;
+
+    //pixel resolution
+    public const int PixelsPerUnit = 64;
+    public const int PixelsPerTile = 32;
 }

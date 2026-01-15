@@ -20,11 +20,17 @@ public class GameplayStartManager : MonoBehaviour
     {
         yield return new WaitUntil(() => GameServices.IsInitialized);
         Debug.Log("Game services initialized");
+
         _teamComposerBootstrap.InitializeTeams();
         yield return new WaitUntil(() => _teamComposerBootstrap.AllTeamsInitialized);
         Debug.Log("All teams initialized");
+
+        _teamComposerBootstrap.CreateAndSelectInitialItems();
+        Debug.Log("All initial items created and selected");
+
         GameServices.TurnStateManager.Initialize(_teamComposerBootstrap.GetTeams());
         Debug.Log("Turn state manager initialized");
+
         GameServices.GameStateManager.StartGame();
     }
 

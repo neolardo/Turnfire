@@ -41,6 +41,11 @@ public class TeamHealthbarUI : MonoBehaviour
         GameServices.TurnStateManager.SelectedTeamChanged += OnSelectedTeamChanged;
     }
 
+    private void OnDestroy()
+    {
+        GameServices.TurnStateManager.SelectedTeamChanged -= OnSelectedTeamChanged;
+    }
+
     private void OnSelectedTeamChanged(Team selectedTeam)
     {
         FadeTextOnTeamSelectionChanged(selectedTeam == _team);

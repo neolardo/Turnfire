@@ -7,9 +7,9 @@ public readonly struct ItemBehaviorSimulationContext
     public readonly IEnumerable<Character> OtherCharacters;
     public readonly Vector2 Origin;
     public readonly Vector2 AimVector;
-    public readonly DestructibleTerrainManager Terrain;
+    public readonly TerrainManager Terrain;
 
-    public ItemBehaviorSimulationContext(Character owner, IEnumerable<Character> otherCharacters, Vector2 origin, Vector2 aimVector, DestructibleTerrainManager terrain )
+    public ItemBehaviorSimulationContext(Character owner, IEnumerable<Character> otherCharacters, Vector2 origin, Vector2 aimVector, TerrainManager terrain )
     {
         Owner = owner;
         OtherCharacters = otherCharacters;

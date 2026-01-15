@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class BotContextProvider : MonoBehaviour
 {
-    private DestructibleTerrainManager _destructibleTerrain;
+    private TerrainManager _destructibleTerrain;
     private JumpGraphManager _jumpGraphManager;
     private IEnumerable<Team> _teams;
 
     private void Awake()
     {
-        _destructibleTerrain = FindFirstObjectByType<DestructibleTerrainManager>();
+        _destructibleTerrain = FindFirstObjectByType<TerrainManager>();
         _jumpGraphManager = FindFirstObjectByType<JumpGraphManager>();
     }
 

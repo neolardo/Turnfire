@@ -94,8 +94,16 @@ public class OnlineHumanTeamInputSource : NetworkBehaviour, ITeamInputSource
     private void OnGameServicesInitialized()
     {
         GameServices.TurnStateManager.GameStarted += OnGameStarted;
-        GameServices.TurnStateManager.GameEnded += (_) => OnGameEnded();
-    }    
+        GameServices.TurnStateManager.GameEnded += OnGameEnded;
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        GameServices.TurnStateManager.GameStarted -= OnGameStarted;
+        GameServices.TurnStateManager.GameEnded -= OnGameEnded;
+        base.OnNetworkDespawn();
+    }
+
     private void SubscribeToInputEvents()
     {
         var inputActions = _inputHandler.InputActions;
@@ -138,7 +146,7 @@ public class OnlineHumanTeamInputSource : NetworkBehaviour, ITeamInputSource
         IsOpeningGameplayMenuEnabled = true;
     }
 
-    public void OnGameEnded()
+    public void OnGameEnded(Team winner)
     {
         ForceCloseInventory();
         _inputHandler.SwitchToInputActionMap(InputActionMapType.GameOverScreen);

@@ -69,7 +69,13 @@ public class OfflineHumanTeamInputSource : MonoBehaviour, ITeamInputSource
     private void OnGameServicesInitialized()
     {
         GameServices.TurnStateManager.GameStarted += OnGameStarted;
-        GameServices.TurnStateManager.GameEnded += (_) => OnGameEnded();
+        GameServices.TurnStateManager.GameEnded += OnGameEnded;
+    }
+
+    private void OnDestroy()
+    {
+        GameServices.TurnStateManager.GameStarted -= OnGameStarted;
+        GameServices.TurnStateManager.GameEnded -= OnGameEnded;
     }
 
     private void SubscribeToInputEvents()
@@ -106,7 +112,7 @@ public class OfflineHumanTeamInputSource : MonoBehaviour, ITeamInputSource
         IsOpeningGameplayMenuEnabled = true;
     }
 
-    public void OnGameEnded()
+    public void OnGameEnded(Team winner)
     {
         IsAimingEnabled = false;
         IsOpeningGameplayMenuEnabled = false;

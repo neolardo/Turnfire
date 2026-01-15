@@ -36,6 +36,11 @@ public class ControlsPanelUI : MonoBehaviour
         GameServices.GameStateManager.StateChanged += OnGameStateChanged;
     }
 
+    private void OnDestroy()
+    {
+        GameServices.GameStateManager.StateChanged -= OnGameStateChanged;
+    }
+
     private void OnGameStateChanged(GameStateType state)
     {
         if(state != GameStateType.Paused)

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1855480919258182433}
   - component: {fileID: 3719362305191040824}
   m_Layer: 8
-  m_Name: DestructibleIslandCollider
+  m_Name: IslandCollider
   m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

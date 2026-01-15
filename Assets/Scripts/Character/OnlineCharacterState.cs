@@ -422,26 +422,25 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
         {
             return;
         }
+        var selectedItem = SelectedItem;
+        InvokeSelectedItemUsedClientRpc(new NetworkItemUsageContextData(context), selectedItem.InstanceId);
         SelectedItem.Use(context);
-        StartCoroutine(MirrorIsUsingSelectedItemStateUntilUsageFinished());
-        InvokeSelectedItemUsedClientRpc(new NetworkItemUsageContextData(context));
+        StartCoroutine(MirrorIsUsingSelectedItemStateUntilUsageFinished(selectedItem));
     }
 
-    private IEnumerator MirrorIsUsingSelectedItemStateUntilUsageFinished()
+    private IEnumerator MirrorIsUsingSelectedItemStateUntilUsageFinished(ItemInstance item)
     {
         _isUsingSelectedItem.Value = true;
-        Debug.Log("Item usage started");
-        yield return new WaitWhile(() => SelectedItem.Behavior.IsInUse);
-        Debug.Log("Item usage ended");
+        yield return new WaitWhile(() => item.Behavior.IsInUse);
         _isUsingSelectedItem.Value = false;
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
-    private void InvokeSelectedItemUsedClientRpc(NetworkItemUsageContextData networkContext)
+    private void InvokeSelectedItemUsedClientRpc(NetworkItemUsageContextData networkContext, int itemInstanceId)
     {
-        Debug.Log("Item used");
-        ItemUsed?.Invoke(SelectedItem, networkContext.ToItemUsageContext(_character));
+        ItemUsed?.Invoke(_inventory.GetItemByInstanceId(itemInstanceId), networkContext.ToItemUsageContext(_character));
     }
+
     public IEnumerable<ItemInstance> GetAllItems()
     {
         return _inventory.GetAllItems();

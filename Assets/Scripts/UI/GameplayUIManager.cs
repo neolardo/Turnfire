@@ -39,6 +39,24 @@ public class GameplayUIManager : MonoBehaviour
         GameServices.TurnStateManager.GameStarted += OnGameStarted;
         GameServices.GameStateManager.StateChanged += OnGameStateChanged;
         GameServices.CountdownTimer.TimerEnded += OnCountdownTimerEnded;
+        Debug.Log("Game services initialized called from UI");
+    }
+
+    private void OnDestroy()
+    {
+        if(GameServices.TurnStateManager != null)
+        {
+            GameServices.TurnStateManager.GameEnded -= OnGameOver;
+            GameServices.TurnStateManager.GameStarted -= OnGameStarted;
+        }
+        if (GameServices.GameStateManager != null)
+        {
+            GameServices.GameStateManager.StateChanged -= OnGameStateChanged;
+        }
+        if(GameServices.CountdownTimer != null)
+        {
+            GameServices.CountdownTimer.TimerEnded -= OnCountdownTimerEnded;
+        }
     }
 
     public void CreateTeamHealthbars(IEnumerable<Team> teams)
@@ -63,6 +81,7 @@ public class GameplayUIManager : MonoBehaviour
 
     private void OnCountdownTimerEnded()
     {
+        //TODO: why called after destroy?
         StartCoroutine(HideCountdownTimerAfterDelay());
     }
 

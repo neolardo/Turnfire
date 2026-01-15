@@ -34,15 +34,6 @@ public class GroundChecker : MonoBehaviour
         {
             _isGrounded = groundedNow;
             IsGroundedChanged?.Invoke(_isGrounded);
-
-            if (_isGrounded)
-            {
-                Debug.Log("GROUNDED");
-            }
-            if (!_isGrounded)
-            {
-                Debug.Log("IN AIR");
-            }
         }
     }
 

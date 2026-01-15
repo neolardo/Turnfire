@@ -5,14 +5,13 @@ using UnityEngine;
 
 [RequireComponent(typeof(CompositeCollider2D))]
 [RequireComponent(typeof(Rigidbody2D))]
-public class DestructibleTerrainCollider : MonoBehaviour
+public class TerrainCollider : MonoBehaviour
 {
-    [SerializeField] private DestructibleIslandCollider _islandColliderPrefab;
-    [SerializeField] private int _pixelsPerUnit = 64;
+    [SerializeField] private IslandCollider _islandColliderPrefab;
 
     private PixelMask _terrainPixelMask;
-    private List<DestructibleIslandCollider> _islandColliders;
-
+    private List<IslandCollider> _islandColliders;
+    private int _pixelsPerUnit;
     private int Width => _terrainPixelMask.Width; 
     private int Height => _terrainPixelMask.Height;
 
@@ -23,7 +22,12 @@ public class DestructibleTerrainCollider : MonoBehaviour
 
     private void Awake()
     {
-        _islandColliders = new List<DestructibleIslandCollider>();
+        _islandColliders = new List<IslandCollider>();
+    }
+
+    public void Initialize(int pixelsPerUnit)
+    {
+        _pixelsPerUnit = pixelsPerUnit;
     }
 
     public void InitiateRebuild(Texture2D texture, Vector2 offset)
@@ -62,7 +66,7 @@ public class DestructibleTerrainCollider : MonoBehaviour
 
     private IEnumerator BuildIslandsAsync()
     {
-        var newIslands = new List<DestructibleIslandCollider>();
+        var newIslands = new List<IslandCollider>();
 
         bool[,] visited = new bool[Width, Height];
         for (int y = 0; y < Height; y++)
@@ -75,7 +79,7 @@ public class DestructibleTerrainCollider : MonoBehaviour
                     yield return FloodFillAsync(x, y, visited, p => pixels = p );
                     PixelMask islandPixelMask = null;
                     yield return PixelMask.CreateAsync(pixels, pm => islandPixelMask = pm);
-                    DestructibleIslandCollider island = null;
+                    IslandCollider island = null;
                     yield return CreateIslandColliderAsync(islandPixelMask, newIslands.Count, i=> island = i);
                     newIslands.Add(island);
                 }
@@ -120,7 +124,7 @@ public class DestructibleTerrainCollider : MonoBehaviour
     }
 
 
-    public IEnumerator CreateIslandColliderAsync(PixelMask islandPixelMask, int index, Action<DestructibleIslandCollider> onDone)
+    public IEnumerator CreateIslandColliderAsync(PixelMask islandPixelMask, int index, Action<IslandCollider> onDone)
     {
         var islandCenter = islandPixelMask.Rect.center;
         var terrainCenter = _terrainPixelMask.Rect.center;

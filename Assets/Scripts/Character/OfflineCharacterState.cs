@@ -211,8 +211,9 @@ public class OfflineCharacterState : MonoBehaviour, ICharacterState
     }
     public void RequestUseSelectedItem(ItemUsageContext context)
     {
+        var item = SelectedItem;
         SelectedItem.Use(context);
-        ItemUsed?.Invoke(SelectedItem, context);
+        ItemUsed?.Invoke(item, context);
     }
     public IEnumerable<ItemInstance> GetAllItems()
     {

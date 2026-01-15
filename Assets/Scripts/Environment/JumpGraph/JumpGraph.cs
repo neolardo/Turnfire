@@ -26,10 +26,7 @@ public class JumpGraph : UnityDriven
     private const float TwoPointsExplosionRadiusThreshold = 1f;
     private const float ThreePointsExplosionRadiusThreshold = 1.5f;
     private const float NewSearchPointAngularDistanceDegrees = 25f;
-
-    private bool _isReady;
-    public bool IsReady => _isReady;
-
+    public bool IsReady { get; private set; }
 
     // path calculation
     private readonly Queue<int> _pointQueue = new Queue<int>();
@@ -61,23 +58,24 @@ public class JumpGraph : UnityDriven
 
     #region Creation
 
-    public void InitiateGraphCreationFromTerrain(DestructibleTerrainManager terrain)
+    public void InitiateGraphCreationFromTerrain(TerrainManager terrain)
     {
         StartCoroutine(CreateStandingPointsAndJumpLinks(terrain));
     }
 
-    private IEnumerator CreateStandingPointsAndJumpLinks(DestructibleTerrainManager terrain)
+    private IEnumerator CreateStandingPointsAndJumpLinks(TerrainManager terrain)
     {
         yield return CreateStandingPoints(terrain);
         yield return SimulateJumpsFromGivenPointsAndCreateJumpLinks(_points, _points, terrain);
-        _isReady = true;
+        IsReady = true;
         Debug.Log($"Jump graph creation finished");
     }
 
-    private IEnumerator CreateStandingPoints(DestructibleTerrainManager terrain)
+    private IEnumerator CreateStandingPoints(TerrainManager terrain)
     {
         Debug.Log($"Jump graph creation started");
         int iteration = 0;
+        const int iterationThreshold = 1000;
         var terrainPixelSize = terrain.PixelSize;
         for (int x = 0; x < terrainPixelSize.x; x += _pixelResolution)
         {
@@ -89,18 +87,17 @@ public class JumpGraph : UnityDriven
                     _adjency.Add(new Dictionary<int, JumpLink>());
                 }
                 iteration++;
-                //if (iteration % iterationThreshold == 0)
-                //{
-                //    yield return null;
-                //}
+                if (iteration % iterationThreshold == 0)
+                {
+                    yield return null;
+                }
             }
         }
-        yield return null;
         Debug.Log($"Created {_points.Count} standing points");
     }
 
 
-    private IEnumerator SimulateJumpsFromGivenPointsAndCreateJumpLinks(IEnumerable<StandingPoint> startPoints, IEnumerable<StandingPoint> endPoints, DestructibleTerrainManager terrain)
+    private IEnumerator SimulateJumpsFromGivenPointsAndCreateJumpLinks(IEnumerable<StandingPoint> startPoints, IEnumerable<StandingPoint> endPoints, TerrainManager terrain)
     {
         int linkCount = 0;
         foreach (var startP in startPoints)
@@ -154,7 +151,7 @@ public class JumpGraph : UnityDriven
 
     #region Jump Simulation
 
-    private Vector2 SimulateJumpAndCalculateDestination(Vector2 start, Vector2 jumpVector, DestructibleTerrainManager terrain)
+    private Vector2 SimulateJumpAndCalculateDestination(Vector2 start, Vector2 jumpVector, TerrainManager terrain)
     {
         Vector2 pos = start;
         var velocity = jumpVector;
@@ -197,10 +194,10 @@ public class JumpGraph : UnityDriven
 
     #region Update
 
-    public void ApplyExplosion(Vector2 explosionCenter, float explosionRadius, DestructibleTerrainManager terrain)
+    public void ApplyExplosion(Vector2 explosionCenter, float explosionRadius, TerrainManager terrain)
     {
         Debug.Log($"Jump graph update started");
-        _isReady = false;
+        IsReady = false;
         var numPointsRemoved = RemovePointsAndLinksInsideExplosion(explosionCenter, explosionRadius);
         if (numPointsRemoved>0)
         {
@@ -208,7 +205,7 @@ public class JumpGraph : UnityDriven
         }
         else
         {
-            _isReady = true;
+            IsReady = true;
             Debug.Log($"Jump graph update finished");
         }
     }
@@ -244,7 +241,7 @@ public class JumpGraph : UnityDriven
         return explodedPoints.Count;
     }
 
-    private IEnumerator AddNewStandingPointsAndJumpLinksAfterExplosion(Vector2 explosionCenter, float explosionRadius, DestructibleTerrainManager terrain)
+    private IEnumerator AddNewStandingPointsAndJumpLinksAfterExplosion(Vector2 explosionCenter, float explosionRadius, TerrainManager terrain)
     {
         var searchRadius = explosionRadius + ExplosionRadiusOffsetForNewJumpLinks;
         var possibleLinkedPoints = _points.Where(p => p.IsValid && Vector2.Distance(p.WorldPos, explosionCenter) < searchRadius).ToList();
@@ -279,11 +276,11 @@ public class JumpGraph : UnityDriven
         }
 
         Debug.Log($"Jump graph update finished");
-        _isReady = true;
+        IsReady = true;
     }
     
 
-    private IEnumerator AddNewStandingPointAndJumpLinks(Vector2 searchPoint, IList<StandingPoint> possibleLinkedPoints, DestructibleTerrainManager terrain)
+    private IEnumerator AddNewStandingPointAndJumpLinks(Vector2 searchPoint, IList<StandingPoint> possibleLinkedPoints, TerrainManager terrain)
     {
         if (terrain.TryFindNearestStandingPoint(searchPoint, _pixelResolution / 2, _points.Count, out var newStandingPoint))
         {
@@ -295,7 +292,7 @@ public class JumpGraph : UnityDriven
         }
     }
 
-    private void UpdateCornerPoints(IList<StandingPoint> points, DestructibleTerrainManager terrain)
+    private void UpdateCornerPoints(IList<StandingPoint> points, TerrainManager terrain)
     {
         for (int i = 0; i < points.Count; i++)
         {
@@ -450,7 +447,7 @@ public class JumpGraph : UnityDriven
 
     #region Correction
 
-    public Vector2 CorrectJumpVector(Vector2 start, JumpLink jumpLink, DestructibleTerrainManager terrain)
+    public Vector2 CorrectJumpVector(Vector2 start, JumpLink jumpLink, TerrainManager terrain)
     {
         var end = SimulateJumpAndCalculateDestination(start, jumpLink.JumpVector, terrain);
         var endPointPos = _points[jumpLink.ToId].WorldPos;

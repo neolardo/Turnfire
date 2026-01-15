@@ -45,9 +45,9 @@ public class ExplosionBehavior : UnityDriven
                 character.Push(pushVector * explosionStrength);
                 _explodedCharacters.Add(character);
             }
-            else if (hit.TryGetComponent(out DestructibleTerrainReference terrainReference))
+            else if (hit.TryGetComponent(out TerrainExplosionReceiver explosionReceiver))
             {
-                terrainReference.ApplyExplosion(contactPoint, explosionRadius); //TODO: sync?
+                explosionReceiver.ApplyExplosion(contactPoint, explosionRadius);
             }
         }
 
