@@ -41,6 +41,8 @@ public abstract class OnlinePool<T> : PoolBase<T> where T : Component
         base.Release(item);
     }
 
+    protected override void ReparentItemOnRelease(T item) { }
+
     protected override void CreateInitialItems()
     {
         if (!NetworkManager.Singleton.IsServer)

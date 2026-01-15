@@ -11,6 +11,8 @@ public class OnlineTimer : NetworkBehaviour, ITimer
 
     private NetworkVariable<bool> _isRunning =  new();
 
+    private NetworkVariable<bool> _isFinished = new();
+
     private NetworkVariable<bool> _isInitialized = new();
 
     public float CurrentTime { get; private set; }
@@ -41,7 +43,23 @@ public class OnlineTimer : NetworkBehaviour, ITimer
         {
             Debug.LogError($"Invalid timer type: {_timerType}");
         }
+        _isFinished.OnValueChanged += OnIsFinishedChanged;
     }
+
+    public override void OnNetworkDespawn()
+    {
+        _isFinished.OnValueChanged -= OnIsFinishedChanged;
+        base.OnNetworkDespawn();
+    }
+
+    private void OnIsFinishedChanged(bool previous, bool current)
+    {
+        if (current)
+        {
+            TimerEnded?.Invoke();
+        }
+    }
+
     public void Initialize(float initialTime)
     {
         if(!NetworkManager.Singleton.IsServer)
@@ -71,15 +89,8 @@ public class OnlineTimer : NetworkBehaviour, ITimer
     private void OnTimerEnded()
     {
         _isRunning.Value = false;
+        _isFinished.Value = true;
         CurrentTime = 0f;
-        NotifyTimerEndedClientRpc();
-    }
-
-
-    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
-    private void NotifyTimerEndedClientRpc()
-    {
-        TimerEnded?.Invoke();
     }
 
     public virtual void Restart()
@@ -89,6 +100,7 @@ public class OnlineTimer : NetworkBehaviour, ITimer
 
         _endServerTime.Value = NetworkManager.Singleton.ServerTime.Time + _initialTime;
         _isRunning.Value = true;
+        _isFinished.Value = false;
     }
 
     public virtual void Pause()

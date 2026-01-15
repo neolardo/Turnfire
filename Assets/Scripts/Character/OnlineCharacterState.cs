@@ -24,7 +24,7 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
     private NetworkVariable<float> _jumpBoost = new NetworkVariable<float>();
     public float JumpBoost => _jumpBoost.Value;
 
-    private NetworkVariable<bool> _isGrounded = new NetworkVariable<bool>();
+    private NetworkVariable<bool> _isGrounded = new NetworkVariable<bool>(true);
     public bool IsGrounded => _isGrounded.Value;
     public float JumpStrength => CharacterDefinition.JumpStrength + JumpBoost;
     public Team Team { get; private set; }

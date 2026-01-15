@@ -5,20 +5,23 @@ public abstract class TimerUI : MonoBehaviour
 {
     [SerializeField] protected TextMeshProUGUI _timerText;
     [SerializeField] private TimerFormat _format;
-    private string _endText;
+    [SerializeField] private string _endText;
     protected ITimer _timer;
 
-    protected void Initialize(ITimer timer, string endText = null)
+    protected void Initialize(ITimer timer)
     {
         _timer = timer;
         _timer.TimerEnded += OnTimerEnded;
-        _endText = endText;
-        UpdateDisplay();
+        bool hasStartText = !string.IsNullOrWhiteSpace(_timerText.text);
+        if (!hasStartText)
+        {
+            UpdateDisplay();
+        }
     }
 
     protected virtual void OnTimerEnded()
     {
-        if (!string.IsNullOrEmpty(_endText))
+        if (!string.IsNullOrWhiteSpace(_endText))
         {
             _timerText.text = _endText;
         }
@@ -41,7 +44,6 @@ public abstract class TimerUI : MonoBehaviour
     protected virtual void UpdateDisplay()
     {
         var currentTime = _timer.CurrentTime;
-
         switch (_format)
         {
             case TimerFormat.MinutesAndSeconds:

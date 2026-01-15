@@ -32,12 +32,6 @@ public class OnlineProjectile : NetworkBehaviour, IProjectile
         _awakeCalled = true;
     }
 
-    public override void OnNetworkSpawn()
-    {
-        base.OnNetworkSpawn();
-        Debug.Log("projectile spawned");
-    }
-
     public void Initialize(ProjectileDefinition definition, IProjectileBehavior behavior) 
     {
         if(!IsServer)
@@ -65,7 +59,6 @@ public class OnlineProjectile : NetworkBehaviour, IProjectile
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
     private void InitializeClientRpc(int projectileDefinitionId)
     {
-        Debug.Log("Projectle initialized");
         _definition = GameServices.ProjectileDatabase.GetById(projectileDefinitionId);
         _view.Initialize(_definition);
         _physics.Initialize(_definition);

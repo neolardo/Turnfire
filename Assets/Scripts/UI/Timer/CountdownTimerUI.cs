@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -24,10 +23,9 @@ public class CountdownTimerUI : TimerUI
 
     private void OnGameServicesInitialized()
     {
-        var endText = _timerText.text;
         var timer = GameServices.CountdownTimer;
         timer.Initialize(_timerSettings.CountdownSecondsBeforeStart);
-        Initialize(timer, endText);
+        Initialize(timer);
     }
 
     protected override void OnTimerEnded()

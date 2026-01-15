@@ -352,6 +352,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _timerText: {fileID: 6141869796941827101}
   _format: 0
+  _endText: GO!
   _timerSettings: {fileID: 11400000, guid: f6a671206be112945a4d9684f7c3a42b, type: 2}
 --- !u!1 &1171825174152452875
 GameObject:
@@ -1762,6 +1763,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _timerText: {fileID: 3134617469453077719}
   _format: 1
+  _endText: 
   _timerSettings: {fileID: 11400000, guid: f6a671206be112945a4d9684f7c3a42b, type: 2}
   _firstThresholdColor: {r: 0.90943396, g: 0.8123872, b: 0.30714837, a: 1}
   _secondThresholdColor: {r: 0.9169811, g: 0.24670503, b: 0.17820571, a: 1}
@@ -1813,7 +1815,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 14.4
+  m_fontSize: 15.1
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3065,7 +3067,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: GO!
+  m_text: READY
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 46eb2842ae8159c47bb14d72dde3053f, type: 2}
   m_sharedMaterial: {fileID: -7887210880050651462, guid: 46eb2842ae8159c47bb14d72dde3053f, type: 2}

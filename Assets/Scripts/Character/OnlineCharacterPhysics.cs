@@ -3,7 +3,7 @@ using Unity.Netcode.Components;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
-[RequireComponent(typeof(NetworkRigidbody2D), typeof(NetworkTransform))]
+[RequireComponent(typeof(NetworkRigidbody2D))]
 public class OnlineCharacterPhysics : NetworkBehaviour, ICharacterPhysics
 {
     private Rigidbody2D _rb;

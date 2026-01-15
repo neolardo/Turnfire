@@ -73,10 +73,14 @@ public abstract class PoolBase<T> : MonoBehaviour, IPool<T> where T : Component
         }
 
         item.gameObject.SetActive(false);
-        item.transform.SetParent(_container, false);
-
+        ReparentItemOnRelease(item);
         _inUse.Remove(item);
         _available.Add(item);
+    }
+
+    protected virtual void ReparentItemOnRelease(T item)
+    {
+        item.transform.SetParent(_container, false);
     }
 
     public void ReleaseAll()

@@ -132,7 +132,10 @@ public class BallisticProjectileBehavior : UnityDriven, IProjectileBehavior
 
     public virtual void ForceExplode()
     {
-        Explode(new HitboxContactContext(_currentPhysics.Position, null));
+        if(_currentPhysics != null &&! _exploded)
+        {
+            Explode(new HitboxContactContext(_currentPhysics.Position, null));
+        }
     }
 
     #region Simulation

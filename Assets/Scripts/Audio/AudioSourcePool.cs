@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Audio;
 
-public class AudioSourcePool : OfflinePool<AudioSource>
+public class AudioSourcePool : PoolBase<AudioSource>
 {
     [SerializeField] private AudioMixerGroup _mixerOutputGroup;
 
@@ -33,8 +33,12 @@ public class AudioSourcePool : OfflinePool<AudioSource>
 
     private IEnumerator ReleaseWhenFinishedPlaying(AudioSource source)
     {
-        float seconds = source.clip.length / source.pitch;
-        yield return new WaitForSeconds(seconds);
+        if(source == null)
+        {
+            yield break;
+        }
+        yield return new WaitWhile(() => source != null && source.isPlaying);
+
         Release(source);
     }
 }

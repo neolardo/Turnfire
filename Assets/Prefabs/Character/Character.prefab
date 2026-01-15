@@ -744,7 +744,7 @@ MonoBehaviour:
   UseHalfFloatPrecision: 0
   InLocalSpace: 0
   SwitchTransformSpaceWhenParented: 0
-  Interpolate: 1
+  Interpolate: 0
   SlerpPosition: 0
 --- !u!114 &5027158762520594445
 MonoBehaviour:
@@ -1319,7 +1319,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animatorDefinition: {fileID: 11400000, guid: 9d3a0c1d6e7ff34429ffd442b6201ed2, type: 2}
-  _characterGroundChecker: {fileID: 6213834316390048588}
   _flashAnimator: {fileID: 2371227647630520207}
   _bodySpriteRenderer: {fileID: 3222016364738343407}
   _headSpriteRenderer: {fileID: 2122598735751766839}

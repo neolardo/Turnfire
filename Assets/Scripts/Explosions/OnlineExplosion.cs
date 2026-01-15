@@ -19,17 +19,12 @@ public class OnlineExplosion : NetworkBehaviour, IExplosion
     private bool _awakeCalled;
     public bool IsReady => _awakeCalled && IsSpawned;
 
+
     private void Awake()
     {
         var animator = GetComponent<OneShotAnimator>();
         _view = new ExplosionView(animator, _animatorDefinition);
         _awakeCalled = true;
-    }
-
-    public override void OnNetworkSpawn()
-    {
-        base.OnNetworkSpawn();
-        Debug.Log("explosion spawned");
     }
 
     public void Initialize(ExplosionDefinition explosionDefinition)

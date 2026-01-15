@@ -32,7 +32,6 @@ public class BulletProjectileBehavior : BallisticProjectileBehavior
             yield break;
         }
         var dist = hit.distance;
-        var lastPoint = physics.Position;
         var lastDist = float.PositiveInfinity;
         while (lastDist >= dist && !_exploded)
         {

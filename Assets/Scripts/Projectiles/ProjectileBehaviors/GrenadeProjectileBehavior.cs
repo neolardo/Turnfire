@@ -20,7 +20,7 @@ public class GrenadeProjectileBehavior : BallisticProjectileBehavior
         InitializePhysics(context.Physics);
         PlaceProjectile(context);
         context.Physics.AddImpulse(context.AimVector);
-        StartCoroutine(ExplodeAfterDelay(_definition.ExplosionDelaySeconds, context.Physics));
+        StartCoroutine(ExplodeAfterDelay(_definition.ExplosionDelaySeconds));
     }
 
     protected override void InitializePhysics(ProjectilePhysics physics)
@@ -41,10 +41,13 @@ public class GrenadeProjectileBehavior : BallisticProjectileBehavior
         }
     }
 
-    private IEnumerator ExplodeAfterDelay(float delay, ProjectilePhysics physics)
+    private IEnumerator ExplodeAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        Explode(new HitboxContactContext(physics.Position, null));
+        if (_currentPhysics != null && !_exploded)
+        {
+            Explode(new HitboxContactContext(_currentPhysics.Position, null));
+        }
     }
 
     public override void OnContact(HitboxContactContext context)
