@@ -5,7 +5,7 @@ using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
-public class OnlineLaser : IsActiveSyncedNetworkBehavior, ILaser
+public class OnlineLaser : NetworkBehaviour, ILaser
 {
     private LaserPhysics _physics;
     private LaserView _view;
@@ -26,11 +26,6 @@ public class OnlineLaser : IsActiveSyncedNetworkBehavior, ILaser
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-        if(IsServer)
-        {
-            var container = FindFirstObjectByType<LaserContainer>();
-            transform.parent = container.transform;
-        }
         IsReady = true;
     }
 

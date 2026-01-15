@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Netcode;
 
 public class OnlineLaserPool : OnlinePool<OnlineLaser>, IPool<ILaser>
 {
@@ -11,6 +12,17 @@ public class OnlineLaserPool : OnlinePool<OnlineLaser>, IPool<ILaser>
         var laser = base.CreateInstance();
         laser.BeamEnded += OnLaserBeamEnded;
         return laser;   
+    }
+
+    protected override void CreateInitialItems()
+    {
+        if (!NetworkManager.Singleton.IsServer)
+        {
+            return;
+        }
+        var container = FindFirstObjectByType<LaserContainer>();
+        _container = container.transform;
+        base.CreateInitialItems();
     }
 
     ILaser IPool<ILaser>.Get()

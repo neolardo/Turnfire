@@ -34,23 +34,30 @@ public class GameplayStartManager : MonoBehaviour
 
         yield return new WaitUntil(() => GameServices.IsInitialized);
         Debug.Log("Game services initialized");
-        readyGate.MarkReady();
-        yield return new WaitUntil(() => readyGate.AllClientsReady);
-        readyGate.AcknowledgeReady();
+        yield return WaitUntilEveryClientIsReady(readyGate);
 
         _teamComposerBootstrap.InitializeTeams();
         yield return new WaitUntil(() => _teamComposerBootstrap.AllTeamsInitialized);
         Debug.Log("All teams initialized");
-        readyGate.MarkReady();
-        yield return new WaitUntil(() => readyGate.AllClientsReady);
-        readyGate.AcknowledgeReady();
+        yield return WaitUntilEveryClientIsReady(readyGate);
+
+        _teamComposerBootstrap.CreateAndSelectInitialItems();
+        Debug.Log("All initial items created and selected");
+        yield return WaitUntilEveryClientIsReady(readyGate);
 
         GameServices.TurnStateManager.Initialize(_teamComposerBootstrap.GetTeams());
         Debug.Log("Turn state manager initialized");
+        yield return WaitUntilEveryClientIsReady(readyGate);
+
+
+        GameServices.GameStateManager.StartGame();
+    }
+
+    private IEnumerator WaitUntilEveryClientIsReady(NetworkReadyGate readyGate)
+    {
         readyGate.MarkReady();
         yield return new WaitUntil(() => readyGate.AllClientsReady);
         readyGate.AcknowledgeReady();
-
-        GameServices.GameStateManager.StartGame();
+        yield return new WaitUntil(() => readyGate.AllClientsAcknowledgedReady);
     }
 }

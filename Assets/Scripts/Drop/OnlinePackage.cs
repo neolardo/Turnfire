@@ -5,7 +5,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(NetworkTransform), typeof(NetworkRigidbody2D))]
-public class OnlinePackage : IsActiveSyncedNetworkBehavior, IPackage
+public class OnlinePackage : NetworkBehaviour, IPackage
 {
     [SerializeField] private SFXDefiniton spawnSFX;
     [SerializeField] private SFXDefiniton collectSFX;
@@ -28,9 +28,8 @@ public class OnlinePackage : IsActiveSyncedNetworkBehavior, IPackage
     }
 
 
-    protected override void OnEnable()
+    private void OnEnable()
     {
-        base.OnEnable();
         if (_destroyed)
         {
             return;
@@ -72,7 +71,10 @@ public class OnlinePackage : IsActiveSyncedNetworkBehavior, IPackage
         AudioManager.Instance.PlaySFXAt(collectSFX, transform.position);
         _destroyed = true;
         Destroyed?.Invoke(this);
-        gameObject.SetActive(false);
+        if(IsServer)
+        {
+            gameObject.SetActive(false);
+        }
         base.OnNetworkDespawn();
     }
 

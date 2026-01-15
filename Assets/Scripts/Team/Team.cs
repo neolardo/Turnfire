@@ -11,7 +11,7 @@ public class Team : MonoBehaviour, IConditionalEnumerable
 {
     [SerializeField] private Color _teamColor;
 
-    private List<Character> _characters;
+    [SerializeField] private List<Character> _characters;
     public string TeamName { get; private set; }
     public int TeamId { get; private set; }
     public bool IsTeamAlive => _characters.Any(c => c.IsAlive);
@@ -30,15 +30,11 @@ public class Team : MonoBehaviour, IConditionalEnumerable
         InputSource = inputSource;
         TeamId = teamId;
         TeamName = teamName;
-        _characters = new List<Character>();
-        for (int i = 0; i < transform.childCount; i++)
+        foreach(var character in _characters)  
         {
-            var child = transform.GetChild(i);
-            var character = child.GetComponent<Character>();
             character.Died += OnAnyTeamCharacterDied;
             character.HealthChanged += (_, _) => OnAnyTeamCharacterHealthChanged();
             CharacterComposer.Compose(character, this);
-            _characters.Add(character);
         }
         if (_characters.Count == 0)
         {

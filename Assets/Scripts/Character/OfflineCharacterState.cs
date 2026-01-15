@@ -43,12 +43,20 @@ public class OfflineCharacterState : MonoBehaviour, ICharacterState
     public event Action<Vector2> Jumped;
     public event Action<Vector2> Pushed;
     public event Action<bool> IsGroundedChanged;
+    public event Action PreparedToJump;
+    public event Action<Vector2> JumpAimChanged;
+    public event Action JumpCancelled;
+
+    public event Action<ItemInstance> AimStarted;
+    public event Action<Vector2> AimChanged;
+    public event Action AimCancelled;
 
     public event Action<ItemInstance, ItemUsageContext> ItemUsed;
     public event Action<ItemInstance> ItemSelected;
 
     public event Action<ArmorDefinition> ArmorEquipped;
     public event Action<ArmorDefinition> ArmorUnequipped;
+
 
     public void Initialize(Character character, CharacterDefinition characterDefinition, Team team)
     {
@@ -60,11 +68,6 @@ public class OfflineCharacterState : MonoBehaviour, ICharacterState
         _armorManager.ArmorUnequipped += InvokeArmorUnequipped;
         _health = _definition.MaxHealth;
         GetComponent<GroundChecker>().IsGroundedChanged += OnIsGroundedChanged;
-        foreach (var itemDef in _definition.InitialItems)
-        {
-            var instance = ItemInstance.CreateAsInitialItem(itemDef);
-            _inventory.AddItem(instance);
-        }
     }
 
     #region Health
@@ -134,7 +137,6 @@ public class OfflineCharacterState : MonoBehaviour, ICharacterState
 
     public void RequestJump(Vector2 jumpVector)
     {
-        Debug.Log("jumped");
         Jumped?.Invoke(jumpVector);
     }
     public void RequestPush(Vector2 pushVector)
@@ -150,10 +152,44 @@ public class OfflineCharacterState : MonoBehaviour, ICharacterState
         JumpBoost = 0;
     }
 
+    public void RequestPrepareToJump()
+    {
+        PreparedToJump?.Invoke();
+    }
+
+    public void RequestChangeJumpAim(Vector2 jumpVector)
+    {
+        JumpAimChanged?.Invoke(jumpVector);
+    }
+
+    public void RequestCancelJump()
+    {
+        JumpCancelled?.Invoke();
+    }
+
     private void OnIsGroundedChanged(bool isGrounded)
     {
         IsGrounded = isGrounded;
         IsGroundedChanged?.Invoke(isGrounded);
+    }
+
+    #endregion
+
+    #region Aim
+
+    public void RequestStartAim()
+    {
+        AimStarted?.Invoke(SelectedItem);
+    }
+
+    public void RequestChangeAim(Vector2 jumpVector)
+    {
+        AimChanged?.Invoke(jumpVector);
+    }
+
+    public void RequestCancelAiming()
+    {
+        AimCancelled?.Invoke();
     }
 
     #endregion
@@ -187,6 +223,15 @@ public class OfflineCharacterState : MonoBehaviour, ICharacterState
     {
         return _inventory.GetItemByInstanceId(instanceId);
     }
+    public void RequestCreateInitialItems()
+    {
+        foreach (var itemDef in _definition.InitialItems)
+        {
+            var instance = ItemInstance.CreateAsInitialItem(itemDef);
+            _inventory.AddItem(instance);
+        }
+    }
+
 
     #endregion
 

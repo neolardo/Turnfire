@@ -61,17 +61,17 @@ public class CharacterView
 
     #region Aim
 
-    public void StartAiming(ItemInstance item)
+    public void OnAimStarted(ItemInstance item)
     {
         _animator.StartAiming(item);
     }
 
-    public void ChangeAim(Vector2 aimVector)
+    public void OnAimChanged(Vector2 aimVector)
     {
         _animator.ChangeAim(aimVector);
     }
 
-    public void CancelAiming()
+    public void OnAimCancelled()
     {
         _animator.CancelAiming();
     }
@@ -82,27 +82,28 @@ public class CharacterView
 
     public void OnJumpStarted(Vector2 jumpVector)
     {
-        Debug.Log($"Jump animation started, jump vector was: {jumpVector}");
         _animator.OnJumpStarted(jumpVector);
     }
 
-    public void PrepareToJump()
+    public void OnPreparedToJump()
     {
         _animator.PlayPrepareToJumpAnimation();
     }
 
-    public void ChangeJumpAim(Vector2 aimDirection)
+    public void OnJumpAimChanged(Vector2 aimDirection)
     {
         _animator.ChangeJumpAim(aimDirection);
     }
 
-    public void CancelJump()
+    public void OnJumpCancelled()
     {
         _animator.PlayCancelJumpAnimation();
     }
 
     public void OnIsGroundedChanged(bool isGrounded)
     {
+        Debug.Log($"is grounded changed to {isGrounded}");
+
         _animator.OnIsGroundedChanged(isGrounded);
     }
 

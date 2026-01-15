@@ -6,7 +6,7 @@ public abstract class PoolBase<T> : MonoBehaviour, IPool<T> where T : Component
 {
     [SerializeField] protected T _prefab;
     [SerializeField][Range(1, 100)] protected int _initialSize = 10;
-    [SerializeField] private Transform _container;
+    [SerializeField] protected Transform _container;
 
     private List<T> _available;
     private List<T> _inUse;
@@ -65,7 +65,7 @@ public abstract class PoolBase<T> : MonoBehaviour, IPool<T> where T : Component
         return item;
     }
 
-    public void Release(T item)
+    public virtual void Release(T item)
     {
         if (!_inUse.Contains(item))
         {

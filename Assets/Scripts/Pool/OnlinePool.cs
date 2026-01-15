@@ -11,13 +11,34 @@ public abstract class OnlinePool<T> : PoolBase<T> where T : Component
             return null;
         }
 
-        var instance = base.CreateInstance();
-        var networkObj = instance.GetComponent<NetworkObject>();
-        if(!networkObj.IsSpawned)
-        { 
-            networkObj.Spawn();
+        return base.CreateInstance();
+    }
+
+    public override T Get()
+    {
+        var item = base.Get();
+        if (NetworkManager.Singleton.IsServer)
+        {
+            var networkObj = item.GetComponent<NetworkObject>();
+            if (!networkObj.IsSpawned)
+            {
+                networkObj.Spawn();
+            }
         }
-        return instance;
+        return item;
+    }
+
+    public override void Release(T item)
+    {
+        if (NetworkManager.Singleton.IsServer)
+        {
+            var networkObj = item.GetComponent<NetworkObject>();
+            if (networkObj.IsSpawned)
+            {
+                networkObj.Despawn();
+            }
+        }
+        base.Release(item);
     }
 
     protected override void CreateInitialItems()

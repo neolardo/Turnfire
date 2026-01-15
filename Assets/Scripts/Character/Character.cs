@@ -45,7 +45,6 @@ public class Character : MonoBehaviour, IConditionalEnumerable
         _view = new CharacterView(_animator, _definition, _healthbarRenderer, team);
         _logic = new CharacterLogic(this, _state, _definition);
         SubscribeToStateChangedEvents();
-        //_logic.SelectInitialItem(); //TODO
         IsInitialized = true;
     }
 
@@ -68,8 +67,15 @@ public class Character : MonoBehaviour, IConditionalEnumerable
         _state.Jumped += _physics.Jump;
         _state.Jumped += _view.OnJumpStarted;
         _state.Jumped += InvokeJumped;
+        _state.PreparedToJump += _view.OnPreparedToJump;
+        _state.JumpAimChanged += _view.OnJumpAimChanged;
+        _state.JumpCancelled += _view.OnJumpCancelled;
         _state.Pushed += _physics.Push;
         _state.IsGroundedChanged += _view.OnIsGroundedChanged;
+
+        _state.AimStarted += _view.OnAimStarted;
+        _state.AimChanged += _view.OnAimChanged;
+        _state.AimCancelled += _view.OnAimCancelled;
 
         _state.ItemUsed += _view.OnItemUsed;
         _state.ItemUsed += InvokeSelectedItemUsed;
@@ -97,8 +103,15 @@ public class Character : MonoBehaviour, IConditionalEnumerable
         _state.Jumped -= _physics.Jump;
         _state.Jumped -= _view.OnJumpStarted;
         _state.Jumped -= InvokeJumped;
+        _state.PreparedToJump -= _view.OnPreparedToJump;
+        _state.JumpAimChanged -= _view.OnJumpAimChanged;
+        _state.JumpCancelled -= _view.OnJumpCancelled;
         _state.Pushed -= _physics.Push; 
         _state.IsGroundedChanged -= _view.OnIsGroundedChanged;
+
+        _state.AimStarted -= _view.OnAimStarted;
+        _state.AimChanged -= _view.OnAimChanged;
+        _state.AimCancelled -= _view.OnAimCancelled;
 
         _state.ItemUsed -= _view.OnItemUsed;
         _state.ItemUsed -= InvokeSelectedItemUsed;
@@ -131,17 +144,17 @@ public class Character : MonoBehaviour, IConditionalEnumerable
 
     public void StartAiming()
     {
-        _view.StartAiming(SelectedItem);
+        _state.RequestStartAim();
     }
 
     public void ChangeAim(Vector2 aimVector)
     {
-        _view.ChangeAim(aimVector);
+        _state.RequestChangeAim(aimVector);
     }
 
     public void CancelAiming()
     {
-        _view.CancelAiming();
+        _state.RequestCancelAiming();
     }
 
     #endregion
@@ -185,23 +198,28 @@ public class Character : MonoBehaviour, IConditionalEnumerable
 
     public void PrepareToJump()
     {
-        _view.PrepareToJump();
+        _state.RequestPrepareToJump();
     }
 
     public void ChangeJumpAim(Vector2 aimDirection)
     {
-        _view.ChangeJumpAim(aimDirection);
+        _state.RequestChangeJumpAim(aimDirection);
     }
 
     public void CancelJump()
     {
-        _view.CancelJump();
+        _state.RequestCancelJump();
     }
-
 
     #endregion
 
     #region Items
+
+    public void CreateAndSelectInitialItems()
+    {
+        _state.RequestCreateInitialItems();
+        _logic.SelectInitialItem();
+    }
 
     public bool TryAddItem(ItemInstance item)
     {

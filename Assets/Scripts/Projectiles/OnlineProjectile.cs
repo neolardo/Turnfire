@@ -7,7 +7,7 @@ using UnityEngine;
 [RequireComponent(typeof(CircleCollider2D))]
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(NetworkTransform), typeof(NetworkRigidbody2D))]
-public class OnlineProjectile : IsActiveSyncedNetworkBehavior, IProjectile
+public class OnlineProjectile : NetworkBehaviour, IProjectile
 {
     private ProjectileDefinition _definition;
     private ProjectilePhysics _physics;
@@ -15,7 +15,9 @@ public class OnlineProjectile : IsActiveSyncedNetworkBehavior, IProjectile
     private IProjectileBehavior _behavior;
     private Rigidbody2D _rb;
 
-    public bool IsReady { get; private set; }
+    public bool IsReady => _awakeCalled && IsSpawned;
+
+    private bool _awakeCalled;
 
     public event Action<IProjectile> Exploded;
 
@@ -27,17 +29,13 @@ public class OnlineProjectile : IsActiveSyncedNetworkBehavior, IProjectile
         var cameraController = FindFirstObjectByType<CameraController>();
         _view = new ProjectileView(transform, spriteRenderer, cameraController);
         _physics = new ProjectilePhysics(_rb, col);
+        _awakeCalled = true;
     }
 
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-        if (IsServer)
-        {
-            var container = FindFirstObjectByType<ProjectileContainer>();
-            transform.parent = container.transform;
-        }
-        IsReady = true;
+        Debug.Log("projectile spawned");
     }
 
     public void Initialize(ProjectileDefinition definition, IProjectileBehavior behavior) 
@@ -53,10 +51,9 @@ public class OnlineProjectile : IsActiveSyncedNetworkBehavior, IProjectile
         _behavior.ContactedWithoutExplosion += OnContactedWithoutExplosion;
     }
 
-
-    protected override void OnDisable()
+    public override void OnNetworkDespawn()
     {
-        base.OnDisable();
+        base.OnNetworkDespawn();
         if (_behavior != null && IsServer)
         {
             _behavior.Exploded -= OnExploded;
@@ -68,6 +65,7 @@ public class OnlineProjectile : IsActiveSyncedNetworkBehavior, IProjectile
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
     private void InitializeClientRpc(int projectileDefinitionId)
     {
+        Debug.Log("Projectle initialized");
         _definition = GameServices.ProjectileDatabase.GetById(projectileDefinitionId);
         _view.Initialize(_definition);
         _physics.Initialize(_definition);
@@ -128,6 +126,7 @@ public class OnlineProjectile : IsActiveSyncedNetworkBehavior, IProjectile
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
     private void LaunchClientRpc()
     {
+        Debug.Log("Projectile launched");
         _view.Show();
     }
 
@@ -149,6 +148,7 @@ public class OnlineProjectile : IsActiveSyncedNetworkBehavior, IProjectile
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
     private void OnExplodedClientRpc()
     {
+        Debug.Log("Projectile exploded");
         _view.Hide();
     } 
 

@@ -24,7 +24,9 @@ public class ProjectileLauncherWeaponBehavior : WeaponBehavior
     {
         _isAttacking = true;
         var p = GameServices.ProjectilePool.Get();
+        Debug.Log($"Got a projecitle, waiting for it to be ready...current it's: {p.IsReady}");
         yield return new WaitUntil(() => p.IsReady);
+        Debug.Log("projectile is ready to launch!");
         p.Initialize(_definition.ProjectileDefinition, _projectileBehavior);
         p.Launch(context, _definition.FireStrength.CalculateValue());
     }
@@ -36,6 +38,7 @@ public class ProjectileLauncherWeaponBehavior : WeaponBehavior
 
     private IEnumerator WaitUntilExplosionFinished(ExplosionInfo ei)
     {
+        Debug.Log("projectile exploded, waiting for explosion to finish!");
         while (ei.ExplodedCharacters.Any(c => c.IsAlive && c.IsMoving) || ei.Explosion.IsExploding)
         {
             yield return null;

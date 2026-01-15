@@ -6,7 +6,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(OneShotAnimator))]
 [RequireComponent(typeof(NetworkTransform))]
-public class OnlineExplosion : IsActiveSyncedNetworkBehavior, IExplosion
+public class OnlineExplosion : NetworkBehaviour, IExplosion
 {
     [SerializeField] private ExplosionAnimatorDefinition _animatorDefinition;
     private ExplosionView _view;
@@ -16,19 +16,20 @@ public class OnlineExplosion : IsActiveSyncedNetworkBehavior, IExplosion
 
     public bool IsExploding => _behavior == null ? false : _behavior.IsExploding;
 
-    public bool IsReady { get; private set; }
+    private bool _awakeCalled;
+    public bool IsReady => _awakeCalled && IsSpawned;
+
+    private void Awake()
+    {
+        var animator = GetComponent<OneShotAnimator>();
+        _view = new ExplosionView(animator, _animatorDefinition);
+        _awakeCalled = true;
+    }
 
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-        var animator = GetComponent<OneShotAnimator>();
-        _view = new ExplosionView(animator, _animatorDefinition);
-        if(IsServer)
-        {
-            var container = FindFirstObjectByType<ExplosionContainer>();
-            transform.parent = container.transform;
-        }
-        IsReady = true;
+        Debug.Log("explosion spawned");
     }
 
     public void Initialize(ExplosionDefinition explosionDefinition)
@@ -45,15 +46,15 @@ public class OnlineExplosion : IsActiveSyncedNetworkBehavior, IExplosion
     }
 
 
-    protected override void OnDisable()
+    public override void OnNetworkDespawn()
     {
-        base.OnDisable();
+        base.OnNetworkDespawn();
         if (_behavior != null && IsServer)
         {
             _behavior.Exploded -= OnExplosionFinished;
             _behavior = null;
         }
-    }
+    } 
 
     [Rpc(SendTo.Everyone, InvokePermission =RpcInvokePermission.Server)]
     private void InitializeClientRpc(int explosionDefinitionId)

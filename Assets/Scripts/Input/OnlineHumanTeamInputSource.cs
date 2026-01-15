@@ -1,6 +1,7 @@
 using System;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SocialPlatforms;
 
 public class OnlineHumanTeamInputSource : NetworkBehaviour, ITeamInputSource
 {
@@ -56,6 +57,8 @@ public class OnlineHumanTeamInputSource : NetworkBehaviour, ITeamInputSource
         }
     }
 
+    public bool IsLocal { get; private set; }
+
     public event Action<Vector2> AimStarted;
     public event Action<Vector2> AimChanged;
     public event Action<Vector2> ImpulseReleased;
@@ -107,6 +110,10 @@ public class OnlineHumanTeamInputSource : NetworkBehaviour, ITeamInputSource
     public void RequestAction(CharacterActionStateType action)
     {
         // local input is provided automatically
+    }
+    public void InitializeIsLocal(bool isLocal)
+    {
+        IsLocal = isLocal;
     }
 
     #region Game States

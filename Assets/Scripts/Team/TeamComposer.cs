@@ -10,8 +10,10 @@ public static class TeamComposer
         bool isOnline = settings.IsOnlineGame;
         var botDifficulty = settings.BotDifficulty;
         ITeamInputSource inputSource;
+        bool isLocal = true;
         if(isOnline)
         {
+            isLocal = player.ClientId == NetworkManager.Singleton.LocalClientId;
             inputSource = player.Type == PlayerType.Human ? team.GetComponent<OnlineHumanTeamInputSource>() : team.GetComponent<OnlineBotTeamInputSource>();
             SpawnTeamNetworkObject(team);
         }
@@ -19,6 +21,7 @@ public static class TeamComposer
         {
             inputSource = player.Type == PlayerType.Human ? team.GetComponent<OfflineHumanTeamInputSource>() : team.GetComponent<OfflineBotTeamInputSource>();
         }
+        inputSource.InitializeIsLocal(isLocal);
         (inputSource as MonoBehaviour).enabled = true;
         if (player.Type == PlayerType.Bot)
         {

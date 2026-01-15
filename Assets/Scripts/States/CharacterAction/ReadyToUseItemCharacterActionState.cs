@@ -8,6 +8,7 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
     private PixelTrajectoryRenderer _trajectoryRenderer;
     private GameplayUIManager _uiManager;
     private ITeamInputSource _inputSource;
+    private bool IsCurrentTeamLocal => _inputSource == null ? false : _inputSource.IsLocal;
 
     public ReadyToUseItemCharacterActionState(ItemPreviewRendererManager rendererManager, PixelTrajectoryRenderer trajectoryRenderer, GameplayUIManager uiManager, UISoundsDefinition uiSounds) : base(CoroutineRunner.Instance, uiSounds)
     {
@@ -52,22 +53,41 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
 
     private void OnAimStarted(Vector2 initialPosition)
     {
-        _uiManager.ShowAimCircles(initialPosition);
+        if(IsCurrentTeamLocal)
+        {
+            _uiManager.ShowAimCircles(initialPosition);
+        }
         _currentCharacter.StartAiming();
     }
 
     private void OnAimChanged(Vector2 aimVector)
     {
-        _trajectoryRenderer.DrawTrajectory(aimVector);
-        _uiManager.UpdateAimCircles(aimVector);
+        if (IsCurrentTeamLocal) //TODO
+        {
+            _trajectoryRenderer.DrawTrajectory(aimVector);
+            _uiManager.UpdateAimCircles(aimVector);
+        }
         _currentCharacter.ChangeAim(aimVector);
     }
 
     private void OnAimCancelled()
     {
-        _trajectoryRenderer.HideTrajectory();
-        _uiManager.HideAimCircles();
+        if(IsCurrentTeamLocal)
+        {
+            _trajectoryRenderer.HideTrajectory();
+            _uiManager.HideAimCircles();
+        }
         _currentCharacter.CancelAiming();
+    }
+
+    private void OnImpulseReleased(Vector2 aimVector)
+    {
+        if (IsCurrentTeamLocal)
+        {
+            _trajectoryRenderer.HideTrajectory();
+            _uiManager.HideAimCircles();
+        }
+        _currentCharacter.UseSelectedItem(new ItemUsageContext(_currentCharacter.ItemTransform.position, aimVector, _currentCharacter));
     }
 
     public override void StartState(Character currentCharacter)
@@ -84,11 +104,16 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
         GameServices.GameplayTimer.Resume();
         _inputSource.IsOpeningInventoryEnabled = true;
         var selectedItem = _currentCharacter.SelectedItem;
-        OnSelectedItemChanged(selectedItem);
+        InitializePreviewAndAimingForItem(selectedItem);
         _inputSource.RequestAction(State);
     }
 
-    public void OnSelectedItemChanged(ItemInstance selectedItem)
+    private void OnSelectedItemChanged(ItemInstance selectedItem)
+    {
+        InitializePreviewAndAimingForItem(selectedItem);
+    }
+
+    private void InitializePreviewAndAimingForItem(ItemInstance selectedItem)
     {
         _inputSource.IsAimingEnabled = selectedItem != null;
         if (selectedItem == null)
@@ -108,10 +133,4 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
         base.EndState();
     }
 
-    private void OnImpulseReleased(Vector2 aimVector)
-    {
-        _trajectoryRenderer.HideTrajectory();
-        _uiManager.HideAimCircles();
-        _currentCharacter.UseSelectedItem(new ItemUsageContext(_currentCharacter.ItemTransform.position, aimVector, _currentCharacter));
-    }
 }

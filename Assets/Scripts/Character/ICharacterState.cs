@@ -23,6 +23,14 @@ public interface ICharacterState
     public event Action<Vector2> Pushed;
     public event Action<bool> IsGroundedChanged;
 
+    public event Action<ItemInstance> AimStarted;
+    public event Action<Vector2> AimChanged;
+    public event Action AimCancelled;
+
+    public event Action PreparedToJump;
+    public event Action<Vector2> JumpAimChanged;
+    public event Action JumpCancelled;
+
     public event Action<ItemInstance, ItemUsageContext> ItemUsed;
     public event Action<ItemInstance> ItemSelected;
 
@@ -36,9 +44,16 @@ public interface ICharacterState
     public bool TryEquipArmor(ArmorDefinition armorDefinition, ArmorBehavior armorBehavior);
     public bool CanEquipArmor(ArmorDefinition definition);
     public void RequestJump(Vector2 jumpVector);
+    public void RequestPrepareToJump();
+    public void RequestChangeJumpAim(Vector2 jumpVector);
+    public void RequestCancelJump();
     public void RequestPush(Vector2 pushVector);
     public void RequestApplyJumpBoost(float jumpBoost);
     public void RequestRemoveJumpBoost();
+    public void RequestStartAim();
+    public void RequestChangeAim(Vector2 jumpVector);
+    public void RequestCancelAiming();
+    public void RequestCreateInitialItems();
     public void RequestAddItem(ItemInstance item);
     public void RequestRemoveItem(ItemInstance item);
     public void RequestSelectItem(ItemInstance item);

@@ -40,6 +40,8 @@ public class OfflineHumanTeamInputSource : MonoBehaviour, ITeamInputSource
         }
     }
 
+    public bool IsLocal { get; private set; }
+
     public event Action<Vector2> AimStarted;
     public event Action<Vector2> AimChanged;
     public event Action<Vector2> ImpulseReleased;
@@ -84,6 +86,10 @@ public class OfflineHumanTeamInputSource : MonoBehaviour, ITeamInputSource
     public void RequestAction(CharacterActionStateType action)
     {
         // local input is provided automatically
+    }
+    public void InitializeIsLocal(bool isLocal)
+    {
+        IsLocal = isLocal;
     }
 
     #region Game States

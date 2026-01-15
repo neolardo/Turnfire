@@ -37,12 +37,20 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
     public event Action<Vector2> Jumped;
     public event Action<Vector2> Pushed;
     public event Action<bool> IsGroundedChanged;
+    public event Action PreparedToJump;
+    public event Action<Vector2> JumpAimChanged;
+    public event Action JumpCancelled;
+
+    public event Action<ItemInstance> AimStarted;
+    public event Action<Vector2> AimChanged;
+    public event Action AimCancelled;
 
     public event Action<ItemInstance, ItemUsageContext> ItemUsed;
     public event Action<ItemInstance> ItemSelected;
 
     public event Action<ArmorDefinition> ArmorEquipped;
     public event Action<ArmorDefinition> ArmorUnequipped;
+
 
     public void Initialize(Character character, CharacterDefinition characterDefinition, Team team)
     {
@@ -60,13 +68,6 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
         GetComponent<GroundChecker>().IsGroundedChanged += OnGroundCheckerIsGroundedChanged;
         _health.Value = _definition.MaxHealth;
         _armorManager.ArmorUnequipped += InvokeArmorUnequipped;
-        foreach (var itemDef in _definition.InitialItems)
-        {
-            var instance = ItemInstance.CreateAsInitialItem(itemDef);
-            //instance.Destroyed += OnItemDestroyed; //TODO: check if needed
-            instance.QuantityChanged += OnItemQuantityChanged;
-            _inventory.AddItem(instance);
-        }
     }
 
 
@@ -208,7 +209,51 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
     private void InvokeJumpedClientRpc(Vector2 jumpVector)
     {
         Jumped?.Invoke(jumpVector);
-        Debug.Log($"jumped");
+    }
+
+    public void RequestPrepareToJump()
+    {
+        if (!IsServer)
+        {
+            return;
+        }
+        InvokePreparedToJumpClientRpc();
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
+    private void InvokePreparedToJumpClientRpc()
+    {
+        PreparedToJump?.Invoke();
+    }
+
+    public void RequestChangeJumpAim(Vector2 jumpVector)
+    {
+        if (!IsServer)
+        {
+            return;
+        }
+        InvokeJumpAimChangedClientRpc(jumpVector);
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
+    private void InvokeJumpAimChangedClientRpc(Vector2 jumpVector)
+    {
+        JumpAimChanged?.Invoke(jumpVector);
+    }
+
+    public void RequestCancelJump()
+    {
+        if (!IsServer)
+        {
+            return;
+        }
+        InvokeJumpCancelledClientRpc();
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
+    private void InvokeJumpCancelledClientRpc()
+    {
+        JumpCancelled?.Invoke();
     }
 
     public void RequestPush(Vector2 pushVector)
@@ -257,6 +302,53 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
         IsGroundedChanged?.Invoke(newValue);
     }
 
+
+    #endregion
+
+    #region Aim
+
+    public void RequestStartAim()
+    {
+        if (!IsServer)
+        {
+            return;
+        }
+        InvokeAimStartedClientRpc(SelectedItem.InstanceId);
+    }
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
+    private void InvokeAimStartedClientRpc(int selectedItemInstanceId)
+    {
+        var selectedItem = _inventory.GetItemByInstanceId(selectedItemInstanceId);
+        AimStarted?.Invoke(selectedItem);
+    }
+
+    public void RequestChangeAim(Vector2 jumpVector)
+    {
+        if (!IsServer)
+        {
+            return;
+        }
+        InvokeAimChangedClientRpc(jumpVector);
+    }
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
+    private void InvokeAimChangedClientRpc(Vector2 jumpVector)
+    {
+        AimChanged?.Invoke(jumpVector);
+    }
+
+    public void RequestCancelAiming()
+    {
+        if (!IsServer)
+        {
+            return;
+        }
+        InvokeAimCancelledClientRpc();
+    }
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
+    private void InvokeAimCancelledClientRpc()
+    {
+        AimCancelled?.Invoke();
+    }
 
     #endregion
 
@@ -338,13 +430,16 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
     private IEnumerator MirrorIsUsingSelectedItemStateUntilUsageFinished()
     {
         _isUsingSelectedItem.Value = true;
+        Debug.Log("Item usage started");
         yield return new WaitWhile(() => SelectedItem.Behavior.IsInUse);
+        Debug.Log("Item usage ended");
         _isUsingSelectedItem.Value = false;
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
     private void InvokeSelectedItemUsedClientRpc(NetworkItemUsageContextData networkContext)
     {
+        Debug.Log("Item used");
         ItemUsed?.Invoke(SelectedItem, networkContext.ToItemUsageContext(_character));
     }
     public IEnumerable<ItemInstance> GetAllItems()
@@ -355,6 +450,18 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
     public ItemInstance GetItemByInstanceId(int instanceId)
     {
         return _inventory.GetItemByInstanceId(instanceId);
+    }
+    public void RequestCreateInitialItems()
+    {
+        if (!IsServer)
+        {
+            return;
+        }
+        foreach (var itemDef in _definition.InitialItems)
+        {
+            var instance = ItemInstance.CreateAsInitialItem(itemDef);
+            RequestAddItem(instance);
+        }
     }
 
     #endregion

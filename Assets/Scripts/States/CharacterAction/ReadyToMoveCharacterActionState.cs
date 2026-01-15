@@ -6,6 +6,7 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
     private PixelTrajectoryRenderer _trajectoryRenderer;
     private GameplayUIManager _uiManager;
     private ITeamInputSource _inputSource;
+    private bool IsCurrentTeamLocal => _inputSource == null ? false : _inputSource.IsLocal;
 
     public ReadyToMoveCharacterActionState(PixelTrajectoryRenderer trajectoryRenderer, GameplayUIManager uiManager, UISoundsDefinition uiSounds) : base(CoroutineRunner.Instance, uiSounds)
     {
@@ -38,36 +39,51 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
         base.StartState(currentCharacter);
         GameServices.GameplayTimer.Resume();
         _inputSource.IsAimingEnabled = true;
-        _trajectoryRenderer.SetOrigin(currentCharacter.transform, currentCharacter.FeetOffset);
-        _trajectoryRenderer.ToggleGravity(true);
-        _trajectoryRenderer.SetTrajectoryMultipler(currentCharacter.JumpStrength);
+        if (IsCurrentTeamLocal)
+        {
+            _trajectoryRenderer.SetOrigin(currentCharacter.transform, currentCharacter.FeetOffset);
+            _trajectoryRenderer.ToggleGravity(true);
+            _trajectoryRenderer.SetTrajectoryMultipler(currentCharacter.JumpStrength);
+        }
         _inputSource.RequestAction(State);
     }
 
     private void OnAimStarted(Vector2 initialPosition)
     {
-        _uiManager.ShowAimCircles(initialPosition);
+        if(IsCurrentTeamLocal)
+        {
+            _uiManager.ShowAimCircles(initialPosition);
+        }
         _currentCharacter.PrepareToJump();
     }
 
     private void OnAimChanged(Vector2 aimVector)
     {
-        _trajectoryRenderer.DrawTrajectory(aimVector);
-        _uiManager.UpdateAimCircles(aimVector);
+        if (IsCurrentTeamLocal)
+        {
+            _trajectoryRenderer.DrawTrajectory(aimVector);
+            _uiManager.UpdateAimCircles(aimVector);
+        }
         _currentCharacter.ChangeJumpAim(aimVector);
     }
 
     private void OnAimCancelled()
     {
-        _trajectoryRenderer.HideTrajectory();
-        _uiManager.HideAimCircles();
+        if (IsCurrentTeamLocal)
+        {
+            _trajectoryRenderer.HideTrajectory();
+            _uiManager.HideAimCircles();
+        }
         _currentCharacter.CancelJump();
     }
 
     private void OnImpulseReleased(Vector2 aimDirection)
     {
-        _trajectoryRenderer.HideTrajectory();
-        _uiManager.HideAimCircles();
+        if (IsCurrentTeamLocal)
+        {
+            _trajectoryRenderer.HideTrajectory();
+            _uiManager.HideAimCircles();
+        }
         _currentCharacter.Jump(aimDirection);
     }
 

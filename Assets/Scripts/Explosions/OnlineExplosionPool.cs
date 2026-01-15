@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Netcode;
 
 public class OnlineExplosionPool : OnlinePool<OnlineExplosion>, IPool<IExplosion>
 {
@@ -11,6 +12,16 @@ public class OnlineExplosionPool : OnlinePool<OnlineExplosion>, IPool<IExplosion
         var p = base.CreateInstance();
         p.Exploded += OnExplosionFinished;
         return p;
+    }
+    protected override void CreateInitialItems()
+    {
+        if (!NetworkManager.Singleton.IsServer)
+        {
+            return;
+        }
+        var container = FindFirstObjectByType<ExplosionContainer>();
+        _container = container.transform;
+        base.CreateInitialItems();
     }
 
     IExplosion IPool<IExplosion>.Get()

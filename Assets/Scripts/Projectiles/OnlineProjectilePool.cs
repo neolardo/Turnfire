@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Netcode;
 
 public class OnlineProjectilePool : OnlinePool<OnlineProjectile>, IPool<IProjectile>
 {
@@ -11,6 +12,17 @@ public class OnlineProjectilePool : OnlinePool<OnlineProjectile>, IPool<IProject
         var p = base.CreateInstance();
         p.Exploded += OnProjectileExploded;
         return p;
+    }
+
+    protected override void CreateInitialItems()
+    {
+        if (!NetworkManager.Singleton.IsServer)
+        {
+            return;
+        }
+        var container = FindFirstObjectByType<ProjectileContainer>();
+        _container = container.transform;
+        base.CreateInitialItems();
     }
 
     IProjectile IPool<IProjectile>.Get()

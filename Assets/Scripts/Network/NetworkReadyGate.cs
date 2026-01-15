@@ -5,8 +5,10 @@ using UnityEngine;
 public class NetworkReadyGate : NetworkBehaviour
 {
     public bool AllClientsReady => _allReady.Value;
+    public bool AllClientsAcknowledgedReady => _allAcknowledged.Value;
 
     private NetworkVariable<bool> _allReady = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone);
+    private NetworkVariable<bool> _allAcknowledged = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone);
 
     private NetworkVariable<int> _cycle = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone);
 
@@ -41,6 +43,7 @@ public class NetworkReadyGate : NetworkBehaviour
         Debug.Log($"{_readyClients.Count} / {NetworkManager.ConnectedClientsIds.Count} clients are ready for phase {_cycle.Value}");
         if (_readyClients.Count == NetworkManager.ConnectedClientsIds.Count)
         {
+            _allAcknowledged.Value = false;
             _allReady.Value = true;
         }
     }
@@ -67,6 +70,7 @@ public class NetworkReadyGate : NetworkBehaviour
     {
         _cycle.Value++;
         _allReady.Value = false;
+        _allAcknowledged.Value = true;
         _readyClients.Clear();
         _ackClients.Clear();
     }

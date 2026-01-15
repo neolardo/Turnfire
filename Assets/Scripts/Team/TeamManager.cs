@@ -7,7 +7,7 @@ public class TeamManager : MonoBehaviour
     [SerializeField] private List<Team> _possibleTeams;
     private Team[] _teams;
 
-    public bool AllTeamsInitialized => _teams == null ? false : _teams.All(t=> t.IsTeamInitialized);
+    public bool AllTeamsInitialized => _teams == null ? false : _teams.All(t => t.IsTeamInitialized);
 
     private void Start()
     {
@@ -37,6 +37,17 @@ public class TeamManager : MonoBehaviour
         {
             var team = _teams[player.TeamIndex];
             TeamComposer.Compose(team, player, botManagerFactory);
+        }
+    }
+
+    public void CreateAndSelectInitialItems()
+    {
+       foreach (var team in _teams)
+        {
+            foreach (var character in team.GetAllCharacters())
+            {
+                character.CreateAndSelectInitialItems();
+            }
         }
     }
 
