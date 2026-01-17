@@ -19,7 +19,7 @@ public abstract class ArmorBehavior : UnityDriven,IItemBehavior
         _durability = _definition.MaxDurability.CalculateValue();
     }
 
-    public void InitializePreview(ItemUsageContext context, ItemPreviewRendererManager rendererManager){}
+    public void InitializePreview(ItemUsageContext context, PreviewRendererManager rendererManager){}
 
     public virtual bool CanUseItem(ItemUsageContext context)
     {

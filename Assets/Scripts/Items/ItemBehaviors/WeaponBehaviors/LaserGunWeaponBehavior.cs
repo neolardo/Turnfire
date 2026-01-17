@@ -65,9 +65,9 @@ public class LaserGunWeaponBehavior : WeaponBehavior
         InvokeItemUsageFinished();
     }
 
-    public override void InitializePreview(ItemUsageContext context, ItemPreviewRendererManager rendererManager)
+    public override void InitializePreview(ItemUsageContext context, PreviewRendererManager rendererManager)
     {
-        rendererManager.SelectRenderer(ItemPreviewRendererType.Trajectory);
+        rendererManager.SelectRenderer(PreviewRendererType.Trajectory);
         rendererManager.TrajectoryRenderer.ToggleGravity(false);
         rendererManager.TrajectoryRenderer.SetOrigin(context.Owner.ItemTransform);
         rendererManager.TrajectoryRenderer.SetTrajectoryMultipler(1);

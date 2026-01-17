@@ -161,12 +161,10 @@ public class CharacterBodyAnimator : MonoBehaviour
 
     private void PlayJumpAnimation()
     {
-        Debug.Log("Jump animation played!");
         PlayAnimation(CharacterAnimationState.Jump, CharacterAnimationState.None);
     }
     private void PlayLandAnimation()
     {
-        Debug.Log("Land animation played!");
         PlayAnimation(CharacterAnimationState.Land, CharacterAnimationState.Idle);
     }
 

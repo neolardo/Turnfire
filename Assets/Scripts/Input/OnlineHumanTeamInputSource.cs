@@ -1,7 +1,7 @@
 using System;
 using Unity.Netcode;
+using Unity.Services.Matchmaker.Models;
 using UnityEngine;
-using UnityEngine.SocialPlatforms;
 
 public class OnlineHumanTeamInputSource : NetworkBehaviour, ITeamInputSource
 {
@@ -57,7 +57,24 @@ public class OnlineHumanTeamInputSource : NetworkBehaviour, ITeamInputSource
         }
     }
 
-    public bool IsLocal { get; private set; }
+    private NetworkVariable<bool> _isActionSkippingEnabled = new();
+    public bool IsActionSkippingEnabled
+    {
+        get
+        {
+            return _isActionSkippingEnabled.Value;
+        }
+        set
+        {
+            if (!IsServer)
+            {
+                return;
+            }
+            _isActionSkippingEnabled.Value = value;
+        }
+    }
+
+    private bool _initialized;
 
     public event Action<Vector2> AimStarted;
     public event Action<Vector2> AimChanged;
@@ -67,19 +84,42 @@ public class OnlineHumanTeamInputSource : NetworkBehaviour, ITeamInputSource
     public event Action<ItemUsageContext> SelectedItemUsed;
     public event Action<int> ItemSelected;
 
-    private void OnEnable()
+    private void Awake()
     {
         _inputHandler = FindFirstObjectByType<LocalInputHandler>();
-        if (!IsOwner)
+    }
+
+    private void OnEnable()
+    {
+        if(IsServer && IsOwner)
+        {
+            Initialize();
+        }
+    }
+
+    public override void OnGainedOwnership()
+    {
+        base.OnGainedOwnership();
+        if (!IsServer)
+        { 
+            Initialize();
+        }
+    }
+
+    private void Initialize()
+    {
+        if (!IsOwner || _initialized)
         {
             return;
         }
+
         _inputHandler.SwitchToInputActionMap(InputActionMapType.Gameplay);
         SubscribeToInputEvents();
 
         _isAimingEnabled.OnValueChanged += OnIsAimingEnabledChanged;
         _isOpeningInventoryEnabled.OnValueChanged += OnIsOpeningInventoryEnabledChanged;
         _isOpeningGameplayMenuEnabled.OnValueChanged += OnIsOpeningGameplayMenuEnabledChanged;
+        _isActionSkippingEnabled.OnValueChanged += OnIsActionSkippingEnabledValueChanged;
         if (GameServices.IsInitialized)
         {
             OnGameServicesInitialized();
@@ -89,6 +129,7 @@ public class OnlineHumanTeamInputSource : NetworkBehaviour, ITeamInputSource
             GameServices.Initialized += OnGameServicesInitialized;
         }
         DisableInputBeforeGameStart();
+        _initialized = true;
     }
 
     private void OnGameServicesInitialized()
@@ -118,10 +159,6 @@ public class OnlineHumanTeamInputSource : NetworkBehaviour, ITeamInputSource
     public void RequestAction(CharacterActionStateType action)
     {
         // local input is provided automatically
-    }
-    public void InitializeIsLocal(bool isLocal)
-    {
-        IsLocal = isLocal;
     }
 
     #region Game States
@@ -259,6 +296,11 @@ public class OnlineHumanTeamInputSource : NetworkBehaviour, ITeamInputSource
     private void InvokeActionSkippedServerRpc()
     {
         ActionSkipped?.Invoke();
+    }
+
+    private void OnIsActionSkippingEnabledValueChanged(bool oldValue, bool newValue)
+    {
+        _inputHandler.IsActionSkippingEnabled = newValue;
     }
 
     #endregion

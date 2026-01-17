@@ -2,7 +2,7 @@ using System.Collections;
 
 public class MovingCharacterActionState : CharacterActionState
 {
-    public MovingCharacterActionState(UISoundsDefinition uiSounds) : base(CoroutineRunner.Instance, uiSounds)
+    public MovingCharacterActionState() : base(CoroutineRunner.Instance)
     {
     }
 

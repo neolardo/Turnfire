@@ -7,7 +7,7 @@ public class TerrainManager : MonoBehaviour
 {
     [Header("Terrain")]
     [SerializeField] private TerrainRenderer _renderer;
-    [SerializeField] private TerrainCollider _collider;
+    [SerializeField] private TerrainIslandGroupCollider _collider;
     [SerializeField] private int _pixelsPerUnit = Constants.PixelsPerUnit;
     [SerializeField] private int _pixelsPerTile = Constants.PixelsPerTile;
 
@@ -115,7 +115,7 @@ public class TerrainManager : MonoBehaviour
         _removableHoles.AddRange(_newHoles);
         _newHoles.Clear();
         _collider.InitiateRebuild(_texture.Texture, _texture.CenteredPivotOffset);
-        Debug.Log($"{nameof(TerrainCollider)} rebuild started.");
+        Debug.Log($"{nameof(TerrainIslandGroupCollider)} rebuild started.");
     }
 
     private void OnColliderRebuildFinished()
@@ -131,7 +131,7 @@ public class TerrainManager : MonoBehaviour
             OnFirstRebuildDone();
         }
 
-        Debug.Log($"{nameof(TerrainCollider)} rebuild finished.");
+        Debug.Log($"{nameof(TerrainIslandGroupCollider)} rebuild finished.");
     }
 
     private void OnFirstRebuildDone()

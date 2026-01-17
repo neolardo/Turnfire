@@ -21,12 +21,12 @@ public class DeadZone : MonoBehaviour
         }
         else if (collision.CompareTag(Constants.PackageTag))
         {
-            var p = collision.GetComponent<OfflinePackage>();
+            var p = collision.GetComponent<IPackage>();
             p.Destroy();
         }
         else if (collision.CompareTag(Constants.HitboxTag))
         {
-            var p = collision.GetComponent<OfflineProjectile>();
+            var p = collision.GetComponent<IProjectile>();
             p.ForceExplode();
         }
     }

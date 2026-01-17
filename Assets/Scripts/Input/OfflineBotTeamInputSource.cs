@@ -6,7 +6,7 @@ public class OfflineBotTeamInputSource : MonoBehaviour, ITeamInputSource
     private BotManager _botManager;
     public bool IsAimingEnabled { get; set; }
     public bool IsOpeningInventoryEnabled { get; set; }
-    public bool IsLocal { get; private set; }
+    public bool IsActionSkippingEnabled { get; set; }
 
     public event Action<Vector2> AimStarted;
     public event Action<Vector2> AimChanged;
@@ -44,11 +44,6 @@ public class OfflineBotTeamInputSource : MonoBehaviour, ITeamInputSource
     public void RequestAction(CharacterActionStateType action)
     {
         _botManager.BeginThinkingAndActing(action);
-    }
-
-    public void InitializeIsLocal(bool isLocal)
-    {
-        IsLocal = isLocal;
     }
 
     private void InvokeAimAndRelease(Vector2 aimVector)

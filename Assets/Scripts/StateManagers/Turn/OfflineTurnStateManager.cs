@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class OfflineTurnStateManager : MonoBehaviour, ITurnStateManager
 {
-    [SerializeField] private UISoundsDefinition _uiSounds;
-
     private TurnStateManagerLogic _logic;
     public bool IsInitialized { get; private set; }
 
@@ -19,11 +17,10 @@ public class OfflineTurnStateManager : MonoBehaviour, ITurnStateManager
     }
     public void Initialize(IEnumerable<Team> teams)
     {
-        var trajectoryRenderer = FindFirstObjectByType<PixelTrajectoryRenderer>();
-        var itemPreviewRendererManager = FindFirstObjectByType<ItemPreviewRendererManager>();
+        var previewRenderer = FindFirstObjectByType<PreviewRendererManager>();
         var cameraController = FindFirstObjectByType<CameraController>();
         var uiManager = FindFirstObjectByType<GameplayUIManager>();
-        var characterActionManager = new CharacterActionManager(trajectoryRenderer, itemPreviewRendererManager, cameraController, uiManager, _uiSounds);
+        var characterActionManager = new CharacterActionManager(previewRenderer, cameraController, uiManager);
 
         uiManager.CreateTeamHealthbars(teams);
 

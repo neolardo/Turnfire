@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(PolygonCollider2D))]
-public class IslandCollider : MonoBehaviour
+public class TerrainIslandCollider : MonoBehaviour
 {
     private PolygonCollider2D _collider;
     private int _pixelsPerUnit;

@@ -7,7 +7,7 @@ public class OnlineBotTeamInputSource : NetworkBehaviour, ITeamInputSource
     private BotManager _botManager;
     public bool IsAimingEnabled { get; set; }
     public bool IsOpeningInventoryEnabled { get; set; }
-    public bool IsLocal { get; private set; }
+    public bool IsActionSkippingEnabled { get; set; }
 
     public event Action<Vector2> AimStarted;
     public event Action<Vector2> AimChanged;
@@ -37,11 +37,6 @@ public class OnlineBotTeamInputSource : NetworkBehaviour, ITeamInputSource
             controller.SwitchSelectedItem -= InvokeItemSelected;
             controller.UseSelectedItem -= InvokeSelectedItemUsed;
         }
-    }
-
-    public void InitializeIsLocal(bool isLocal)
-    {
-        IsLocal = isLocal;
     }
 
     public void ForceCancelAiming() { }

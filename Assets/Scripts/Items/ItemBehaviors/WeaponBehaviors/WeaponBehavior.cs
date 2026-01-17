@@ -20,7 +20,7 @@ public abstract class WeaponBehavior : UnityDriven, IItemBehavior
         ItemUsageFinished?.Invoke();
     }
 
-    public abstract void InitializePreview(ItemUsageContext context, ItemPreviewRendererManager rendererManager);
+    public abstract void InitializePreview(ItemUsageContext context, PreviewRendererManager rendererManager);
 
     public abstract void Use(ItemUsageContext context);
 

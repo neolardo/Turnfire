@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 public class DoCharacterActionsWithTeamTurnState : TurnState
 {
     public override TurnStateType State => TurnStateType.DoCharacterActions;
@@ -12,6 +14,7 @@ public class DoCharacterActionsWithTeamTurnState : TurnState
     public override void StartState(TurnStateContext context)
     {
         base.StartState(context);
+        UnityEngine.Debug.Log($"{context.CurrentTeam.TeamName}'s turn started");
         var character = SelectNextCharacterInTeam(context);
         _characterActionManager.StartActionsWithCharacter(character);
     }

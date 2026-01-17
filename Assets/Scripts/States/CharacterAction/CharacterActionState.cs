@@ -4,11 +4,9 @@ public abstract class CharacterActionState : StateBase
 {
     public abstract CharacterActionStateType State { get; }
     protected Character _currentCharacter;
-    protected UISoundsDefinition _uiSounds;
 
-    protected CharacterActionState(MonoBehaviour coroutineManager, UISoundsDefinition uiSounds) : base(coroutineManager)
+    protected CharacterActionState(MonoBehaviour coroutineManager) : base(coroutineManager)
     {
-        _uiSounds = uiSounds;
     }
 
     public virtual void StartState(Character currentCharacter)
@@ -28,7 +26,6 @@ public abstract class CharacterActionState : StateBase
 
     protected virtual void OnActionSkipped()
     {
-        AudioManager.Instance.PlayUISound(_uiSounds.SkipAction);
         EndState();
     }
 

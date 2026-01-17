@@ -102,8 +102,6 @@ public class CharacterView
 
     public void OnIsGroundedChanged(bool isGrounded)
     {
-        Debug.Log($"is grounded changed to {isGrounded}");
-
         _animator.OnIsGroundedChanged(isGrounded);
     }
 

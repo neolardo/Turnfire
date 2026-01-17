@@ -9,7 +9,7 @@ public class OnlineCharacterPhysics : NetworkBehaviour, ICharacterPhysics
     private Rigidbody2D _rb;
     public Collider2D Collider { get; private set; }
     public bool IsMoving => _rb.linearVelocity.magnitude > Mathf.Epsilon;
-    public Vector2 FeetPosition => (Vector2)transform.position + Vector2.down * Collider.bounds.extents.y;
+    public Vector2 FeetPosition => (Vector2)transform.position + FeetOffset;
     public Vector2 FeetOffset => Vector2.down * Collider.bounds.extents.y;
 
     private void Awake()

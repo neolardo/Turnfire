@@ -44,7 +44,7 @@ public class LocalInputHandler : MonoBehaviour
     public event Action ToggleInventoryCreateDestroyPerformed;
     public event Action<ItemInstance> InventoryItemSelected;
 
-    // pause
+    // gameplay menu
     public bool IsOpeningGameplayMenuEnabled { get; set; }
 
     public event Action ToggleGameplayMenuPerformed;
@@ -53,6 +53,8 @@ public class LocalInputHandler : MonoBehaviour
     public event Action<bool> ShowMapToggled;
 
     // skip
+    public bool IsActionSkippingEnabled { get; set; }
+
     public event Action ActionSkipped;
 
     private void Awake()
@@ -399,7 +401,10 @@ public class LocalInputHandler : MonoBehaviour
 
     private void OnSkipActionPerformed(InputAction.CallbackContext ctx)
     {
-        ActionSkipped?.Invoke();
+        if(IsActionSkippingEnabled)
+        {
+            ActionSkipped?.Invoke();
+        }
     }
 
     #endregion

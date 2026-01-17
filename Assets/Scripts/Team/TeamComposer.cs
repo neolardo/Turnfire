@@ -1,4 +1,3 @@
-using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -10,18 +9,15 @@ public static class TeamComposer
         bool isOnline = settings.IsOnlineGame;
         var botDifficulty = settings.BotDifficulty;
         ITeamInputSource inputSource;
-        bool isLocal = true;
         if(isOnline)
         {
-            isLocal = player.ClientId == NetworkManager.Singleton.LocalClientId;
             inputSource = player.Type == PlayerType.Human ? team.GetComponent<OnlineHumanTeamInputSource>() : team.GetComponent<OnlineBotTeamInputSource>();
-            SpawnTeamNetworkObject(team);
+            SpawnTeamNetworkObject(team, player);
         }
         else
         {
             inputSource = player.Type == PlayerType.Human ? team.GetComponent<OfflineHumanTeamInputSource>() : team.GetComponent<OfflineBotTeamInputSource>();
         }
-        inputSource.InitializeIsLocal(isLocal);
         (inputSource as MonoBehaviour).enabled = true;
         if (player.Type == PlayerType.Bot)
         {
@@ -30,26 +26,19 @@ public static class TeamComposer
         team.Initialize(inputSource, player.TeamIndex, player.Name);
     }
 
-    private static void SpawnTeamNetworkObject(Team team)
+    private static void SpawnTeamNetworkObject(Team team, Player player)
     {
         if (!NetworkManager.Singleton.IsServer)
             return;
 
-
-        ulong ownerClientId =
-            GameplaySceneSettingsStorage.Current.Players
-                .First(p => p.TeamIndex == team.TeamId)
-                .ClientId;
-
         var netObj = team.GetComponent<NetworkObject>();
-
-        if (netObj.IsSpawned)
+        if (!netObj.IsSpawned)
         {
-            netObj.ChangeOwnership(ownerClientId);
+            netObj.Spawn();
         }
-        else
+        if(netObj.OwnerClientId != player.ClientId)
         {
-            netObj.SpawnAsPlayerObject(ownerClientId, true);
+            netObj.ChangeOwnership(player.ClientId);
         }
     }
 

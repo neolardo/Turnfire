@@ -1,5 +1,4 @@
 using System;
-using Unity.Netcode;
 
 public class ItemInstance
 {
@@ -36,6 +35,7 @@ public class ItemInstance
         Quantity = initialQuantity;
         Definition = GameServices.ItemDatabase.GetById(definitionId);
         Behavior = Definition.CreateItemBehavior();
+        Behavior.ItemUsageFinished += DecreaseQuantity;
     }
 
     public static ItemInstance CreateAsInitialItem(ItemDefinition definition)
@@ -70,7 +70,6 @@ public class ItemInstance
     public void Use(ItemUsageContext context)
     {
         Behavior.Use(context);
-        DecreaseQuantity();
     }
 
     private void DecreaseQuantity()
@@ -88,6 +87,7 @@ public class ItemInstance
 
     public void Destroy()
     {
+        Behavior.ItemUsageFinished -= DecreaseQuantity;
         Destroyed?.Invoke(this);
     }
 }

@@ -5,12 +5,12 @@ using UnityEngine;
 
 [RequireComponent(typeof(CompositeCollider2D))]
 [RequireComponent(typeof(Rigidbody2D))]
-public class TerrainCollider : MonoBehaviour
+public class TerrainIslandGroupCollider : MonoBehaviour
 {
-    [SerializeField] private IslandCollider _islandColliderPrefab;
+    [SerializeField] private TerrainIslandCollider _islandColliderPrefab;
 
     private PixelMask _terrainPixelMask;
-    private List<IslandCollider> _islandColliders;
+    private List<TerrainIslandCollider> _islandColliders;
     private int _pixelsPerUnit;
     private int Width => _terrainPixelMask.Width; 
     private int Height => _terrainPixelMask.Height;
@@ -22,7 +22,7 @@ public class TerrainCollider : MonoBehaviour
 
     private void Awake()
     {
-        _islandColliders = new List<IslandCollider>();
+        _islandColliders = new List<TerrainIslandCollider>();
     }
 
     public void Initialize(int pixelsPerUnit)
@@ -66,7 +66,7 @@ public class TerrainCollider : MonoBehaviour
 
     private IEnumerator BuildIslandsAsync()
     {
-        var newIslands = new List<IslandCollider>();
+        var newIslands = new List<TerrainIslandCollider>();
 
         bool[,] visited = new bool[Width, Height];
         for (int y = 0; y < Height; y++)
@@ -79,7 +79,7 @@ public class TerrainCollider : MonoBehaviour
                     yield return FloodFillAsync(x, y, visited, p => pixels = p );
                     PixelMask islandPixelMask = null;
                     yield return PixelMask.CreateAsync(pixels, pm => islandPixelMask = pm);
-                    IslandCollider island = null;
+                    TerrainIslandCollider island = null;
                     yield return CreateIslandColliderAsync(islandPixelMask, newIslands.Count, i=> island = i);
                     newIslands.Add(island);
                 }
@@ -124,7 +124,7 @@ public class TerrainCollider : MonoBehaviour
     }
 
 
-    public IEnumerator CreateIslandColliderAsync(PixelMask islandPixelMask, int index, Action<IslandCollider> onDone)
+    public IEnumerator CreateIslandColliderAsync(PixelMask islandPixelMask, int index, Action<TerrainIslandCollider> onDone)
     {
         var islandCenter = islandPixelMask.Rect.center;
         var terrainCenter = _terrainPixelMask.Rect.center;

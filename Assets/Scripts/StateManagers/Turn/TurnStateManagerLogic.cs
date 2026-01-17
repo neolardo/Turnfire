@@ -83,6 +83,7 @@ public class TurnStateManagerLogic
 
     public void Resume()
     {
+        Debug.Log("Turn resumed");
         UpdateMaxCharactersToActPerRound();
         AdvanceTurnState();
         StartTurnState();

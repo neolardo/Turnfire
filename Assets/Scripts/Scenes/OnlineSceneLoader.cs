@@ -80,7 +80,6 @@ public class OnlineSceneLoader : NetworkBehaviour, ISceneLoader
             return;
         }
         SaveGameplaySceneSettingsClientRpc(NetworkGameplaySceneSettingsData.ToNetworkData(settings));
-        //TODO: ack?
         NetworkManager.Singleton.SceneManager.LoadScene(settings.Map.SceneName, LoadSceneMode.Single);
     }
 

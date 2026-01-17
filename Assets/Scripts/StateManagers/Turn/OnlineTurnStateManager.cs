@@ -1,12 +1,12 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
+[RequireComponent(typeof(NetworkReadyGate))]
 public class OnlineTurnStateManager : NetworkBehaviour, ITurnStateManager
 {
-    [SerializeField] private UISoundsDefinition _uiSounds;
-
     private TurnStateManagerLogic _logic;
 
     private NetworkVariable<bool> _isInitialized = new NetworkVariable<bool>();
@@ -16,6 +16,8 @@ public class OnlineTurnStateManager : NetworkBehaviour, ITurnStateManager
     public event Action<Team> GameEnded;
     public event Action<Team> SelectedTeamChanged;
 
+    private NetworkReadyGate _readyGate;
+
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
@@ -24,11 +26,10 @@ public class OnlineTurnStateManager : NetworkBehaviour, ITurnStateManager
 
     public void Initialize(IEnumerable<Team> teams)
     {
-        var trajectoryRenderer = FindFirstObjectByType<PixelTrajectoryRenderer>();
-        var itemPreviewRendererManager = FindFirstObjectByType<ItemPreviewRendererManager>();
+        var previewRenderer = FindFirstObjectByType<PreviewRendererManager>();
         var cameraController = FindFirstObjectByType<CameraController>();
         var uiManager = FindFirstObjectByType<GameplayUIManager>();
-        var characterActionManager = new CharacterActionManager(trajectoryRenderer, itemPreviewRendererManager, cameraController, uiManager, _uiSounds);
+        var characterActionManager = new CharacterActionManager(previewRenderer, cameraController, uiManager);
 
         uiManager.CreateTeamHealthbars(teams);
 
@@ -40,7 +41,10 @@ public class OnlineTurnStateManager : NetworkBehaviour, ITurnStateManager
         _logic.GameEnded += OnGameEnded;
         _logic.TurnStateEnded += OnTurnStateEnded;
         _logic.SelectedTeamChanged += OnSelectedTeamChanged;
-        if(IsServer)
+
+        _readyGate = GetComponent<NetworkReadyGate>();
+
+        if (IsServer)
         {
             _isInitialized.Value = true;
         }
@@ -85,9 +89,15 @@ public class OnlineTurnStateManager : NetworkBehaviour, ITurnStateManager
 
     private void OnTurnStateEnded()
     {
-        if(!IsServer)
+        StartCoroutine(WaitUntilEveryClientIsReadyThenResumeGame());
+    }
+
+    private IEnumerator WaitUntilEveryClientIsReadyThenResumeGame()
+    {
+        yield return _readyGate.WaitUntilEveryClientIsReadyCoroutine();
+        if (!IsServer)
         {
-            return;
+            yield break;
         }
 
         if (!_logic.IsGameOver)

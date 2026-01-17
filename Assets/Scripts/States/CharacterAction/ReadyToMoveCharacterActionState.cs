@@ -3,15 +3,11 @@ using UnityEngine;
 public class ReadyToMoveCharacterActionState : CharacterActionState
 {
     public override CharacterActionStateType State => CharacterActionStateType.ReadyToMove;
-    private PixelTrajectoryRenderer _trajectoryRenderer;
-    private GameplayUIManager _uiManager;
+    private PreviewRendererManager _previewRenderer;
     private ITeamInputSource _inputSource;
-    private bool IsCurrentTeamLocal => _inputSource == null ? false : _inputSource.IsLocal;
-
-    public ReadyToMoveCharacterActionState(PixelTrajectoryRenderer trajectoryRenderer, GameplayUIManager uiManager, UISoundsDefinition uiSounds) : base(CoroutineRunner.Instance, uiSounds)
+    public ReadyToMoveCharacterActionState(PreviewRendererManager previewRenderer) : base(CoroutineRunner.Instance)
     {
-        _trajectoryRenderer = trajectoryRenderer;
-        _uiManager = uiManager;
+        _previewRenderer = previewRenderer;
     }
 
     protected override void SubscribeToEvents()
@@ -29,7 +25,7 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
         _inputSource.AimStarted -= OnAimStarted;
         _inputSource.AimChanged -= OnAimChanged;
         _inputSource.AimCancelled -= OnAimCancelled;
-        _inputSource.ActionSkipped -= OnActionSkipped;
+        _inputSource.ActionSkipped -= OnActionSkipped; //TODO: on client side
         _currentCharacter.Jumped -= EndState;
     }
     
@@ -39,51 +35,28 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
         base.StartState(currentCharacter);
         GameServices.GameplayTimer.Resume();
         _inputSource.IsAimingEnabled = true;
-        if (IsCurrentTeamLocal)
-        {
-            _trajectoryRenderer.SetOrigin(currentCharacter.transform, currentCharacter.FeetOffset);
-            _trajectoryRenderer.ToggleGravity(true);
-            _trajectoryRenderer.SetTrajectoryMultipler(currentCharacter.JumpStrength);
-        }
+        _inputSource.IsActionSkippingEnabled = true;
+         currentCharacter.InitializeMovementPreview(_previewRenderer);
         _inputSource.RequestAction(State);
     }
 
     private void OnAimStarted(Vector2 initialPosition)
     {
-        if(IsCurrentTeamLocal)
-        {
-            _uiManager.ShowAimCircles(initialPosition);
-        }
         _currentCharacter.PrepareToJump();
     }
 
     private void OnAimChanged(Vector2 aimVector)
     {
-        if (IsCurrentTeamLocal)
-        {
-            _trajectoryRenderer.DrawTrajectory(aimVector);
-            _uiManager.UpdateAimCircles(aimVector);
-        }
         _currentCharacter.ChangeJumpAim(aimVector);
     }
 
     private void OnAimCancelled()
     {
-        if (IsCurrentTeamLocal)
-        {
-            _trajectoryRenderer.HideTrajectory();
-            _uiManager.HideAimCircles();
-        }
         _currentCharacter.CancelJump();
     }
 
     private void OnImpulseReleased(Vector2 aimDirection)
     {
-        if (IsCurrentTeamLocal)
-        {
-            _trajectoryRenderer.HideTrajectory();
-            _uiManager.HideAimCircles();
-        }
         _currentCharacter.Jump(aimDirection);
     }
 
@@ -91,6 +64,7 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
     {
         _inputSource.ForceCancelAiming();
         _inputSource.IsAimingEnabled = false;
+        _inputSource.IsActionSkippingEnabled = false;
         GameServices.GameplayTimer.Pause();
         base.EndState();
     }

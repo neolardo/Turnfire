@@ -14,7 +14,7 @@ public class OnlineExplosion : NetworkBehaviour, IExplosion
 
     public event Action<IExplosion> Exploded;
 
-    public bool IsExploding => _behavior == null ? false : _behavior.IsExploding;
+    public bool IsExploding { get; private set; }
 
     private bool _awakeCalled;
     public bool IsReady => _awakeCalled && IsSpawned;
@@ -40,15 +40,18 @@ public class OnlineExplosion : NetworkBehaviour, IExplosion
         _behavior.Exploded += OnExplosionFinished;
     }
 
-
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+    }
     public override void OnNetworkDespawn()
     {
-        base.OnNetworkDespawn();
         if (_behavior != null && IsServer)
         {
             _behavior.Exploded -= OnExplosionFinished;
             _behavior = null;
         }
+        base.OnNetworkDespawn();
     } 
 
     [Rpc(SendTo.Everyone, InvokePermission =RpcInvokePermission.Server)]
@@ -72,6 +75,7 @@ public class OnlineExplosion : NetworkBehaviour, IExplosion
     private void ExplosionStartedClientRpc()
     {
         _view.PlayExplosionAnimation();
+        IsExploding = true;
     }
 
     private void OnExplosionFinished()
@@ -83,5 +87,6 @@ public class OnlineExplosion : NetworkBehaviour, IExplosion
     private void ExplosionFinishedClientRpc()
     {
         Exploded?.Invoke(this);
+        IsExploding = false;
     }
 }

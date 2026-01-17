@@ -15,17 +15,17 @@ public class CharacterActionManager : UnityDriven
 
     public event Action CharacterActionsFinished;
 
-    public CharacterActionManager(PixelTrajectoryRenderer trajectoryRenderer, ItemPreviewRendererManager itemPreviewRendererManager, CameraController cameraController, GameplayUIManager uiManager,  UISoundsDefinition uiSounds) : base(CoroutineRunner.Instance)
+    public CharacterActionManager(PreviewRendererManager previewRenderer, CameraController cameraController, GameplayUIManager uiManager) : base(CoroutineRunner.Instance)
     {
         _cameraController = cameraController;
         _uiManager = uiManager;
         _characterActionStates = new List<CharacterActionState>
         {
-            new ReadyToMoveCharacterActionState(trajectoryRenderer, uiManager, uiSounds),
-            new MovingCharacterActionState( uiSounds),
-            new ReadyToUseItemCharacterActionState(itemPreviewRendererManager, trajectoryRenderer, uiManager, uiSounds),
-            new UsingItemCharacterActionState(uiSounds),
-            new FinishedCharacterActionState(uiSounds),
+            new ReadyToMoveCharacterActionState(previewRenderer),
+            new MovingCharacterActionState(),
+            new ReadyToUseItemCharacterActionState(previewRenderer),
+            new UsingItemCharacterActionState(),
+            new FinishedCharacterActionState(),
         };
 
         foreach (var state in _characterActionStates)

@@ -13,14 +13,21 @@ public class GameplayUIManager : MonoBehaviour
     [SerializeField] private CountdownTimerUI _countdownTimer;
     [SerializeField] private AimCircleUI _aimCircleUI;
     [SerializeField] private LoadingTextUI _loadingText;
-
+    [SerializeField] private UISoundsDefinition _uiSounds;
+    private LocalInputHandler _inputHandler;
     private void Awake()
     {
-        var inputHandler = FindFirstObjectByType<LocalInputHandler>();
-        inputHandler.ToggleInventoryPerformed += OnInventoryToggled;
+        _inputHandler = FindFirstObjectByType<LocalInputHandler>();
+        _inputHandler.ToggleInventoryPerformed += OnInventoryToggled;
+        _inputHandler.AimStarted += _aimCircleUI.ShowCircles;
+        _inputHandler.AimChanged += _aimCircleUI.UpdateCircles;
+        _inputHandler.AimCancelled += _aimCircleUI.HideCircles;
+        _inputHandler.ActionSkipped += OnActionSkipped;
+        _inputHandler.ImpulseReleased += OnImpulseReleased;
         _gameplayTimer.gameObject.SetActive(false);
         _countdownTimer.gameObject.SetActive(true);
     }
+
     private void Start()
     {
         if (GameServices.IsInitialized)
@@ -31,6 +38,7 @@ public class GameplayUIManager : MonoBehaviour
         {
             GameServices.Initialized += OnGameServicesInitialized;
         }
+        // should I pass the teamsource here and visualize instead?
     }
             
     private void OnGameServicesInitialized()
@@ -57,6 +65,17 @@ public class GameplayUIManager : MonoBehaviour
         {
             GameServices.CountdownTimer.TimerEnded -= OnCountdownTimerEnded;
         }
+        if(_inputHandler != null)
+        {
+            if(_aimCircleUI != null)
+            {
+                _inputHandler.AimStarted -= _aimCircleUI.ShowCircles;
+                _inputHandler.AimChanged -= _aimCircleUI.UpdateCircles;
+                _inputHandler.AimCancelled -= _aimCircleUI.HideCircles;
+            }
+            _inputHandler.ActionSkipped -= OnActionSkipped;
+            _inputHandler.ImpulseReleased -= OnImpulseReleased;
+        }
     }
 
     public void CreateTeamHealthbars(IEnumerable<Team> teams)
@@ -64,14 +83,24 @@ public class GameplayUIManager : MonoBehaviour
         _teamHealthbarUIManager.CreateHealthBars(teams);
     }
 
-    private void OnInventoryToggled()
+    private void OnActionSkipped()
     {
-        _inventoryUI.gameObject.SetActive(!_inventoryUI.gameObject.activeSelf);
+        AudioManager.Instance.PlayUISound(_uiSounds.SkipAction);
+    }
+
+    private void OnImpulseReleased(Vector2 impulse)
+    {
+        _aimCircleUI.HideCircles();
     }
 
     private void OnGameplayMenuToggled(bool isGameplayMenuVisible)
     {
         _gameplayMenuUI.SetActive(isGameplayMenuVisible);
+    }
+
+    private void OnInventoryToggled()
+    {
+        _inventoryUI.gameObject.SetActive(!_inventoryUI.gameObject.activeSelf);
     }
 
     public void LoadCharacterData(Character character)
@@ -126,27 +155,9 @@ public class GameplayUIManager : MonoBehaviour
     private void OnGameStateChanged(GameStateType gameState)
     {
         OnGameplayMenuToggled(gameState == GameStateType.Paused);
-    } 
+    }
 
     #endregion
 
-    #region Aim Circles
-
-    public void ShowAimCircles(Vector2 initialPosition)
-    {
-        _aimCircleUI.ShowCircles(initialPosition);
-    }
-
-    public void UpdateAimCircles(Vector2 aimVector)
-    {
-        _aimCircleUI.UpdateCircles(aimVector);
-    }
-
-    public void HideAimCircles()
-    {
-        _aimCircleUI.HideCircles();
-    } 
-
-    #endregion
 
 }

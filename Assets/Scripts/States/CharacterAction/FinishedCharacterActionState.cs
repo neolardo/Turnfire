@@ -1,6 +1,6 @@
 public class FinishedCharacterActionState : CharacterActionState
 {
-    public FinishedCharacterActionState(UISoundsDefinition uiSounds) : base(CoroutineRunner.Instance, uiSounds)
+    public FinishedCharacterActionState() : base(CoroutineRunner.Instance)
     {
     }
 

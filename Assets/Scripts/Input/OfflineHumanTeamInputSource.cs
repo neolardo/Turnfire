@@ -39,8 +39,17 @@ public class OfflineHumanTeamInputSource : MonoBehaviour, ITeamInputSource
             _inputHandler.IsOpeningGameplayMenuEnabled = value;
         }
     }
-
-    public bool IsLocal { get; private set; }
+    public bool IsActionSkippingEnabled
+    {
+        get
+        {
+            return _inputHandler.IsActionSkippingEnabled;
+        }
+        set
+        {
+            _inputHandler.IsActionSkippingEnabled = value;
+        }
+    }
 
     public event Action<Vector2> AimStarted;
     public event Action<Vector2> AimChanged;
@@ -92,10 +101,6 @@ public class OfflineHumanTeamInputSource : MonoBehaviour, ITeamInputSource
     public void RequestAction(CharacterActionStateType action)
     {
         // local input is provided automatically
-    }
-    public void InitializeIsLocal(bool isLocal)
-    {
-        IsLocal = isLocal;
     }
 
     #region Game States

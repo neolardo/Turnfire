@@ -17,8 +17,8 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
 
     public bool IsAlive => Health > 0;
 
-    private NetworkVariable<bool> _isUsingSelectedItem = new NetworkVariable<bool>();
-    public bool IsUsingSelectedItem => _isUsingSelectedItem.Value;
+    private NetworkVariable<NetworkItemUsageState> _itemUsageState = new NetworkVariable<NetworkItemUsageState>();
+    public bool IsUsingSelectedItem => _itemUsageState.Value.IsInUse;
     public ItemInstance SelectedItem => _inventory.SelectedItem;
 
     private NetworkVariable<float> _jumpBoost = new NetworkVariable<float>();
@@ -61,6 +61,7 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
         _inventory = new CharacterItemInventory();
         _health.OnValueChanged += OnNetworkHealthValueChanged;
         _isGrounded.OnValueChanged += OnNetworkIsGroundedValueChanged;
+        _itemUsageState.OnValueChanged += OnItemUsageStateChanged;
         if (!IsServer)
         {
             return; 
@@ -423,22 +424,22 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
             return;
         }
         var selectedItem = SelectedItem;
-        InvokeSelectedItemUsedClientRpc(new NetworkItemUsageContextData(context), selectedItem.InstanceId);
         SelectedItem.Use(context);
-        StartCoroutine(MirrorIsUsingSelectedItemStateUntilUsageFinished(selectedItem));
+        _itemUsageState.Value = NetworkItemUsageState.CreateUsageStartedState(selectedItem, context);
+        StartCoroutine(ChangeStateOnItemUsageFinished(selectedItem));
     }
-
-    private IEnumerator MirrorIsUsingSelectedItemStateUntilUsageFinished(ItemInstance item)
+    private IEnumerator ChangeStateOnItemUsageFinished(ItemInstance item)
     {
-        _isUsingSelectedItem.Value = true;
         yield return new WaitWhile(() => item.Behavior.IsInUse);
-        _isUsingSelectedItem.Value = false;
+        _itemUsageState.Value = NetworkItemUsageState.CreateUsageFinishedState();
     }
 
-    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
-    private void InvokeSelectedItemUsedClientRpc(NetworkItemUsageContextData networkContext, int itemInstanceId)
+    private void OnItemUsageStateChanged(NetworkItemUsageState previous, NetworkItemUsageState current)
     {
-        ItemUsed?.Invoke(_inventory.GetItemByInstanceId(itemInstanceId), networkContext.ToItemUsageContext(_character));
+        if(current.IsInUse)
+        {
+            ItemUsed?.Invoke(_inventory.GetItemByInstanceId(current.ItemInstanceId), current.UsageContext.ToItemUsageContext(_character));
+        }
     }
 
     public IEnumerable<ItemInstance> GetAllItems()

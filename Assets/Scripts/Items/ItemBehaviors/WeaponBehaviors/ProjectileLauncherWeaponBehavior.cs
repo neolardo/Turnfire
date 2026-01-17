@@ -44,9 +44,9 @@ public class ProjectileLauncherWeaponBehavior : WeaponBehavior
         InvokeItemUsageFinished();
     }
 
-    public override void InitializePreview(ItemUsageContext context, ItemPreviewRendererManager rendererManager)
+    public override void InitializePreview(ItemUsageContext context, PreviewRendererManager rendererManager)
     {
-        rendererManager.SelectRenderer(ItemPreviewRendererType.Trajectory);
+        rendererManager.SelectRenderer(PreviewRendererType.Trajectory);
         rendererManager.TrajectoryRenderer.ToggleGravity(_definition.UseGravityForPreview);
         rendererManager.TrajectoryRenderer.SetOrigin(context.Owner.ItemTransform);
         rendererManager.TrajectoryRenderer.SetTrajectoryMultipler(_definition.FireStrength.CalculateValue());

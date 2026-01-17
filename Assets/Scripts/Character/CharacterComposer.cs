@@ -18,7 +18,7 @@ public static class CharacterComposer
         {
             state = character.GetComponent<OnlineCharacterState>();
             physics = character.GetComponent<OnlineCharacterPhysics>();
-            SpawnCharacterNetworkObject(character, team);
+            SpawnCharacterNetworkObject(team);
         }
         else
         {
@@ -31,24 +31,20 @@ public static class CharacterComposer
         character.Initialize(team, state, physics);
     }
 
-    private static void SpawnCharacterNetworkObject(Character character, Team team)
+    private static void SpawnCharacterNetworkObject(Team team)
     {
         if (!NetworkManager.Singleton.IsServer)
             return;
 
-        ulong ownerClientId =
-        GameplaySceneSettingsStorage.Current.Players
-            .First(p => p.TeamIndex == team.TeamId)
-            .ClientId;
-
-        var netObj = character.GetComponent<NetworkObject>();
-        if (netObj.IsSpawned)
+        var netObj = team.GetComponent<NetworkObject>();
+        var playerClientId = GameplaySceneSettingsStorage.Current.Players.First(p => p.TeamIndex == team.TeamId).ClientId;
+        if (!netObj.IsSpawned)
         {
-            netObj.ChangeOwnership(ownerClientId);
+            netObj.Spawn();
         }
-        else
+        if (netObj.OwnerClientId != playerClientId)
         {
-            netObj.SpawnAsPlayerObject(ownerClientId, true);
+            netObj.ChangeOwnership(playerClientId);
         }
     }
 }

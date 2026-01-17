@@ -100,10 +100,6 @@ public class BallisticProjectileBehavior : UnityDriven, IProjectileBehavior
         Explode(context);
     }
 
-    protected void InvokeExplodedEvent(ExplosionInfo ei)
-    {
-        Exploded?.Invoke(ei);
-    }
     protected void InvokeContactedWithoutExplosionEvent(HitboxContactContext context)
     {
         ContactedWithoutExplosion?.Invoke(context);

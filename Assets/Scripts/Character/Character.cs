@@ -211,6 +211,15 @@ public class Character : MonoBehaviour, IConditionalEnumerable
         _state.RequestCancelJump();
     }
 
+    public void InitializeMovementPreview(PreviewRendererManager previewRenderer)
+    {
+        previewRenderer.SelectRenderer(PreviewRendererType.Trajectory);
+        var trajectory = previewRenderer.TrajectoryRenderer;
+        trajectory.SetOrigin(transform, FeetOffset);
+        trajectory.ToggleGravity(true);
+        trajectory.SetTrajectoryMultipler(JumpStrength);
+    }
+
     #endregion
 
     #region Items

@@ -20,7 +20,7 @@ public abstract class ConsumableBehavior : UnityDriven,IItemBehavior
         return true;
     }
 
-    public virtual void InitializePreview(ItemUsageContext context, ItemPreviewRendererManager rendererManager)
+    public virtual void InitializePreview(ItemUsageContext context, PreviewRendererManager rendererManager)
     { }
 
     public abstract void Use(ItemUsageContext context);
