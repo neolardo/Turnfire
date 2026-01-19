@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(OneShotAnimator))]
-public class OfflineExplosion : MonoBehaviour, IExplosion
+public class OfflineExplosion : SimplePoolable, IExplosion
 {
     [SerializeField] private ExplosionAnimatorDefinition _animatorDefinition;
     private ExplosionView _view;

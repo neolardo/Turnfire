@@ -51,6 +51,11 @@ public class GameplayerServicesBootstrap : MonoBehaviour
         RegisterInvariantServices();
     }
 
+    private void OnDestroy()
+    {
+        GameServices.ClearServices();
+    }
+
     private void CreateOfflineServices(Transform container)
     {
         Instantiate(_offlineProjectilePoolPrefab, container);

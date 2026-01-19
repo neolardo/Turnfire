@@ -57,6 +57,7 @@ public class OfflineCharacterState : MonoBehaviour, ICharacterState
     public event Action<ArmorDefinition> ArmorEquipped;
     public event Action<ArmorDefinition> ArmorUnequipped;
 
+    public event Action ActionSkipped;
 
     public void Initialize(Character character, CharacterDefinition characterDefinition, Team team)
     {
@@ -233,6 +234,15 @@ public class OfflineCharacterState : MonoBehaviour, ICharacterState
         }
     }
 
+
+    #endregion
+
+    #region Action Skip
+
+    public void RequestSkipAction()
+    {
+        ActionSkipped?.Invoke();
+    }
 
     #endregion
 

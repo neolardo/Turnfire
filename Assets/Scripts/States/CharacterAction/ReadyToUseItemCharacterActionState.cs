@@ -14,26 +14,30 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
     {
         _currentCharacter.SelectedItemChanged += OnSelectedItemChanged;
         _currentCharacter.SelectedItemUsed += EndState;
+        _currentCharacter.ActionSkipped += EndState;
+        _currentCharacter.Died += EndState;
         _inputSource.SelectedItemUsed += OnSelectedItemUsed;
         _inputSource.ItemSelected += OnItemSelected;
         _inputSource.ImpulseReleased += OnImpulseReleased;
         _inputSource.AimStarted += OnAimStarted;
         _inputSource.AimChanged += OnAimChanged;
         _inputSource.AimCancelled += OnAimCancelled;
-        _inputSource.ActionSkipped += OnActionSkipped;
+        _inputSource.ActionSkipped += _currentCharacter.SkipAction;
     }
 
     protected override void UnsubscribeFromEvents()
     {
         _currentCharacter.SelectedItemChanged -= OnSelectedItemChanged;
         _currentCharacter.SelectedItemUsed -= EndState;
+        _currentCharacter.ActionSkipped -= EndState;
+        _currentCharacter.Died -= EndState;
         _inputSource.SelectedItemUsed -= OnSelectedItemUsed;
         _inputSource.ItemSelected -= OnItemSelected;
         _inputSource.ImpulseReleased -= OnImpulseReleased;
         _inputSource.AimStarted -= OnAimStarted;
         _inputSource.AimChanged -= OnAimChanged;
         _inputSource.AimCancelled -= OnAimCancelled;
-        _inputSource.ActionSkipped -= OnActionSkipped;
+        _inputSource.ActionSkipped -= _currentCharacter.SkipAction;
     }
 
     public override void StartState(Character currentCharacter)

@@ -51,6 +51,7 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
     public event Action<ArmorDefinition> ArmorEquipped;
     public event Action<ArmorDefinition> ArmorUnequipped;
 
+    public event Action ActionSkipped;
 
     public void Initialize(Character character, CharacterDefinition characterDefinition, Team team)
     {
@@ -464,5 +465,23 @@ public class OnlineCharacterState : NetworkBehaviour, ICharacterState
         }
     }
 
+    #endregion
+
+    #region Action Skip
+
+    public void RequestSkipAction()
+    {
+        if(!IsServer)
+        {
+            return;
+        }
+        SkipActionClientRpc();
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
+    private void SkipActionClientRpc()
+    {
+        ActionSkipped?.Invoke();
+    }
     #endregion
 }

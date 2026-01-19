@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 public class OfflineProjectilePool : OfflinePool<OfflineProjectile>, IPool<IProjectile>
 {
@@ -21,6 +22,11 @@ public class OfflineProjectilePool : OfflinePool<OfflineProjectile>, IPool<IProj
     IEnumerable<IProjectile> IPool<IProjectile>.GetMultiple(int count)
     {
         return GetMultiple(count);
+    }
+
+    IProjectile IPool<IProjectile>.GetAndPlace(Vector2 position)
+    {
+        return GetAndPlace(position);
     }
     public void Release(IProjectile item)
     {

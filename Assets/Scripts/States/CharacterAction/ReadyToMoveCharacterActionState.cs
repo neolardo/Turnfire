@@ -16,8 +16,10 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
         _inputSource.AimStarted += OnAimStarted;
         _inputSource.AimChanged += OnAimChanged;
         _inputSource.AimCancelled += OnAimCancelled;
-        _inputSource.ActionSkipped += OnActionSkipped;
+        _inputSource.ActionSkipped += _currentCharacter.SkipAction;
+        _currentCharacter.ActionSkipped += EndState;
         _currentCharacter.Jumped += EndState;
+        _currentCharacter.Died += EndState;
     }
     protected override void UnsubscribeFromEvents()
     {
@@ -25,10 +27,12 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
         _inputSource.AimStarted -= OnAimStarted;
         _inputSource.AimChanged -= OnAimChanged;
         _inputSource.AimCancelled -= OnAimCancelled;
-        _inputSource.ActionSkipped -= OnActionSkipped; //TODO: on client side
+        _inputSource.ActionSkipped -= _currentCharacter.SkipAction;
+        _currentCharacter.ActionSkipped -= EndState;
         _currentCharacter.Jumped -= EndState;
+        _currentCharacter.Died -= EndState;
     }
-    
+
     public override void StartState(Character currentCharacter)
     {
         _inputSource = currentCharacter.Team.InputSource;

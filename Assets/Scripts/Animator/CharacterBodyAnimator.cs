@@ -94,7 +94,7 @@ public class CharacterBodyAnimator : MonoBehaviour
 
     public void PlayEquipArmorAnimation(ArmorDefinition armor)
     {
-        _equippedArmorSpriteRenderers[armor] = _equippedArmorSpriteRendererPool.Get();
+        _equippedArmorSpriteRenderers[armor] = _equippedArmorSpriteRendererPool.GetSpriteRenderer();
         _equippedArmorSpriteRenderers[armor].flipX = _baseSpriteRenderers[0].flipX;
         _equippedArmorSpriteRenderers[armor].sprite = armor.Animations[_currentAnimationState][_lastFrameIndex];
         _flashAnimator.Flash(new[] { _equippedArmorSpriteRenderers[armor] }, _animatorDefinition.ItemFlashColor, _animatorDefinition.ItemFlashInSeconds, _animatorDefinition.ItemFlashOutSeconds);

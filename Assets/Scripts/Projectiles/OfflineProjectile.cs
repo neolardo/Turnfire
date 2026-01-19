@@ -4,7 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(CircleCollider2D))]
 [RequireComponent(typeof(SpriteRenderer))]
-public class OfflineProjectile : MonoBehaviour, IProjectile
+public class OfflineProjectile : SimplePoolable, IProjectile
 {
     private ProjectileDefinition _definition;
     private ProjectilePhysics _physics;
@@ -90,7 +90,17 @@ public class OfflineProjectile : MonoBehaviour, IProjectile
     public void ForceExplode()
     {
         _behavior.ForceExplode();
-    } 
+    }
+
+    #endregion
+
+    #region Poolable
+
+    public override void OnReleasedBackToPool()
+    {
+        base.OnReleasedBackToPool();
+        _physics.Stop();
+    }
 
     #endregion
 

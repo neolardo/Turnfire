@@ -6,7 +6,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(OneShotAnimator))]
 [RequireComponent(typeof(NetworkTransform))]
-public class OnlineExplosion : NetworkBehaviour, IExplosion
+public class OnlineExplosion : NetworkBehaviour, IExplosion, IPoolable
 {
     [SerializeField] private ExplosionAnimatorDefinition _animatorDefinition;
     private ExplosionView _view;
@@ -40,10 +40,6 @@ public class OnlineExplosion : NetworkBehaviour, IExplosion
         _behavior.Exploded += OnExplosionFinished;
     }
 
-    public override void OnNetworkSpawn()
-    {
-        base.OnNetworkSpawn();
-    }
     public override void OnNetworkDespawn()
     {
         if (_behavior != null && IsServer)
@@ -59,6 +55,7 @@ public class OnlineExplosion : NetworkBehaviour, IExplosion
     {
         var def = GameServices.ExplosionDatabase.GetById(explosionDefinitionId);
         _view.Initialize(def);
+        Debug.Log("Explosion initialized");
     }
 
     public IEnumerable<Character> Explode(Vector2 contactPoint, int damage, IDamageSourceDefinition damageSource)
@@ -74,6 +71,7 @@ public class OnlineExplosion : NetworkBehaviour, IExplosion
     [Rpc(SendTo.Everyone, InvokePermission =RpcInvokePermission.Server)]
     private void ExplosionStartedClientRpc()
     {
+        Debug.Log("Explosion finished");
         _view.PlayExplosionAnimation();
         IsExploding = true;
     }
@@ -86,7 +84,17 @@ public class OnlineExplosion : NetworkBehaviour, IExplosion
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
     private void ExplosionFinishedClientRpc()
     {
+        Debug.Log("Explosion finished");
         Exploded?.Invoke(this);
         IsExploding = false;
+    }
+
+    public void OnCreatedInPool() { }
+
+    public void OnGotFromPool() { }
+
+    public void OnReleasedBackToPool()
+    {
+        _view.Hide();
     }
 }

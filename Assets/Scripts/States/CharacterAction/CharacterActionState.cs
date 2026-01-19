@@ -24,11 +24,6 @@ public abstract class CharacterActionState : StateBase
         InvokeStateEndedEvent();
     }
 
-    protected virtual void OnActionSkipped()
-    {
-        EndState();
-    }
-
     public void ForceEndState()
     {
         EndState();

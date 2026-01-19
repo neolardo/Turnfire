@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(CircleCollider2D))]
-public class ExplosionHole : MonoBehaviour, IExplosionHole
+public class ExplosionHole : SimplePoolable, IExplosionHole
 {
     private CircleCollider2D _collider;
 

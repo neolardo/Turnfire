@@ -119,6 +119,7 @@ public class BallisticProjectileBehavior : UnityDriven, IProjectileBehavior
         _exploded = true;
         var damage = _definition.Damage.CalculateValue();
         var exp = GameServices.ExplosionPool.Get();
+        Debug.Log("waiting for explosion to be ready");
         yield return new WaitUntil( () => exp.IsReady);
         exp.Initialize(_definition.ExplosionDefinition);
         var explodedCharacters = exp.Explode(context.ContactPoint, damage, _definition);

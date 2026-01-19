@@ -1,13 +1,14 @@
 using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(SpriteRenderer))] 
+[RequireComponent(typeof(SpriteRenderer))]
 public class OneShotAnimator : MonoBehaviour
 {
     private SpriteRenderer _spriteRenderer;
     private AnimationDefinition _animation;
     private SFXDefiniton _sfx;
 
+    private Coroutine _animationRoutine;
     public bool IsPlaying => _isPlaying;
     private bool _isPlaying;
 
@@ -29,13 +30,13 @@ public class OneShotAnimator : MonoBehaviour
 
     public void PlayAnimation(float frameDuration, bool hideAfter = true)
     {
-        StartCoroutine(AnimateCoroutine(frameDuration, hideAfter));
+        _animationRoutine = StartCoroutine(AnimateCoroutine(frameDuration, hideAfter));
     }
 
     private IEnumerator AnimateCoroutine(float frameDuration, bool hideAfter)
-    { 
+    {
         _isPlaying = true;
-        if(_sfx != null)
+        if (_sfx != null)
         {
             AudioManager.Instance.PlaySFXAt(_sfx, transform.position);
         }
@@ -45,12 +46,21 @@ public class OneShotAnimator : MonoBehaviour
             _spriteRenderer.sprite = frames[i];
             yield return new WaitForSeconds(frameDuration);
         }
-        if(hideAfter)
+        if (hideAfter)
         {
             _spriteRenderer.sprite = null;
         }
         _isPlaying = false;
+        _animationRoutine = null;
     }
 
+    public void Hide()
+    {
+        if (_animationRoutine != null)
+        {
+            StopCoroutine(_animationRoutine);
+        }
+        _spriteRenderer.sprite = null;
+    }
 
 }

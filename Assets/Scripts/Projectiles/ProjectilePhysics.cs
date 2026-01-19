@@ -21,6 +21,8 @@ public class ProjectilePhysics
         _col.radius = definition.ColliderRadius;
         _col.isTrigger = true;
         _col.sharedMaterial = null;
+        _col.enabled = true;
+        _rb.simulated = true;
         _rb.gravityScale = 1;
         _rb.linearVelocity = Vector2.zero;
         _rb.angularVelocity = 0;
@@ -72,5 +74,15 @@ public class ProjectilePhysics
     public RaycastHit2D RaycastFromCurrentPosition(Vector2 aimDirection)
     {
         return Physics2D.Raycast(_rb.transform.position, aimDirection, Constants.ProjectileRaycastDistance, LayerMaskHelper.GetCombinedLayerMask(Constants.HitboxCollisionLayers));
+    }
+
+    public void Stop()
+    {
+        _rb.gravityScale = 1;
+        _rb.linearVelocity = Vector2.zero;
+        _rb.angularVelocity = 0;
+        _col.enabled = false;
+        _rb.simulated = false;
+        _rb.Sleep();
     }
 }

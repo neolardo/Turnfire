@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class OfflineLaser : MonoBehaviour, ILaser
+public class OfflineLaser : SimplePoolable, ILaser
 {
     private LaserPhysics _physics;
     private LaserView _view;

@@ -18,4 +18,10 @@ public class ExplosionView
     {
         _animator.PlayAnimation(_animatorDefinition.ExplosionAnimationDurationPerFrame);
     }
+
+    public void Hide()
+    {
+        _animator.Hide();
+    }
+
 }

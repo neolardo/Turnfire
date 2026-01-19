@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Unity.Netcode;
+using UnityEngine;
 
 public class OnlineExplosionPool : OnlinePool<OnlineExplosion>, IPool<IExplosion>
 {
@@ -32,6 +33,10 @@ public class OnlineExplosionPool : OnlinePool<OnlineExplosion>, IPool<IExplosion
     IEnumerable<IExplosion> IPool<IExplosion>.GetMultiple(int count)
     {
         return GetMultiple(count);
+    }
+    IExplosion IPool<IExplosion>.GetAndPlace(Vector2 position)
+    {
+        return GetAndPlace(position);
     }
     public void Release(IExplosion item)
     {

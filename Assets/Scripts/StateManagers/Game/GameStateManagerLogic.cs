@@ -40,13 +40,19 @@ public class GameStateManagerLogic
 
     public IEnumerator StartGameAfterCountdownCoroutine()
     {
+        Debug.Log("waiting for turnstate manager to be initialized");
         yield return new WaitUntil(() => GameServices.TurnStateManager.IsInitialized);
         GameServices.CountdownTimer.TimerEnded += OnCountdownEnded;
         GameServices.TurnStateManager.GameEnded += OnGameOver;
+        Debug.Log("waiting for countdown timer to be initialized");
         yield return new WaitUntil(() => GameServices.CountdownTimer.IsInitialized);
+        Debug.Log("countdown timer started");
         GameServices.CountdownTimer.Restart();
+        Debug.Log("waiting for countdown timer to end");
         yield return new WaitUntil(() => _countdownEnded);
+        Debug.Log("countdown timer ended");
         yield return new WaitForSeconds(_gameplaySettings.DelaySecondsAfterCountdown);
+        Debug.Log("starting game");
         StartGame();
     }
 

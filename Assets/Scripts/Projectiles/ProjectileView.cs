@@ -21,10 +21,10 @@ public class ProjectileView
 
     public void Show()
     {
-        _transform.gameObject.SetActive(true);
+        _spriteRenderer.enabled = true;
     }
     public void Hide()
     {
-        _transform.gameObject.SetActive(false);
+        _spriteRenderer.enabled = false;
     }
 }

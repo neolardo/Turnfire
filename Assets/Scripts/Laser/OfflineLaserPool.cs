@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 public class OfflineLaserPool : OfflinePool<OfflineLaser>, IPool<ILaser>
 {
@@ -21,6 +22,11 @@ public class OfflineLaserPool : OfflinePool<OfflineLaser>, IPool<ILaser>
     IEnumerable<ILaser> IPool<ILaser>.GetMultiple(int count)
     {
         return GetMultiple(count);
+    }
+
+    ILaser IPool<ILaser>.GetAndPlace(Vector2 position)
+    {
+        return GetAndPlace(position);
     }
 
     private void OnLaserBeamEnded(ILaser laser)

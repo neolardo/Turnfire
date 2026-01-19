@@ -15,6 +15,8 @@ public class GameplayUIManager : MonoBehaviour
     [SerializeField] private LoadingTextUI _loadingText;
     [SerializeField] private UISoundsDefinition _uiSounds;
     private LocalInputHandler _inputHandler;
+
+    private bool _isDestroyed;
     private void Awake()
     {
         _inputHandler = FindFirstObjectByType<LocalInputHandler>();
@@ -38,7 +40,6 @@ public class GameplayUIManager : MonoBehaviour
         {
             GameServices.Initialized += OnGameServicesInitialized;
         }
-        // should I pass the teamsource here and visualize instead?
     }
             
     private void OnGameServicesInitialized()
@@ -47,7 +48,6 @@ public class GameplayUIManager : MonoBehaviour
         GameServices.TurnStateManager.GameStarted += OnGameStarted;
         GameServices.GameStateManager.StateChanged += OnGameStateChanged;
         GameServices.CountdownTimer.TimerEnded += OnCountdownTimerEnded;
-        Debug.Log("Game services initialized called from UI");
     }
 
     private void OnDestroy()
@@ -76,6 +76,7 @@ public class GameplayUIManager : MonoBehaviour
             _inputHandler.ActionSkipped -= OnActionSkipped;
             _inputHandler.ImpulseReleased -= OnImpulseReleased;
         }
+        _isDestroyed = true;
     }
 
     public void CreateTeamHealthbars(IEnumerable<Team> teams)
@@ -95,11 +96,19 @@ public class GameplayUIManager : MonoBehaviour
 
     private void OnGameplayMenuToggled(bool isGameplayMenuVisible)
     {
+        if (_isDestroyed)
+        {
+            return;
+        }
         _gameplayMenuUI.SetActive(isGameplayMenuVisible);
     }
 
     private void OnInventoryToggled()
     {
+        if (_isDestroyed)
+        {
+            return;
+        }
         _inventoryUI.gameObject.SetActive(!_inventoryUI.gameObject.activeSelf);
     }
 
@@ -110,7 +119,10 @@ public class GameplayUIManager : MonoBehaviour
 
     private void OnCountdownTimerEnded()
     {
-        //TODO: why called after destroy?
+        if(_isDestroyed)
+        {
+            return;
+        }
         StartCoroutine(HideCountdownTimerAfterDelay());
     }
 
@@ -130,6 +142,10 @@ public class GameplayUIManager : MonoBehaviour
 
     public void OnGameStarted()
     {
+        if (_isDestroyed)
+        {
+            return;
+        }
         if (GameplaySceneSettingsStorage.Current.UseTimer)
         {
             _gameplayTimer.gameObject.SetActive(true);
@@ -138,6 +154,10 @@ public class GameplayUIManager : MonoBehaviour
 
     public void OnGameOver(Team winnerTeam)
     {
+        if (_isDestroyed)
+        {
+            return;
+        }
         GameServices.GameplayTimer.Pause();
         string gameOverText = string.Empty;
         if (winnerTeam == null)
@@ -154,6 +174,10 @@ public class GameplayUIManager : MonoBehaviour
 
     private void OnGameStateChanged(GameStateType gameState)
     {
+        if (_isDestroyed)
+        {
+            return;
+        }
         OnGameplayMenuToggled(gameState == GameStateType.Paused);
     }
 

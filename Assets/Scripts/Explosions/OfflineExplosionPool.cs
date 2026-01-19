@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 public class OfflineExplosionPool : OfflinePool<OfflineExplosion>, IPool<IExplosion>
 {
@@ -21,6 +22,10 @@ public class OfflineExplosionPool : OfflinePool<OfflineExplosion>, IPool<IExplos
     IEnumerable<IExplosion> IPool<IExplosion>.GetMultiple(int count)
     {
         return GetMultiple(count);
+    }
+    IExplosion IPool<IExplosion>.GetAndPlace(Vector2 position)
+    {
+        return GetAndPlace(position);
     }
 
     public void Release(IExplosion item)

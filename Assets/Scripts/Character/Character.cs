@@ -36,6 +36,7 @@ public class Character : MonoBehaviour, IConditionalEnumerable
     public event Action<ItemInstance> SelectedItemChanged;
     public event Action SelectedItemUsed;
     public event Action<ArmorDefinition> BlockedWithArmor;
+    public event Action ActionSkipped;
 
     public void Initialize(Team team, ICharacterState state, ICharacterPhysics physics)
     {
@@ -83,6 +84,8 @@ public class Character : MonoBehaviour, IConditionalEnumerable
 
         _state.ArmorEquipped += _view.OnArmorEquipped;
         _state.ArmorUnequipped += _view.OnArmorUnequipped;
+
+        _state.ActionSkipped += InvokeActionSkipped;
     }   
 
     private void UnsubscribeFromStateChangedEvents()
@@ -119,6 +122,8 @@ public class Character : MonoBehaviour, IConditionalEnumerable
 
         _state.ArmorEquipped -= _view.OnArmorEquipped;
         _state.ArmorUnequipped -= _view.OnArmorUnequipped;
+
+        _state.ActionSkipped -= InvokeActionSkipped;
     }
 
     #region Health
@@ -222,6 +227,15 @@ public class Character : MonoBehaviour, IConditionalEnumerable
 
     #endregion
 
+    #region Action Skip
+
+    public void SkipAction()
+    {
+        _state.RequestSkipAction();
+    }
+
+    #endregion
+
     #region Items
 
     public void CreateAndSelectInitialItems()
@@ -290,6 +304,11 @@ public class Character : MonoBehaviour, IConditionalEnumerable
     private void InvokeBlockedWithArmor(ArmorDefinition armor)
     {
         BlockedWithArmor?.Invoke(armor);
+    }
+
+    private void InvokeActionSkipped()
+    {
+        ActionSkipped?.Invoke();
     }
 
     #endregion

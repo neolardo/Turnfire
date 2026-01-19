@@ -23,7 +23,8 @@ public class ProjectileLauncherWeaponBehavior : WeaponBehavior
     protected IEnumerator CreateAndLaunchProjectile(ItemUsageContext context)
     {
         _isAttacking = true;
-        var p = GameServices.ProjectilePool.Get();
+        var p = GameServices.ProjectilePool.GetAndPlace(context.AimOrigin);
+        Debug.Log("waiting for projectile to be ready");
         yield return new WaitUntil(() => p.IsReady);
         p.Initialize(_definition.ProjectileDefinition, _projectileBehavior);
         p.Launch(context, _definition.FireStrength.CalculateValue());

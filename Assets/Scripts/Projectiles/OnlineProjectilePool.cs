@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Unity.Netcode;
+using UnityEngine;
 
 public class OnlineProjectilePool : OnlinePool<OnlineProjectile>, IPool<IProjectile>
 {
@@ -33,6 +34,10 @@ public class OnlineProjectilePool : OnlinePool<OnlineProjectile>, IPool<IProject
     IEnumerable<IProjectile> IPool<IProjectile>.GetMultiple(int count)
     {
         return GetMultiple(count);
+    }
+    IProjectile IPool<IProjectile>.GetAndPlace(Vector2 position)
+    {
+        return GetAndPlace(position);
     }
 
     private void OnProjectileExploded(IProjectile p)

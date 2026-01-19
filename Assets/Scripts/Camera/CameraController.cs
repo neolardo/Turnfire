@@ -26,8 +26,8 @@ public class CameraController : MonoBehaviour
         _brain = Camera.main.GetComponent<CinemachineBrain>();
         _brain.DefaultBlend.Style = CinemachineBlendDefinition.Styles.Cut;
         AlignCamerasToPixelPerfectSize();
-        _defaultEaseInBlend = new CinemachineBlendDefinition(CinemachineBlendDefinition.Styles.EaseIn, _brain.DefaultBlend.Time);
-        _defaultEaseInOutBlend = new CinemachineBlendDefinition(CinemachineBlendDefinition.Styles.EaseInOut, _brain.DefaultBlend.Time);
+        _defaultEaseInBlend = new CinemachineBlendDefinition(CinemachineBlendDefinition.Styles.EaseIn, 1f);
+        _defaultEaseInOutBlend = new CinemachineBlendDefinition(CinemachineBlendDefinition.Styles.EaseInOut,1.5f);
     }
 
     private void AlignCamerasToPixelPerfectSize()

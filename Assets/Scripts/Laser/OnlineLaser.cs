@@ -5,11 +5,12 @@ using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
-public class OnlineLaser : NetworkBehaviour, ILaser
+public class OnlineLaser : NetworkBehaviour, ILaser, IPoolable
 {
     private LaserPhysics _physics;
     private LaserView _view;
-    public bool IsReady { get; set; }
+    private bool _awakeCalled;
+    public bool IsReady => _awakeCalled && IsSpawned;
     public Transform LaserHead => _view.LaserHead;
     public bool IsFirstRayRendered => _view.IsFirstRayRendered;
     public bool IsBeamAnimationInProgress => _view.IsAnimationInProgress;
@@ -21,12 +22,7 @@ public class OnlineLaser : NetworkBehaviour, ILaser
         var renderer = FindFirstObjectByType<PixelLaserRenderer>();
         _view = new LaserView(renderer);
         _physics = new LaserPhysics();
-    }
-
-    public override void OnNetworkSpawn()
-    {
-        base.OnNetworkSpawn();
-        IsReady = true;
+        _awakeCalled = true;
     }
 
     public void Initialize(int maxBounceCount, float maxDistance)
@@ -65,4 +61,12 @@ public class OnlineLaser : NetworkBehaviour, ILaser
     {
         return _physics.GetHitCharacters();
     }
+
+    #region Poolable
+
+    public void OnCreatedInPool() { }
+    public void OnGotFromPool() { }
+    public void OnReleasedBackToPool() { }
+
+    #endregion
 }

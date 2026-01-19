@@ -7,15 +7,15 @@ using UnityEngine;
 [RequireComponent(typeof(CircleCollider2D))]
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(NetworkTransform), typeof(NetworkRigidbody2D))]
-public class OnlineProjectile : NetworkBehaviour, IProjectile
+public class OnlineProjectile : NetworkBehaviour, IProjectile, IPoolable
 {
     private ProjectileDefinition _definition;
     private ProjectilePhysics _physics;
     private ProjectileView _view;
     private IProjectileBehavior _behavior;
-    private Rigidbody2D _rb;
-
     public bool IsReady => _awakeCalled && IsSpawned;
+
+    private bool _isInitialized;
 
     private bool _awakeCalled;
 
@@ -23,19 +23,19 @@ public class OnlineProjectile : NetworkBehaviour, IProjectile
 
     private void Awake()
     {
-        _rb = GetComponent<Rigidbody2D>();
+        var rb = GetComponent<Rigidbody2D>();
         var col = GetComponent<CircleCollider2D>();
         var spriteRenderer = GetComponent<SpriteRenderer>();
         var cameraController = FindFirstObjectByType<CameraController>();
         _view = new ProjectileView(transform, spriteRenderer, cameraController);
-        _physics = new ProjectilePhysics(_rb, col);
+        _physics = new ProjectilePhysics(rb, col);
         _awakeCalled = true;
     }
 
-    public void Initialize(ProjectileDefinition definition, IProjectileBehavior behavior) 
+    public void Initialize(ProjectileDefinition definition, IProjectileBehavior behavior)
     {
-        if(!IsServer)
-        { 
+        if (!IsServer)
+        {
             return;
         }
         InitializeClientRpc(definition.Id);
@@ -43,6 +43,7 @@ public class OnlineProjectile : NetworkBehaviour, IProjectile
         _behavior = behavior;
         _behavior.Exploded += OnExploded;
         _behavior.ContactedWithoutExplosion += OnContactedWithoutExplosion;
+        _isInitialized = true;
     }
 
     public override void OnNetworkDespawn()
@@ -62,6 +63,7 @@ public class OnlineProjectile : NetworkBehaviour, IProjectile
         _definition = GameServices.ProjectileDatabase.GetById(projectileDefinitionId);
         _view.Initialize(_definition);
         _physics.Initialize(_definition);
+        Debug.Log("Projectile initialized");
     }
 
     #region Contact
@@ -129,6 +131,10 @@ public class OnlineProjectile : NetworkBehaviour, IProjectile
 
     public void ForceExplode()
     {
+        if(!IsServer || !_isInitialized || _behavior == null)
+        {
+            return;
+        }
         _behavior.ForceExplode();
     }
 
@@ -143,7 +149,15 @@ public class OnlineProjectile : NetworkBehaviour, IProjectile
     {
         Debug.Log("Projectile exploded");
         _view.Hide();
-    } 
+    }
+
+    #endregion
+
+    #region Poolable
+
+    public void OnCreatedInPool() { }
+    public void OnGotFromPool() { }
+    public void OnReleasedBackToPool() { }
 
     #endregion
 

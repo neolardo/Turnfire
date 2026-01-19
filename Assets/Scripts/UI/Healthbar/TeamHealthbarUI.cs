@@ -17,7 +17,7 @@ public class TeamHealthbarUI : MonoBehaviour
     private float _initialScale;
     private Color _originalTextColor;
     private readonly Vector2Int TextMarginPixels = new Vector2Int(2, 2);
-
+    private bool _destroyed;
     private void Awake()
     {
         _initialScale = _healthbarInnerContentImage.transform.localScale.x;
@@ -43,11 +43,19 @@ public class TeamHealthbarUI : MonoBehaviour
 
     private void OnDestroy()
     {
-        GameServices.TurnStateManager.SelectedTeamChanged -= OnSelectedTeamChanged;
+        if(GameServices.TurnStateManager != null)
+        {
+            GameServices.TurnStateManager.SelectedTeamChanged -= OnSelectedTeamChanged;
+        }
+        _destroyed = true;
     }
 
     private void OnSelectedTeamChanged(Team selectedTeam)
     {
+        if(_destroyed)
+        {
+            return;
+        }
         FadeTextOnTeamSelectionChanged(selectedTeam == _team);
     }
 

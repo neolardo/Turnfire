@@ -2,14 +2,14 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public abstract class PoolBase<T> : MonoBehaviour, IPool<T> where T : Component
+public abstract class PoolBase<T> : MonoBehaviour, IPool<T> where T : Component, IPoolable
 {
     [SerializeField] protected T _prefab;
     [SerializeField][Range(1, 100)] protected int _initialSize = 10;
     [SerializeField] protected Transform _container;
 
-    private List<T> _available;
-    private List<T> _inUse;
+    protected List<T> _available;
+    protected List<T> _inUse;
 
     protected int TotalCount => _available.Count + _inUse.Count;
 
@@ -28,12 +28,12 @@ public abstract class PoolBase<T> : MonoBehaviour, IPool<T> where T : Component
         {
             _container = transform;
         }
-
         CreateInitialItems();
     }
 
     protected virtual void CreateInitialItems()
     {
+        Debug.Log($"Creating initial items for pool {gameObject.name}");
         for (int i = 0; i < _initialSize; i++)
         {
             _available.Add(CreateInstance());
@@ -43,7 +43,7 @@ public abstract class PoolBase<T> : MonoBehaviour, IPool<T> where T : Component
     protected virtual T CreateInstance()
     {
         T instance = Instantiate(_prefab, _container);
-        instance.gameObject.SetActive(false);
+        instance.OnCreatedInPool();
         return instance;
     }
 
@@ -61,7 +61,14 @@ public abstract class PoolBase<T> : MonoBehaviour, IPool<T> where T : Component
         }
 
         _inUse.Add(item);
-        item.gameObject.SetActive(true);
+        item.OnGotFromPool();
+        return item;
+    }
+
+    public virtual T GetAndPlace(Vector2 position)
+    {
+        var item = Get();
+        item.transform.position = position;
         return item;
     }
 
@@ -72,7 +79,7 @@ public abstract class PoolBase<T> : MonoBehaviour, IPool<T> where T : Component
             Debug.LogWarning($"Trying to release a(n) {item.name} not managed by this pool.");
         }
 
-        item.gameObject.SetActive(false);
+        item.OnReleasedBackToPool();
         ReparentItemOnRelease(item);
         _inUse.Remove(item);
         _available.Add(item);

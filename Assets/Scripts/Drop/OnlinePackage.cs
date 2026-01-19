@@ -34,8 +34,14 @@ public class OnlinePackage : NetworkBehaviour, IPackage
         {
             return;
         }
-        _cameraController.SetPackageTarget(transform);
-        AudioManager.Instance.PlaySFXAt(spawnSFX, transform);
+        if(_cameraController != null)
+        {
+            _cameraController.SetPackageTarget(transform);
+        }
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFXAt(spawnSFX, transform);
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -48,7 +54,7 @@ public class OnlinePackage : NetworkBehaviour, IPackage
         if (collision.CompareTag(Constants.CharacterTag))
         {
             var character = collision.GetComponent<Character>();
-            if (character.TryAddItem(_itemInstance))
+            if (character != null && character.TryAddItem(_itemInstance))
             {
                 Destroy();
             }
@@ -70,12 +76,17 @@ public class OnlinePackage : NetworkBehaviour, IPackage
     {
         AudioManager.Instance.PlaySFXAt(collectSFX, transform.position);
         _destroyed = true;
-        Destroyed?.Invoke(this);
-        if(IsServer)
-        {
-            gameObject.SetActive(false);
-        }
         base.OnNetworkDespawn();
+    }
+
+    public override void OnDestroy()
+    {
+        if (!_destroyed)
+        {
+            Destroyed?.Invoke(this);
+            _destroyed = true;
+        }
+        base.OnDestroy();
     }
 
     public void SetItem(ItemInstance item)

@@ -117,7 +117,7 @@ public class JoinRoomMultiplayerMenuUI : MonoBehaviour
         {
             Debug.Log($"Host (most likely) left.");
             Debug.Log(reason);
-            _responseText.text = "Host likely left the room.\nTry joining another room.";
+            _responseText.text = "Host left.\nTry joining another room.";
         }
         _isJoinInitiated = false;
         EnableInputs();
@@ -152,7 +152,7 @@ public class JoinRoomMultiplayerMenuUI : MonoBehaviour
             {
                 if (result == RoomNetworkConnectionResult.NetworkError)
                 {
-                    _responseText.text = "Failed to join room.\nPlease check your internet connection.";
+                    _responseText.text = "Failed to join room.\nCheck your internet connection.";
                 }
                 else if (result == RoomNetworkConnectionResult.JoinCodeInvalid)
                 {
