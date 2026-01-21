@@ -5,6 +5,8 @@ using UnityEngine;
 public class MenuUIManager : MonoBehaviour
 {
     [SerializeField] private MainMenuUI _mainMenu;
+    [SerializeField] private SingleplayerOrMultiplayerMenuUI _singleplayerOrMultiplayerMenu;
+    [SerializeField] private MenuSettingsUI _menuSettingsUI;
     [SerializeField] private SingleplayerMenuUI _singleplayerMenu;
     [SerializeField] private OnlineOrOfflineMultiplayerMenuUI _onlineOrOfflineMultiplayerMenu;
     [SerializeField] private HostOrJoinMultiplayerMenuUI _hostOrJoinMultiplayerMenu;
@@ -54,6 +56,8 @@ public class MenuUIManager : MonoBehaviour
     public void HideAllPanels()
     {
         _mainMenu.gameObject.SetActive(false);
+        _singleplayerOrMultiplayerMenu.gameObject.SetActive(false);
+        _menuSettingsUI.gameObject.SetActive(false);
         _singleplayerMenu.gameObject.SetActive(false);
         _onlineOrOfflineMultiplayerMenu.gameObject.SetActive(false);
         _hostOrJoinMultiplayerMenu.gameObject.SetActive(false);
@@ -80,6 +84,10 @@ public class MenuUIManager : MonoBehaviour
         {
             case MenuPanelType.MainMenu:
                 return _mainMenu.gameObject;
+            case MenuPanelType.SettingsMenu:
+                return _menuSettingsUI.gameObject;
+            case MenuPanelType.SingleplayerOrMultiplayerMenu:
+                return _singleplayerOrMultiplayerMenu.gameObject;
             case MenuPanelType.SingleplayerMenu:
                 return _singleplayerMenu.gameObject;
             case MenuPanelType.HostOrJoinMultiplayerMenu:

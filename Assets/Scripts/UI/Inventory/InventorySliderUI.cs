@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PixelSliderUI : MonoBehaviour
+public class InventorySliderUI : MonoBehaviour
 {
     [SerializeField] private Image _sliderValueImage;
 

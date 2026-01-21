@@ -1,13 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class GameplayUIManager : MonoBehaviour
 {
     [SerializeField] private GameplaySettingsDefinition _gameplaySettings;
-    [SerializeField] private GameObject _gameplayMenuUI;
+    [SerializeField] private GameObject _hostGameplayMenuUI;
+    [SerializeField] private GameObject _clientGameplayMenuUI;
     [SerializeField] private InventoryUI _inventoryUI;
-    [SerializeField] private GameOverScreenUI _gameOverScreenUI;
+    [SerializeField] private GameOverScreenUI _hostGameOverScreenUI;
+    [SerializeField] private GameOverScreenUI _clientGameOverScreenUI;
     [SerializeField] private TeamHealthbarUIManager _teamHealthbarUIManager;
     [SerializeField] private GameplayTimerUI _gameplayTimer;
     [SerializeField] private CountdownTimerUI _countdownTimer;
@@ -15,6 +18,8 @@ public class GameplayUIManager : MonoBehaviour
     [SerializeField] private LoadingTextUI _loadingText;
     [SerializeField] private UISoundsDefinition _uiSounds;
     private LocalInputHandler _inputHandler;
+    private GameObject _gameplayMenuUI;
+    private GameOverScreenUI _gameOverScreenUI;
 
     private bool _isDestroyed;
     private void Awake()
@@ -28,6 +33,17 @@ public class GameplayUIManager : MonoBehaviour
         _inputHandler.ImpulseReleased += OnImpulseReleased;
         _gameplayTimer.gameObject.SetActive(false);
         _countdownTimer.gameObject.SetActive(true);
+        if(GameplaySceneSettingsStorage.Current.IsOnlineGame)
+        {
+            var isServer = NetworkManager.Singleton.IsServer;
+            _gameplayMenuUI = isServer ? _hostGameplayMenuUI : _clientGameplayMenuUI;
+            _gameOverScreenUI = isServer ? _hostGameOverScreenUI : _clientGameOverScreenUI;
+        }
+        else
+        {
+            _gameplayMenuUI = _hostGameplayMenuUI;
+            _gameOverScreenUI = _hostGameOverScreenUI;
+        }
     }
 
     private void Start()

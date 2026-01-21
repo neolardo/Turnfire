@@ -3,33 +3,33 @@ using UnityEngine.EventSystems;
 
 public class MainMenuUI : MonoBehaviour
 {
-    [SerializeField] private MenuButtonUI _singleplayerButton;
-    [SerializeField] private MenuButtonUI _multiplayerButton;
+    [SerializeField] private MenuButtonUI _playButton;
+    [SerializeField] private MenuButtonUI _settingsButton;
     [SerializeField] private MenuButtonUI _exitButton;
 
     private MenuUIManager _menuUIManager;
 
     private void Awake()
     {
-        _singleplayerButton.ButtonPressed += OnSingleplayerButtonPressed;
-        _multiplayerButton.ButtonPressed += OnMultiplayerButtonPressed;
+        _playButton.ButtonPressed += OnPlayButtonPressed;
+        _settingsButton.ButtonPressed += OnSettingsButtonPressed;
         _exitButton.ButtonPressed += OnExitButtonPressed;
         _menuUIManager = FindFirstObjectByType<MenuUIManager>();
     }
 
     private void Start()
     {
-        EventSystem.current.SetSelectedGameObject(_multiplayerButton.gameObject);
+        EventSystem.current.SetSelectedGameObject(_playButton.gameObject);
     }
 
-    private void OnSingleplayerButtonPressed()
+    private void OnPlayButtonPressed()
     {
-        _menuUIManager.SwitchPanel(MenuPanelType.SingleplayerMenu);
+        _menuUIManager.SwitchPanel(MenuPanelType.SingleplayerOrMultiplayerMenu);
     }
 
-    private void OnMultiplayerButtonPressed()
+    private void OnSettingsButtonPressed()
     {
-        _menuUIManager.SwitchPanel(MenuPanelType.OnlineOrOfflineMultiplayerMenu);
+        _menuUIManager.SwitchPanel(MenuPanelType.SettingsMenu);
     }
 
     private void OnExitButtonPressed()

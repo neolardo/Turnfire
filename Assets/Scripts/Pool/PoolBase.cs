@@ -33,7 +33,6 @@ public abstract class PoolBase<T> : MonoBehaviour, IPool<T> where T : Component,
 
     protected virtual void CreateInitialItems()
     {
-        Debug.Log($"Creating initial items for pool {gameObject.name}");
         for (int i = 0; i < _initialSize; i++)
         {
             _available.Add(CreateInstance());
