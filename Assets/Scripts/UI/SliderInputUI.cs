@@ -28,7 +28,6 @@ public class SliderInputUI : MonoBehaviour,
     private Canvas _canvas;
     private bool _isHovered;
     private bool _isDragged;
-    private LocalMenuUIInputSource _inputManager;
     private bool IsHoveredOrDragged => _isHovered || _isDragged;
     public float Value { get; private set; }
 
@@ -46,7 +45,6 @@ public class SliderInputUI : MonoBehaviour,
         _canvas = GetComponentInParent<Canvas>();
         _image = GetComponent<Image>();
         _emptySprite = _image.sprite;
-        _inputManager = FindFirstObjectByType<LocalMenuUIInputSource>();
         if (_canvas == null)
         {
             Debug.LogError("RawImageSliderInput must be placed under a Canvas.");
@@ -54,24 +52,19 @@ public class SliderInputUI : MonoBehaviour,
     }
 
     private void OnEnable()
-    {
-        _inputManager.MenuDecrementValuePerformed += DecrementSliderValue;
-        _inputManager.MenuIncrementValuePerformed += IncrementSliderValue;
+    { 
         RefreshVisuals();
     }
 
-    private void OnDisable()
+    public void IncrementSliderValue()
     {
-        _inputManager.MenuDecrementValuePerformed -= DecrementSliderValue;
-        _inputManager.MenuIncrementValuePerformed -= IncrementSliderValue;
+        if(_isHovered || EventSystem.current.currentSelectedGameObject == this)
+        {
+            SetValue(Mathf.Clamp01(Value + _valueIncrement));
+        }
     }
 
-    private void IncrementSliderValue()
-    {
-        SetValue( Mathf.Clamp01(Value + _valueIncrement));
-    }
-
-    private void DecrementSliderValue()
+    public void DecrementSliderValue()
     {
         SetValue(Mathf.Clamp01(Value - _valueIncrement));
     }

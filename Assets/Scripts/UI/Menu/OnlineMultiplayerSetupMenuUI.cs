@@ -11,7 +11,7 @@ public class OnlineMultiplayerSetupMenuUI : MonoBehaviour
     [SerializeField] private MenuButtonUI _startButton;
     [SerializeField] private MenuButtonUI _cancelButton;
     [SerializeField] private MenuMapDisplayUI _mapDisplay;
-    [SerializeField] private MenuCheckBoxUI _useTimerCheckbox;
+    [SerializeField] private CheckBoxUI _useTimerCheckbox;
     [SerializeField] private TextMeshProUGUI _hostPlayerNameText;
     [SerializeField] private TMP_InputField _joinCodeInputField;
     [SerializeField] private TextMeshProUGUI _numPlayersJoinedText;

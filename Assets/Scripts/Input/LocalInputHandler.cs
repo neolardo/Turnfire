@@ -294,7 +294,7 @@ public class LocalInputHandler : MonoBehaviour
         Vector2 raw = ctx.ReadValue<Vector2>();
         float mag = raw.magnitude;
         Vector2 normalized = raw.normalized;
-        float adjustedMag = _gamepadStickResponseCurve.Evaluate(mag);
+        float adjustedMag = _gamepadStickResponseCurve.Evaluate(mag); //TODO: use inverted controls settings
         return normalized * adjustedMag;
     }
 

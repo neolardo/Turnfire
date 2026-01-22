@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Image))]
-public class MenuCheckBoxUI : MonoBehaviour,
+public class CheckBoxUI : MonoBehaviour,
     IPointerEnterHandler,
     IPointerExitHandler,
     IPointerDownHandler,
@@ -17,7 +17,6 @@ public class MenuCheckBoxUI : MonoBehaviour,
     [SerializeField] private Sprite _hoveredSprite;
     [SerializeField] private bool _initialValue;
     [SerializeField] private HoverableSelectableContainerUI _containerUI;
-    private LocalMenuUIInputSource _inputManager;
     private Sprite _normalSprite;
     private Image _image;
     private bool _hovered;
@@ -30,8 +29,8 @@ public class MenuCheckBoxUI : MonoBehaviour,
         _image = GetComponent<Image>();
         _normalSprite = _image.sprite;
         var canvas = FindFirstObjectByType<Canvas>();
-        _inputManager = FindFirstObjectByType<LocalMenuUIInputSource>();
     }
+
     private void Start()
     {
         if (_value != _initialValue)
@@ -43,27 +42,9 @@ public class MenuCheckBoxUI : MonoBehaviour,
     private void OnEnable()
     {
         UnHoverButton();
-        _inputManager.MenuConfirmPerformed += OnMenuButtonConfirmPerformed;
-        _inputManager.MenuIncrementValuePerformed += OnDecrementOrIncrementValuePerformed;
-        _inputManager.MenuDecrementValuePerformed += OnDecrementOrIncrementValuePerformed;
     }
 
-    private void OnDisable()
-    {
-        _inputManager.MenuConfirmPerformed -= OnMenuButtonConfirmPerformed;
-        _inputManager.MenuIncrementValuePerformed -= OnDecrementOrIncrementValuePerformed;
-        _inputManager.MenuDecrementValuePerformed -= OnDecrementOrIncrementValuePerformed;
-    }
-
-    private void OnMenuButtonConfirmPerformed()
-    {
-        if (_containerUI.IsSelected || _hovered || EventSystem.current.currentSelectedGameObject == gameObject)
-        {
-            ToggleValue();
-        }
-    }
-
-    private void OnDecrementOrIncrementValuePerformed()
+    public void OnDecrementOrIncrementValuePerformed()
     {
         if (_containerUI.IsSelected)
         {
@@ -97,6 +78,13 @@ public class MenuCheckBoxUI : MonoBehaviour,
         UnHoverButton();
     }
 
+    public void SetInitialValue(bool initialValue)
+    {
+        _initialValue = initialValue;
+        _value = initialValue;
+        RefreshVisuals();
+    }
+
     public void ToggleValue(bool playSound = true)
     {
         if(playSound)
@@ -105,6 +93,11 @@ public class MenuCheckBoxUI : MonoBehaviour,
         }
         _value = !_value;
         ValueChanged?.Invoke(Value);
+        RefreshVisuals();
+    }
+
+    private void RefreshVisuals()
+    {
         _image.sprite = _value ? _checkedSprite : _normalSprite;
     }
 

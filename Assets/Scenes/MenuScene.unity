@@ -13122,7 +13122,7 @@ MonoBehaviour:
   _uiSounds: {fileID: 11400000, guid: 24e90cd52b550ec4d9553c5fd74a5aa0, type: 2}
   _checkedSprite: {fileID: 21300000, guid: 3d92523417886664c9b6bbe068268b2e, type: 3}
   _hoveredSprite: {fileID: 21300000, guid: 46bbe108c5ae89140931ff5d085cf9cc, type: 3}
-  _initialValue: 1
+  _initialValue: 0
   _containerUI: {fileID: 2012663013}
 --- !u!114 &2125940261
 MonoBehaviour:

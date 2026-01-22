@@ -10,7 +10,7 @@ public class OfflineMultiplayerSetupMenuUI : MonoBehaviour
     [SerializeField] private MenuButtonUI _cancelButton;
     [SerializeField] private MenuNumericDisplayUI _numPlayersDisplay;
     [SerializeField] private MenuMapDisplayUI _mapDisplay;
-    [SerializeField] private MenuCheckBoxUI _useTimerCheckbox;
+    [SerializeField] private CheckBoxUI _useTimerCheckbox;
 
     private LocalMenuUIInputSource _inputManager;
     private MenuUIManager _menuUIManager;

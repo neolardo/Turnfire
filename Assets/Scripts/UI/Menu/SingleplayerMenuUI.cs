@@ -11,7 +11,7 @@ public class SingleplayerMenuUI : MonoBehaviour
     [SerializeField] private MenuNumericDisplayUI _numBotsDisplay;
     [SerializeField] private MenuBotDifficultyToggleUI _botDifficultyToggle;
     [SerializeField] private MenuMapDisplayUI _mapDisplay;
-    [SerializeField] private MenuCheckBoxUI _useTimerCheckbox;
+    [SerializeField] private CheckBoxUI _useTimerCheckbox;
 
     private LocalMenuUIInputSource _inputManager;
     private MenuUIManager _menuUIManager;
