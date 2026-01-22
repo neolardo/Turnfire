@@ -27,6 +27,7 @@ public class CreateRoomMultiplayerMenuUI : MonoBehaviour
 
     private void OnEnable()
     {
+        EventSystem.current.SetSelectedGameObject(_hostNameInputField.gameObject);
         _inputManager.MenuBackPerformed += _cancelButton.Press;
         _hostInfoText.text = "";
         _hostNameInputField.text = "";
@@ -44,11 +45,6 @@ public class CreateRoomMultiplayerMenuUI : MonoBehaviour
         {
             NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
         }
-    }
-
-    private void Start()
-    {
-        EventSystem.current.SetSelectedGameObject(_hostNameInputField.gameObject);
     }
 
     private void OnClientDisconnected(ulong clientId)

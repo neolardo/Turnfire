@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -8,6 +9,7 @@ public class OnlineOrOfflineMultiplayerMenuUI : MonoBehaviour
     [SerializeField] private MenuButtonUI _backButton;
 
     private MenuUIManager _menuUIManager;
+    private LocalMenuUIInputSource _inputManager;
 
     private void Awake()
     {
@@ -15,11 +17,24 @@ public class OnlineOrOfflineMultiplayerMenuUI : MonoBehaviour
         _offlineButton.ButtonPressed += OnOfflineButtonPressed;
         _backButton.ButtonPressed += OnBackButtonPressed;
         _menuUIManager = FindFirstObjectByType<MenuUIManager>();
+        _inputManager = FindFirstObjectByType<LocalMenuUIInputSource>();
     }
 
-    private void Start()
+    private void OnEnable()
     {
+        StartCoroutine(SelectDefaultButtonNextFrame());
+        _inputManager.MenuBackPerformed += OnBackButtonPressed;
+    }
+
+    private IEnumerator SelectDefaultButtonNextFrame()
+    {
+        yield return null;
         EventSystem.current.SetSelectedGameObject(_onlineButton.gameObject);
+    }
+
+    private void OnDisable()
+    {
+        _inputManager.MenuBackPerformed -= OnBackButtonPressed;
     }
 
     private void OnOnlineButtonPressed()

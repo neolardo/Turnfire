@@ -140,8 +140,11 @@ public class OnlineHumanTeamInputSource : NetworkBehaviour, ITeamInputSource
 
     public override void OnNetworkDespawn()
     {
-        GameServices.TurnStateManager.GameStarted -= OnGameStarted;
-        GameServices.TurnStateManager.GameEnded -= OnGameEnded;
+        if(GameServices.TurnStateManager != null)
+        {
+            GameServices.TurnStateManager.GameStarted -= OnGameStarted;
+            GameServices.TurnStateManager.GameEnded -= OnGameEnded;
+        }
         base.OnNetworkDespawn();
     }
 

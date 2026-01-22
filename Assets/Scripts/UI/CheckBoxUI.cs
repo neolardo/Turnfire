@@ -9,7 +9,8 @@ public class CheckBoxUI : MonoBehaviour,
     IPointerExitHandler,
     IPointerDownHandler,
     ISelectHandler,
-    IDeselectHandler
+    IDeselectHandler,
+    ISubmitHandler
     {
     [SerializeField] private PixelUIDefinition _uiDefinition;
     [SerializeField] private UISoundsDefinition _uiSounds;
@@ -29,6 +30,8 @@ public class CheckBoxUI : MonoBehaviour,
         _image = GetComponent<Image>();
         _normalSprite = _image.sprite;
         var canvas = FindFirstObjectByType<Canvas>();
+        _containerUI.SelectionChanged += OnContainerSelectionChanged;
+        _containerUI.SubmitPerformed += OnSubmitPerformed;
     }
 
     private void Start()
@@ -46,11 +49,24 @@ public class CheckBoxUI : MonoBehaviour,
 
     public void OnDecrementOrIncrementValuePerformed()
     {
-        if (_containerUI.IsSelected)
+        if (_containerUI.IsSelected || _hovered)
         {
             ToggleValue();
         }
     }
+
+    private void OnContainerSelectionChanged(bool isContainerHovered)
+    {
+        if (isContainerHovered)
+        {
+            HoverButton();
+        }
+        else
+        {
+            UnHoverButton();
+        }
+    }
+
 
     public void OnPointerEnter(PointerEventData eventData)
     {
@@ -78,6 +94,16 @@ public class CheckBoxUI : MonoBehaviour,
         UnHoverButton();
     }
 
+    public void OnSubmit(BaseEventData eventData)
+    {
+        OnSubmitPerformed();
+    }
+
+    private void OnSubmitPerformed()
+    {
+        ToggleValue();
+    }
+
     public void SetInitialValue(bool initialValue)
     {
         _initialValue = initialValue;
@@ -103,6 +129,10 @@ public class CheckBoxUI : MonoBehaviour,
 
     private void HoverButton()
     {
+        if(_hovered)
+        {
+            return;
+        }
         AudioManager.Instance.PlayUISound(_uiSounds.Hover);
         _image.sprite = _hoveredSprite;
         _hovered = true;
@@ -110,6 +140,10 @@ public class CheckBoxUI : MonoBehaviour,
 
     private void UnHoverButton()
     {
+        if (!_hovered)
+        {
+            return;
+        }
         _image.sprite = _value ? _checkedSprite : _normalSprite;
         _hovered = false;
     }

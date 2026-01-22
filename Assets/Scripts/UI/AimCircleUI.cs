@@ -8,13 +8,13 @@ public class AimCircleUI : MonoBehaviour
     [SerializeField] private int _outerCirclePixelSize;
     [SerializeField] private int _innerCirclePixelSize;
 
-    public static readonly Vector2 DefaultOffsetPercent = new Vector2(.15f, .8f);
-
+    public static readonly Vector2 DefaultOffsetPercent = new Vector2(.13f, .76f);
     public float MouseAimRadiusScreenHeightRatio { get; private set; }
 
     private Vector2 _circleCenter;
     private RectTransform _rootCanvasRect;
     private Camera _camera;
+    private SettingsController _settingsController;
 
     private void Awake()
     {
@@ -23,6 +23,7 @@ public class AimCircleUI : MonoBehaviour
         float outerRatio = _outerCirclePixelSize / (float)_uiDefinition.TargetScreenHeightInPixels;
         float innerRatio =  _innerCirclePixelSize / (float)_uiDefinition.TargetScreenHeightInPixels;
         MouseAimRadiusScreenHeightRatio = (outerRatio - innerRatio) / 2f;
+        _settingsController = FindFirstObjectByType<SettingsController>(FindObjectsInactive.Include);
     }
 
     public void ShowCircles(Vector2 initialScreenPosition)
@@ -67,7 +68,11 @@ public class AimCircleUI : MonoBehaviour
     private void MoveInnerCircle(Vector2 aimVector)
     {
         float maxRadius = (_outerCircle.sizeDelta.x - _innerCircle.sizeDelta.x) * 0.5f;
-        Vector2 offset = -aimVector * maxRadius;
+        Vector2 offset = aimVector * maxRadius;
+        if(_settingsController.GetInvertedInput())
+        {
+            offset *= -1;
+        }
         _innerCircle.anchoredPosition = _circleCenter + offset;
     }
 

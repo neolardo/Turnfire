@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -17,8 +18,14 @@ public class MainMenuUI : MonoBehaviour
         _menuUIManager = FindFirstObjectByType<MenuUIManager>();
     }
 
-    private void Start()
+    private void OnEnable()
     {
+        StartCoroutine(SelectDefaultButtonNextFrame());
+    }
+
+    private IEnumerator SelectDefaultButtonNextFrame()
+    {
+        yield return null;
         EventSystem.current.SetSelectedGameObject(_playButton.gameObject);
     }
 

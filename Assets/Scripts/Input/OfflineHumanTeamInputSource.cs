@@ -83,8 +83,11 @@ public class OfflineHumanTeamInputSource : MonoBehaviour, ITeamInputSource
 
     private void OnDestroy()
     {
-        GameServices.TurnStateManager.GameStarted -= OnGameStarted;
-        GameServices.TurnStateManager.GameEnded -= OnGameEnded;
+        if(GameServices.TurnStateManager != null)
+        {
+            GameServices.TurnStateManager.GameStarted -= OnGameStarted;
+            GameServices.TurnStateManager.GameEnded -= OnGameEnded;
+        }
     }
 
     private void SubscribeToInputEvents()

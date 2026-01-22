@@ -29,18 +29,22 @@ public class SingleplayerMenuUI : MonoBehaviour
 
     private void OnEnable()
     {
+        EventSystem.current.SetSelectedGameObject(_mapDisplay.gameObject);
         _inputManager.MenuBackPerformed += _cancelButton.Press;
+        _inputManager.MenuIncrementValuePerformed += _useTimerCheckbox.OnDecrementOrIncrementValuePerformed;
+        _inputManager.MenuDecrementValuePerformed += _useTimerCheckbox.OnDecrementOrIncrementValuePerformed;
     }
 
     private void OnDisable()
     {
         _inputManager.MenuBackPerformed -= _cancelButton.Press;
+        _inputManager.MenuIncrementValuePerformed -= _useTimerCheckbox.OnDecrementOrIncrementValuePerformed;
+        _inputManager.MenuDecrementValuePerformed -= _useTimerCheckbox.OnDecrementOrIncrementValuePerformed;
     }
 
     private void Start()
     {
         _numBotsDisplay.Initialize(Constants.SingleplayerMinBots, Constants.SingleplayerMaxBots, Constants.SingleplayerMinBots);
-        EventSystem.current.SetSelectedGameObject(_mapDisplay.gameObject);
     }
 
     public void OnConfirmPressed()

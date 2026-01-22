@@ -27,10 +27,10 @@ public class JoinRoomMultiplayerMenuUI : MonoBehaviour
         _backButton.ButtonPressed += OnCancelPressed;
     }
 
-
     private void OnEnable()
     {
         InitializeUI();
+        EventSystem.current.SetSelectedGameObject(_joinCodeInputField.gameObject);
         _playerNameInputField.text = "";
         _joinCodeInputField.text = "";
         _inputManager.MenuBackPerformed += _backButton.Press;
@@ -64,11 +64,6 @@ public class JoinRoomMultiplayerMenuUI : MonoBehaviour
             NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
             NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
         }
-    }
-
-    private void Start()
-    {
-        EventSystem.current.SetSelectedGameObject(_joinCodeInputField.gameObject);
     }
 
     private void OnSceneLoadStarted(ulong clientId, string sceneName, LoadSceneMode loadSceneMode, AsyncOperation asyncOperation)

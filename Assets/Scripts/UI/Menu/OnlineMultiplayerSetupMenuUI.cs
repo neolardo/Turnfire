@@ -42,8 +42,14 @@ public class OnlineMultiplayerSetupMenuUI : MonoBehaviour
 
     private void OnEnable()
     {
+        EventSystem.current.SetSelectedGameObject(_mapDisplay.gameObject);
         _inputManager.MenuBackPerformed += _cancelButton.Press;
-        RoomNetworkSession.Instance.RegisteredPlayersChanged += RefreshJoinedPlayers;
+        _inputManager.MenuIncrementValuePerformed += _useTimerCheckbox.OnDecrementOrIncrementValuePerformed;
+        _inputManager.MenuDecrementValuePerformed += _useTimerCheckbox.OnDecrementOrIncrementValuePerformed;
+        if (RoomNetworkSession.Instance != null)
+        {
+            RoomNetworkSession.Instance.RegisteredPlayersChanged += RefreshJoinedPlayers;
+        }
         StartCoroutine(OnOneFrameAfterOnEnable());
     }
 
@@ -56,12 +62,12 @@ public class OnlineMultiplayerSetupMenuUI : MonoBehaviour
     private void OnDisable()
     {
         _inputManager.MenuBackPerformed -= _cancelButton.Press;
-        RoomNetworkSession.Instance.RegisteredPlayersChanged -= RefreshJoinedPlayers;
-    }
-
-    private void Start()
-    {
-        EventSystem.current.SetSelectedGameObject(_mapDisplay.gameObject);
+        _inputManager.MenuIncrementValuePerformed -= _useTimerCheckbox.OnDecrementOrIncrementValuePerformed;
+        _inputManager.MenuDecrementValuePerformed -= _useTimerCheckbox.OnDecrementOrIncrementValuePerformed;
+        if (RoomNetworkSession.Instance != null)
+        {
+            RoomNetworkSession.Instance.RegisteredPlayersChanged -= RefreshJoinedPlayers;
+        }
     }
 
 
@@ -79,6 +85,10 @@ public class OnlineMultiplayerSetupMenuUI : MonoBehaviour
 
     private void RefreshJoinedPlayers()
     {
+        if(RoomNetworkSession.Instance == null)
+        {
+            return;
+        }
         int numJoinedPlayers = RoomNetworkSession.Instance.NumPlayers;
         _numPlayersJoinedText.text = numJoinedPlayers.ToString();
         _startButton.SetIsInteractable(numJoinedPlayers > 1);

@@ -49,7 +49,10 @@ public class CharacterActionManager : UnityDriven
     {
         yield return null;
         yield return new WaitUntil(() => !_cameraController.IsBlending);
-        GameServices.GameplayTimer.Restart();
+        if(GameServices.GameplayTimer != null)
+        {
+            GameServices.GameplayTimer.Restart();
+        }
         StartCurrentCharacterActionState();
     }
 
@@ -61,7 +64,10 @@ public class CharacterActionManager : UnityDriven
 
     private void EndActions()
     {
-        GameServices.GameplayTimer.Pause();
+        if (GameServices.GameplayTimer != null)
+        {
+            GameServices.GameplayTimer.Pause();
+        }
         CharacterActionsFinished?.Invoke();
     }
 

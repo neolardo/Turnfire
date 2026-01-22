@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -28,19 +27,23 @@ public class OfflineMultiplayerSetupMenuUI : MonoBehaviour
 
     private void OnEnable()
     {
+        EventSystem.current.SetSelectedGameObject(_mapDisplay.gameObject);
         _inputManager.MenuBackPerformed += _cancelButton.Press;
+        _inputManager.MenuIncrementValuePerformed += _useTimerCheckbox.OnDecrementOrIncrementValuePerformed;
+        _inputManager.MenuDecrementValuePerformed += _useTimerCheckbox.OnDecrementOrIncrementValuePerformed;
     }
 
     private void OnDisable()
     {
         _inputManager.MenuBackPerformed -= _cancelButton.Press;
+        _inputManager.MenuIncrementValuePerformed -= _useTimerCheckbox.OnDecrementOrIncrementValuePerformed;
+        _inputManager.MenuDecrementValuePerformed -= _useTimerCheckbox.OnDecrementOrIncrementValuePerformed;
     }
 
 
     private void Start()
     {
         _numPlayersDisplay.Initialize(Constants.MultiplayerMinPlayers, Constants.MultiplayerMaxPlayers, Constants.MultiplayerMinPlayers);
-        EventSystem.current.SetSelectedGameObject(_mapDisplay.gameObject);
     }
 
 

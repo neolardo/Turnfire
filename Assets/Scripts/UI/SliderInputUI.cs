@@ -22,20 +22,23 @@ public class SliderInputUI : MonoBehaviour,
     [SerializeField] private Sprite _emptyHoveredSprite;
     [SerializeField] private Sprite _fullSprite;
     [SerializeField] private Sprite _fullHoveredSprite;
+    [SerializeField] private HoverableSelectableContainerUI _containerUI;
     private Sprite _emptySprite;
     private Image _image; 
     private RectTransform _rectTransform;
     private Canvas _canvas;
+
+    private bool _isContainerHovered;
     private bool _isHovered;
     private bool _isDragged;
-    private bool IsHoveredOrDragged => _isHovered || _isDragged;
+    private bool IsHoveredOrDragged => _isContainerHovered || _isHovered || _isDragged;
     public float Value { get; private set; }
 
     private readonly Vector2Int _originalInnerPixelOffset = new Vector2Int(1, 1);
     private readonly Vector2Int _hoveredInnerPixelOffset = new Vector2Int(1, 2);
     private const float _initialScale = 1;
     private const float _maxValue = 1;
-    private const float _valueIncrement = .8f;
+    private const float _valueIncrement = .08f;
 
     public event Action<float> ValueChanged;
 
@@ -49,6 +52,7 @@ public class SliderInputUI : MonoBehaviour,
         {
             Debug.LogError("RawImageSliderInput must be placed under a Canvas.");
         }
+        _containerUI.SelectionChanged += OnContainerSelectionChanged;
     }
 
     private void OnEnable()
@@ -56,9 +60,19 @@ public class SliderInputUI : MonoBehaviour,
         RefreshVisuals();
     }
 
+    private void OnContainerSelectionChanged(bool isContainerSelected)
+    {
+        if (!IsHoveredOrDragged && isContainerSelected)
+        {
+            AudioManager.Instance.PlayUISound(_uiSounds.Hover);
+        }
+        _isContainerHovered = isContainerSelected;
+        RefreshVisuals();
+    }
+
     public void IncrementSliderValue()
     {
-        if(_isHovered || EventSystem.current.currentSelectedGameObject == this)
+        if(_isContainerHovered || _isHovered || EventSystem.current.currentSelectedGameObject == this)
         {
             SetValue(Mathf.Clamp01(Value + _valueIncrement));
         }
@@ -66,12 +80,19 @@ public class SliderInputUI : MonoBehaviour,
 
     public void DecrementSliderValue()
     {
-        SetValue(Mathf.Clamp01(Value - _valueIncrement));
+        if (_isContainerHovered || _isHovered || EventSystem.current.currentSelectedGameObject == this)
+        {
+            SetValue(Mathf.Clamp01(Value - _valueIncrement));
+        }
     }
 
     public void SetInitialValue(float initialValue)
     {
         Value = initialValue;
+        if(gameObject.activeSelf)
+        {
+            RefreshVisuals();
+        }
     }
 
     public void OnPointerDown(PointerEventData eventData)

@@ -57,6 +57,13 @@ public class LocalInputHandler : MonoBehaviour
 
     public event Action ActionSkipped;
 
+    // gameplay menu
+    public event Action GameplayMenuIncrementValuePerformed;
+    public event Action GameplayMenuDecrementValuePerformed;
+
+
+    private SettingsController _settingsController;
+
     private void Awake()
     {
         InputActions = new PlayerInputActions();
@@ -83,6 +90,7 @@ public class LocalInputHandler : MonoBehaviour
         _onAnyButtonPressSubscription = InputSystem.onAnyButtonPress.Call(OnAnyButtonPress);
 
         _aimCircleUI = FindFirstObjectByType<AimCircleUI>();
+        _settingsController = FindFirstObjectByType<SettingsController>(FindObjectsInactive.Include);
     }
 
     private void OnDestroy()
@@ -132,6 +140,8 @@ public class LocalInputHandler : MonoBehaviour
 
         InputActions.Gameplay.ShowGameplayMenu.started += OnToggleGameplayMenu;
         InputActions.GameplayMenu.ResumeGameplay.started += OnToggleGameplayMenu;
+        InputActions.GameplayMenu.IncrementValue.performed += OnGameplayMenuIncrementValuePerformed;
+        InputActions.GameplayMenu.DecrementValue.performed += OnGameplayMenuDecrementValuePerformed;
 
         InputActions.Gameplay.ToggleInventory.started += OnToggleInventory;
         InputActions.Inventory.ToggleInventory.started += OnToggleInventory;
@@ -211,7 +221,11 @@ public class LocalInputHandler : MonoBehaviour
     private void HandleGamepadAiming(InputAction.CallbackContext ctx)
     {
         Cursor.visible = false;
-        _aimVector = -GetGamepadStickValue(ctx);
+        _aimVector = GetGamepadStickValue(ctx);
+        if(_settingsController.GetInvertedInput())
+        {
+            _aimVector *= -1;
+        }
         if (!_isAiming)
         {
             AimStarted?.Invoke(DefaultAimStartPosition);
@@ -231,11 +245,17 @@ public class LocalInputHandler : MonoBehaviour
                 _isInitialMouseAimPositionSet = true;
                 _initialMouseAimPosition = pos;
             }
-            _aimVector = _initialMouseAimPosition - pos;
+            _aimVector = pos -_initialMouseAimPosition;
+            bool inputInverted = _settingsController.GetInvertedInput();
+            if (inputInverted)
+            {
+                _aimVector *= -1;
+            }
             if (_aimVector.magnitude > _mouseAimRadius)
             {
                 _aimVector = _aimVector.normalized * _mouseAimRadius;
-                Mouse.current.WarpCursorPosition(_initialMouseAimPosition - _aimVector);
+                var cursorDestination = inputInverted ? _initialMouseAimPosition - _aimVector : _initialMouseAimPosition + _aimVector;
+                Mouse.current.WarpCursorPosition(cursorDestination);
             }
             _aimVector = _aimVector / _mouseAimRadius;
             SanitizeAimVector();
@@ -294,7 +314,7 @@ public class LocalInputHandler : MonoBehaviour
         Vector2 raw = ctx.ReadValue<Vector2>();
         float mag = raw.magnitude;
         Vector2 normalized = raw.normalized;
-        float adjustedMag = _gamepadStickResponseCurve.Evaluate(mag); //TODO: use inverted controls settings
+        float adjustedMag = _gamepadStickResponseCurve.Evaluate(mag); 
         return normalized * adjustedMag;
     }
 
@@ -368,12 +388,13 @@ public class LocalInputHandler : MonoBehaviour
             return;
         }
         var targetActionMapType = CurrentActionMap == InputActionMapType.Gameplay ? InputActionMapType.GameplayMenu : InputActionMapType.Gameplay;
-        if (!IsOpeningGameplayMenuEnabled && targetActionMapType == InputActionMapType.GameplayMenu)
+        if (!IsOpeningGameplayMenuEnabled && targetActionMapType == InputActionMapType.Gameplay)
         {
             return;
         }
         SwitchToInputActionMap(targetActionMapType);
-        GameServices.GameStateManager.TogglePauseResumeGameplay(); //TODO: check ui if pause not possible
+        ToggleGameplayMenuPerformed?.Invoke();
+        GameServices.GameStateManager.TogglePauseResumeGameplay();
     }
 
     private void OnToggleGameplayMenu(InputAction.CallbackContext ctx)
@@ -405,6 +426,20 @@ public class LocalInputHandler : MonoBehaviour
         {
             ActionSkipped?.Invoke();
         }
+    }
+
+    #endregion
+
+    #region Gameplay Menu
+
+
+    private void OnGameplayMenuIncrementValuePerformed(InputAction.CallbackContext ctx)
+    {
+        GameplayMenuIncrementValuePerformed?.Invoke();
+    }
+    private void OnGameplayMenuDecrementValuePerformed(InputAction.CallbackContext ctx)
+    {
+        GameplayMenuDecrementValuePerformed?.Invoke();
     }
 
     #endregion

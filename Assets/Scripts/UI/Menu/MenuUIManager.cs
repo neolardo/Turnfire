@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,6 +16,7 @@ public class MenuUIManager : MonoBehaviour
     [SerializeField] private JoinRoomMultiplayerMenuUI _joinRoomMultiplayerMenu;
     [SerializeField] private CreateRoomMultiplayerMenuUI _createRoomMultiplayerMenu;
     [SerializeField] private LoadingTextUI _loadingText;
+    [SerializeField] private CanvasGroup _canvasGroup;
 
     private Stack<MenuPanelType> _previousPanels;
     private MenuPanelType _currentPanel;
@@ -23,7 +25,21 @@ public class MenuUIManager : MonoBehaviour
     private void Awake()
     {
         _previousPanels = new Stack<MenuPanelType>();
+        _canvasGroup.alpha = 0;
+        ShowAllPanels();
+    }
+
+    private void OnEnable()
+    {
+        StartCoroutine(ShowOneFrameAfterOnEnable());
+    }
+
+    private IEnumerator ShowOneFrameAfterOnEnable()
+    {
+        yield return null;
+        HideAllPanels();
         SwitchPanel(MenuPanelType.MainMenu);
+        _canvasGroup.alpha = 1;
     }
 
     public void SwitchPanel(MenuPanelType panel, bool previous = false)
@@ -51,6 +67,20 @@ public class MenuUIManager : MonoBehaviour
     public void SwitchToPreviousPanel()
     {
         SwitchPanel(_previousPanels.Pop(), true);
+    }
+
+    private void ShowAllPanels()
+    {
+        _mainMenu.gameObject.SetActive(true);
+        _singleplayerOrMultiplayerMenu.gameObject.SetActive(true);
+        _menuSettingsUI.gameObject.SetActive(true);
+        _singleplayerMenu.gameObject.SetActive(true);
+        _onlineOrOfflineMultiplayerMenu.gameObject.SetActive(true);
+        _hostOrJoinMultiplayerMenu.gameObject.SetActive(true);
+        _createRoomMultiplayerMenu.gameObject.SetActive(true);
+        _joinRoomMultiplayerMenu.gameObject.SetActive(true);
+        _offlineMultiplayerSetupMenu.gameObject.SetActive(true);
+        _onlineMultiplayerSetupMenu.gameObject.SetActive(true);
     }
 
     public void HideAllPanels()

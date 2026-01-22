@@ -17,39 +17,12 @@ public class ControlsPanelUI : MonoBehaviour
     private void Awake()
     {
         _inputHandler = FindFirstObjectByType<LocalInputHandler>();
-    }
-
-    private void Start()
-    {
-        if (GameServices.IsInitialized)
-        {
-            OnGameServicesInitialized();
-        }
-        else
-        {
-            GameServices.Initialized += OnGameServicesInitialized;
-        }
-    }
-
-    private void OnGameServicesInitialized()
-    {
-        GameServices.GameStateManager.StateChanged += OnGameStateChanged;
+        _inputHandler.ToggleGameplayMenuPerformed += OnToggleGameplayMenuPerformed;
     }
 
     private void OnDestroy()
     {
-        if (GameServices.GameStateManager != null)
-        {
-            GameServices.GameStateManager.StateChanged -= OnGameStateChanged;
-        }
-    }
-
-    private void OnGameStateChanged(GameStateType state)
-    {
-        if(state != GameStateType.Paused)
-        {
-            gameObject.SetActive(false);
-        }    
+        _inputHandler.ToggleGameplayMenuPerformed -= OnToggleGameplayMenuPerformed;
     }
 
     private void OnEnable()
@@ -66,6 +39,14 @@ public class ControlsPanelUI : MonoBehaviour
         else
         {
             RefreshTextsForMouseInput();
+        }
+    }
+
+    private void OnToggleGameplayMenuPerformed()
+    {
+        if (gameObject.activeSelf)
+        {
+            gameObject.SetActive(false);
         }
     }
 

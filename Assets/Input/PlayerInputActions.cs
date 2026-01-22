@@ -325,6 +325,24 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""IncrementValue"",
+                    ""type"": ""Button"",
+                    ""id"": ""586352d9-3115-4875-b817-63c03e8d9c8d"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""DecrementValue"",
+                    ""type"": ""Button"",
+                    ""id"": ""9b27d318-6f48-497b-8f9f-22744a410755"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -358,6 +376,28 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""ResumeGameplay"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""39d6bfc7-ef35-4909-aaac-89b1e837a812"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""IncrementValue"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a703b0c3-ac7e-419b-aa5e-f87190cc3a90"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DecrementValue"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -953,6 +993,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         // GameplayMenu
         m_GameplayMenu = asset.FindActionMap("GameplayMenu", throwIfNotFound: true);
         m_GameplayMenu_ResumeGameplay = m_GameplayMenu.FindAction("ResumeGameplay", throwIfNotFound: true);
+        m_GameplayMenu_IncrementValue = m_GameplayMenu.FindAction("IncrementValue", throwIfNotFound: true);
+        m_GameplayMenu_DecrementValue = m_GameplayMenu.FindAction("DecrementValue", throwIfNotFound: true);
         // GameOver
         m_GameOver = asset.FindActionMap("GameOver", throwIfNotFound: true);
         // Inventory
@@ -1220,6 +1262,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_GameplayMenu;
     private List<IGameplayMenuActions> m_GameplayMenuActionsCallbackInterfaces = new List<IGameplayMenuActions>();
     private readonly InputAction m_GameplayMenu_ResumeGameplay;
+    private readonly InputAction m_GameplayMenu_IncrementValue;
+    private readonly InputAction m_GameplayMenu_DecrementValue;
     /// <summary>
     /// Provides access to input actions defined in input action map "GameplayMenu".
     /// </summary>
@@ -1235,6 +1279,14 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "GameplayMenu/ResumeGameplay".
         /// </summary>
         public InputAction @ResumeGameplay => m_Wrapper.m_GameplayMenu_ResumeGameplay;
+        /// <summary>
+        /// Provides access to the underlying input action "GameplayMenu/IncrementValue".
+        /// </summary>
+        public InputAction @IncrementValue => m_Wrapper.m_GameplayMenu_IncrementValue;
+        /// <summary>
+        /// Provides access to the underlying input action "GameplayMenu/DecrementValue".
+        /// </summary>
+        public InputAction @DecrementValue => m_Wrapper.m_GameplayMenu_DecrementValue;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1264,6 +1316,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @ResumeGameplay.started += instance.OnResumeGameplay;
             @ResumeGameplay.performed += instance.OnResumeGameplay;
             @ResumeGameplay.canceled += instance.OnResumeGameplay;
+            @IncrementValue.started += instance.OnIncrementValue;
+            @IncrementValue.performed += instance.OnIncrementValue;
+            @IncrementValue.canceled += instance.OnIncrementValue;
+            @DecrementValue.started += instance.OnDecrementValue;
+            @DecrementValue.performed += instance.OnDecrementValue;
+            @DecrementValue.canceled += instance.OnDecrementValue;
         }
 
         /// <summary>
@@ -1278,6 +1336,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @ResumeGameplay.started -= instance.OnResumeGameplay;
             @ResumeGameplay.performed -= instance.OnResumeGameplay;
             @ResumeGameplay.canceled -= instance.OnResumeGameplay;
+            @IncrementValue.started -= instance.OnIncrementValue;
+            @IncrementValue.performed -= instance.OnIncrementValue;
+            @IncrementValue.canceled -= instance.OnIncrementValue;
+            @DecrementValue.started -= instance.OnDecrementValue;
+            @DecrementValue.performed -= instance.OnDecrementValue;
+            @DecrementValue.canceled -= instance.OnDecrementValue;
         }
 
         /// <summary>
@@ -1908,6 +1972,20 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnResumeGameplay(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "IncrementValue" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnIncrementValue(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "DecrementValue" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDecrementValue(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "GameOver" which allows adding and removing callbacks.
