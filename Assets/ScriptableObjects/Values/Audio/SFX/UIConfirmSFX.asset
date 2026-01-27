@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: UIConfirmSFX
   m_EditorClassIdentifier: 
   clips:
-  - {fileID: 8300000, guid: a6b7a8937a3d4ce48af25a873bc2afe0, type: 3}
+  - {fileID: 8300000, guid: 1f006f200a5d01a4e8e10bef1edc0844, type: 3}

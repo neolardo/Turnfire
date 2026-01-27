@@ -16,6 +16,7 @@ public class SettingsController : MonoBehaviour
 
     private const float MinDb = -80f; 
     private const float MaxDb = 0f;
+    private const float DecibelShapeExponent = 0.3f;
 
     private void Awake()
     {
@@ -64,13 +65,14 @@ public class SettingsController : MonoBehaviour
         if (normalizedValue <= 0f)
             return MinDb;
 
-        return Mathf.Lerp(MinDb, MaxDb, Mathf.Log10(normalizedValue * 9f + 1f));
+        float shaped = Mathf.Pow(normalizedValue, DecibelShapeExponent);
+        return Mathf.Lerp(MinDb, MaxDb, shaped);
     }
 
     private static float DecibelsToNormalized(float decibels)
     {
-        var exp = Mathf.InverseLerp(MinDb, MaxDb, decibels);
-        return (Mathf.Pow(10, exp) - 1) / 9f;
+        var shaped = Mathf.InverseLerp(MinDb, MaxDb, decibels);
+        return Mathf.Pow(shaped, 1f/ DecibelShapeExponent);
     }
 
     #endregion

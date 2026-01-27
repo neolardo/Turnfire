@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: UIHoverSFX
   m_EditorClassIdentifier: 
   clips:
-  - {fileID: 8300000, guid: 803a39687cafd0741a6965968dbcea3c, type: 3}
-  - {fileID: 8300000, guid: c8eb88e9bdfbc2c4c9dd0ed0bd296b3b, type: 3}
+  - {fileID: 8300000, guid: f7a48144e7b9a404c9cca25fd9aa1dd5, type: 3}
+  - {fileID: 8300000, guid: e48e6dc8ecb380049a89fc219f9da22d, type: 3}

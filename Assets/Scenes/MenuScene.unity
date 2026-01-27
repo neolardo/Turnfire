@@ -899,6 +899,10 @@ PrefabInstance:
       propertyPath: _musicSourceB
       value: 
       objectReference: {fileID: 1994267229}
+    - target: {fileID: 4041949608197580731, guid: 7c12fe66d12eceb469aa3e6875d826bb, type: 3}
+      propertyPath: _musicFadeDuration
+      value: 2.5
+      objectReference: {fileID: 0}
     - target: {fileID: 7541723641966765752, guid: 7c12fe66d12eceb469aa3e6875d826bb, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: UICannotUseItemSFX
   m_EditorClassIdentifier: 
   clips:
-  - {fileID: 8300000, guid: 3fe44aeeddf8e754089b1c30d862de92, type: 3}
+  - {fileID: 8300000, guid: 8634af17a35c3604f9dc60f9e2d60c34, type: 3}

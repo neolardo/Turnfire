@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: UIToggleSFX
   m_EditorClassIdentifier: 
   clips:
-  - {fileID: 8300000, guid: bcb2679fb0d8c5a48932508bb1abec3c, type: 3}
+  - {fileID: 8300000, guid: e19511bfd14adda40bae19a175327541, type: 3}
