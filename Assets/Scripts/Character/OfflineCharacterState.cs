@@ -25,9 +25,7 @@ public class OfflineCharacterState : MonoBehaviour, ICharacterState
         }
     }
     public float NormalizedHealth => _health / (float)_definition.MaxHealth;
-
     public bool IsAlive => _health > 0;
-
     public bool IsUsingSelectedItem => SelectedItem == null ? false : SelectedItem.Behavior.IsInUse;
     public ItemInstance SelectedItem => _inventory.SelectedItem;
     public float JumpBoost { get; private set; }

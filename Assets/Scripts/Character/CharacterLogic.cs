@@ -29,8 +29,13 @@ public class CharacterLogic
 
     #region Items
 
-    public void SelectInitialItem()
+    public void InitializeAndSelectInitialItem()
     {
+        var items = _state.GetAllItems();
+        foreach(var item in items)
+        {
+            item.Destroyed += OnItemDestroyed;
+        }
         TrySelectAnyWeapon();
     }
 
@@ -75,6 +80,7 @@ public class CharacterLogic
         var items = _state.GetAllItems();
         bool itemWasSelected = _state.SelectedItem == item;
         _state.RequestRemoveItem(item);
+        item.Destroyed -= OnItemDestroyed;
         if (itemWasSelected)
         {
             TrySelectAnyWeapon();

@@ -1,12 +1,19 @@
+using TMPro;
 using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer))]
 public class PoolableSpriteRenderer : SimplePoolable
 {
-    public SpriteRenderer SpriteRenderer { get; private set; }
-
-    private void Awake()
+    private SpriteRenderer _spriteRenderer;
+    public SpriteRenderer SpriteRenderer
     {
-        SpriteRenderer = GetComponent<SpriteRenderer>();
+        get 
+        {
+            if(_spriteRenderer == null)
+            {
+                _spriteRenderer = GetComponent<SpriteRenderer>();
+            }
+            return _spriteRenderer;
+        }
     }
 }

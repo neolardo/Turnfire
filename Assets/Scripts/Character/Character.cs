@@ -241,7 +241,7 @@ public class Character : MonoBehaviour, IConditionalEnumerable
     public void CreateAndSelectInitialItems()
     {
         _state.RequestCreateInitialItems();
-        _logic.SelectInitialItem();
+        _logic.InitializeAndSelectInitialItem();
     }
 
     public bool TryAddItem(ItemInstance item)
