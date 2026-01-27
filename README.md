@@ -3,14 +3,14 @@
 ## Overview  
 Turnfire is a **2D turn-based artillery game** built in **Unity 6.0**.  
 
-This document is structured to emphasize **gameplay logic and implementation details**, showcasing the use of **design patterns, Unity systems, and scalable architecture** as a game developer portfolio.  
+This document is structured to emphasize the gameplay logic and implementation details as a game developer portfolio.  
 
 --- 
 
 ## How to Play  
 
 1 - **Main Menu**  
-   - Choose between **Singleplayer** or **Multiplayer**.  
+   - Press Play then choose between **Singleplayer** or **Multiplayer**.  
  
   2/A - **Singleplayer Setup**  
    - Select the **number of bots** (1–3).  
@@ -19,10 +19,17 @@ This document is structured to emphasize **gameplay logic and implementation det
    - Choose the **bot difficulty**.
    - Play! 
   
-  2/B - **Multiplayer Setup**  
+  2/B - **Offline (local) Multiplayer Setup**  
    - Select the **number of players** (2–4).  
    - Select the **map**.  
    - Select whether you want to play with a **timer**.  
+   - Play! 
+
+2/C - **Online Multiplayer Setup**
+   - Create or join a room
+   - Select  the **map** as the host.
+   - Select whether you want to play with a **timer**.  
+   - Wait for every player to join.
    - Play! 
 
 3 - **Gameplay**
@@ -30,8 +37,8 @@ This document is structured to emphasize **gameplay logic and implementation det
   - 3.1. **Character Action Phase**
       - Your team's turn starts with a random character
         - Move your character
-        - Choose a weapon
-        - Fire weapon
+        - Choose a weapon or item
+        - Fire weapon / Use item
      - The next team's turn starts
       ...
       - Continue until all active teams have played this round
@@ -39,20 +46,20 @@ This document is structured to emphasize **gameplay logic and implementation det
      - Packages containing items may drop from the sky
     ...
   - 3.3. **Win condition**
-     - The turns continue one team remains
+     - The turns continue until at most one team remains
    
 --- 
 
-## Features  & Gameplay Systems 
+## Core Features  & Gameplay Systems 
 
 ### Characters
-- Separated classes for character data, behavior and animator
-- Multiple **character types** per team implemented via **ScriptableObjects**
+- The characters are implemented using **separated state, physics, logic, view and definition classes**. Through the character's interface the state changes (using the character's logic). Reacting to these changes the physics moves the rigibody and the view animates the character.
+- There are multiple **character types** available implemented via ScriptableObjects as character definitions.
 - Each type has different tactical roles (max health and initial items vary)
 - Current types:
   - gunslinger (gun as initial item)
   - grenadier (grenade as initial item)
-  - tank (no initial item, but more health) 
+  - tank (knife as initial item, more health) 
 
 ### Map & Terrain System
 - The game features **tile-based maps** with a **destructible terrain** system.
@@ -68,53 +75,95 @@ This document is structured to emphasize **gameplay logic and implementation det
 - Based on a scene's tilemaps and characters a minimap sprite can be automatically generated via a custom helper script. 
 
 ### Combat & Items
-- 2D **physics based** combat system with collision detection
-- **Object pools** for projectiles and explosions
-- Items are designed in two parts, using the **type object and strategy patterns** for modularity:
-  - **ScriptableObject definitions** holding the data, and
-  -  **behaviors** holding the logic 
+- The game features a 2D physics-based combat system with **ballistic projectiles, melee weapons, armors and consumables.**
+- The projectiles, explosions and explosion holes are all reused using *object pools**.
+- Items are designed as two parts, the  **ScriptableObject definitions** hold the data, and **behaviors** contain the logic.
+- Ranged weapons fire projectiles or laser beams, while melee weapons attack in place using hitbox and hurtbox colliders.
+- Armors can block attacks and enhance the mobility of characters.
+- Consumables heal characters.
 
-### Input & Platforms  
-- **Unity's New Input System** for cross-platform input
-- Currently supported inputs: keyboard, mouse, controller 
+### Input  
+- The game is using **Unity's "New" Input System** for cross-platform input.
+- Currently supported inputs: keyboard, mouse, controller.
+- Each team is controlled by an input source.
+- There are two types of input sources: human and bot.
 
 ### Turn Management  
-- **State-machine classes** for turn phases and character action phases
+- The turns and character phases are managed via a turn manager state-machine.
+- A character's turn is divided into two phases: movement, and item usage phase.
+- The turn manager selects the active team and subscribes to the input source's events while also enabling phase specific input actions. Then based on the fired input actions the manager passes it to the selected character. The character then tries to react to the input via a state change. If the character's state has been changed then the turn manager advances the current turn's phase, which continues and loops until the win condition is reached.
 
 ### Camera System 
-- **Cinemachine** for smooth, dynamic camera control
-- Multiple virtual cameras for characters, projectiles, packages and the overall map view 
+- The game uses **Cinemachine** for smooth, dynamic camera control.
+- Virtual cameras are switched when focusing on different type of objects such as characters, projectiles, packages, lasers and the overall map.
 
 ### Graphics & Animation
-- Sprite animations for characters and explosions
-- Layered sprites for character types and teams
-- Coded, state-driven animation transitions 
+- The game's art style is pixelated where the pixel resolution is global to ensure consistency for all objects.
+- Every non-static game object is rendered using sprite animations.
+- Characters are rendered using multiple layers of sprites to visualize equipped armors, items and type based differences. 
+- Animation transitions are coded and state-driven.
+- Lasers, trajectories and the sky is visualized using **unlit shaders.**
+- All ghrapic art was made by myself using LibreSprite.
+
+ ### UI & UX
+- The UI matches the art style of the game by being pixelated.
+- Custom UI scripts are used to make layouts responsive on all devices.
 
 ### Audio
-- Object pooled SFX audio resources
-- Global audio manager
+- SFX audio resources are object pooled.
+- A global audio manager is available to play SFX anywhere.
+- All SFX and music was done by myself using Ableton Live Suite 12.
 
-### UI/UX  
-- Pixel art UI with custom scaler classes 
-- Minimal shader code for UI elements
+---
 
-### Bots
-- **GOAP (Goal-Oriented Action Planning) bots** for strategic AI decision-making (To be implemented...) 
+## Bots
 
-### Multiplayer
-- Offline multiplayer
-- Online multiplayer via **Netcode for GameObjects** (To be implemented...) 
+### Overview
+- Singleplayer mode feautres bots with 3 possible difficulties: easy, medium and hard
+- The bots are implemented using **goal-orineted action planning**: The **bot brain** decides the goal, and the **bot controller** handles the action to reach it.
+- Bots use different stretgies via **bot tunings** based on their difficulty.
 
---- 
+### Bot Logic
+- First, the bot brain receives the intent to come up with a goal when the turn manager requests for input from the bot's input source.
+- Then the goal is calculated depending on the current character phase (movement or item usage). 
+- For the movement phase a pre-calculated **jump graph** is used in order to determines the possible positions where the character can jump based on it's current position and mobility stats. **Every point is then scored** based on the bot's strategy (tuning) and the best position is then picked using a simple **soft-max function.**
+- For the item usage phase **every item is simulated** using the item's behavior. If the item is a weapon then the possible firing angles are iteratively simulated as well. The best item (with the best firing angle) is then picked by evaluating the simulation results. If the character does not have any items then this action is simply skipped.
+- The bot tunings on top of strategic parameters (like offense, defense and package greed) include adjustable aim precision and decision randomness parameters to maintain differences between difficulty levels in all character phases.
 
-## Notes
-- This project is under development.
-- The current build (ver0.5) includes a fully implemented local multiplayer version of the game.
+###  Bot Evaluation
+- Bot tuning parameters were first set to an ad-hoc value and then adjusted after continous evaluation and re-tuning.
+- During evaluation around 200 1v1 matches were fast played on all possible maps where every bot difficulty played against every other difficulty. 
+- The round evaluation stats include: match outcome (win/tie/lose), suicide count, remaining team health, skipped move count, damage dealt, friendly fire damage dealt, etc.
+- Based on the results the tunings were manually adjusted while implementational fixes and upgrades were applied.
+- As a final result bots with relatively difficult tunings against less difficult tunings tend to converge towards a win/tie/lose ratio of 60/10/30.
 
---- 
+---
 
-## Next Steps
-- Online multiplayer
-- Singleplayer with bots
-- Consumable items
-- More weapons, maps, character types
+## Online Multiplayer
+
+### Overview
+- Online Multiplayer is implemented via **Netcode for Gameobjects** using a **server authorative** architecture.
+
+## Room Management
+- The multiplayer rooms are created and managed using **Unity Relay** to connect with the usage of **join codes.**
+- The host sets up the game by choosing the map and the timer, clienst join and wait until the game starts.
+
+## Scene Startup
+- The gameplay startup is synchronized with the help of a **network gate** that waits for all clients to be ready between different phases of the startup.
+- The host initalizes, spawns and gives ownership to the network objects.
+
+## Gameplay
+- The clients (as owners) use the input source associated with their team to send input request to the server.
+- The server controls the turn manager which receives these inputs and forwards them to the currently active character.
+- The character then acts by changing it's state.
+- Reacting to this change the server moves the character or begins to use the selected item, while clients only visualize the changes using NetworkTransform and the character's view class.
+- When using an item, projectiles, lasers and explosions can be spawned which is syncronized the same way: the server spawns and moves them while the clients react visually.
+- Turn states are also syncronized using the previously mentioned network gate to ensure the previous state has been finished on all clients before proceeding to the next one.
+- The terrain destruction is broadcasted by the server to all clients and the visuals are updated locally. (On the client-side the terrain is purely visual since the physics is server authorative.)
+
+---
+
+### Notes & Possible Improvements
+- This game is completed and available at: https://fleonardo.itch.io/turnfire
+- Since the game is turn-based I decided not to use client-side prediction aside from Netcode's built-in NetworkTransform and NetworkyRigidbody.
+- I might improve upon the bot evalutation later by automating the parameter tuning by a neural network to reach a standard 70/30 win/lose ratio.
