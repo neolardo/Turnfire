@@ -91,7 +91,11 @@ This document is structured to emphasize the gameplay logic and implementation d
 ### Turn Management  
 - The turns and character phases are managed via a turn manager state-machine.
 - A character's turn is divided into two phases: movement, and item usage phase.
-- The turn manager selects the active team and subscribes to the input source's events while also enabling phase specific input actions. Then based on the fired input actions the manager passes it to the selected character. The character then tries to react to the input via a state change. If the character's state has been changed then the turn manager advances the current turn's phase, which continues and loops until the win condition is reached.
+- Turn state logic:
+  - The turn manager selects the active team and subscribes to the input source's events while also enabling phase specific input actions. 
+  - Then based on the fired input actions the manager passes it to the selected character. 
+  - The character then tries to react to the input via a state change. 
+  - If the character's state has been changed then the turn manager advances the current turn's phase, which continues and loops until the win condition is reached.
 
 ### Camera System 
 - The game uses **Cinemachine** for smooth, dynamic camera control.
