@@ -21,6 +21,7 @@ public class GameplayUIManager : MonoBehaviour
     private GameObject _gameplayMenuUI;
     private GameOverScreenUI _gameOverScreenUI;
 
+    private bool _isGameplayMenuVisible;
     private bool _isDestroyed;
     private void Awake()
     {
@@ -31,6 +32,7 @@ public class GameplayUIManager : MonoBehaviour
         _inputHandler.AimCancelled += _aimCircleUI.HideCircles;
         _inputHandler.ActionSkipped += OnActionSkipped;
         _inputHandler.ImpulseReleased += OnImpulseReleased;
+        _inputHandler.ToggleGameplayMenuPerformed += OnGameplayMenuToggled;
         _gameplayTimer.gameObject.SetActive(false);
         _countdownTimer.gameObject.SetActive(true);
         if(GameplaySceneSettingsStorage.Current.IsOnlineGame)
@@ -62,7 +64,6 @@ public class GameplayUIManager : MonoBehaviour
     {
         GameServices.TurnStateManager.GameEnded += OnGameOver;
         GameServices.TurnStateManager.GameStarted += OnGameStarted;
-        GameServices.GameStateManager.StateChanged += OnGameStateChanged;
         GameServices.CountdownTimer.TimerEnded += OnCountdownTimerEnded;
     }
 
@@ -72,10 +73,6 @@ public class GameplayUIManager : MonoBehaviour
         {
             GameServices.TurnStateManager.GameEnded -= OnGameOver;
             GameServices.TurnStateManager.GameStarted -= OnGameStarted;
-        }
-        if (GameServices.GameStateManager != null)
-        {
-            GameServices.GameStateManager.StateChanged -= OnGameStateChanged;
         }
         if(GameServices.CountdownTimer != null)
         {
@@ -110,13 +107,19 @@ public class GameplayUIManager : MonoBehaviour
         _aimCircleUI.HideCircles();
     }
 
-    private void OnGameplayMenuToggled(bool isGameplayMenuVisible)
+    private void OnGameplayMenuToggled()
+    {
+        _isGameplayMenuVisible = !_isGameplayMenuVisible;
+        ShowHideGameplayMenu(_isGameplayMenuVisible);
+    }
+
+    private void ShowHideGameplayMenu(bool show)
     {
         if (_isDestroyed)
         {
             return;
         }
-        _gameplayMenuUI.SetActive(isGameplayMenuVisible);
+        _gameplayMenuUI.SetActive(show);
     }
 
     private void OnInventoryToggled()
@@ -188,16 +191,6 @@ public class GameplayUIManager : MonoBehaviour
         _gameOverScreenUI.gameObject.SetActive(true);
     }
 
-    private void OnGameStateChanged(GameStateType gameState)
-    {
-        if (_isDestroyed)
-        {
-            return;
-        }
-        OnGameplayMenuToggled(gameState == GameStateType.Paused);
-    }
-
     #endregion
-
 
 }

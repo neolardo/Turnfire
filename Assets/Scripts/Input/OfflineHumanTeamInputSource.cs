@@ -28,17 +28,6 @@ public class OfflineHumanTeamInputSource : MonoBehaviour, ITeamInputSource
         }
     }
 
-    public bool IsOpeningGameplayMenuEnabled
-    {
-        get
-        {
-            return _inputHandler.IsOpeningGameplayMenuEnabled;
-        }
-        set
-        {
-            _inputHandler.IsOpeningGameplayMenuEnabled = value;
-        }
-    }
     public bool IsActionSkippingEnabled
     {
         get
@@ -111,19 +100,19 @@ public class OfflineHumanTeamInputSource : MonoBehaviour, ITeamInputSource
     private void DisableInputBeforeGameStart()
     {
         IsAimingEnabled = false;
-        IsOpeningGameplayMenuEnabled = false;
+        _inputHandler.IsOpeningGameplayMenuEnabled = false;
         IsOpeningInventoryEnabled = false;
     }
 
     public void OnGameStarted()
     {
-        IsOpeningGameplayMenuEnabled = true;
+        _inputHandler.IsOpeningGameplayMenuEnabled = true;
     }
 
     public void OnGameEnded(Team winner)
     {
         IsAimingEnabled = false;
-        IsOpeningGameplayMenuEnabled = false;
+        _inputHandler.IsOpeningGameplayMenuEnabled = false;
         IsOpeningInventoryEnabled = false;
         ForceCloseInventory();
         _inputHandler.SwitchToInputActionMap(InputActionMapType.GameOverScreen);

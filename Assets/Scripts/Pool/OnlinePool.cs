@@ -15,7 +15,7 @@ public abstract class OnlinePool<T> : PoolBase<T> where T : Component, IPoolable
 
     private void OnDestroy()
     {
-        if(_prefab != null)
+        if(_prefab != null && NetworkManager.Singleton != null && NetworkManager.Singleton.PrefabHandler != null)
         {
             NetworkManager.Singleton.PrefabHandler.RemoveHandler(_prefab.gameObject);
         }

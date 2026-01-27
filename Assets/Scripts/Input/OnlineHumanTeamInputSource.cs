@@ -1,6 +1,5 @@
 using System;
 using Unity.Netcode;
-using Unity.Services.Matchmaker.Models;
 using UnityEngine;
 
 public class OnlineHumanTeamInputSource : NetworkBehaviour, ITeamInputSource
@@ -37,23 +36,6 @@ public class OnlineHumanTeamInputSource : NetworkBehaviour, ITeamInputSource
                 return;
             }
             _isOpeningInventoryEnabled.Value = value;
-        }
-    }
-
-    private NetworkVariable<bool> _isOpeningGameplayMenuEnabled = new();
-    public bool IsOpeningGameplayMenuEnabled
-    {
-        get
-        {
-            return _isOpeningGameplayMenuEnabled.Value;
-        }
-        set
-        {
-            if (!IsServer)
-            {
-                return;
-            }
-            _isOpeningGameplayMenuEnabled.Value = value;
         }
     }
 
@@ -118,7 +100,6 @@ public class OnlineHumanTeamInputSource : NetworkBehaviour, ITeamInputSource
 
         _isAimingEnabled.OnValueChanged += OnIsAimingEnabledChanged;
         _isOpeningInventoryEnabled.OnValueChanged += OnIsOpeningInventoryEnabledChanged;
-        _isOpeningGameplayMenuEnabled.OnValueChanged += OnIsOpeningGameplayMenuEnabledChanged;
         _isActionSkippingEnabled.OnValueChanged += OnIsActionSkippingEnabledValueChanged;
         if (GameServices.IsInitialized)
         {
@@ -168,34 +149,30 @@ public class OnlineHumanTeamInputSource : NetworkBehaviour, ITeamInputSource
 
     private void DisableInputBeforeGameStart()
     {
-        if(!IsServer)
+        _inputHandler.IsOpeningGameplayMenuEnabled = false;
+        if (!IsServer)
         {
             return;
         }
         IsAimingEnabled = false;
-        IsOpeningGameplayMenuEnabled = false;
         IsOpeningInventoryEnabled = false;
     }
 
     public void OnGameStarted()
     {
-        if (!IsServer)
-        {
-            return;
-        }
-        IsOpeningGameplayMenuEnabled = true;
+        _inputHandler.IsOpeningGameplayMenuEnabled = true;
     }
 
     public void OnGameEnded(Team winner)
     {
         ForceCloseInventory();
         _inputHandler.SwitchToInputActionMap(InputActionMapType.GameOverScreen);
+        _inputHandler.IsOpeningGameplayMenuEnabled = false;
         if (!IsServer)
         {
             return;
         }
         IsAimingEnabled = false;
-        IsOpeningGameplayMenuEnabled = false;
         IsOpeningInventoryEnabled = false;
     }
 
@@ -343,15 +320,6 @@ public class OnlineHumanTeamInputSource : NetworkBehaviour, ITeamInputSource
     private void InvokeItemSelectedServerRpc(int itemInstanceId)
     {
         ItemSelected?.Invoke(itemInstanceId);
-    }
-
-    #endregion
-
-    #region Gameplay Menu
-
-    private void OnIsOpeningGameplayMenuEnabledChanged(bool oldValue, bool newValue)
-    {
-        _inputHandler.IsOpeningGameplayMenuEnabled = newValue;
     }
 
     #endregion

@@ -388,7 +388,7 @@ public class LocalInputHandler : MonoBehaviour
             return;
         }
         var targetActionMapType = CurrentActionMap == InputActionMapType.Gameplay ? InputActionMapType.GameplayMenu : InputActionMapType.Gameplay;
-        if (!IsOpeningGameplayMenuEnabled && targetActionMapType == InputActionMapType.Gameplay)
+        if (!IsOpeningGameplayMenuEnabled && targetActionMapType == InputActionMapType.GameplayMenu)
         {
             return;
         }
