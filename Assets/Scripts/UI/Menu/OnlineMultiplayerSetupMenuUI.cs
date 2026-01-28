@@ -27,17 +27,18 @@ public class OnlineMultiplayerSetupMenuUI : MonoBehaviour
         _sceneLoaderFactory = FindFirstObjectByType<SceneLoaderFactory>();
         _startButton.ButtonPressed += OnStartPressed;
         _cancelButton.ButtonPressed += OnCancelPressed;
-        NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
     }
 
     private void OnDestroy()
     {
-        if (NetworkManager.Singleton == null)
+        if (_startButton != null)
         {
-            return;
+            _startButton.ButtonPressed -= OnStartPressed;
         }
-
-        NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
+        if(_cancelButton != null)
+        {
+            _cancelButton.ButtonPressed -= OnCancelPressed;
+        }
     }
 
     private void OnEnable()
@@ -49,6 +50,10 @@ public class OnlineMultiplayerSetupMenuUI : MonoBehaviour
         if (RoomNetworkSession.Instance != null)
         {
             RoomNetworkSession.Instance.RegisteredPlayersChanged += RefreshJoinedPlayers;
+        }
+        if (NetworkManager.Singleton != null)
+        {
+            NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
         }
         StartCoroutine(OnOneFrameAfterOnEnable());
     }
@@ -67,6 +72,10 @@ public class OnlineMultiplayerSetupMenuUI : MonoBehaviour
         if (RoomNetworkSession.Instance != null)
         {
             RoomNetworkSession.Instance.RegisteredPlayersChanged -= RefreshJoinedPlayers;
+        }
+        if(NetworkManager.Singleton != null)
+        {
+            NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
         }
     }
 

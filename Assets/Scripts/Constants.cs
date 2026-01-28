@@ -71,6 +71,7 @@ public static class Constants
 
     //network
     public const string InvalidNameReasonValue = "InvalidName";
+    public const string RoomIsFullReasonValue = "RoomIsFull";
     public const int InvalidId = -1;
 
     //pixel resolution

@@ -50,11 +50,22 @@ public class RoomNetworkSession : NetworkBehaviour
         var json = Encoding.UTF8.GetString(request.Payload);
         var data = JsonUtility.FromJson<PlayerConnectionData>(json);
 
+        int numPlayers = NetworkManager.Singleton.ConnectedClientsIds.Count+1;
+
+        if (numPlayers >= Constants.MultiplayerMaxPlayers)
+        {
+            response.Approved = false;
+            response.Reason = Constants.RoomIsFullReasonValue;
+            Debug.Log("Connection not approved: room is full");
+            return;
+        }
+
+
         if (!TryRegisterPlayer(request.ClientNetworkId, data.PlayerName))
         {
             response.Approved = false;
             response.Reason = Constants.InvalidNameReasonValue;
-            Debug.Log("Connection not approved");
+            Debug.Log("Connection not approved: invalid name");
             return;
         }
 

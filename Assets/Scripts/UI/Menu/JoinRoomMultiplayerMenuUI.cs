@@ -16,6 +16,7 @@ public class JoinRoomMultiplayerMenuUI : MonoBehaviour
     private LocalMenuUIInputSource _inputManager;
 
     private bool _isJoinInitiated;
+    private bool _isLeaveIntentional;
 
     private MenuUIManager _menuUIManager;
 
@@ -25,6 +26,18 @@ public class JoinRoomMultiplayerMenuUI : MonoBehaviour
         _inputManager = FindFirstObjectByType<LocalMenuUIInputSource>();
         _joinButton.ButtonPressed += OnJoinPressed;
         _backButton.ButtonPressed += OnCancelPressed;
+    }
+
+    private void OnDestroy()
+    {
+        if(_joinButton != null)
+        {
+            _joinButton.ButtonPressed -= OnJoinPressed;
+        }
+        if(_backButton != null)
+        {
+            _backButton.ButtonPressed -= OnCancelPressed;
+        }
     }
 
     private void OnEnable()
@@ -103,12 +116,19 @@ public class JoinRoomMultiplayerMenuUI : MonoBehaviour
         {
             return;
         }
-
         NetworkManager.Singleton.SceneManager.OnLoad -= OnSceneLoadStarted;
         var reason = NetworkManager.Singleton.DisconnectReason;
         if (reason == Constants.InvalidNameReasonValue)
         {
-            _responseText.text = "Failed to join room.\nPlayer name was invalid.";
+            _responseText.text = "Failed to join room.\nPlayer name is taken.";
+        }
+        else if (reason == Constants.RoomIsFullReasonValue)
+        {
+            _responseText.text = "Failed to join room.\nRoom is full.";
+        }
+        else if(_isLeaveIntentional)
+        {
+            _responseText.text = "";
         }
         else
         {
@@ -116,6 +136,7 @@ public class JoinRoomMultiplayerMenuUI : MonoBehaviour
             Debug.Log(reason);
             _responseText.text = "Host left.\nTry joining another room.";
         }
+        _isLeaveIntentional = false;
         _isJoinInitiated = false;
         EnableInputs();
         _backButton.SetText("cancel");
@@ -194,6 +215,7 @@ public class JoinRoomMultiplayerMenuUI : MonoBehaviour
 
     private void LeaveRoom()
     {
+        _isLeaveIntentional = true;
         RoomNetworkManager.LeaveRoom();
         InitializeUI();
     }
