@@ -46,7 +46,7 @@ public class NetworkReadyGate : NetworkBehaviour
         if (!_readyClients.Add(clientId))
             return;
 
-        Debug.Log($"{_readyClients.Count} / {NetworkManager.ConnectedClientsIds.Count} clients are ready");
+        //Debug.Log($"{_readyClients.Count} / {NetworkManager.ConnectedClientsIds.Count} clients are ready");
         if (_readyClients.Count == NetworkManager.ConnectedClientsIds.Count)
         {
             _allAcknowledged.Value = false;
@@ -69,7 +69,7 @@ public class NetworkReadyGate : NetworkBehaviour
         if (!_ackClients.Add(clientId))
             return;
 
-        Debug.Log($"{_ackClients.Count} / {NetworkManager.ConnectedClientsIds.Count} clients acknowledged ready");
+        //Debug.Log($"{_ackClients.Count} / {NetworkManager.ConnectedClientsIds.Count} clients acknowledged ready");
         if (_ackClients.Count == NetworkManager.ConnectedClientsIds.Count)
         {
             AdvanceCycle();

@@ -69,7 +69,10 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
         _inputSource.ForceCancelAiming();
         _inputSource.IsAimingEnabled = false;
         _inputSource.IsActionSkippingEnabled = false;
-        GameServices.GameplayTimer.Pause();
+        if (GameServices.GameplayTimer != null)
+        {
+            GameServices.GameplayTimer.Pause();
+        }
         base.EndState();
     }
 }

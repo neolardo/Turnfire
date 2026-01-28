@@ -22,6 +22,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private float _musicFadeDuration = 2f;
 
     private AudioSource _activeMusicSource;
+    private AudioClip _activeMusicClip;
     private Coroutine _musicFadeCoroutine;
 
     private void Awake()
@@ -43,7 +44,7 @@ public class AudioManager : MonoBehaviour
 
     public void PlayMusic(AudioClip clip, bool loop = true)
     {
-        if (clip == null)
+        if (clip == null || clip == _activeMusicClip)
             return;
 
         AudioSource newSource = _activeMusicSource == _musicSourceA
@@ -61,6 +62,7 @@ public class AudioManager : MonoBehaviour
         _musicFadeCoroutine = StartCoroutine(CrossFadeMusic(_activeMusicSource, newSource));
 
         _activeMusicSource = newSource;
+        _activeMusicClip = clip;
     }
 
     private IEnumerator CrossFadeMusic(AudioSource from, AudioSource to)

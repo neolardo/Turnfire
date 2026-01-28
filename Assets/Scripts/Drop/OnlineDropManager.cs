@@ -13,7 +13,7 @@ public class OnlineDropManager : NetworkBehaviour, IDropManager
 
     public event System.Action AllPackagesLanded;
 
-    private const float DelayAfterAllPackagesSpawned = 1f;
+    private const float DelayAfterAllPackagesSpawned = .5f;
 
     private DropLogic _logic;
     private PackageContainer _container;

@@ -99,8 +99,10 @@ public class JoinRoomMultiplayerMenuUI : MonoBehaviour
     {
         Debug.Log($"{clientId} left the room");
 
-        if (clientId != NetworkManager.Singleton.LocalClientId)
+        if (clientId != NetworkManager.Singleton.LocalClientId || NetworkManager.Singleton.SceneManager == null || !NetworkManager.Singleton.IsListening)
+        {
             return;
+        }
 
         NetworkManager.Singleton.SceneManager.OnLoad -= OnSceneLoadStarted;
         var reason = NetworkManager.Singleton.DisconnectReason;

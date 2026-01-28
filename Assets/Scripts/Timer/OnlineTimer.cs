@@ -49,6 +49,10 @@ public class OnlineTimer : NetworkBehaviour, ITimer
     public override void OnNetworkDespawn()
     {
         _isFinished.OnValueChanged -= OnIsFinishedChanged;
+        if(IsServer)
+        {
+            _isRunning.Value = false;
+        }
         base.OnNetworkDespawn();
     }
 
@@ -77,9 +81,9 @@ public class OnlineTimer : NetworkBehaviour, ITimer
         if (!_isRunning.Value)
             return;
 
-        double remaining = _endServerTime.Value - NetworkManager.Singleton.ServerTime.Time;
+        var now = IsServer ? NetworkManager.Singleton.ServerTime.Time : NetworkManager.Singleton.LocalTime.Time;
+        double remaining = _endServerTime.Value - now;
         CurrentTime = Mathf.Max(0f, (float)remaining);
-
         if (IsServer && remaining <= 0)
         {
             OnTimerEnded();
@@ -98,7 +102,10 @@ public class OnlineTimer : NetworkBehaviour, ITimer
         if (!IsServer || (CanRestart != null && !CanRestart()) )
             return;
 
+        Debug.Log($"Timer should be reseted");
+
         _endServerTime.Value = NetworkManager.Singleton.ServerTime.Time + _initialTime;
+        CurrentTime = _initialTime;
         _isRunning.Value = true;
         _isFinished.Value = false;
     }

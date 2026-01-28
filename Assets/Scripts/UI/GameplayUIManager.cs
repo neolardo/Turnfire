@@ -20,6 +20,8 @@ public class GameplayUIManager : MonoBehaviour
     private LocalInputHandler _inputHandler;
     private GameObject _gameplayMenuUI;
     private GameOverScreenUI _gameOverScreenUI;
+    private ITurnStateManager _turnStateManager;
+    private ITimer _countdownTimerService;
 
     private bool _isGameplayMenuVisible;
     private bool _isDestroyed;
@@ -65,18 +67,20 @@ public class GameplayUIManager : MonoBehaviour
         GameServices.TurnStateManager.GameEnded += OnGameOver;
         GameServices.TurnStateManager.GameStarted += OnGameStarted;
         GameServices.CountdownTimer.TimerEnded += OnCountdownTimerEnded;
+        _countdownTimerService = GameServices.CountdownTimer;
+        _turnStateManager = GameServices.TurnStateManager;
     }
 
     private void OnDestroy()
     {
-        if(GameServices.TurnStateManager != null)
+        if(_turnStateManager != null)
         {
-            GameServices.TurnStateManager.GameEnded -= OnGameOver;
-            GameServices.TurnStateManager.GameStarted -= OnGameStarted;
+            _turnStateManager.GameEnded -= OnGameOver;
+            _turnStateManager.GameStarted -= OnGameStarted;
         }
-        if(GameServices.CountdownTimer != null)
+        if(_countdownTimerService != null)
         {
-            GameServices.CountdownTimer.TimerEnded -= OnCountdownTimerEnded;
+            _countdownTimerService.TimerEnded -= OnCountdownTimerEnded;
         }
         if(_inputHandler != null)
         {
@@ -88,6 +92,7 @@ public class GameplayUIManager : MonoBehaviour
             }
             _inputHandler.ActionSkipped -= OnActionSkipped;
             _inputHandler.ImpulseReleased -= OnImpulseReleased;
+            _inputHandler.ToggleGameplayMenuPerformed -= OnGameplayMenuToggled;
         }
         _isDestroyed = true;
     }

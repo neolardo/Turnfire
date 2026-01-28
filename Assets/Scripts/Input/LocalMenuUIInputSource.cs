@@ -15,6 +15,10 @@ public class LocalMenuUIInputSource : MonoBehaviour
     {
         _inputHandler = FindFirstObjectByType<LocalInputHandler>();
         _inputHandler.SwitchToInputActionMap(InputActionMapType.Menu);
+        _inputHandler.IsAimingEnabled = false;
+        _inputHandler.IsActionSkippingEnabled = false;
+        _inputHandler.IsOpeningGameplayMenuEnabled = false;
+        _inputHandler.IsOpeningInventoryEnabled = false;
         SubscribeToInputEvents();
     }
     private void SubscribeToInputEvents()

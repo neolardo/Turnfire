@@ -77,6 +77,10 @@ public class OnlineMultiplayerSetupMenuUI : MonoBehaviour
     {
         Debug.Log($"{clientId} left the room");
         Debug.Log(NetworkManager.Singleton.DisconnectReason);
+        if(NetworkManager.Singleton == null || !NetworkManager.Singleton.IsListening)
+        {
+            return;
+        }
         if (clientId == NetworkManager.ServerClientId)
         {
             LeaveRoomAndGoBack();

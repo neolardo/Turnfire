@@ -10,13 +10,16 @@ public class GameOverScreenUI : MonoBehaviour
 
     private void Awake()
     {
-        _rematchButton.ButtonPressed += OnRematchButtonPressed;
+        if(_rematchButton != null)
+        {
+            _rematchButton.ButtonPressed += OnRematchButtonPressed;
+        }
         _exitButton.ButtonPressed += OnExitButtonPressed;
     }
 
     private void OnEnable()
     {
-        EventSystem.current.SetSelectedGameObject(_rematchButton.gameObject);
+        EventSystem.current.SetSelectedGameObject(_exitButton.gameObject);
     }
 
     public void SetGameOverText(string text)

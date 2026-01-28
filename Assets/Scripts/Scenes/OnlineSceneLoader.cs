@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -46,7 +47,7 @@ public class OnlineSceneLoader : NetworkBehaviour, ISceneLoader
 
     private void RefreshClientsHaveSpawned()
     {
-        if(!IsServer)
+        if (!IsServer)
         {
             return;
         }
@@ -63,14 +64,46 @@ public class OnlineSceneLoader : NetworkBehaviour, ISceneLoader
         AllClientsHaveSpawned = value;
     }
 
+    private void DespawnAllRuntimeSpawnedObjects()
+    {
+        if (!NetworkManager.Singleton || !NetworkManager.Singleton.IsServer)
+            return;
+
+        var spawnManager = NetworkManager.Singleton.SpawnManager;
+
+        var spawnedObjects = spawnManager.SpawnedObjectsList.ToArray();
+        var sceneLoaderNetObj = GetComponent<NetworkObject>();
+        foreach (var obj in spawnedObjects)
+        {
+            if (obj == null || obj == sceneLoaderNetObj)
+                continue;
+
+            // Scene objects should NOT be despawned here (they belong to the scene)
+            if (obj.IsSceneObject.Value)
+                continue;
+
+            obj.Despawn(true);
+        }
+    }
+
+
     public void LoadMenuScene()
     {
-        if(!IsServer)
-        {
-            return;
-        }
+        LoadMenuSceneServerRpc();
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void LoadMenuSceneServerRpc()
+    {
         SaveGameplaySceneSettingsClientRpc(NetworkGameplaySceneSettingsData.ToNetworkData(null));
-        NetworkManager.Singleton.SceneManager.LoadScene(Constants.MenuSceneName, LoadSceneMode.Single);
+        LoadMenuSceneAndLeaveRoomClientRpc();
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
+    private void LoadMenuSceneAndLeaveRoomClientRpc()
+    {
+        SceneManager.LoadScene(Constants.MenuSceneName, LoadSceneMode.Single);
+        RoomNetworkManager.LeaveRoom();
     }
 
     public void LoadGameplayScene(GameplaySceneSettings settings)
@@ -96,6 +129,7 @@ public class OnlineSceneLoader : NetworkBehaviour, ISceneLoader
         {
             return;
         }
+        DespawnAllRuntimeSpawnedObjects();
         var sceneName = SceneManager.GetActiveScene().name;
         NetworkManager.Singleton.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
     }
