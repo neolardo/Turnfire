@@ -1,120 +1,27 @@
 # Turnfire
 
-## Overview  
-Turnfire is a **2D turn-based artillery game** built in **Unity 6.0**.  
+## Bots
 
-This document is structured to emphasize **gameplay logic and implementation details**, showcasing the use of **design patterns, Unity systems, and scalable architecture** as a game developer portfolio.  
+### Overview
+- Singleplayer mode features bots with 3 possible difficulties: easy, medium and hard
+- The bots are implemented using **goal-oriented action planning**: The **bot brain** decides the goal, and the **bot controller** handles the action to reach it.
+- Bots use different strategies via **bot tunings** based on their difficulty.
 
---- 
+### Bot Logic
+- First, the bot brain receives the intent to come up with a goal when the turn manager requests for input from the bot's input source.
+- Then the goal is calculated depending on the current character phase (movement or item usage). 
+- For the movement phase a pre-calculated **jump graph** is used in order to determine the possible positions where the character can jump based on its current position and mobility stats. **Every point is then scored** based on the bot's strategy (tuning) and the best position is then picked using a simple **soft-max function.**
+- For the item usage phase **every item is simulated** using the item's behavior. If the item is a weapon then the possible firing angles are iteratively simulated as well. The best item (with the best firing angle) is then picked by evaluating the simulation results. If the character does not have any items then this action is simply skipped.
+- The bot tunings on top of strategic parameters (like offense, defense and package greed) include adjustable aim precision and decision randomness parameters to maintain differences between difficulty levels in all character phases.
 
-## How to Play  
+###  Bot Evaluation
+- Bot tuning parameters were first set to an ad-hoc value and then adjusted after continuous evaluation and re-tuning.
+- During evaluation around 200 1v1 matches were fast played on all possible maps where every bot difficulty played against every other difficulty. 
+- The round evaluation stats include: match outcome (win/tie/lose), suicide count, remaining team health, skipped move count, damage dealt, friendly fire damage dealt, etc.
+- Based on the results the tunings were manually adjusted while logical fixes and upgrades were applied.
+- As a final result bots with relatively difficult tunings against less difficult tunings tend to converge towards a win/tie/lose ratio of 60/10/30.
 
-1 - **Main Menu**  
-   - Choose between **Singleplayer** or **Multiplayer**.  
- 
-  2/A - **Singleplayer Setup**  
-   - Select the **number of bots** (1–3).  
-   - Select the **map**.  
-   - Select whether you want to play with a **timer**.  
-   - Choose the **bot difficulty**.
-   - Play! 
-  
-  2/B - **Multiplayer Setup**  
-   - Select the **number of players** (2–4).  
-   - Select the **map**.  
-   - Select whether you want to play with a **timer**.  
-   - Play! 
+---
 
-3 - **Gameplay**
-  
-  - 3.1. **Character Action Phase**
-      - Your team's turn starts with a random character
-        - Move your character
-        - Choose a weapon
-        - Fire weapon
-     - The next team's turn starts
-      ...
-      - Continue until all active teams have played this round
-  - 3.2. **Package Drop Phase**
-     - Packages containing items may drop from the sky
-    ...
-  - 3.3. **Win condition**
-     - The turns continue one team remains
-   
---- 
-
-## Features  & Gameplay Systems 
-
-### Characters
-- Separated classes for character data, behavior and animator
-- Multiple **character types** per team implemented via **ScriptableObjects**
-- Each type has different tactical roles (max health and initial items vary)
-- Current types:
-  - gunslinger (gun as initial item)
-  - grenadier (grenade as initial item)
-  - tank (no initial item, but more health) 
-
-### Map & Terrain System
-- The game features **tile-based maps** with a **destructible terrain** system.
-- The destructible terrain generation happens asynchronously with the usage of coroutines:
-   - First, a texture is generated from the initial tilemap as the visual of the terrain. (And the tilemap's renderer gets deactivated).
-   - The visual is automatically updated each time an explosion happens, while temporary hole colliders are placed upon the existing collider.
-   - If the number of holes reaches a certain threshold the regeneration of colliders is initiated.
-   - The outlines of individual pixel islands are calculated from the texture's current state.
-   - Based on the outlines, polygon colliders are generated.
-   - When this process finishes the newly made islands become the collider and the temporary holes are removed (since the generated collider islands now contain the previously made holes). 
-
-### Minimap Generation
-- Based on a scene's tilemaps and characters a minimap sprite can be automatically generated via a custom helper script. 
-
-### Combat & Items
-- 2D **physics based** combat system with collision detection
-- **Object pools** for projectiles and explosions
-- Items are designed in two parts, using the **type object and strategy patterns** for modularity:
-  - **ScriptableObject definitions** holding the data, and
-  -  **behaviors** holding the logic 
-
-### Input & Platforms  
-- **Unity's New Input System** for cross-platform input
-- Currently supported inputs: keyboard, mouse, controller 
-
-### Turn Management  
-- **State-machine classes** for turn phases and character action phases
-
-### Camera System 
-- **Cinemachine** for smooth, dynamic camera control
-- Multiple virtual cameras for characters, projectiles, packages and the overall map view 
-
-### Graphics & Animation
-- Sprite animations for characters and explosions
-- Layered sprites for character types and teams
-- Coded, state-driven animation transitions 
-
-### Audio
-- Object pooled SFX audio resources
-- Global audio manager
-
-### UI/UX  
-- Pixel art UI with custom scaler classes 
-- Minimal shader code for UI elements
-
-### Bots
-- **GOAP (Goal-Oriented Action Planning) bots** for strategic AI decision-making (To be implemented...) 
-
-### Multiplayer
-- Offline multiplayer
-- Online multiplayer via **Netcode for GameObjects** (To be implemented...) 
-
---- 
-
-## Notes
-- This project is under development.
-- The current build (ver0.5) includes a fully implemented local multiplayer version of the game.
-
---- 
-
-## Next Steps
-- Online multiplayer
-- Singleplayer with bots
-- Consumable items
-- More weapons, maps, character types
+### Notes & Possible Improvements
+- I might improve upon the bot evaluation later by automating the parameter tuning with a neural network to reach a standard 70/30 win/lose ratio.
