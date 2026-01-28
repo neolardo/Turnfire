@@ -170,7 +170,7 @@ public class JoinRoomMultiplayerMenuUI : MonoBehaviour
             {
                 if (result == RoomNetworkConnectionResult.NetworkError)
                 {
-                    _responseText.text = "Failed to join room.\nCheck your internet connection.";
+                    _responseText.text = "Failed to join room.\nCheck your connection.";
                 }
                 else if (result == RoomNetworkConnectionResult.JoinCodeInvalid)
                 {

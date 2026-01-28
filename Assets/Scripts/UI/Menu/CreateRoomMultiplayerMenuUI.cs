@@ -103,7 +103,7 @@ public class CreateRoomMultiplayerMenuUI : MonoBehaviour
             }
             else if (result == RoomNetworkConnectionResult.NetworkError)
             {
-                _hostInfoText.text = "Failed to create room.\nPlease check your internet connection.";
+                _hostInfoText.text = "Failed to create room.\nCheck your connection.";
                 _hostButton.SetIsInteractable(true);
             }
         }
