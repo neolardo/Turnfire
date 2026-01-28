@@ -9,6 +9,15 @@ using UnityEngine;
 
 public static class RoomNetworkManager
 {
+    private static string GetRelayProtocol()
+    {
+#if UNITY_WEBGL
+        return "wss"; // WebGL must use WebSockets
+#else
+        return "dtls"; // Desktop builds can use DTLS/UDP
+#endif
+    }
+
     public static void LeaveRoom()
     {
         if (NetworkManager.Singleton != null)
@@ -21,14 +30,15 @@ public static class RoomNetworkManager
     public static async Task<(RoomNetworkConnectionResult, string)> TryHostRoomAsync(string hostPlayerName)
     {
         try
-        { 
+        {
             await UnityServicesBootstrap.InitializeAsync();
             Allocation hostAlloc = await RelayService.Instance.CreateAllocationAsync(Constants.MultiplayerMaxPlayers);
 
             string joinCode = await RelayService.Instance.GetJoinCodeAsync(hostAlloc.AllocationId);
 
             var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
-            var relayData = AllocationUtils.ToRelayServerData(hostAlloc, "dtls");
+            string protocol = GetRelayProtocol();
+            var relayData = AllocationUtils.ToRelayServerData(hostAlloc, protocol);
             transport.SetRelayServerData(relayData);
 
             var payload = JsonUtility.ToJson(new PlayerConnectionData
@@ -44,7 +54,7 @@ public static class RoomNetworkManager
                 return (RoomNetworkConnectionResult.NetworkError, null);
             }
 
-            Debug.Log("Host started");
+            Debug.Log("Host started with protocol: " + protocol);
             return (RoomNetworkConnectionResult.Ok, joinCode.ToLower().Replace('l', 'L'));
         }
         catch (Exception ex)
@@ -62,7 +72,8 @@ public static class RoomNetworkManager
             JoinAllocation joinAlloc = await RelayService.Instance.JoinAllocationAsync(joinCode.ToUpper());
 
             var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
-            var relayData = AllocationUtils.ToRelayServerData(joinAlloc, "dtls");
+            string protocol = GetRelayProtocol();
+            var relayData = AllocationUtils.ToRelayServerData(joinAlloc, protocol);
             transport.SetRelayServerData(relayData);
 
             var payload = JsonUtility.ToJson(new PlayerConnectionData
@@ -77,7 +88,7 @@ public static class RoomNetworkManager
             {
                 return RoomNetworkConnectionResult.NetworkError;
             }
-            Debug.Log("Client started");
+            Debug.Log("Client started with protocol: " + protocol);
 
             return RoomNetworkConnectionResult.Ok;
         }
@@ -100,5 +111,4 @@ public static class RoomNetworkManager
             return RoomNetworkConnectionResult.NetworkError;
         }
     }
-
 }

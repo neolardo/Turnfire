@@ -20,8 +20,20 @@ public class SettingsController : MonoBehaviour
 
     private void Start()
     {
-        LoadAndApplyVolumes();
+        LoadAndApplySettings();
     }
+
+    private void LoadAndApplySettings()
+    {
+        float music = PlayerPrefs.GetFloat(MusicPrefKey, 1f);
+        float sfx = PlayerPrefs.GetFloat(SfxPrefKey, 1f);
+        int invertedControls = PlayerPrefs.GetInt(InvertInputPrefKey, _trueValue);
+
+        SetVolume(_musicVolumeParam, music);
+        SetVolume(_sfxVolumeParam, sfx);
+        PlayerPrefs.SetInt(InvertInputPrefKey, invertedControls);
+    }
+
 
     #region Audio
     public void SetMusicVolume(float normalizedValue)
@@ -31,7 +43,7 @@ public class SettingsController : MonoBehaviour
     }
     public float GetMusicNormalizedVolume()
     {
-        return PlayerPrefs.GetFloat(MusicPrefKey);
+        return PlayerPrefs.GetFloat(MusicPrefKey, 1f);
     }
 
     public void SetSFXVolume(float normalizedValue)
@@ -42,7 +54,7 @@ public class SettingsController : MonoBehaviour
 
     public float GetSFXNormalizedVolume()
     {
-        return PlayerPrefs.GetFloat(SfxPrefKey);
+        return PlayerPrefs.GetFloat(SfxPrefKey, 1f);
     }
 
     private void SetVolume(string parameter, float normalizedValue)
@@ -51,14 +63,6 @@ public class SettingsController : MonoBehaviour
         _mainMixer.SetFloat(parameter, db);
     }
 
-    private void LoadAndApplyVolumes()
-    {
-        float music = PlayerPrefs.GetFloat(MusicPrefKey, 1f);
-        float sfx = PlayerPrefs.GetFloat(SfxPrefKey, 1f);
-
-        SetVolume(_musicVolumeParam, music);
-        SetVolume(_sfxVolumeParam, sfx);
-    }
 
     private static float NormalizedToDecibels(float normalizedValue)
     {
@@ -79,7 +83,7 @@ public class SettingsController : MonoBehaviour
     }
     public bool GetInvertedInput()
     {
-        return PlayerPrefs.GetInt(InvertInputPrefKey) == _trueValue;
+        return PlayerPrefs.GetInt(InvertInputPrefKey, _trueValue) == _trueValue;
     }
 
     #endregion
