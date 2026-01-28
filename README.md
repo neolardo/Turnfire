@@ -1,120 +1,28 @@
 # Turnfire
 
-## Overview  
-Turnfire is a **2D turn-based artillery game** built in **Unity 6.0**.  
+## Online Multiplayer
 
-This document is structured to emphasize **gameplay logic and implementation details**, showcasing the use of **design patterns, Unity systems, and scalable architecture** as a game developer portfolio.  
+### Overview
+- Online Multiplayer is implemented via **Netcode for GameObjects** using a **server-authoritative** architecture.
 
---- 
+## Room Management
+- The multiplayer rooms are created and managed using **Unity Relay** to connect with the use of **join codes.**
+- The host sets up the game by choosing the map and the timer, clients join and wait until the game starts.
 
-## How to Play  
+## Scene Startup
+- The gameplay startup is synchronized with the help of a **network gate** that waits for all clients to be ready between different phases of the startup.
+- The host initializes, spawns and gives ownership to the network objects.
 
-1 - **Main Menu**  
-   - Choose between **Singleplayer** or **Multiplayer**.  
- 
-  2/A - **Singleplayer Setup**  
-   - Select the **number of bots** (1–3).  
-   - Select the **map**.  
-   - Select whether you want to play with a **timer**.  
-   - Choose the **bot difficulty**.
-   - Play! 
-  
-  2/B - **Multiplayer Setup**  
-   - Select the **number of players** (2–4).  
-   - Select the **map**.  
-   - Select whether you want to play with a **timer**.  
-   - Play! 
+## Gameplay
+- The clients (as owners) use the input source associated with their team to send input requests to the server.
+- The server controls the turn manager which receives these inputs and forwards them to the currently active character.
+- The character then acts by changing its state.
+- Reacting to this change the server moves the character or begins to use the selected item, while clients only visualize the changes using NetworkTransform and the character's view class.
+- When using an item, projectiles, lasers and explosions can be spawned which are synchronized the same way: the server spawns and moves them while the clients react visually.
+- Turn states are also synchronized using the previously mentioned network gate to ensure the previous state has been finished on all clients before proceeding to the next one.
+- Terrain destruction is broadcast by the server to all clients and the visuals are updated locally. (On the client-side the terrain is purely visual since the physics are server-authoritative.)
 
-3 - **Gameplay**
-  
-  - 3.1. **Character Action Phase**
-      - Your team's turn starts with a random character
-        - Move your character
-        - Choose a weapon
-        - Fire weapon
-     - The next team's turn starts
-      ...
-      - Continue until all active teams have played this round
-  - 3.2. **Package Drop Phase**
-     - Packages containing items may drop from the sky
-    ...
-  - 3.3. **Win condition**
-     - The turns continue one team remains
-   
---- 
+---
 
-## Features  & Gameplay Systems 
-
-### Characters
-- Separated classes for character data, behavior and animator
-- Multiple **character types** per team implemented via **ScriptableObjects**
-- Each type has different tactical roles (max health and initial items vary)
-- Current types:
-  - gunslinger (gun as initial item)
-  - grenadier (grenade as initial item)
-  - tank (no initial item, but more health) 
-
-### Map & Terrain System
-- The game features **tile-based maps** with a **destructible terrain** system.
-- The destructible terrain generation happens asynchronously with the usage of coroutines:
-   - First, a texture is generated from the initial tilemap as the visual of the terrain. (And the tilemap's renderer gets deactivated).
-   - The visual is automatically updated each time an explosion happens, while temporary hole colliders are placed upon the existing collider.
-   - If the number of holes reaches a certain threshold the regeneration of colliders is initiated.
-   - The outlines of individual pixel islands are calculated from the texture's current state.
-   - Based on the outlines, polygon colliders are generated.
-   - When this process finishes the newly made islands become the collider and the temporary holes are removed (since the generated collider islands now contain the previously made holes). 
-
-### Minimap Generation
-- Based on a scene's tilemaps and characters a minimap sprite can be automatically generated via a custom helper script. 
-
-### Combat & Items
-- 2D **physics based** combat system with collision detection
-- **Object pools** for projectiles and explosions
-- Items are designed in two parts, using the **type object and strategy patterns** for modularity:
-  - **ScriptableObject definitions** holding the data, and
-  -  **behaviors** holding the logic 
-
-### Input & Platforms  
-- **Unity's New Input System** for cross-platform input
-- Currently supported inputs: keyboard, mouse, controller 
-
-### Turn Management  
-- **State-machine classes** for turn phases and character action phases
-
-### Camera System 
-- **Cinemachine** for smooth, dynamic camera control
-- Multiple virtual cameras for characters, projectiles, packages and the overall map view 
-
-### Graphics & Animation
-- Sprite animations for characters and explosions
-- Layered sprites for character types and teams
-- Coded, state-driven animation transitions 
-
-### Audio
-- Object pooled SFX audio resources
-- Global audio manager
-
-### UI/UX  
-- Pixel art UI with custom scaler classes 
-- Minimal shader code for UI elements
-
-### Bots
-- **GOAP (Goal-Oriented Action Planning) bots** for strategic AI decision-making (To be implemented...) 
-
-### Multiplayer
-- Offline multiplayer
-- Online multiplayer via **Netcode for GameObjects** (To be implemented...) 
-
---- 
-
-## Notes
-- This project is under development.
-- The current build (ver0.5) includes a fully implemented local multiplayer version of the game.
-
---- 
-
-## Next Steps
-- Online multiplayer
-- Singleplayer with bots
-- Consumable items
-- More weapons, maps, character types
+### Notes & Possible Improvements
+- Since the game is turn-based I decided not to use client-side prediction aside from Netcode's built-in NetworkTransform and NetworkRigidbody.
