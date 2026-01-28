@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class ItemDefinition : ScriptableObject
+public abstract class ItemDefinition : DatabaseItemScriptableObject
 {
     public abstract ItemType ItemType { get; }
 

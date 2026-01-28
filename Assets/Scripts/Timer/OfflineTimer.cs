@@ -1,0 +1,89 @@
+using System;
+using UnityEngine;
+
+public class OfflineTimer : MonoBehaviour, ITimer
+{
+    [SerializeField] private TimerType _timerType;
+    public TimerType TimerType => _timerType;
+    public float CurrentTime { get; private set; }
+    public bool IsRunning { get; private set;}
+    public bool IsInitialized { get; private set; }
+    public Func<bool> CanRestart { get; set; }
+    public Func<bool> CanPause { get; set; }
+    public Func<bool> CanResume { get; set; }
+
+    protected float _initialTime;
+
+    public event Action TimerEnded;
+
+    private void Start()
+    {
+        if (_timerType == TimerType.Countdown)
+        {
+            GameServices.RegisterCountdownTimer(this);
+        }
+        else if (_timerType == TimerType.Gameplay)
+        {
+            GameServices.RegisterGameplayTimer(this);
+        }
+        else
+        {
+            Debug.LogError($"Invalid timer type: {_timerType}");
+        }
+    }
+
+    public void Initialize(float initialTime)
+    {
+        _initialTime = initialTime;
+        CurrentTime = initialTime;
+        IsInitialized = true;
+    }
+
+    void Update()
+    {
+        if (!IsRunning)
+        {
+            return;
+        }
+
+        CurrentTime -= Time.deltaTime;
+
+        if (CurrentTime <= 0)
+        {
+            OnTimerEnded();
+        }
+    }
+
+    private void OnTimerEnded()
+    {
+        CurrentTime = 0;
+        IsRunning = false;
+        TimerEnded?.Invoke();
+    }
+
+
+    public void Restart()
+    {
+        if (CanRestart != null && !CanRestart())
+            return;
+
+        CurrentTime = _initialTime;
+        IsRunning = true;
+    }
+
+    public void Pause()
+    {
+        if (CanPause != null && !CanPause())
+            return;
+
+        IsRunning = false;
+    }
+
+    public void Resume()
+    {
+        if (CanResume != null && !CanResume())
+            return;
+
+        IsRunning = true;
+    }
+}

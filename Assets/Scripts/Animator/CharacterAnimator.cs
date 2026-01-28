@@ -14,18 +14,12 @@ public class CharacterAnimator : MonoBehaviour
 
     private const float JumpCancelThreshold = 1.0f;
 
-    private void Awake()
+    public void Initialize(CharacterDefinition definition, Color teamColor)
     {
-        var character = transform.parent.GetComponent<Character>();
-        _bodyAnimator.SetCharacterDefinition(character.CharacterDefinition);
+        _bodyAnimator.Initialize(definition, teamColor);
     }
 
-    public void SetTeamColor(Color color)
-    {
-        _bodyAnimator.SetTeamColor(color);
-    }
-
-    public void StartAiming(Item weapon)
+    public void StartAiming(ItemInstance weapon)
     {
         _isCurrentWeaponRanged = (weapon.Definition as WeaponDefinition).IsRanged;
         _itemRenderer.ChangeItem(weapon);
@@ -54,7 +48,7 @@ public class CharacterAnimator : MonoBehaviour
         _bodyAnimator.PlayIdleAnimation();
     }
 
-    public void PlayItemActionAnimation(Vector2 aimVector, Item item)
+    public void PlayItemActionAnimation(Vector2 aimVector, ItemInstance item)
     {
         if(item.Definition.HideItemDuringUsage)
         {
@@ -91,11 +85,13 @@ public class CharacterAnimator : MonoBehaviour
     public void PlayEquipArmorAnimation(ArmorDefinition armor)
     {
         _bodyAnimator.PlayEquipArmorAnimation(armor);
+        AudioManager.Instance.PlaySFXAt(armor.EquipSFX, transform);
     }
 
     public void PlayUnequipArmorAnimation(ArmorDefinition armor)
     {
         _bodyAnimator.PlayUnequipArmorAnimation(armor);
+        AudioManager.Instance.PlaySFXAt(armor.UnequipSFX, transform);
     }
 
     public void PlayGuardAnimation(ArmorDefinition armor)
@@ -104,10 +100,14 @@ public class CharacterAnimator : MonoBehaviour
         _bodyAnimator.PlayGuardAnimation(armor);
     }
 
-    public void PlayHurtAnimation()
+    public void PlayHurtAnimation(IDamageSourceDefinition damageSource)
     {
         _itemRenderer.HideItem();
         _bodyAnimator.PlayHurtAnimation();
+        if (damageSource.HitSFX != null)
+        {
+            AudioManager.Instance.PlaySFXAt(damageSource.HitSFX, transform);
+        }
     }
     public void PlayHealAnimation()
     {
@@ -135,6 +135,11 @@ public class CharacterAnimator : MonoBehaviour
     public void ChangeJumpAim(Vector2 aimDirection)
     {
         _bodyAnimator.ChangeJumpAim(aimDirection);
+    }
+
+    public void OnIsGroundedChanged(bool isGrounded)
+    {
+        _bodyAnimator.OnIsGroundedChanged(isGrounded);
     }
 
 }

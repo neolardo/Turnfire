@@ -3,17 +3,11 @@ using System.Collections.Generic;
 public readonly struct ExplosionInfo
 {
     public readonly IEnumerable<Character> ExplodedCharacters;
-    public readonly Projectile Source;
-    public readonly Explosion Explosion;
+    public readonly IExplosion Explosion; 
 
-    // stats
-    public readonly int Damage;
-
-    public ExplosionInfo(int damage, IEnumerable<Character> explodedCharacters, Projectile source, Explosion explosion)
+    public ExplosionInfo(IEnumerable<Character> explodedCharacters,IExplosion explosion)
     {
-        Damage = damage;
         ExplodedCharacters = explodedCharacters;
-        Source = source;
         Explosion = explosion;
     }
 }

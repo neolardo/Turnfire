@@ -7,102 +7,44 @@ using UnityEngine;
 public class LaserGunWeaponBehavior : WeaponBehavior
 {
     private LaserGunWeaponDefinition _definition;
-    private RaycastHit2D[] _raycastHitArray;
-    private const float _visualStartDirectionalOffset = .01f;
-    private readonly Vector2 _visualStartGlobalOffset = new Vector2(0f, 0.05f);
-    private const float _requiredSafeRadius = .2f;
+
+    private LaserPhysics _simulationLaserPhysics;
+  
 
     public LaserGunWeaponBehavior(LaserGunWeaponDefinition definition) : base(CoroutineRunner.Instance)
     {
         _definition = definition;
         IsAimingNormalized = true;
-        _raycastHitArray = new RaycastHit2D[Constants.RaycastHitColliderNumMax];
+        _simulationLaserPhysics = new LaserPhysics();
     }
 
     public override void Use(ItemUsageContext context)
     {
         _isAttacking = true;
-        var points = CalculateLaserPath(context.Owner, context.AimOrigin, context.AimVector, out var hitCharacters);
-        context.LaserRenderer.StartLaser(points.ToArray());
-        StartCoroutine(FollowLaserAndDamageCharactersOnContact(context.Owner, hitCharacters, context.LaserRenderer));
+        StartCoroutine(StartLaserAndDamageCharactersOnContact(context));
     }
 
-
-    private IEnumerable<Vector2> CalculateLaserPath(Character owner, Vector2 origin, Vector2 direction, out HashSet<Character> hitCharacters)
+    public IEnumerator StartLaserAndDamageCharactersOnContact(ItemUsageContext context)
     {
-        int maxBounces = _definition.MaximumBounceCount.CalculateValue();
-        float maxDistance = _definition.MaximumDistance.CalculateValue();
-        
-        var points = new List<Vector2>();
-        hitCharacters = new HashSet<Character>();
-
-        origin += direction.normalized * _visualStartDirectionalOffset + _visualStartGlobalOffset;
-        if (SafeObjectPlacer.TryFindSafePosition(origin, direction, LayerMaskHelper.GetLayerMask(Constants.GroundLayer), _requiredSafeRadius, out var safePosition))
-        {
-            origin = safePosition;
-        }
-
-        points.Add(origin);
-
-        Vector2 currentPos = origin;
-        Vector2 currentDir = direction.normalized;
-        var mask = LayerMaskHelper.GetCombinedLayerMask(Constants.GroundLayer, Constants.CharacterLayer);
-        var filter = new ContactFilter2D();
-        filter.SetLayerMask(mask);
-
-        for (int i = 0; i < maxBounces; i++)
-        {
-            int numHits = Physics2D.Raycast(currentPos, currentDir, filter,_raycastHitArray, maxDistance);
-            var hits = _raycastHitArray.Take(numHits);
-            var closestGroundHit = hits.Where(hit => hit.collider != null && hit.collider.tag == Constants.GroundTag).OrderBy(hit => hit.distance).FirstOrDefault();
-            var characterHits = hits.Where(hit => hit.collider != null && hit.collider.tag == Constants.CharacterTag);
-
-            foreach(var cHit in characterHits)
-            {
-                cHit.collider.TryGetComponent<Character>(out var c);
-
-                if (i == 0 && c == owner)
-                {
-                    continue;
-                }
-
-                hitCharacters.Add(c);
-            }
-
-            if (closestGroundHit.collider == null)
-            {
-                points.Add(currentPos + currentDir * maxDistance);
-                break;
-            }
-
-            var hit = closestGroundHit;
-
-            points.Add(hit.point);
-
-            currentDir = Vector2.Reflect(currentDir, hit.normal);
-
-            // Move slightly away to avoid self-hitting
-            currentPos = hit.point + currentDir * 0.01f;
-        }
-
-        return points;
-    }
-
-    public IEnumerator FollowLaserAndDamageCharactersOnContact(Character owner, HashSet<Character> hitCharacters, PixelLaserRenderer laserRenderer)
-    {
+        var laser = GameServices.LaserPool.Get();
+        var owner = context.Owner;
+        yield return new WaitUntil(() => laser.IsReady);
+        laser.Initialize(_definition.MaximumBounceCount.CalculateValue(), _definition.MaximumDistance.CalculateValue());
+        laser.StartBeam(context.AimOrigin, context.AimVector.normalized, owner);
+        var hitCharacters = laser.GetHitCharacters().ToList();
         var removableCharacters = new List<Character>();
-        while(laserRenderer.IsAnimationInProgress)
+        while(laser.IsBeamAnimationInProgress)
         {
             foreach (var c in hitCharacters)
             {
-                if (c == owner && laserRenderer.IsFirstRay)
+                if (c == owner && laser.IsFirstRayRendered)
                 {
                     continue;
                 }
 
-                if (c.OverlapPoint(laserRenderer.LaserHead.position))
+                if (c.OverlapPoint(laser.LaserHead.position))
                 { 
-                    c.Damage(_definition.Damage.CalculateValue());
+                    c.TakeDamage(_definition, _definition.Damage.CalculateValue());
                     removableCharacters.Add(c);
                 }
             }
@@ -117,15 +59,15 @@ public class LaserGunWeaponBehavior : WeaponBehavior
         // if any unhit characters remain beause of the yield interval, damage now
         foreach (var c in hitCharacters)
         {
-            c.Damage(_definition.Damage.CalculateValue());
+            c.TakeDamage(_definition, _definition.Damage.CalculateValue());
         }
         _isAttacking = false;
         InvokeItemUsageFinished();
     }
 
-    public override void InitializePreview(ItemUsageContext context, ItemPreviewRendererManager rendererManager)
+    public override void InitializePreview(ItemUsageContext context, PreviewRendererManager rendererManager)
     {
-        rendererManager.SelectRenderer(ItemPreviewRendererType.Trajectory);
+        rendererManager.SelectRenderer(PreviewRendererType.Trajectory);
         rendererManager.TrajectoryRenderer.ToggleGravity(false);
         rendererManager.TrajectoryRenderer.SetOrigin(context.Owner.ItemTransform);
         rendererManager.TrajectoryRenderer.SetTrajectoryMultipler(1);
@@ -136,7 +78,9 @@ public class LaserGunWeaponBehavior : WeaponBehavior
         int damage = _definition.Damage.AvarageValue;
         int damageToAllies = 0;
         int damageToEnemies = 0;
-        CalculateLaserPath(context.Owner, context.Origin, context.AimVector, out var hitCharacters);
+        _simulationLaserPhysics.Initialize(_definition.MaximumBounceCount.AvarageValue, _definition.MaximumDistance.AvarageValue);
+        _simulationLaserPhysics.CalculateLaserPath(context.Origin, context.AimVector, context.Owner);
+        var hitCharacters = _simulationLaserPhysics.GetHitCharacters().ToList();
         Vector2 closestDamagingPosition = hitCharacters.Count == 0 ? context.Origin : hitCharacters.First().transform.position;
         float minDist = Vector2.Distance(closestDamagingPosition, context.Origin);
         foreach (var c in hitCharacters)

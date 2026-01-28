@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Mime;
 using UnityEditor;
 using UnityEngine;
 
@@ -66,9 +65,9 @@ public class BotBrain : UnityDriven
         {
             yield return DecideGoalWhenReadyToUseItem(context, g => goal = g);
         }
-        if(context.GameStateManager.CurrentState == GameStateType.Paused )
+        if(GameServices.GameStateManager.CurrentState == GameStateType.Paused )
         {
-            yield return new WaitUntil(() => context.GameStateManager.CurrentState != GameStateType.Paused);
+            yield return new WaitUntil(() => GameServices.GameStateManager.CurrentState != GameStateType.Paused);
         }
         GoalDecided?.Invoke(goal);
     }
@@ -154,9 +153,9 @@ public class BotBrain : UnityDriven
             packageGreed = _tuning.RemainingAmmoLowPackageGreed;
         }
 
-        foreach (Package p in context.Packages)
+        foreach (IPackage p in context.Packages)
         {
-            var packagePos = context.JumpGraph.FindClosestStandingPoint(p.transform.position);
+            var packagePos = context.JumpGraph.FindClosestStandingPoint(p.Transform.position);
             if (context.JumpGraph.TryCalculateJumpDistanceBetween(targetPoint, packagePos, out var numJumps))
             {
                 float packageScore = PackageJumpDistanceUtility(numJumps);
@@ -239,7 +238,7 @@ public class BotBrain : UnityDriven
         onDone?.Invoke(pickedGoal);       
     }
 
-    private IEnumerator EvaluateItemScore(Item item, BotContext context, Action<float, BotGoal> onDone)
+    private IEnumerator EvaluateItemScore(ItemInstance item, BotContext context, Action<float, BotGoal> onDone)
     {
         var startPos = context.Self.ItemTransform.position;
         var simulationContext = new ItemBehaviorSimulationContext(context.Self, context.TeamMates.Concat(context.Enemies), startPos, Vector2.zero, context.Terrain);

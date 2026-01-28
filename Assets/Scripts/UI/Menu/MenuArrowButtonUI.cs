@@ -16,7 +16,7 @@ public class MenuArrowButtonUI : MonoBehaviour, IPointerEnterHandler,
     [SerializeField] private Sprite _inactiveSprite;
     [SerializeField] private Sprite _hoveredSprite;
     private Sprite _activeSprite;
-    private LocalMenuInput _inputManager;
+    private LocalMenuUIInputSource _inputManager;
 
     private Image _image;
     private bool _hovered;
@@ -36,7 +36,7 @@ public class MenuArrowButtonUI : MonoBehaviour, IPointerEnterHandler,
         _image = GetComponent<Image>();
         _activeSprite = _image.sprite;
         _image.sprite = _isActive ? _activeSprite : _inactiveSprite;
-        _inputManager = FindFirstObjectByType<LocalMenuInput>();
+        _inputManager = FindFirstObjectByType<LocalMenuUIInputSource>();
     }
 
     private void OnEnable()

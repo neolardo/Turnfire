@@ -4,23 +4,22 @@ using UnityEngine;
 [RequireComponent(typeof(SpriteRenderer))]
 public class LineRendererFragment : MonoBehaviour
 {
-    const int MAX_POINTS = 128;
+    [SerializeField] private Material _material;
+    [SerializeField] private int _pixelsPerUnit = Constants.PixelsPerUnit;
 
-    [SerializeField] Material _material;
-    [SerializeField] int _pixelsPerUnit = 64;
+    private SpriteRenderer _sr;
+    private Vector4[] _points = new Vector4[MaxPoints];
 
-    SpriteRenderer _sr;
-    Vector4[] _points = new Vector4[MAX_POINTS];
-
+    private const int MaxPoints = 128;
     private const float MapMargin = 7;
 
     private void Start()
     {
-        var terrainRenderer = FindFirstObjectByType<DestructibleTerrainRenderer>();
-        var width = (int)(terrainRenderer.Texture.width + MapMargin * 2 * _pixelsPerUnit);
-        var height = (int)(terrainRenderer.Texture.height + MapMargin * 2 * _pixelsPerUnit);
+        var terrain = FindFirstObjectByType<TerrainManager>();
+        var pixelWidth = (int)(terrain.PixelSize.x + MapMargin * 2 * _pixelsPerUnit);
+        var pixelHeight = (int)(terrain.PixelSize.y + MapMargin * 2 * _pixelsPerUnit);
         _sr = GetComponent<SpriteRenderer>();
-        InitializeSpriteRenderer(width, height);
+        InitializeSpriteRenderer(pixelWidth, pixelHeight);
     }
 
     private void InitializeSpriteRenderer(int width, int height)
@@ -43,7 +42,7 @@ public class LineRendererFragment : MonoBehaviour
 
     public void DrawLine(IList<Vector2> worldPoints)
     {
-        int count = Mathf.Min(worldPoints.Count, MAX_POINTS);
+        int count = Mathf.Min(worldPoints.Count, MaxPoints);
 
         for (int i = 0; i < count; i++)
         {

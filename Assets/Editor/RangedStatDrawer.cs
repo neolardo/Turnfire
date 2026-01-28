@@ -1,97 +1,101 @@
-//using UnityEditor;
-//using UnityEngine;
 
-//[CustomPropertyDrawer(typeof(RangedStatInt))]
-//[CustomPropertyDrawer(typeof(RangedStatFloat))]
-//public class RangedStatDrawer : PropertyDrawer
-//{
-//    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-//    {
-//        // Cache values
-//        var normalizedValueProp = property.FindPropertyRelative("_normalizedValue");
-//        var isRandomizedProp = property.FindPropertyRelative("_isRandomized");
-//        var randomnessProp = property.FindPropertyRelative("_randomness");
-//        var groupProp = property.FindPropertyRelative("_group");
+#if UNITY_EDITOR
 
-//        // Compute value
-//        string averageString = GetAverageValueString(property);
+using UnityEditor;
+using UnityEngine;
 
-//        // Append "(value)" to label
-//        var newLabel = new GUIContent($"{label.text} ({averageString})", label.tooltip);
+[CustomPropertyDrawer(typeof(RangedStatInt))]
+[CustomPropertyDrawer(typeof(RangedStatFloat))]
+public class RangedStatDrawer : PropertyDrawer
+{
+    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    {
+        // Cache values
+        var normalizedValueProp = property.FindPropertyRelative("_normalizedValue");
+        var isRandomizedProp = property.FindPropertyRelative("_isRandomized");
+        var randomnessProp = property.FindPropertyRelative("_randomness");
+        var groupProp = property.FindPropertyRelative("_group");
 
-//        // Draw foldout
-//        property.isExpanded = EditorGUI.Foldout(
-//            new Rect(position.x, position.y, position.width, EditorGUIUtility.singleLineHeight),
-//            property.isExpanded,
-//            newLabel
-//        );
+        // Compute value
+        string averageString = GetAverageValueString(property);
 
-//        if (!property.isExpanded)
-//            return;
+        // Append "(value)" to label
+        var newLabel = new GUIContent($"{label.text} ({averageString})", label.tooltip);
 
-//        EditorGUI.indentLevel++;
+        // Draw foldout
+        property.isExpanded = EditorGUI.Foldout(
+            new Rect(position.x, position.y, position.width, EditorGUIUtility.singleLineHeight),
+            property.isExpanded,
+            newLabel
+        );
 
-//        float y = position.y + EditorGUIUtility.singleLineHeight + 2;
+        if (!property.isExpanded)
+            return;
 
-//        EditorGUI.PropertyField(new Rect(position.x, y, position.width, EditorGUIUtility.singleLineHeight),
-//            normalizedValueProp);
-//        y += EditorGUIUtility.singleLineHeight + 2;
+        EditorGUI.indentLevel++;
 
-//        EditorGUI.PropertyField(new Rect(position.x, y, position.width, EditorGUIUtility.singleLineHeight),
-//            isRandomizedProp);
-//        y += EditorGUIUtility.singleLineHeight + 2;
+        float y = position.y + EditorGUIUtility.singleLineHeight + 2;
 
-//        if (isRandomizedProp.boolValue)
-//        {
-//            EditorGUI.PropertyField(new Rect(position.x, y, position.width, EditorGUIUtility.singleLineHeight),
-//                randomnessProp);
-//            y += EditorGUIUtility.singleLineHeight + 2;
-//        }
+        EditorGUI.PropertyField(new Rect(position.x, y, position.width, EditorGUIUtility.singleLineHeight),
+            normalizedValueProp);
+        y += EditorGUIUtility.singleLineHeight + 2;
 
-//        EditorGUI.PropertyField(new Rect(position.x, y, position.width, EditorGUIUtility.singleLineHeight),
-//            groupProp);
+        EditorGUI.PropertyField(new Rect(position.x, y, position.width, EditorGUIUtility.singleLineHeight),
+            isRandomizedProp);
+        y += EditorGUIUtility.singleLineHeight + 2;
 
-//        EditorGUI.indentLevel--;
-//    }
+        if (isRandomizedProp.boolValue)
+        {
+            EditorGUI.PropertyField(new Rect(position.x, y, position.width, EditorGUIUtility.singleLineHeight),
+                randomnessProp);
+            y += EditorGUIUtility.singleLineHeight + 2;
+        }
 
-//    public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-//    {
-//        float h = EditorGUIUtility.singleLineHeight; // foldout
+        EditorGUI.PropertyField(new Rect(position.x, y, position.width, EditorGUIUtility.singleLineHeight),
+            groupProp);
 
-//        if (!property.isExpanded)
-//            return h;
+        EditorGUI.indentLevel--;
+    }
 
-//        h += EditorGUIUtility.singleLineHeight + 2; // normalized
-//        h += EditorGUIUtility.singleLineHeight + 2; // isRandomized
+    public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+    {
+        float h = EditorGUIUtility.singleLineHeight; // foldout
 
-//        if (property.FindPropertyRelative("_isRandomized").boolValue)
-//            h += EditorGUIUtility.singleLineHeight + 2; // randomness
+        if (!property.isExpanded)
+            return h;
 
-//        h += EditorGUIUtility.singleLineHeight + 2; // group
+        h += EditorGUIUtility.singleLineHeight + 2; // normalized
+        h += EditorGUIUtility.singleLineHeight + 2; // isRandomized
 
-//        return h;
-//    }
+        if (property.FindPropertyRelative("_isRandomized").boolValue)
+            h += EditorGUIUtility.singleLineHeight + 2; // randomness
 
-//    private string GetAverageValueString(SerializedProperty property)
-//    {
-//        object target = property.GetSerializedValue();
-//        if (target == null)
-//            return "?";
+        h += EditorGUIUtility.singleLineHeight + 2; // group
 
-//        if (target is RangedStat<int> intStat && intStat.Group != null)
-//        {
-//            int min = intStat.MinimumValue;
-//            int max = intStat.MaximumValue;
-//            return min == max ? min.ToString() : $"{min}-{max}";
-//        }
+        return h;
+    }
 
-//        if (target is RangedStat<float> floatStat && floatStat.Group != null)
-//        {
-//            float min = floatStat.MinimumValue;
-//            float max = floatStat.MaximumValue;
-//            return Mathf.Approximately(min, max) ? min.ToString() : $"{min}-{max}";
-//        }
+    private string GetAverageValueString(SerializedProperty property)
+    {
+        object target = property.GetSerializedValue();
+        if (target == null)
+            return "?";
 
-//        return "?";
-//    }
-//}
+        if (target is RangedStat<int> intStat && intStat.Group != null)
+        {
+            int min = intStat.MinimumValue;
+            int max = intStat.MaximumValue;
+            return min == max ? min.ToString() : $"{min}-{max}";
+        }
+
+        if (target is RangedStat<float> floatStat && floatStat.Group != null)
+        {
+            float min = floatStat.MinimumValue;
+            float max = floatStat.MaximumValue;
+            return Mathf.Approximately(min, max) ? min.ToString() : $"{min}-{max}";
+        }
+
+        return "?";
+    }
+}
+#endif

@@ -26,8 +26,8 @@ public class CameraController : MonoBehaviour
         _brain = Camera.main.GetComponent<CinemachineBrain>();
         _brain.DefaultBlend.Style = CinemachineBlendDefinition.Styles.Cut;
         AlignCamerasToPixelPerfectSize();
-        _defaultEaseInBlend = new CinemachineBlendDefinition(CinemachineBlendDefinition.Styles.EaseIn, _brain.DefaultBlend.Time);
-        _defaultEaseInOutBlend = new CinemachineBlendDefinition(CinemachineBlendDefinition.Styles.EaseInOut, _brain.DefaultBlend.Time);
+        _defaultEaseInBlend = new CinemachineBlendDefinition(CinemachineBlendDefinition.Styles.EaseIn, 1f);
+        _defaultEaseInOutBlend = new CinemachineBlendDefinition(CinemachineBlendDefinition.Styles.EaseInOut,1.5f);
     }
 
     private void AlignCamerasToPixelPerfectSize()
@@ -40,8 +40,8 @@ public class CameraController : MonoBehaviour
     private void Start()
     {
         _mapCam.Follow = _mapTransform;
-        var localInput = FindFirstObjectByType<LocalGameplayInput>();
-        localInput.ShowMapToggled += OnShowMapToggled;
+        var inputHandler = FindFirstObjectByType<LocalInputHandler>();
+        inputHandler.ShowMapToggled += OnShowMapToggled;
         _secondaryCameraType = VirtualCameraType.Map;
         _secondaryCameraBlend = _brain.DefaultBlend;
         PrioritizeVirtualCameras();
@@ -91,34 +91,34 @@ public class CameraController : MonoBehaviour
         }
     }
 
-    public void SetProjectileTarget(Projectile p)
+    public void SetProjectileTarget(Transform projectileTransform)
     {
         _secondaryCameraType = VirtualCameraType.Projectile;
         _secondaryCameraBlend = _defaultEaseInBlend;
-        _projectileCam.Follow = p.transform;
+        _projectileCam.Follow = projectileTransform;
         PrioritizeVirtualCameras();
     }
-    public void SetLaserTarget(Transform l)
+    public void SetLaserTarget(Transform laserTransform)
     {
         _secondaryCameraType = VirtualCameraType.Laser;
         _secondaryCameraBlend = _defaultEaseInBlend;
-        _projectileCam.Follow = l;
+        _projectileCam.Follow = laserTransform;
         PrioritizeVirtualCameras();
     }
 
-    public void SetCharacterTarget(Character c)
+    public void SetCharacterTarget(Transform characterTransform)
     {
         _secondaryCameraType = VirtualCameraType.Character;
         _secondaryCameraBlend = _defaultEaseInOutBlend;
-        _characterCam.Follow = c.transform;
+        _characterCam.Follow = characterTransform;
         PrioritizeVirtualCameras();
     }
 
-    public void SetPackageTarget(Package p)
+    public void SetPackageTarget(Transform packageTransform)
     {
         _secondaryCameraType = VirtualCameraType.Package;
         _secondaryCameraBlend = _defaultEaseInBlend;
-        _packageCam.Follow = p.transform;
+        _packageCam.Follow = packageTransform;
         PrioritizeVirtualCameras();
     }
 

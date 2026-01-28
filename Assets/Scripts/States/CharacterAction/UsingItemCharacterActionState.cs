@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class UsingItemCharacterActionState : CharacterActionState
 {
-    public UsingItemCharacterActionState(MonoBehaviour manager, UISoundsDefinition uiSounds) : base(manager, uiSounds)
+    public UsingItemCharacterActionState() : base(CoroutineRunner.Instance)
     {
     }
     public override CharacterActionStateType State => CharacterActionStateType.UsingItem;

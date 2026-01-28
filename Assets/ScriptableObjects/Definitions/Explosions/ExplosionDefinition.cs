@@ -1,7 +1,7 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "ProjectileDefinition", menuName = "Scriptable Objects/ExplosionDefinition")]
-public class ExplosionDefinition : ScriptableObject
+[CreateAssetMenu(fileName = "ProjectileDefinition", menuName = "Scriptable Objects/Explosion/ExplosionDefinition")]
+public class ExplosionDefinition : DatabaseItemScriptableObject
 {
     public RangedStatFloat Force;
     public RangedStatFloat Radius;

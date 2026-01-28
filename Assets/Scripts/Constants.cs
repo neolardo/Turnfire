@@ -68,4 +68,13 @@ public static class Constants
     public const float ParabolicPathSimulationDeltaForProjectiles = .02f;
     public const float AimAngleSimulationStep = 5f;
     public const float AimStrengthSimulationStep = .1f;
+
+    //network
+    public const string InvalidNameReasonValue = "InvalidName";
+    public const string RoomIsFullReasonValue = "RoomIsFull";
+    public const int InvalidId = -1;
+
+    //pixel resolution
+    public const int PixelsPerUnit = 64;
+    public const int PixelsPerTile = 32;
 }

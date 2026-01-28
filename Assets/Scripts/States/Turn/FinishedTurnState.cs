@@ -1,16 +1,14 @@
-using UnityEngine;
-
 public class FinishedTurnState : TurnState
 {
-    public FinishedTurnState(MonoBehaviour manager) : base(manager)
+    public FinishedTurnState() : base(CoroutineRunner.Instance)
     {
     }
 
     public override TurnStateType State => TurnStateType.Finished;
 
-    public override void StartState()
+    public override void StartState(TurnStateContext context)
     {
-        base.StartState();
+        base.StartState(context);
         EndState();
     }
 

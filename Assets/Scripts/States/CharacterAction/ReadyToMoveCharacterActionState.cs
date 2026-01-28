@@ -3,14 +3,11 @@ using UnityEngine;
 public class ReadyToMoveCharacterActionState : CharacterActionState
 {
     public override CharacterActionStateType State => CharacterActionStateType.ReadyToMove;
-    private PixelTrajectoryRenderer _trajectoryRenderer;
-    private GameplayUIManager _uiManager;
-    private IGameplayInputSource _inputSource;
-
-    public ReadyToMoveCharacterActionState(PixelTrajectoryRenderer trajectoryRenderer, GameplayUIManager uiManager, MonoBehaviour manager, UISoundsDefinition uiSounds) : base(manager, uiSounds)
+    private PreviewRendererManager _previewRenderer;
+    private ITeamInputSource _inputSource;
+    public ReadyToMoveCharacterActionState(PreviewRendererManager previewRenderer) : base(CoroutineRunner.Instance)
     {
-        _trajectoryRenderer = trajectoryRenderer;
-        _uiManager = uiManager;
+        _previewRenderer = previewRenderer;
     }
 
     protected override void SubscribeToEvents()
@@ -19,7 +16,10 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
         _inputSource.AimStarted += OnAimStarted;
         _inputSource.AimChanged += OnAimChanged;
         _inputSource.AimCancelled += OnAimCancelled;
-        _inputSource.ActionSkipped += OnActionSkipped;
+        _inputSource.ActionSkipped += _currentCharacter.SkipAction;
+        _currentCharacter.ActionSkipped += EndState;
+        _currentCharacter.Jumped += EndState;
+        _currentCharacter.Died += EndState;
     }
     protected override void UnsubscribeFromEvents()
     {
@@ -27,54 +27,52 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
         _inputSource.AimStarted -= OnAimStarted;
         _inputSource.AimChanged -= OnAimChanged;
         _inputSource.AimCancelled -= OnAimCancelled;
-        _inputSource.ActionSkipped -= OnActionSkipped;
+        _inputSource.ActionSkipped -= _currentCharacter.SkipAction;
+        _currentCharacter.ActionSkipped -= EndState;
+        _currentCharacter.Jumped -= EndState;
+        _currentCharacter.Died -= EndState;
     }
 
     public override void StartState(Character currentCharacter)
     {
         _inputSource = currentCharacter.Team.InputSource;
         base.StartState(currentCharacter);
-        _uiManager.ResumeGameplayTimer();
+        GameServices.GameplayTimer.Resume();
         _inputSource.IsAimingEnabled = true;
-        _trajectoryRenderer.SetOrigin(currentCharacter.transform, currentCharacter.FeetOffset);
-        _trajectoryRenderer.ToggleGravity(true);
-        _trajectoryRenderer.SetTrajectoryMultipler(currentCharacter.JumpStrength);
-        _inputSource.RequestInputForAction(State);
+        _inputSource.IsActionSkippingEnabled = true;
+         currentCharacter.InitializeMovementPreview(_previewRenderer);
+        _inputSource.RequestAction(State);
     }
 
     private void OnAimStarted(Vector2 initialPosition)
     {
-        _uiManager.ShowAimCircles(initialPosition);
         _currentCharacter.PrepareToJump();
     }
 
     private void OnAimChanged(Vector2 aimVector)
     {
-        _trajectoryRenderer.DrawTrajectory(aimVector);
-        _uiManager.UpdateAimCircles(aimVector);
         _currentCharacter.ChangeJumpAim(aimVector);
     }
 
     private void OnAimCancelled()
     {
-        _trajectoryRenderer.HideTrajectory();
-        _uiManager.HideAimCircles();
         _currentCharacter.CancelJump();
     }
 
     private void OnImpulseReleased(Vector2 aimDirection)
     {
-        _trajectoryRenderer.HideTrajectory();
-        _uiManager.HideAimCircles();
         _currentCharacter.Jump(aimDirection);
-        EndState();
     }
 
     protected override void EndState()
     {
         _inputSource.ForceCancelAiming();
         _inputSource.IsAimingEnabled = false;
-        _uiManager.PauseGameplayTimer();
+        _inputSource.IsActionSkippingEnabled = false;
+        if (GameServices.GameplayTimer != null)
+        {
+            GameServices.GameplayTimer.Pause();
+        }
         base.EndState();
     }
 }

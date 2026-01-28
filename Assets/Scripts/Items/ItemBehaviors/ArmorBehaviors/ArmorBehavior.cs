@@ -1,7 +1,8 @@
 using System;
 using System.Collections;
+using UnityEngine;
 
-public abstract class ArmorBehavior : IItemBehavior
+public abstract class ArmorBehavior : UnityDriven,IItemBehavior
 {
     protected int _durability;
     protected Character _owner;
@@ -12,33 +13,37 @@ public abstract class ArmorBehavior : IItemBehavior
 
     private ArmorDefinition _definition;
 
-    protected ArmorBehavior(ArmorDefinition definition)
+    protected ArmorBehavior(ArmorDefinition definition) : base(CoroutineRunner.Instance)
     {
         _definition = definition;
         _durability = _definition.MaxDurability.CalculateValue();
     }
 
-    public void InitializePreview(ItemUsageContext context, ItemPreviewRendererManager rendererManager){}
+    public void InitializePreview(ItemUsageContext context, PreviewRendererManager rendererManager){}
 
     public virtual bool CanUseItem(ItemUsageContext context)
     {
-        return context.Owner.ArmorManager.CanEquip(_definition);
+        return context.Owner.CanEquipArmor(_definition);
     }
 
     public virtual void Use(ItemUsageContext context)
     {
         IsInUse = true;
         _owner = context.Owner;
-        AudioManager.Instance.PlaySFXAt(_definition.EquipSFX, _owner.transform);
     }
     protected virtual void OnArmorWornOut()
     {
         ArmorWornOut?.Invoke(_definition);
-        AudioManager.Instance.PlaySFXAt(_definition.UnequipSFX, _owner.transform);
     }
 
-    protected void OnItemUsageFinished()
+    protected void InvokeItemUsageFinished()
     {
+        StartCoroutine(WaitForItemUsageDelayThenInvokeFinished());
+    }
+
+    private IEnumerator WaitForItemUsageDelayThenInvokeFinished()
+    { 
+        yield return new WaitForSeconds(_definition.ItemUsagePostDelay);
         IsInUse = false;
         ItemUsageFinished?.Invoke();
     }

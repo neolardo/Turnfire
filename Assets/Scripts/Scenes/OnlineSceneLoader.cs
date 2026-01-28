@@ -1,0 +1,136 @@
+using System.Collections.Generic;
+using System.Linq;
+using Unity.Netcode;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public class OnlineSceneLoader : NetworkBehaviour, ISceneLoader
+{
+    private readonly HashSet<ulong> _readyClients = new();
+    public static OnlineSceneLoader Instance { get; private set; }
+    public GameplaySceneSettings CurrentGameplaySceneSettings => GameplaySceneSettingsStorage.Current;
+
+    public bool AllClientsHaveSpawned { get; private set; }
+
+    private MapLocator _mapLocator;
+
+    public override void OnNetworkSpawn()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+
+        _mapLocator = FindFirstObjectByType<MapLocator>();
+        if (IsClient)
+        {
+            NotifyServerReadyServerRpc();
+        }
+        GameServices.Register(this);
+        Debug.Log($"{nameof(OnlineSceneLoader)} spawned");
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void NotifyServerReadyServerRpc(RpcParams rpcParams = default)
+    {
+        ulong clientId = rpcParams.Receive.SenderClientId;
+
+        if (_readyClients.Add(clientId))
+        {
+            Debug.Log($"Client {clientId} ready ({_readyClients.Count}/{NetworkManager.ConnectedClients.Count})");
+        }
+
+        RefreshClientsHaveSpawned();
+    }
+
+    private void RefreshClientsHaveSpawned()
+    {
+        if (!IsServer)
+        {
+            return;
+        }
+
+        bool value = true;
+        foreach (var clientId in NetworkManager.ConnectedClientsIds)
+        {
+            if (!_readyClients.Contains(clientId))
+            {
+                value = false;
+                break;
+            }
+        }
+        AllClientsHaveSpawned = value;
+    }
+
+    private void DespawnAllRuntimeSpawnedObjects()
+    {
+        if (!NetworkManager.Singleton || !NetworkManager.Singleton.IsServer)
+            return;
+
+        var spawnManager = NetworkManager.Singleton.SpawnManager;
+
+        var spawnedObjects = spawnManager.SpawnedObjectsList.ToArray();
+        var sceneLoaderNetObj = GetComponent<NetworkObject>();
+        foreach (var obj in spawnedObjects)
+        {
+            if (obj == null || obj == sceneLoaderNetObj)
+                continue;
+
+            // Scene objects should NOT be despawned here (they belong to the scene)
+            if (obj.IsSceneObject.Value)
+                continue;
+
+            obj.Despawn(true);
+        }
+    }
+
+
+    public void LoadMenuScene()
+    {
+        LoadMenuSceneServerRpc();
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void LoadMenuSceneServerRpc()
+    {
+        SaveGameplaySceneSettingsClientRpc(NetworkGameplaySceneSettingsData.ToNetworkData(null));
+        LoadMenuSceneAndLeaveRoomClientRpc();
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
+    private void LoadMenuSceneAndLeaveRoomClientRpc()
+    {
+        SceneManager.LoadScene(Constants.MenuSceneName, LoadSceneMode.Single);
+        RoomNetworkManager.LeaveRoom();
+    }
+
+    public void LoadGameplayScene(GameplaySceneSettings settings)
+    {
+        if (!IsServer)
+        {
+            return;
+        }
+        SaveGameplaySceneSettingsClientRpc(NetworkGameplaySceneSettingsData.ToNetworkData(settings));
+        NetworkManager.Singleton.SceneManager.LoadScene(settings.Map.SceneName, LoadSceneMode.Single);
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
+    private void SaveGameplaySceneSettingsClientRpc(NetworkGameplaySceneSettingsData networkSettings)
+    {
+        Debug.Log("Gameplay scene settings saved");
+        GameplaySceneSettingsStorage.Current = networkSettings.ToSceneSettings(_mapLocator);
+    }
+
+    public void ReloadScene()
+    {
+        if (!IsServer)
+        {
+            return;
+        }
+        DespawnAllRuntimeSpawnedObjects();
+        var sceneName = SceneManager.GetActiveScene().name;
+        NetworkManager.Singleton.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
+    }
+}

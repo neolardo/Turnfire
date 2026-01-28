@@ -135,8 +135,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d3830eeb0c1f5e45ab743c2ea38772b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _uiDefinition: {fileID: 11400000, guid: 93667ed427ce1234d954789779612623, type: 2}
   _material: {fileID: 2100000, guid: 849664d54392e8848843308c60ab1fd1, type: 2}
-  _pixelsPerUnit: 64
 --- !u!114 &6519052480330493322
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -254,8 +254,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d3830eeb0c1f5e45ab743c2ea38772b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _uiDefinition: {fileID: 0}
   _material: {fileID: 2100000, guid: 67754c35e58b7474ab02067b48da3a6f, type: 2}
-  _pixelsPerUnit: 64
 --- !u!114 &2283900578792483023
 MonoBehaviour:
   m_ObjectHideFlags: 0

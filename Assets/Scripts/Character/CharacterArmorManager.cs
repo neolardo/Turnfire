@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 public class CharacterArmorManager
@@ -42,7 +41,6 @@ public class CharacterArmorManager
         ArmorUnequipped?.Invoke(armorDefinition);
         UnityEngine.Debug.Log($"Armor {armorDefinition.Name} unequipped");
     }
-
 
     public ArmorDefinition BlockAttack()
     {

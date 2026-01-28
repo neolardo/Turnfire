@@ -14,7 +14,7 @@ public static class SafeObjectPlacer
 
     private static int MaxRings => Mathf.CeilToInt(_searchRadius / _radiusStep);
 
-    private static DestructibleTerrainManager _destructibleTerrain;
+    private static TerrainManager _destructibleTerrain;
 
     public static void SetSettings(float searchRadius, float radiusStep, float angleStep)
     {
@@ -23,7 +23,7 @@ public static class SafeObjectPlacer
         _angleStep = angleStep;
     }
 
-    public static void SetDestructibleTerrain(DestructibleTerrainManager destructibleTerrain)
+    public static void SetDestructibleTerrain(TerrainManager destructibleTerrain)
     {
         _destructibleTerrain = destructibleTerrain;
     }

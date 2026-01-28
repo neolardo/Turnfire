@@ -3,7 +3,7 @@ using UnityEngine;
 public class JumpGraphManager : MonoBehaviour
 {
     [SerializeField] private PixelUIDefinition _pixelUI;
-    [SerializeField] private DestructibleTerrainManager _terrain;
+    [SerializeField] private TerrainManager _terrain;
     [SerializeField] private float _characterHeight = 1f;
     [SerializeField] private float _characterWidth = .5f;
     private int PixelResolution => _pixelUI.PixelsPerUnit / 4;

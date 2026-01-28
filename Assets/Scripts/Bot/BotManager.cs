@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class BotManager : MonoBehaviour
 {
+    public BotController Controller { get; private set; }
+
     private BotBrain _brain;
-    private BotController _controller;
-    private BotGameplayInput _input;
     private BotContextProvider _contextProvider;
     private Team _team;
  
@@ -13,26 +13,23 @@ public class BotManager : MonoBehaviour
 
     private bool _isDestroyed;
 
-    public void Initialize(Team team, BotBrain brain, BotGameplayInput input)
-    {
+    public void Initialize(Team team, BotBrain brain)
+    { 
         _contextProvider = FindFirstObjectByType<BotContextProvider>();
         _team = team;
         _brain = brain;
         _brain.GoalDecided += OnGoalDecided;
-        _input = input;
-        _controller = new BotController(_input);
-        _input.InputRequested += OnInputRequested;
+        Controller = new BotController();
     }
 
     private void OnDestroy()
     {
         _brain.GoalDecided -= OnGoalDecided;
-        _input.InputRequested -= OnInputRequested;
         StopAllCoroutines();
         _isDestroyed = true;
     }
 
-    private void OnInputRequested(CharacterActionStateType action)
+    public void BeginThinkingAndActing(CharacterActionStateType action)
     {
         StartCoroutine(GetContextAndThink(action));
     }
@@ -51,7 +48,7 @@ public class BotManager : MonoBehaviour
 
     private void OnGoalDecided(BotGoal goal)
     {
-        _controller.Act(goal, _currentContext);
+        Controller.Act(goal, _currentContext);
     }
 
 }

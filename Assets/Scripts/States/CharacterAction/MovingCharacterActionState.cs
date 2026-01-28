@@ -1,9 +1,8 @@
 using System.Collections;
-using UnityEngine;
 
 public class MovingCharacterActionState : CharacterActionState
 {
-    public MovingCharacterActionState(MonoBehaviour manager, UISoundsDefinition uiSounds) : base(manager, uiSounds)
+    public MovingCharacterActionState() : base(CoroutineRunner.Instance)
     {
     }
 

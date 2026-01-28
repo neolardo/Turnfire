@@ -42,7 +42,11 @@ public abstract class ScreenSizeDependantHoverableSelectableContainerUI : Hovera
 
     protected virtual void OneFrameAfterOnEnable()
     {
-        _originalAnchoredPosition = _rectTransform.anchoredPosition;
+        if (!_isAnchoredPositionInitialized)
+        {
+            _originalAnchoredPosition = _rectTransform.anchoredPosition;
+            _isAnchoredPositionInitialized = true;
+        }
     }
 
     protected virtual void OneFrameAfterSizeChanged()

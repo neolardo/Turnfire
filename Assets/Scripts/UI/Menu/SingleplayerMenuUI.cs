@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -9,15 +11,17 @@ public class SingleplayerMenuUI : MonoBehaviour
     [SerializeField] private MenuNumericDisplayUI _numBotsDisplay;
     [SerializeField] private MenuBotDifficultyToggleUI _botDifficultyToggle;
     [SerializeField] private MenuMapDisplayUI _mapDisplay;
-    [SerializeField] private MenuCheckBoxUI _useTimerCheckbox;
-    private LocalMenuInput _inputManager;
+    [SerializeField] private CheckBoxUI _useTimerCheckbox;
 
+    private LocalMenuUIInputSource _inputManager;
     private MenuUIManager _menuUIManager;
+    private SceneLoaderFactory _sceneLoaderFactory;
 
     private void Awake()
     {
         _menuUIManager = FindFirstObjectByType<MenuUIManager>();
-        _inputManager = FindFirstObjectByType<LocalMenuInput>();
+        _inputManager = FindFirstObjectByType<LocalMenuUIInputSource>();
+        _sceneLoaderFactory = FindFirstObjectByType<SceneLoaderFactory>();
         _confirmButton.ButtonPressed += OnConfirmPressed;
         _cancelButton.ButtonPressed += OnCancelPressed;
         _numBotsDisplay.ValueChanged += OnNumberOfBotsChanged;
@@ -25,36 +29,47 @@ public class SingleplayerMenuUI : MonoBehaviour
 
     private void OnEnable()
     {
+        EventSystem.current.SetSelectedGameObject(_mapDisplay.gameObject);
         _inputManager.MenuBackPerformed += _cancelButton.Press;
+        _inputManager.MenuIncrementValuePerformed += _useTimerCheckbox.OnDecrementOrIncrementValuePerformed;
+        _inputManager.MenuDecrementValuePerformed += _useTimerCheckbox.OnDecrementOrIncrementValuePerformed;
     }
 
     private void OnDisable()
     {
         _inputManager.MenuBackPerformed -= _cancelButton.Press;
+        _inputManager.MenuIncrementValuePerformed -= _useTimerCheckbox.OnDecrementOrIncrementValuePerformed;
+        _inputManager.MenuDecrementValuePerformed -= _useTimerCheckbox.OnDecrementOrIncrementValuePerformed;
     }
 
     private void Start()
     {
         _numBotsDisplay.Initialize(Constants.SingleplayerMinBots, Constants.SingleplayerMaxBots, Constants.SingleplayerMinBots);
-        EventSystem.current.SetSelectedGameObject(_mapDisplay.gameObject);
     }
 
     public void OnConfirmPressed()
     {
         var settings = CreateGameplaySceneSettings();
-        _menuUIManager.HideAllPanels();
-        SceneLoader.Instance.LoadGameplayScene(settings);
+        _menuUIManager.HideAllPanelsAndShowLoadingText();
+        _sceneLoaderFactory.TryCreateSceneLoader();
+        OfflineSceneLoader.Instance.LoadGameplayScene(settings);
     }
 
     private GameplaySceneSettings CreateGameplaySceneSettings()
     {
+        int numPlayers = _numBotsDisplay.Value+1;
+        var teamIds = Enumerable.Range(0, numPlayers).ToList();
+        int teamId = teamIds[UnityEngine.Random.Range(0, teamIds.Count)];
+        teamIds.Remove(teamId);
         var players = new List<Player>
         {
-            new Player(Constants.DefaultPlayerName, PlayerType.Human)
+            new Player(teamId, Constants.DefaultPlayerName, PlayerType.Human)
         };
-        for (int i = 0; i < _numBotsDisplay.Value; i++)
+        for (int botId = 0; botId < _numBotsDisplay.Value; botId++)
         {
-            players.Add(new Player($"{Constants.DefaultBotName}{i + 1}", PlayerType.Bot));
+            teamId = teamIds[UnityEngine.Random.Range(0, teamIds.Count)];
+            teamIds.Remove(teamId);
+            players.Add(new Player(teamId, $"{Constants.DefaultBotName}{botId+1}", PlayerType.Bot));
         }
 
         return new GameplaySceneSettings()

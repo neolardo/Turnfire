@@ -5,28 +5,35 @@ public class AimCircleUI : MonoBehaviour
     [SerializeField] private PixelUIDefinition _uiDefinition;
     [SerializeField] private RectTransform _innerCircle;
     [SerializeField] private RectTransform _outerCircle;
+    [SerializeField] private int _outerCirclePixelSize;
+    [SerializeField] private int _innerCirclePixelSize;
 
-    public const float OuterRadiusPercent = 0.08f;
-    public const float InnerRadiusPercent = 0.03f;
-    public static readonly Vector2 DefaultOffsetPercent = new Vector2(.15f, .8f);
+    public static readonly Vector2 DefaultOffsetPercent = new Vector2(.13f, .76f);
+    public float MouseAimRadiusScreenHeightRatio { get; private set; }
 
     private Vector2 _circleCenter;
     private RectTransform _rootCanvasRect;
     private Camera _camera;
+    private SettingsController _settingsController;
 
     private void Awake()
     {
         _rootCanvasRect = GetComponentInParent<Canvas>().rootCanvas.GetComponent<RectTransform>();
         _camera = Camera.main;
+        float outerRatio = _outerCirclePixelSize / (float)_uiDefinition.TargetScreenHeightInPixels;
+        float innerRatio =  _innerCirclePixelSize / (float)_uiDefinition.TargetScreenHeightInPixels;
+        MouseAimRadiusScreenHeightRatio = (outerRatio - innerRatio) / 2f;
+        _settingsController = FindFirstObjectByType<SettingsController>(FindObjectsInactive.Include);
     }
 
     public void ShowCircles(Vector2 initialScreenPosition)
     {
         Vector2 canvasSize = _rootCanvasRect.sizeDelta;
-        _outerCircle.sizeDelta = new Vector2(canvasSize.x * OuterRadiusPercent * 2f,
-                                             canvasSize.x * OuterRadiusPercent * 2f);
-        _innerCircle.sizeDelta = new Vector2(canvasSize.x * InnerRadiusPercent * 2f,
-                                             canvasSize.x * InnerRadiusPercent * 2f);
+        var outerWidth = canvasSize.y / _uiDefinition.TargetScreenHeightInPixels * _outerCirclePixelSize;
+        var innerWidth = canvasSize.y / _uiDefinition.TargetScreenHeightInPixels * _innerCirclePixelSize;
+
+        _outerCircle.sizeDelta = new Vector2(outerWidth,outerWidth);
+        _innerCircle.sizeDelta = new Vector2(innerWidth, innerWidth);
 
         Vector2 localPoint;
         bool isValid = initialScreenPosition.x >= 0 && initialScreenPosition.y >= 0;
@@ -61,7 +68,11 @@ public class AimCircleUI : MonoBehaviour
     private void MoveInnerCircle(Vector2 aimVector)
     {
         float maxRadius = (_outerCircle.sizeDelta.x - _innerCircle.sizeDelta.x) * 0.5f;
-        Vector2 offset = -aimVector * maxRadius;
+        Vector2 offset = aimVector * maxRadius;
+        if(_settingsController.GetInvertedInput())
+        {
+            offset *= -1;
+        }
         _innerCircle.anchoredPosition = _circleCenter + offset;
     }
 

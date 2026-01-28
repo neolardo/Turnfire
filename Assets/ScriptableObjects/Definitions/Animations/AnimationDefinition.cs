@@ -4,4 +4,6 @@ using UnityEngine;
 public class AnimationDefinition : ScriptableObject
 {
     public Sprite[] Frames;
+
+    public float GetTotalDuration(float frameDuration) => frameDuration * (Frames.Length + 1);
 }

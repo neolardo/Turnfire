@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Linq;
+using UnityEngine;
 
 public class ProjectileLauncherWeaponBehavior : WeaponBehavior
 {
@@ -16,18 +17,25 @@ public class ProjectileLauncherWeaponBehavior : WeaponBehavior
 
     public override void Use(ItemUsageContext context)
     {
+        StartCoroutine(CreateAndLaunchProjectile(context));
+    }
+
+    protected IEnumerator CreateAndLaunchProjectile(ItemUsageContext context)
+    {
         _isAttacking = true;
-        var p = context.ProjectilePool.Get();
+        var p = GameServices.ProjectilePool.GetAndPlace(context.AimOrigin);
+        Debug.Log("waiting for projectile to be ready");
+        yield return new WaitUntil(() => p.IsReady);
         p.Initialize(_definition.ProjectileDefinition, _projectileBehavior);
         p.Launch(context, _definition.FireStrength.CalculateValue());
     }
 
     private void OnProjectileExploded(ExplosionInfo ei)
     {
-        StartCoroutine(WaitUntilFiringFinished(ei));
+        StartCoroutine(WaitUntilExplosionFinished(ei));
     }
 
-    private IEnumerator WaitUntilFiringFinished(ExplosionInfo ei)
+    private IEnumerator WaitUntilExplosionFinished(ExplosionInfo ei)
     {
         while (ei.ExplodedCharacters.Any(c => c.IsAlive && c.IsMoving) || ei.Explosion.IsExploding)
         {
@@ -37,9 +45,9 @@ public class ProjectileLauncherWeaponBehavior : WeaponBehavior
         InvokeItemUsageFinished();
     }
 
-    public override void InitializePreview(ItemUsageContext context, ItemPreviewRendererManager rendererManager)
+    public override void InitializePreview(ItemUsageContext context, PreviewRendererManager rendererManager)
     {
-        rendererManager.SelectRenderer(ItemPreviewRendererType.Trajectory);
+        rendererManager.SelectRenderer(PreviewRendererType.Trajectory);
         rendererManager.TrajectoryRenderer.ToggleGravity(_definition.UseGravityForPreview);
         rendererManager.TrajectoryRenderer.SetOrigin(context.Owner.ItemTransform);
         rendererManager.TrajectoryRenderer.SetTrajectoryMultipler(_definition.FireStrength.CalculateValue());

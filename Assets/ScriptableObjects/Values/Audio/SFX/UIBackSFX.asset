@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: UIBackSFX
   m_EditorClassIdentifier: 
   clips:
-  - {fileID: 8300000, guid: d10489abb32e83f43bbb54408b520989, type: 3}
+  - {fileID: 8300000, guid: cf68d8529cbba904cbb91d7325b09049, type: 3}

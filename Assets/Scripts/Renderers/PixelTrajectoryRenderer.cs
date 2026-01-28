@@ -1,10 +1,8 @@
-using NUnit.Framework;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(LineRendererFragment))]
-public class PixelTrajectoryRenderer : MonoBehaviour
+public class PixelTrajectoryRenderer : MonoBehaviour, IPreviewRenderer
 {
     [SerializeField] private int _maxSegments = 50;
     [SerializeField] private float _maxLength = 2.5f;
@@ -17,7 +15,6 @@ public class PixelTrajectoryRenderer : MonoBehaviour
     private List<Vector2> _points;
     private Vector2 _originOffset;
 
-
     private void Awake()
     {
         _renderer = GetComponent<LineRendererFragment>();
@@ -28,6 +25,7 @@ public class PixelTrajectoryRenderer : MonoBehaviour
     {
         _trajectoryMultiplier = multiplier;
     }
+
     public void SetOrigin(Transform origin, Vector2 offset = default)
     {
         _origin = origin;
@@ -102,5 +100,20 @@ public class PixelTrajectoryRenderer : MonoBehaviour
         _renderer.DrawLine(_points);
     }
 
+    public void OnAimStarted(Vector2 initialAimPosition) { }
 
+    public void OnAimChanged(Vector2 aimVector)
+    {
+        DrawTrajectory(aimVector);
+    }
+
+    public void OnAimCancelled()
+    {
+        HideTrajectory();
+    }
+
+    public void OnImpulseReleased(Vector2 impulse)
+    {
+        HideTrajectory();
+    }
 }

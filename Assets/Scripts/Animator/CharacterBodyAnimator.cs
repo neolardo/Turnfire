@@ -6,7 +6,6 @@ using UnityEngine;
 public class CharacterBodyAnimator : MonoBehaviour
 {
     [SerializeField] private CharacterAnimatorDefinition _animatorDefinition;
-    [SerializeField] private GroundChecker _characterGroundChecker;
     [SerializeField] private FlashSpriteAnimator _flashAnimator;
 
     [Header("Sprite Renderers")]
@@ -44,26 +43,16 @@ public class CharacterBodyAnimator : MonoBehaviour
         _baseSpriteRenderers[CharacterAnimationLayer.OverItemClothes] = _overItemClothesSpriteRenderer;
 
         _equippedArmorSpriteRenderers = new Dictionary<ArmorDefinition, SpriteRenderer>();
-
-        if (_currentAnimationRoutine != null)
-        {
-            Debug.LogWarning($"{nameof(CharacterDefinition)} not set for {nameof(CharacterBodyAnimator)}.");
-        }
-        _characterDefinition.InitializeAnimations();
-        _characterGroundChecker.IsGroundedChanged += OnCharacterIsGroundedChanged;
-        PlayAnimation(CharacterAnimationState.Idle);
     }
 
-    public void SetCharacterDefinition(CharacterDefinition characterDefinition)
+    public void Initialize(CharacterDefinition characterDefinition, Color teamColor)
     {
+        _teamColor = teamColor;
+        _clothesSpriteRenderer.color = teamColor;
+        _overItemClothesSpriteRenderer.color = teamColor;
         _characterDefinition = characterDefinition;
-    }
-
-    public void SetTeamColor(Color color)
-    {
-        _teamColor = color;
-        _clothesSpriteRenderer.color = color;
-        _overItemClothesSpriteRenderer.color = color;
+        _characterDefinition.InitializeAnimations();
+        PlayAnimation(CharacterAnimationState.Idle);
     }
 
     #endregion
@@ -75,7 +64,7 @@ public class CharacterBodyAnimator : MonoBehaviour
         PlayAnimation(CharacterAnimationState.Idle);
     }
 
-    public void PlayItemActionAnimation(Vector2 aimVector, Item selectedItem)
+    public void PlayItemActionAnimation(Vector2 aimVector, ItemInstance selectedItem)
     {
         aimVector = aimVector.normalized;
         var nextAnimation = CharacterAnimationState.Idle;
@@ -105,8 +94,7 @@ public class CharacterBodyAnimator : MonoBehaviour
 
     public void PlayEquipArmorAnimation(ArmorDefinition armor)
     {
-        Debug.Log("Equip animation started");
-        _equippedArmorSpriteRenderers[armor] = _equippedArmorSpriteRendererPool.Get();
+        _equippedArmorSpriteRenderers[armor] = _equippedArmorSpriteRendererPool.GetSpriteRenderer();
         _equippedArmorSpriteRenderers[armor].flipX = _baseSpriteRenderers[0].flipX;
         _equippedArmorSpriteRenderers[armor].sprite = armor.Animations[_currentAnimationState][_lastFrameIndex];
         _flashAnimator.Flash(new[] { _equippedArmorSpriteRenderers[armor] }, _animatorDefinition.ItemFlashColor, _animatorDefinition.ItemFlashInSeconds, _animatorDefinition.ItemFlashOutSeconds);
@@ -287,7 +275,7 @@ public class CharacterBodyAnimator : MonoBehaviour
 
     #region Ground Check
 
-    private void OnCharacterIsGroundedChanged(bool isGrounded)
+    public void OnIsGroundedChanged(bool isGrounded)
     {
         if (isGrounded)
         {

@@ -8,11 +8,29 @@ public class GameplayTimerUI : TimerUI
     [SerializeField] private UISoundsDefinition _uiSounds;
     private Color _normalColor;
 
-    protected override void Awake()
+
+    private void Awake()
     {
-        base.Awake();
         _normalColor = _timerText.color;
-        Initialize(_timerSettings.SecondsAvaiablePerPlayerTurn);
+        if (GameServices.IsInitialized)
+        {
+            OnGameServicesInitialized();
+        }
+        else
+        {
+            GameServices.Initialized += OnGameServicesInitialized;
+        }
+    }
+    private void OnDestroy()
+    {
+        GameServices.Initialized -= OnGameServicesInitialized;
+    }
+
+    private void OnGameServicesInitialized()
+    {
+        var timer = GameServices.GameplayTimer;
+        timer.Initialize(_timerSettings.SecondsAvaiablePerPlayerTurn);
+        this.Initialize(timer);
     }
 
     protected override void OnTimerEnded()
@@ -21,23 +39,21 @@ public class GameplayTimerUI : TimerUI
         AudioManager.Instance.PlayUISound(_uiSounds.TimeIsUp);
     }
 
-    protected override void DecrementTime()
+    protected override void UpdateDisplay()
     {
-        base.DecrementTime();
-        if (_currentTime <= _timerSettings.GameplayTimerSecondThresholdSeconds)
+        base.UpdateDisplay();
+        var currentTime = _timer.CurrentTime;
+        if (currentTime <= _timerSettings.GameplayTimerSecondThresholdSeconds)
         {
             _timerText.color = _secondThresholdColor;
         }
-        else if (_currentTime <= _timerSettings.GameplayTimerFirstThresholdSeconds)
+        else if (currentTime <= _timerSettings.GameplayTimerFirstThresholdSeconds)
         {
             _timerText.color = _firstThresholdColor;
         }
+        else
+        {
+            _timerText.color = _normalColor;
+        }
     }
-  
-    public override void StartTimer()
-    {
-        base.StartTimer();
-        _timerText.color = _normalColor;
-    }
-
 }

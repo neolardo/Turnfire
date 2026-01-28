@@ -9,7 +9,7 @@ public static class BotEvaluationStatistics
     private static readonly Dictionary<Team, BotDifficulty> _difficultyPerTeam = new Dictionary<Team, BotDifficulty>();
 
     private static string LogFolder = null;
-    private static string GetFilePath(BotEvaluationConfiguration config) => Path.Combine(LogFolder, $"bot_evaluation_{SceneLoader.Instance.CurrentGameplaySceneSettings.Map.SceneName}_{config}.csv");
+    private static string GetFilePath(BotEvaluationConfiguration config) => Path.Combine(LogFolder, $"bot_evaluation_{OfflineSceneLoader.Instance.CurrentGameplaySceneSettings.Map.SceneName}_{config}.csv");
 
     public static int CurrentSimulationCount { get; private set; }
     private static int _requestedSimulationCount = 100;
@@ -23,7 +23,6 @@ public static class BotEvaluationStatistics
         _dataPerTeam[team] = new BotEvaluationData();
         _dataPerTeam[team].TeamName = team.TeamName;
         _difficultyPerTeam[team] = difficulty;
-        team.TeamName += $" {difficulty}";
     } 
 
     public static BotEvaluationData GetData(Team team)
@@ -48,8 +47,7 @@ public static class BotEvaluationStatistics
     private static void ForceEndLiveLockedRound()
     {
         Debug.Log("Round force ended because of possible live lock");
-        var turnManager = Object.FindFirstObjectByType<TurnManager>();
-        turnManager.ForceEndGame();
+        GameServices.TurnStateManager.ForceEndGame();
     }
 
     public static void Clear()
@@ -82,7 +80,7 @@ public static class BotEvaluationStatistics
         if(CurrentSimulationCount <  _requestedSimulationCount)
         {
             Clear();
-            SceneLoader.Instance.ReloadScene();
+            OfflineSceneLoader.Instance.ReloadScene();
         }
         else 
         {

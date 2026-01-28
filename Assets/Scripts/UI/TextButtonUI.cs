@@ -11,7 +11,8 @@ public class TextButtonUI : ScreenSizeDependantUI,
     IPointerDownHandler,
     IPointerUpHandler,
     ISelectHandler,
-    IDeselectHandler
+    IDeselectHandler,
+    ISubmitHandler
 {
     [SerializeField] private PixelUIDefinition _uiDefinition;
     [SerializeField] private UISoundsDefinition _uiSounds;
@@ -20,6 +21,7 @@ public class TextButtonUI : ScreenSizeDependantUI,
     private Color _normalColor;
 
     private bool _hovered;
+    private bool _textPositionInitialized;
 
     public event Action ButtonPressed;
 
@@ -34,13 +36,20 @@ public class TextButtonUI : ScreenSizeDependantUI,
         _parentCanvasRect = canvas.GetComponent<RectTransform>();
         var selectable = GetComponent<Selectable>();
         selectable.transition = Selectable.Transition.None;
-        
     }
 
     protected override void OnEnable()
     {
         base.OnEnable();
         UnHoverButton();
+    }
+    protected override void OneFrameAfterOnEnable()
+    {
+        if (!_textPositionInitialized)
+        {
+            _originalTextPosition = _text.rectTransform.anchoredPosition;
+            _textPositionInitialized = true;
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -75,12 +84,16 @@ public class TextButtonUI : ScreenSizeDependantUI,
 
     public void PressIfHoveredOrSelected()
     {
-        if(_hovered || EventSystem.current.currentSelectedGameObject == gameObject)
+        if (_hovered || EventSystem.current.currentSelectedGameObject == gameObject)
         {
             Press();
         }
     }
 
+    public void OnSubmit(BaseEventData eventData)
+    {
+        PressIfHoveredOrSelected();
+    }
     private void Press()
     {
         SetPressedVisuals();
@@ -115,15 +128,11 @@ public class TextButtonUI : ScreenSizeDependantUI,
         _text.rectTransform.anchoredPosition = _originalTextPosition;
     }
 
-    protected override void OneFrameAfterOnEnable()
-    {
-        _originalTextPosition = _text.rectTransform.anchoredPosition;
-    }
-
     protected override void OneFrameAfterSizeChanged()
     {
         float scale = _parentCanvasRect.sizeDelta.y / _uiDefinition.TargetScreenHeightInPixels;
         var offset = TextHoverOffsetPixels * scale;
         _text.rectTransform.anchoredPosition = _hovered ? _originalTextPosition + offset : _originalTextPosition;
     }
+
 }

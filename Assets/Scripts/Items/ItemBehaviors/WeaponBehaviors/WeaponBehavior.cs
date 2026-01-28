@@ -9,18 +9,18 @@ public abstract class WeaponBehavior : UnityDriven, IItemBehavior
 
     protected bool _isAttacking;
 
+    public event Action ItemUsageFinished;
+
     protected WeaponBehavior(MonoBehaviour coroutineRunner) : base(coroutineRunner)
     {
     }
-
-    public event Action ItemUsageFinished;
 
     protected void InvokeItemUsageFinished()
     {
         ItemUsageFinished?.Invoke();
     }
 
-    public abstract void InitializePreview(ItemUsageContext context, ItemPreviewRendererManager rendererManager);
+    public abstract void InitializePreview(ItemUsageContext context, PreviewRendererManager rendererManager);
 
     public abstract void Use(ItemUsageContext context);
 

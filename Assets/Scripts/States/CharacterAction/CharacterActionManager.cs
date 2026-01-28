@@ -15,30 +15,30 @@ public class CharacterActionManager : UnityDriven
 
     public event Action CharacterActionsFinished;
 
-    public CharacterActionManager(MonoBehaviour coroutineManager, PixelTrajectoryRenderer trajectoryRenderer, ItemPreviewRendererManager itemPreviewRendererManager, CameraController cameraController, GameplayUIManager uiManager, PixelLaserRenderer laserRenderer, ProjectilePool projectilePool,  UISoundsDefinition uiSounds) : base(coroutineManager)
+    public CharacterActionManager(PreviewRendererManager previewRenderer, CameraController cameraController, GameplayUIManager uiManager) : base(CoroutineRunner.Instance)
     {
         _cameraController = cameraController;
         _uiManager = uiManager;
         _characterActionStates = new List<CharacterActionState>
         {
-            new ReadyToMoveCharacterActionState(trajectoryRenderer, uiManager, coroutineManager, uiSounds),
-            new MovingCharacterActionState(coroutineManager, uiSounds),
-            new ReadyToUseItemCharacterActionState(itemPreviewRendererManager,laserRenderer, projectilePool, trajectoryRenderer, uiManager, coroutineManager, uiSounds),
-            new UsingItemCharacterActionState(coroutineManager, uiSounds),
-            new FinishedCharacterActionState(coroutineManager, uiSounds),
+            new ReadyToMoveCharacterActionState(previewRenderer),
+            new MovingCharacterActionState(),
+            new ReadyToUseItemCharacterActionState(previewRenderer),
+            new UsingItemCharacterActionState(),
+            new FinishedCharacterActionState(),
         };
 
         foreach (var state in _characterActionStates)
         {
             state.StateEnded += OnCharacterActionStateEnded;
         }
-        _uiManager.GameplayTimerEnded += ForceEndActions;
+        GameServices.GameplayTimer.TimerEnded += ForceEndActions;
     }
     public void StartActionsWithCharacter(Character character)
     {
         _forceEndActions = false;
         _character = character;
-        _cameraController.SetCharacterTarget(_character);
+        _cameraController.SetCharacterTarget(_character.transform);
         character.Team.InputSource.ForceCloseInventory();
         _uiManager.LoadCharacterData(_character);
         _characterActionIndex = 0;
@@ -49,7 +49,10 @@ public class CharacterActionManager : UnityDriven
     {
         yield return null;
         yield return new WaitUntil(() => !_cameraController.IsBlending);
-        _uiManager.StartGameplayTimer();
+        if(GameServices.GameplayTimer != null)
+        {
+            GameServices.GameplayTimer.Restart();
+        }
         StartCurrentCharacterActionState();
     }
 
@@ -61,7 +64,10 @@ public class CharacterActionManager : UnityDriven
 
     private void EndActions()
     {
-        _uiManager.PauseGameplayTimer();
+        if (GameServices.GameplayTimer != null)
+        {
+            GameServices.GameplayTimer.Pause();
+        }
         CharacterActionsFinished?.Invoke();
     }
 

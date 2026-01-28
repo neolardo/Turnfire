@@ -4,69 +4,40 @@ using UnityEngine;
 public class ReadyToUseItemCharacterActionState : CharacterActionState
 {
     public override CharacterActionStateType State => CharacterActionStateType.ReadyToUseItem;
-    private ItemPreviewRendererManager _rendererManager;
-    private ProjectilePool _projectilePool;
-    private PixelLaserRenderer _laserRenderer;
-    private PixelTrajectoryRenderer _trajectoryRenderer;
-    private GameplayUIManager _uiManager;
-    private IGameplayInputSource _inputSource;
-
-    public ReadyToUseItemCharacterActionState(ItemPreviewRendererManager rendererManager, PixelLaserRenderer laserRenderer, ProjectilePool projectilePool, PixelTrajectoryRenderer trajectoryRenderer, GameplayUIManager uiManager, MonoBehaviour coroutineManager, UISoundsDefinition uiSounds) : base(coroutineManager, uiSounds)
+    private PreviewRendererManager _previewRenderer;
+    private ITeamInputSource _inputSource;
+    public ReadyToUseItemCharacterActionState(PreviewRendererManager previewRenderer) : base(CoroutineRunner.Instance)
     {
-        _rendererManager = rendererManager;
-        _projectilePool = projectilePool;
-        _laserRenderer = laserRenderer;
-        _trajectoryRenderer = trajectoryRenderer;
-        _uiManager = uiManager;
+        _previewRenderer = previewRenderer;
     }
     protected override void SubscribeToEvents()
     {
         _currentCharacter.SelectedItemChanged += OnSelectedItemChanged;
         _currentCharacter.SelectedItemUsed += EndState;
-        _inputSource.SelectedItemUsed += _currentCharacter.UseSelectedItem;
-        _inputSource.SelectedItemSwitchRequested += OnSelectedItemSwitchRequested;
+        _currentCharacter.ActionSkipped += EndState;
+        _currentCharacter.Died += EndState;
+        _inputSource.SelectedItemUsed += OnSelectedItemUsed;
+        _inputSource.ItemSelected += OnItemSelected;
         _inputSource.ImpulseReleased += OnImpulseReleased;
         _inputSource.AimStarted += OnAimStarted;
         _inputSource.AimChanged += OnAimChanged;
         _inputSource.AimCancelled += OnAimCancelled;
-        _inputSource.ActionSkipped += OnActionSkipped;
+        _inputSource.ActionSkipped += _currentCharacter.SkipAction;
     }
+
     protected override void UnsubscribeFromEvents()
     {
         _currentCharacter.SelectedItemChanged -= OnSelectedItemChanged;
         _currentCharacter.SelectedItemUsed -= EndState;
-        _inputSource.SelectedItemUsed -= _currentCharacter.UseSelectedItem;
-        _inputSource.SelectedItemSwitchRequested -= OnSelectedItemSwitchRequested;
+        _currentCharacter.ActionSkipped -= EndState;
+        _currentCharacter.Died -= EndState;
+        _inputSource.SelectedItemUsed -= OnSelectedItemUsed;
+        _inputSource.ItemSelected -= OnItemSelected;
         _inputSource.ImpulseReleased -= OnImpulseReleased;
         _inputSource.AimStarted -= OnAimStarted;
         _inputSource.AimChanged -= OnAimChanged;
         _inputSource.AimCancelled -= OnAimCancelled;
-        _inputSource.ActionSkipped -= OnActionSkipped;
-    }
-
-    private void OnSelectedItemSwitchRequested(Item item)
-    {
-        _currentCharacter.TrySelectItem(item);
-    }
-
-    private void OnAimStarted(Vector2 initialPosition)
-    {
-        _uiManager.ShowAimCircles(initialPosition);
-        _currentCharacter.StartAiming();
-    }
-
-    private void OnAimChanged(Vector2 aimVector)
-    {
-        _trajectoryRenderer.DrawTrajectory(aimVector);
-        _uiManager.UpdateAimCircles(aimVector);
-        _currentCharacter.ChangeAim(aimVector);
-    }
-
-    private void OnAimCancelled()
-    {
-        _trajectoryRenderer.HideTrajectory();
-        _uiManager.HideAimCircles();
-        _currentCharacter.CancelAiming();
+        _inputSource.ActionSkipped -= _currentCharacter.SkipAction;
     }
 
     public override void StartState(Character currentCharacter)
@@ -80,22 +51,56 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
             return;
         }
 
-        _uiManager.ResumeGameplayTimer();
+        GameServices.GameplayTimer.Resume();
         _inputSource.IsOpeningInventoryEnabled = true;
-        var selectedItem = _currentCharacter.GetSelectedItem();
-        OnSelectedItemChanged(selectedItem);
-        _inputSource.RequestInputForAction(State);
+        _inputSource.IsActionSkippingEnabled = true;
+        InitializePreviewAndAimingForItem(currentCharacter.SelectedItem);
+        _inputSource.RequestAction(State);
     }
 
-    public void OnSelectedItemChanged(Item selectedItem)
+    private void OnItemSelected(int itemInstanceId)
+    {
+        _currentCharacter.TrySelectItem(itemInstanceId);
+    }
+    private void OnSelectedItemUsed(ItemUsageContext context)
+    {
+        _currentCharacter.UseSelectedItem(context);
+    }
+
+    private void OnAimStarted(Vector2 initialPosition)
+    {
+        _currentCharacter.StartAiming();
+    }
+
+    private void OnAimChanged(Vector2 aimVector)
+    {
+        _currentCharacter.ChangeAim(aimVector);
+    }
+
+    private void OnAimCancelled()
+    {
+        _currentCharacter.CancelAiming();
+    }
+
+    private void OnImpulseReleased(Vector2 aimVector)
+    {
+        _currentCharacter.UseSelectedItem(new ItemUsageContext(_currentCharacter.ItemTransform.position, aimVector, _currentCharacter));
+    }
+
+    private void OnSelectedItemChanged(ItemInstance selectedItem)
+    {
+        InitializePreviewAndAimingForItem(selectedItem);
+    }
+
+    private void InitializePreviewAndAimingForItem(ItemInstance selectedItem)
     {
         _inputSource.IsAimingEnabled = selectedItem != null;
         if (selectedItem == null)
         {
             return;
         }
-        var context = new ItemUsageContext(_currentCharacter.ItemTransform.position, Vector2.zero, _currentCharacter, _laserRenderer, _projectilePool);
-        selectedItem.Behavior.InitializePreview(context, _rendererManager);
+        var context = new ItemUsageContext(_currentCharacter.ItemTransform.position, Vector2.zero, _currentCharacter);
+        selectedItem.Behavior.InitializePreview(context, _previewRenderer);
     }
 
     protected override void EndState()
@@ -103,14 +108,12 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
         _inputSource.ForceCancelAiming();
         _inputSource.IsAimingEnabled = false;
         _inputSource.IsOpeningInventoryEnabled = false;
-        _uiManager.PauseGameplayTimer();
+        _inputSource.IsActionSkippingEnabled = false;
+        if(GameServices.GameplayTimer != null)
+        {
+            GameServices.GameplayTimer.Pause();
+        }
         base.EndState();
     }
 
-    private void OnImpulseReleased(Vector2 aimVector)
-    {
-        _trajectoryRenderer.HideTrajectory();
-        _uiManager.HideAimCircles();
-        _currentCharacter.UseSelectedItem(new ItemUsageContext(_currentCharacter.ItemTransform.position, aimVector, _currentCharacter, _laserRenderer, _projectilePool));
-    }
 }

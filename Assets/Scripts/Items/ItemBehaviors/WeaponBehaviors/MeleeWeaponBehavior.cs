@@ -55,15 +55,14 @@ public class MeleeWeaponBehavior : WeaponBehavior
             else
             {
                 var damage = _definition.Damage.CalculateValue();
-                c.Damage(damage);
-                AudioManager.Instance.PlaySFXAt(_definition.HitSFX, c.transform.position);
+                c.TakeDamage(_definition, damage);
             }
         }
     }
 
-    public override void InitializePreview(ItemUsageContext context, ItemPreviewRendererManager rendererManager)
+    public override void InitializePreview(ItemUsageContext context, PreviewRendererManager rendererManager)
     {
-        rendererManager.SelectRenderer(ItemPreviewRendererType.Trajectory);
+        rendererManager.SelectRenderer(PreviewRendererType.Trajectory);
         rendererManager.TrajectoryRenderer.ToggleGravity(false);
         rendererManager.TrajectoryRenderer.SetOrigin(context.Owner.ItemTransform);
         rendererManager.TrajectoryRenderer.SetTrajectoryMultipler(1);

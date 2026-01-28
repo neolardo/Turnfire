@@ -25,13 +25,14 @@ public class InventoryUI : MonoBehaviour
     private Character _currentCharacter;
     private InventoryItemSlotUI _previewedSlot;
     private InventoryItemSlotUI _selectedSlot;
+    private LocalInputHandler _inputHandler;
 
 
     private void Awake()
     {
-        var inputManager = FindFirstObjectByType<LocalGameplayInput>();
-        inputManager.ToggleInventoryCreateDestroyPerformed += _itemTypeToggle.Toggle;
-        inputManager.SelectInventorySlotPerformed += SelectPreviewedSlot;
+        _inputHandler = FindFirstObjectByType<LocalInputHandler>();
+        _inputHandler.ToggleInventoryCreateDestroyPerformed += _itemTypeToggle.Toggle;
+
         _itemTypeToggle.InitializeToggledLeftValue(true);
         _itemTypeToggle.Toggled += OnItemTypeToggled;
 
@@ -78,23 +79,29 @@ public class InventoryUI : MonoBehaviour
             itemSlot.UnloadItem();
         }
         var items = _currentCharacter.GetAllItems().ToList();
-        var selectedItem = _currentCharacter.GetSelectedItem();
+        var selectedItem = _currentCharacter.SelectedItem;
 
-        bool isToggledToWeapon = _itemTypeToggle.IsToggledLeft;
         int slotIndex = 0;
         foreach(var item in items)
         {
-            if ((isToggledToWeapon && item.Definition.ItemType == ItemType.Weapon) ||
-                (!isToggledToWeapon && item.Definition.ItemType != ItemType.Weapon))
+            if (IsItemTypeTheToggledType(item))
             {
-                _itemSlots[slotIndex].LoadItem(item);
+                var currentSlot = _itemSlots[slotIndex];
+                currentSlot.LoadItem(item);
                 if (selectedItem != null && selectedItem == item)
                 {
-                    SelectSlot(_itemSlots[slotIndex], false);
+                    MarkSlotAsSelected(currentSlot);
                 }
                 slotIndex++;
             }
         }
+    }
+
+    private bool IsItemTypeTheToggledType(ItemInstance item)
+    {
+        bool isToggledToWeapon = _itemTypeToggle.IsToggledLeft;
+        return (isToggledToWeapon && item.Definition.ItemType == ItemType.Weapon) ||
+                (!isToggledToWeapon && item.Definition.ItemType != ItemType.Weapon);
     }
 
     private void OnItemTypeToggled()
@@ -142,42 +149,35 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
-    private void SelectPreviewedSlot()
-    {
-        SelectSlot(_previewedSlot);
-    }
-
-    private void SelectSlot(InventoryItemSlotUI slot, bool playUISound = true)
+    private void SelectSlot(InventoryItemSlotUI slot)
     {
         if (slot != null && slot.Item != null)
         {
-            var selectionSucceeded = _currentCharacter.TrySelectItem(slot.Item);
-            if (playUISound)
+            var canSelectItem = _currentCharacter.CanSelectItem(slot.Item);
+            if (canSelectItem)
             {
-                if (selectionSucceeded)
-                {
-                    AudioManager.Instance.PlayUISound(_uiSounds.Confirm);
-                }
-                else
-                {
-                    AudioManager.Instance.PlayUISound(_uiSounds.CannotUseItem);
-                }
-            }
-            if (selectionSucceeded)
-            {
-                _selectedSlot?.OnSlotDeselected();
-                _selectedSlot = slot;
-                _selectedSlot.OnSlotSelected();
+                _inputHandler.RequestSelectItem(slot.Item);
+                AudioManager.Instance.PlayUISound(_uiSounds.Confirm);
+                MarkSlotAsSelected(slot);
                 LoadItemInfo(slot.Item.Definition);
                 if (slot.Item.Definition.UseInstantlyWhenSelected)
                 {
                     ForceClose();
                 }
             }
+            else
+            {
+                AudioManager.Instance.PlayUISound(_uiSounds.CannotUseItem);
+            }
         }
     }
 
-
+    private void MarkSlotAsSelected(InventoryItemSlotUI slot)
+    {
+        _selectedSlot?.OnSlotDeselected();
+        _selectedSlot = slot;
+        _selectedSlot.OnSlotSelected();
+    }
     private void DeselectSlot()
     {
         if (_selectedSlot != null)

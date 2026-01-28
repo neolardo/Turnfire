@@ -9,7 +9,6 @@ public class MeleeWeaponDefinition : WeaponDefinition
     public RangedStatInt Damage;
     public RangedStatFloat AttackRange;
     public RangedStatFloat AttackSectorAngleDegrees;
-    public SFXDefiniton HitSFX;
     public override IItemBehavior CreateItemBehavior()
     {
         return new MeleeWeaponBehavior(this);

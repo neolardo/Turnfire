@@ -1,11 +1,7 @@
-using UnityEngine;
-
 public class DropPackagesTurnState : TurnState
 {
-    private DropManager _dropManager;
-    public DropPackagesTurnState(MonoBehaviour manager, DropManager dropManager) : base(manager)
+    public DropPackagesTurnState() : base(CoroutineRunner.Instance)
     {
-        _dropManager = dropManager;
     }
 
     public override TurnStateType State => TurnStateType.DropItemsAndEffects;
@@ -13,19 +9,19 @@ public class DropPackagesTurnState : TurnState
     protected override void SubscribeToEvents()
     {
         base.SubscribeToEvents();
-        _dropManager.AllPackagesLanded += EndState;
+        GameServices.DropManager.AllPackagesLanded += EndState;
     }
 
     protected override void UnsubscribeFromEvents()
     {
         base.UnsubscribeFromEvents();
-        _dropManager.AllPackagesLanded -= EndState;
+        GameServices.DropManager.AllPackagesLanded -= EndState;
     }
 
-    public override void StartState()
+    public override void StartState(TurnStateContext context)
     {
-        base.StartState();
-        _dropManager.TrySpawnPackages();
+        base.StartState(context);
+        GameServices.DropManager.TrySpawnPackages();
     }
 
 }

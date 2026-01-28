@@ -1,17 +1,36 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class HoverableSelectableContainerUI : Selectable
+public class HoverableSelectableContainerUI : Selectable, ISubmitHandler
 {
     [Header("Pixel UI")]
     [SerializeField] protected PixelUIDefinition _uiDefinition;
     [SerializeField] protected UISoundsDefinition _uiSounds;
+    [SerializeField] protected bool _animateOnSelect = true;
     protected RectTransform _rectTransform;
     protected RectTransform _parentCanvasRect;
     protected Vector2 _originalAnchoredPosition;
-    protected bool _isHovered;
-    public bool IsSelected { get; private set; }
+    protected bool _isHovered; 
+    protected bool _isAnchoredPositionInitialized;
+    private bool _isSelected;
+    public bool IsSelected
+    {
+        get { return _isSelected; }
+        set
+        {
+            var oldVal = _isSelected;
+            _isSelected = value;
+            if (value != oldVal)
+            {
+                SelectionChanged?.Invoke(value);
+            }
+        }
+    }
+
+    public event Action<bool> SelectionChanged;
+    public event Action SubmitPerformed;
 
     protected override void Awake()
     {
@@ -21,12 +40,23 @@ public class HoverableSelectableContainerUI : Selectable
         _parentCanvasRect = canvas.GetComponent<RectTransform>();
         _rectTransform = GetComponent<RectTransform>();
     }
+    protected override void Start()
+    {
+        if (!_isAnchoredPositionInitialized)
+        { 
+            _originalAnchoredPosition = _rectTransform.anchoredPosition;
+            _isAnchoredPositionInitialized = true;
+        }
+    }
 
     public override void OnSelect(BaseEventData eventData)
     {
         base.OnSelect(eventData);
         IsSelected = true;
-        Hover();
+        if (_animateOnSelect)
+        {
+            Hover();
+        }
     }
 
     public override void OnPointerDown(PointerEventData eventData)
@@ -43,7 +73,15 @@ public class HoverableSelectableContainerUI : Selectable
     {
         base.OnDeselect(eventData);
         IsSelected = false;
-        UnHover();
+        if (_animateOnSelect)
+        {
+            UnHover();
+        }
+    }
+
+    public void OnSubmit(BaseEventData eventData)
+    {
+        SubmitPerformed?.Invoke();
     }
 
     protected virtual void Hover()
@@ -53,7 +91,6 @@ public class HoverableSelectableContainerUI : Selectable
             return;
         }
         AudioManager.Instance.PlayUISound(_uiSounds.Hover);
-        _originalAnchoredPosition = _rectTransform.anchoredPosition;
         _rectTransform.anchoredPosition += _uiDefinition.CalculateHoverOffset(_parentCanvasRect.sizeDelta.y);
         _isHovered = true;
     }
@@ -68,4 +105,5 @@ public class HoverableSelectableContainerUI : Selectable
         _rectTransform.anchoredPosition = _originalAnchoredPosition;
         _isHovered = false;
     }
+
 }
