@@ -29,8 +29,8 @@ public class FixedLinesText : MonoBehaviour
 
     void ApplyHeight()
     {
-        var lineHeight = (_rect.rect.height / 3f);
-        float size = lineHeight  - (_tmp.lineSpacing) * 3 - _extraRelativeSpacing * lineHeight;
+        var lineHeight = (_rect.rect.height / _lineCount);
+        float size = lineHeight  - (_tmp.lineSpacing) * _lineCount - _extraRelativeSpacing * lineHeight;
         _tmp.fontSize = size;
     }
 }

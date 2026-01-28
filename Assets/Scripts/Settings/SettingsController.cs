@@ -18,7 +18,7 @@ public class SettingsController : MonoBehaviour
     private const float MaxDb = 0f;
     private const float DecibelShapeExponent = 0.3f;
 
-    private void Awake()
+    private void Start()
     {
         LoadAndApplyVolumes();
     }
@@ -31,7 +31,7 @@ public class SettingsController : MonoBehaviour
     }
     public float GetMusicNormalizedVolume()
     {
-        return DecibelsToNormalized(PlayerPrefs.GetFloat(MusicPrefKey));
+        return PlayerPrefs.GetFloat(MusicPrefKey);
     }
 
     public void SetSFXVolume(float normalizedValue)
@@ -42,7 +42,7 @@ public class SettingsController : MonoBehaviour
 
     public float GetSFXNormalizedVolume()
     {
-        return DecibelsToNormalized(PlayerPrefs.GetFloat(SfxPrefKey));
+        return PlayerPrefs.GetFloat(SfxPrefKey);
     }
 
     private void SetVolume(string parameter, float normalizedValue)
@@ -67,12 +67,6 @@ public class SettingsController : MonoBehaviour
 
         float shaped = Mathf.Pow(normalizedValue, DecibelShapeExponent);
         return Mathf.Lerp(MinDb, MaxDb, shaped);
-    }
-
-    private static float DecibelsToNormalized(float decibels)
-    {
-        var shaped = Mathf.InverseLerp(MinDb, MaxDb, decibels);
-        return Mathf.Pow(shaped, 1f/ DecibelShapeExponent);
     }
 
     #endregion

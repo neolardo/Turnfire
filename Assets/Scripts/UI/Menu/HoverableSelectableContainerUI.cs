@@ -90,7 +90,10 @@ public class HoverableSelectableContainerUI : Selectable, ISubmitHandler
         {
             return;
         }
-        AudioManager.Instance.PlayUISound(_uiSounds.Hover);
+        if(AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayUISound(_uiSounds.Hover);
+        }
         _rectTransform.anchoredPosition += _uiDefinition.CalculateHoverOffset(_parentCanvasRect.sizeDelta.y);
         _isHovered = true;
     }
