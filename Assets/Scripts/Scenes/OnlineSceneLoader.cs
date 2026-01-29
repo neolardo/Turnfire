@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +8,13 @@ using UnityEngine.SceneManagement;
 
 public class OnlineSceneLoader : NetworkBehaviour, ISceneLoader
 {
+    private readonly HashSet<ulong> _clientsSpawned = new();
     private readonly HashSet<ulong> _clientsLoadedScene = new();
+
+    private NetworkVariable<bool> _spawnConfirmationRequested= new NetworkVariable<bool>();
     public static OnlineSceneLoader Instance { get; private set; }
     public GameplaySceneSettings CurrentGameplaySceneSettings => GameplaySceneSettingsStorage.Current;
+    public bool AllClientsHaveSpawned { get; private set; }
 
     private MapLocator _mapLocator;
     private const float GameplaySceneLoadTimeoutSeconds = 10f;
@@ -30,6 +35,11 @@ public class OnlineSceneLoader : NetworkBehaviour, ISceneLoader
         {
             NetworkManager.SceneManager.OnSceneEvent += OnSceneEvent;
         }
+        _spawnConfirmationRequested.OnValueChanged += OnSpawnConfirmationRequested;
+        if(_spawnConfirmationRequested.Value)
+        {
+            NotifyServerObjectSpawnedServerRpc();
+        }
         GameServices.Register(this);
         Debug.Log($"{nameof(OnlineSceneLoader)} spawned");
     }
@@ -40,7 +50,7 @@ public class OnlineSceneLoader : NetworkBehaviour, ISceneLoader
         {
             NetworkManager.SceneManager.OnSceneEvent -= OnSceneEvent;
         }
-
+        _spawnConfirmationRequested.OnValueChanged -= OnSpawnConfirmationRequested;
         base.OnNetworkDespawn();
     }
 
@@ -65,6 +75,64 @@ public class OnlineSceneLoader : NetworkBehaviour, ISceneLoader
             obj.Despawn(true);
         }
     }
+
+    #region Spawn Confirmation
+
+    public void RequestSpawnConfirmation()
+    {
+        if (!IsServer)
+        {
+            return;
+        }
+        StartCoroutine(RequestSpawnConfirmationCoroutine());
+    }
+
+    private IEnumerator RequestSpawnConfirmationCoroutine()
+    {
+        _spawnConfirmationRequested.Value = false;
+        _clientsSpawned.Clear();
+        AllClientsHaveSpawned = false;
+        yield return null;
+        _spawnConfirmationRequested.Value = true;
+    }
+
+    private void OnSpawnConfirmationRequested(bool previousValue, bool newValue)
+    {
+        if(newValue)
+        {
+            NotifyServerObjectSpawnedServerRpc();
+        }
+    }
+
+    [Rpc(SendTo.Server, InvokePermission =RpcInvokePermission.Everyone)]
+    private void NotifyServerObjectSpawnedServerRpc(RpcParams rpcParams = default)
+    {
+        if(!IsServer)
+        {
+            return;
+        }
+        var clientId = rpcParams.Receive.SenderClientId;
+        _clientsSpawned.Add(clientId);
+
+        bool allSpawned = true;
+        foreach (var id in NetworkManager.ConnectedClientsIds)
+        {
+            if (!_clientsSpawned.Contains(id))
+            {
+                allSpawned = false;
+                break;
+            }
+        }
+
+        if (allSpawned)
+        {
+            Debug.Log("All clients spawned the scene loader.");
+            AllClientsHaveSpawned = true;
+        }
+    }
+
+
+    #endregion
 
     #region Menu Scene
 

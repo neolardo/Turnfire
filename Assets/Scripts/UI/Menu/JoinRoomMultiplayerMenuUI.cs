@@ -14,7 +14,6 @@ public class JoinRoomMultiplayerMenuUI : MonoBehaviour
     [SerializeField] private TMP_InputField _joinCodeInputField;
     [SerializeField] private TMP_InputField _playerNameInputField;
     [SerializeField] private TextMeshProUGUI _responseText;
-    [SerializeField] private NetworkReadyGate _sceneLoaderReadyGate;
     private LocalMenuUIInputSource _inputManager;
 
     private bool _isJoinInitiated;
@@ -107,25 +106,7 @@ public class JoinRoomMultiplayerMenuUI : MonoBehaviour
         {
             NetworkManager.Singleton.SceneManager.OnLoad += OnSceneLoadStarted;
             _responseText.text = "Join successful.\nWaiting for the host to start.";
-            StartCoroutine(MarkReadyForSceneLoading());
         }
-    }
-
-    private IEnumerator MarkReadyForSceneLoading()
-    {
-        yield return WaitUntilReadyGateIsSpawned();
-        _sceneLoaderReadyGate.Reset();
-        yield return _sceneLoaderReadyGate.MarkAndAckAndWaitUntilEveryClientIsReadyCoroutine();
-    }
-
-    private IEnumerator WaitUntilReadyGateIsSpawned()
-    {
-        var gateNetObj = _sceneLoaderReadyGate.GetComponent<NetworkObject>();
-        if (NetworkManager.Singleton.IsServer && !gateNetObj.IsSpawned)
-        {
-            gateNetObj.Spawn();
-        }
-        yield return new WaitUntil(() => gateNetObj.IsSpawned);
     }
 
     private void OnClientDisconnected(ulong clientId)
