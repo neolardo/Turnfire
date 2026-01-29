@@ -97,6 +97,7 @@ public class LocalInputHandler : MonoBehaviour
     {
         InputSystem.onDeviceChange -= OnDeviceChange;
         _onAnyButtonPressSubscription?.Dispose();
+        UnsubscribeFromInputActions();
     }
 
     #region Input Action Map Management
@@ -153,6 +154,33 @@ public class LocalInputHandler : MonoBehaviour
         InputActions.Gameplay.SkipAction.started += OnSkipActionPerformed;
     }
 
+    private void UnsubscribeFromInputActions()
+    {
+        if(InputActions == null)
+        {
+            return;
+        }
+
+        InputActions.Gameplay.Aim.performed -= OnAimPerformed;
+        InputActions.Gameplay.Aim.canceled -= OnCancelAimingPerformed;
+        InputActions.Gameplay.ReleaseImpulse.started -= OnImpulseReleaseStarted;
+        InputActions.Gameplay.ReleaseImpulse.canceled -= OnImpulseReleaseEnded;
+        InputActions.Gameplay.Cancel.started -= OnCancelAimingPerformed;
+
+        InputActions.Gameplay.ShowGameplayMenu.started -= OnToggleGameplayMenu;
+        InputActions.GameplayMenu.ResumeGameplay.started -= OnToggleGameplayMenu;
+        InputActions.GameplayMenu.IncrementValue.performed -= OnGameplayMenuIncrementValuePerformed;
+        InputActions.GameplayMenu.DecrementValue.performed -= OnGameplayMenuDecrementValuePerformed;
+
+        InputActions.Gameplay.ToggleInventory.started -= OnToggleInventory;
+        InputActions.Inventory.ToggleInventory.started -= OnToggleInventory;
+        InputActions.Inventory.ToggleCreateDestroy.started -= OnToggleCreateDestroy;
+
+        InputActions.Gameplay.ShowMap.started -= OnShowMapPerformed;
+        InputActions.Gameplay.ShowMap.canceled -= OnShowMapCancelled;
+
+        InputActions.Gameplay.SkipAction.started -= OnSkipActionPerformed;
+    }
 
     #endregion
 

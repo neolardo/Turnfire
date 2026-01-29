@@ -16,7 +16,7 @@ public class NetworkReadyGate : NetworkBehaviour
     private readonly HashSet<ulong> _readyClients = new();
     private readonly HashSet<ulong> _ackClients = new();
 
-    public IEnumerator WaitUntilEveryClientIsReadyCoroutine()
+    public IEnumerator MarkAndAckAndWaitUntilEveryClientIsReadyCoroutine()
     {
         yield return new WaitUntil(() => IsGateReady);
         MarkReady();
@@ -35,6 +35,19 @@ public class NetworkReadyGate : NetworkBehaviour
     {
         if (!IsClient) return;
         AckRpc();
+    }
+
+    public void Reset()
+    {
+        StopAllCoroutines();
+        if (!IsServer || !IsSpawned)
+        {
+            return;
+        }
+        _allReady.Value = false;
+        _allAcknowledged.Value = false;
+        _readyClients.Clear();
+        _ackClients.Clear();
     }
 
 

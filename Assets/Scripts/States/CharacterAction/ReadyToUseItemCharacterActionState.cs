@@ -50,8 +50,10 @@ public class ReadyToUseItemCharacterActionState : CharacterActionState
             EndState();
             return;
         }
-
-        GameServices.GameplayTimer.Resume();
+        if (GameServices.GameplayTimer != null)
+        {
+            GameServices.GameplayTimer.Resume();
+        }
         _inputSource.IsOpeningInventoryEnabled = true;
         _inputSource.IsActionSkippingEnabled = true;
         InitializePreviewAndAimingForItem(currentCharacter.SelectedItem);

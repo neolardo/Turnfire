@@ -94,7 +94,7 @@ public class OnlineTurnStateManager : NetworkBehaviour, ITurnStateManager
 
     private IEnumerator WaitUntilEveryClientIsReadyThenResumeGame()
     {
-        yield return _readyGate.WaitUntilEveryClientIsReadyCoroutine();
+        yield return _readyGate.MarkAndAckAndWaitUntilEveryClientIsReadyCoroutine();
         if (!IsServer)
         {
             yield break;

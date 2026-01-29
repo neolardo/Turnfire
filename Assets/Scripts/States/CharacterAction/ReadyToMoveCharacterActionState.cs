@@ -37,7 +37,10 @@ public class ReadyToMoveCharacterActionState : CharacterActionState
     {
         _inputSource = currentCharacter.Team.InputSource;
         base.StartState(currentCharacter);
-        GameServices.GameplayTimer.Resume();
+        if (GameServices.GameplayTimer != null)
+        {
+            GameServices.GameplayTimer.Resume();
+        }
         _inputSource.IsAimingEnabled = true;
         _inputSource.IsActionSkippingEnabled = true;
          currentCharacter.InitializeMovementPreview(_previewRenderer);

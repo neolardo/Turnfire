@@ -15,6 +15,7 @@ public class OnlineMultiplayerSetupMenuUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _hostPlayerNameText;
     [SerializeField] private TMP_InputField _joinCodeInputField;
     [SerializeField] private TextMeshProUGUI _numPlayersJoinedText;
+    [SerializeField] private NetworkReadyGate _sceneLoaderReadyGate;
 
     private LocalMenuUIInputSource _inputManager;
     private MenuUIManager _menuUIManager;
@@ -90,6 +91,7 @@ public class OnlineMultiplayerSetupMenuUI : MonoBehaviour
         {
             return;
         }
+        _sceneLoaderReadyGate.Reset();
         if (clientId == NetworkManager.ServerClientId)
         {
             LeaveRoomAndGoBack();
@@ -122,11 +124,22 @@ public class OnlineMultiplayerSetupMenuUI : MonoBehaviour
         StartCoroutine(LoadSceneWhenAllClientsAreReady());
     }
 
+    private IEnumerator WaitUntilReadyGateIsSpawned()
+    {
+        var gateNetObj = _sceneLoaderReadyGate.GetComponent<NetworkObject>();
+        if (NetworkManager.Singleton.IsServer && !gateNetObj.IsSpawned)
+        {
+            gateNetObj.Spawn();
+        }
+        yield return new WaitUntil(() => gateNetObj.IsSpawned);
+    }
+
     private IEnumerator LoadSceneWhenAllClientsAreReady()
     {
         _sceneLoaderFactory.TrySpawnNetworkSceneLoader();
         Debug.Log($"Waiting for all clients to spawn the {nameof(OnlineSceneLoader)}...");
-        yield return new WaitUntil(() => OnlineSceneLoader.Instance.AllClientsHaveSpawned);
+        yield return WaitUntilReadyGateIsSpawned();
+        yield return _sceneLoaderReadyGate.MarkAndAckAndWaitUntilEveryClientIsReadyCoroutine();
         Debug.Log($"All clients are ready, loading scene...");
         var settings = CreateGameplaySceneSettings();
         _menuUIManager.HideAllPanelsAndShowLoadingText();

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
@@ -6,13 +7,13 @@ using UnityEngine.SceneManagement;
 
 public class OnlineSceneLoader : NetworkBehaviour, ISceneLoader
 {
-    private readonly HashSet<ulong> _readyClients = new();
+    private readonly HashSet<ulong> _clientsLoadedScene = new();
     public static OnlineSceneLoader Instance { get; private set; }
     public GameplaySceneSettings CurrentGameplaySceneSettings => GameplaySceneSettingsStorage.Current;
 
-    public bool AllClientsHaveSpawned { get; private set; }
-
     private MapLocator _mapLocator;
+    private const float GameplaySceneLoadTimeoutSeconds = 10f;
+    private const float GameplaySceneLoadYieldInterval = .2f;
 
     public override void OnNetworkSpawn()
     {
@@ -24,44 +25,23 @@ public class OnlineSceneLoader : NetworkBehaviour, ISceneLoader
         Instance = this;
 
         _mapLocator = FindFirstObjectByType<MapLocator>();
-        if (IsClient)
+
+        if (IsServer)
         {
-            NotifyServerReadyServerRpc();
+            NetworkManager.SceneManager.OnSceneEvent += OnSceneEvent;
         }
         GameServices.Register(this);
         Debug.Log($"{nameof(OnlineSceneLoader)} spawned");
     }
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    private void NotifyServerReadyServerRpc(RpcParams rpcParams = default)
+    public override void OnNetworkDespawn()
     {
-        ulong clientId = rpcParams.Receive.SenderClientId;
-
-        if (_readyClients.Add(clientId))
+        if (IsServer && NetworkManager != null && NetworkManager.SceneManager != null)
         {
-            Debug.Log($"Client {clientId} ready ({_readyClients.Count}/{NetworkManager.ConnectedClients.Count})");
+            NetworkManager.SceneManager.OnSceneEvent -= OnSceneEvent;
         }
 
-        RefreshClientsHaveSpawned();
-    }
-
-    private void RefreshClientsHaveSpawned()
-    {
-        if (!IsServer)
-        {
-            return;
-        }
-
-        bool value = true;
-        foreach (var clientId in NetworkManager.ConnectedClientsIds)
-        {
-            if (!_readyClients.Contains(clientId))
-            {
-                value = false;
-                break;
-            }
-        }
-        AllClientsHaveSpawned = value;
+        base.OnNetworkDespawn();
     }
 
     private void DespawnAllRuntimeSpawnedObjects()
@@ -86,6 +66,7 @@ public class OnlineSceneLoader : NetworkBehaviour, ISceneLoader
         }
     }
 
+    #region Menu Scene
 
     public void LoadMenuScene()
     {
@@ -106,6 +87,10 @@ public class OnlineSceneLoader : NetworkBehaviour, ISceneLoader
         RoomNetworkManager.LeaveRoom();
     }
 
+    #endregion
+
+    #region Gameplay Scene
+
     public void LoadGameplayScene(GameplaySceneSettings settings)
     {
         if (!IsServer)
@@ -113,8 +98,63 @@ public class OnlineSceneLoader : NetworkBehaviour, ISceneLoader
             return;
         }
         SaveGameplaySceneSettingsClientRpc(NetworkGameplaySceneSettingsData.ToNetworkData(settings));
+        _clientsLoadedScene.Clear();
         NetworkManager.Singleton.SceneManager.LoadScene(settings.Map.SceneName, LoadSceneMode.Single);
+        StartCoroutine(KickClientsIfSceneNotLoadedAfterTimeout());
     }
+
+    private IEnumerator KickClientsIfSceneNotLoadedAfterTimeout()
+    {
+        float startTime = Time.time;
+
+        while (Time.time - startTime < GameplaySceneLoadTimeoutSeconds)
+        {
+            bool allLoaded = true;
+            foreach (var id in NetworkManager.ConnectedClientsIds)
+            {
+                if (!_clientsLoadedScene.Contains(id))
+                {
+                    allLoaded = false;
+                    break;
+                }
+            }
+
+            if (allLoaded)
+            {
+                Debug.Log("All clients loaded gameplay scene.");
+                yield break;
+            }
+
+            yield return new WaitForSeconds(GameplaySceneLoadYieldInterval);
+        }
+
+        Debug.LogWarning("Timeout waiting for clients to load scene. Disconnecting stuck clients...");
+
+        foreach (var id in NetworkManager.ConnectedClientsIds.ToList())
+        {
+            if (!_clientsLoadedScene.Contains(id))
+            {
+                Debug.LogWarning($"Disconnecting client {id} because they never loaded the scene.");
+                NetworkManager.DisconnectClient(id);
+            }
+        }
+    }
+
+    private void OnSceneEvent(SceneEvent sceneEvent)
+    {
+        if (!IsServer)
+            return;
+
+        if (sceneEvent.SceneEventType == SceneEventType.LoadComplete)
+        {
+            ulong clientId = sceneEvent.ClientId;
+            _clientsLoadedScene.Add(clientId);
+
+            Debug.Log($"Client {clientId} finished loading scene ({_clientsLoadedScene.Count}/{NetworkManager.ConnectedClientsIds.Count})");
+        }
+    }
+
+    #endregion
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
     private void SaveGameplaySceneSettingsClientRpc(NetworkGameplaySceneSettingsData networkSettings)
