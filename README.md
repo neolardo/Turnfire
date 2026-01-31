@@ -169,5 +169,5 @@ This document is structured to emphasize the gameplay logic and implementation d
 
 ### Notes & Possible Improvements
 - This game is completed and available at: https://fleonardo.itch.io/turnfire
-- Since the game is turn-based I decided not to use client-side prediction aside from Netcode's built-in NetworkTransform and NetworkRigidbody.
-- I might improve upon the bot evaluation later by automating the parameter tuning with a neural network to reach a standard 70/30 win/lose ratio.
+- Since the game is turn-based I decided not to use client-side prediction aside from Netcode's built-in NetworkTransform and NetworkRigidbody, but I might experiment with that in a future update.
+- I might as well improve upon the bot evaluation by automating the parameter tuning with a neural network to reach a standard 70/30 win/lose ratio.
