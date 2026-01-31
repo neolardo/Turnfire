@@ -25,4 +25,4 @@
 ---
 
 ### Notes & Possible Improvements
-- Since the game is turn-based I decided not to use client-side prediction aside from Netcode's built-in NetworkTransform and NetworkRigidbody.
+- Since the game is turn-based I decided not to use client-side prediction aside from Netcode's built-in NetworkTransform and NetworkRigidbody, but I might experiment with that in a future update.
